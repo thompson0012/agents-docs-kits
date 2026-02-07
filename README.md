@@ -101,7 +101,7 @@ Special thanks to the many developers who openly shared their `CLAUDE.md` / `AGE
 1. Place `AGENTS.md` and `GUIDELINES.md` in your project root (or `/docs/`)
 2. In your AI coding tool (Claude Code, Cursor, Aider, etc.):
    - Set `AGENTS.md` as the **project instruction file** / **custom system prompt** / **memory file**
-   - Or use `@AGENTS.md` / `@docs/AGENTS.md` in prompts
+   - Or use `@AGENTS.md` in prompts
 3. Let the agent read both files at the start of every session
 4. **Correct ruthlessly** — every mistake is a chance to make the agent permanently better
 5. Commit changes to `AGENTS.md`, `GUIDELINES.md`, `LESSONS.md`, etc. — treat them like code
