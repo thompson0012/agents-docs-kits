@@ -11,7 +11,7 @@
 - **Version Control**: Changes should be committed with descriptive, atomic messages.
 - **Traceability**: Statements should be grounded in the codebase, requirements, or recorded decisions.
 - **Approval**: Major updates to any document should be proposed to the user for approval.
-- **Iteration**: Documents should be updated as new insights or corrections occur.
+- **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
 
 ## Version Control Workflow
 
@@ -104,9 +104,9 @@ CHANGES MADE:
 ```
 
 ### Proposing Documentation Updates
-When updating any document (per AGENTS.md §4.7):
+When updating any document (per AGENTS.md §5):
 1. Analyze current state and identify necessary changes
-2. Propose using `PROPOSED DOC UPDATE` format (see AGENTS.md §4.7)
+2. Propose using `PROPOSED DOC UPDATE` format (see AGENTS.md §5)
 3. Wait for explicit user approval
 4. Update and log summary in PROGRESS.md
 
@@ -117,4 +117,4 @@ When updating any document (per AGENTS.md §4.7):
 - Prefer tables for comparing options or listing tokens.
 - Keep examples practical and easy to follow.
 
-This document may be updated by following `AGENTS.md` §4.7 (Documentation Evolution Protocol).
+This document may be updated by following `AGENTS.md` §5 (Documentation Evolution Protocol).
