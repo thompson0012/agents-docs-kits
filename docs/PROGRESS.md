@@ -7,6 +7,24 @@
 
 **Purpose**: This document provides a lightweight way to track progress and carry state between sessions. It should be updated at the end of every session.
 
+## Session Summary: February 10, 2026
+
+**Focus**: Documentation governance updates
+
+## Completed This Session
+
+- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `docs/GUIDELINES.md`.
+- [x] Logged approval-loop avoidance lesson in `docs/LESSONS.md`.
+- [x] Updated README section-number references to match AGENTS.md.
+
+## Still In Progress / Next Up
+
+- [x] Update `AGENTS.md` §5 to address approval-loop stop conditions.
+
+## Blockers / Open Questions
+
+- None.
+
 ## Session Summary: February 7, 2026
 
 **Focus**: Foundation - Authentication Implementation
