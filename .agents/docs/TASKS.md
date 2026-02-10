@@ -33,5 +33,5 @@
 - **Atomic Tasks**: Break large features into small, manageable tasks (e.g., "Implement hashing" instead of "Build auth").
 - **Status Updates**: Use `- [ ]` for pending tasks and `- [x]` for completed ones.
 - **Traceability**: Link tasks to relevant entries in `IMPLEMENTATION_PLAN.md` or `PRD.md` where possible.
-- **Plan Link (optional)**: If this session follows an approved plan artifact, add a link to `/docs/plans/.../tasks.md` and prefer updating that checklist as the source of truth.
+- **Plan Link (optional)**: If this session follows an approved plan artifact, add a link to `/.agents/docs/plans/.../tasks.md` and prefer updating that checklist as the source of truth.
 - **Session Focus**: Clearly define the goals for the current session at the start.

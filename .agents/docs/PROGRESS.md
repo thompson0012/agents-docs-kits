@@ -13,8 +13,8 @@
 
 ## Completed This Session
 
-- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `docs/GUIDELINES.md`.
-- [x] Logged approval-loop avoidance lesson in `docs/LESSONS.md`.
+- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `.agents/docs/GUIDELINES.md`.
+- [x] Logged approval-loop avoidance lesson in `.agents/docs/LESSONS.md`.
 - [x] Updated README section-number references to match AGENTS.md.
 
 ## Still In Progress / Next Up
@@ -30,7 +30,7 @@
 **Focus**: Foundation - Authentication Implementation
 
 **Active Plan (optional)**:
-- Link: /docs/plans/YYYY-MM-DD_short-title/
+- Link: /.agents/docs/plans/YYYY-MM-DD_short-title/
 
 ## Completed This Session
 

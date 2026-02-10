@@ -60,18 +60,18 @@ It covers precise formats and rules for:
 ## How They Work Together
 
 - `AGENTS.md` is the constitution (highest priority rules).
-- `/docs/*` are supporting guides and project docs used as needed.
-- `docs/PROGRESS.md` carries session state forward.
-- If you want durable, linkable plan/task records across sessions, see `docs/PLANS.md`.
+- `/.agents/docs/*` are supporting guides and project docs used as needed.
+- `.agents/docs/PROGRESS.md` carries session state forward.
+- If you want durable, linkable plan/task records across sessions, see `.agents/docs/PLANS.md`.
 
 ## AI Agent Activation Flow (ASCII)
 
-This section visualizes what happens when an AI agent is activated in this repo, how it decides what to read, how it plans work, where approvals happen, and how `AGENTS.md` and `/docs/*` interact.
+This section visualizes what happens when an AI agent is activated in this repo, how it decides what to read, how it plans work, where approvals happen, and how `AGENTS.md` and `/.agents/docs/*` interact.
 
 ```text
 ================================================================================
 AI AGENT ACTIVATION FLOW (this repo)
-Reflects: AGENTS.md constitution + /docs supporting docs + approval gates + docs
+Reflects: AGENTS.md constitution + /.agents/docs supporting docs + approval gates + docs
 ================================================================================
 
 LEGEND
@@ -81,7 +81,7 @@ LEGEND
 <Decision?>  = branching decision
 {Action}     = action the agent performs
 -->          = next step
-==>          = “consult /docs/* as needed” expansion
+==>          = “consult /.agents/docs/* as needed” expansion
 
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -103,7 +103,7 @@ LEGEND
   - doc map (§9)
   - completion checklist (§10)
 
-{Read} [/docs/PROGRESS.md]  (always; session carry-over)
+{Read} [/.agents/docs/PROGRESS.md]  (always; session carry-over)
         |
         v
 <Decision?> Any referenced doc missing?  (Missing-Doc Protocol §2)
@@ -130,12 +130,12 @@ LEGEND
         +-- Normal (default features / UI changes)
         |     |
         |     v
-        |   {Also read} [/docs/PRD.md] [/docs/TECH_STACK.md] [/docs/IMPLEMENTATION_PLAN.md]
+|   {Also read} [/.agents/docs/PRD.md] [/.agents/docs/TECH_STACK.md] [/.agents/docs/IMPLEMENTATION_PLAN.md]
         |
         +-- High  (auth/payments/data deletion/infra/>5 files)
               |
               v
-            {Also read} [/docs/SECURITY.md] + relevant docs in Doc Map (§9)
+{Also read} [/.agents/docs/SECURITY.md] + relevant docs in Doc Map (§9)
 
 
         |
@@ -151,7 +151,7 @@ LEGEND
         |     v
         |   {Implement minimal change}
         |   {Verify} (tests/build/manual as applicable)
-        |   {Update} [/docs/PROGRESS.md] (what changed, what’s next)
+|   {Update} [/.agents/docs/PROGRESS.md] (what changed, what’s next)
         |   --> Done
         |
         +-- No (Plan Path)
@@ -160,7 +160,7 @@ LEGEND
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 4) WRITE THE PLAN (how the agent breaks down work)                             │
 └──────────────────────────────────────────────────────────────────────────────┘
-{Write plan} using [/docs/GUIDELINES.md] "Plan Template (RECOMMENDED)"
+{Write plan} using [/.agents/docs/GUIDELINES.md] "Plan Template (RECOMMENDED)"
 PLAN should include:
   - Goal / Scope / Non-goals
   - Constraints (tools, time, compatibility, risk tier)
@@ -171,16 +171,16 @@ PLAN should include:
   - Rollback / Stop conditions
 
 ==> While planning, consult docs as needed (Doc Map §9):
-  - [/docs/PRD.md]                 (what to build / requirements)
-  - [/docs/TECH_STACK.md]          (what tools/versions are allowed)
-  - [/docs/IMPLEMENTATION_PLAN.md] (milestones, dependencies, verification)
-  - [/docs/TEST_STRATEGY.md]       (testing patterns; bug reproduction)
-  - [/docs/APP_FLOW.md]            (user journeys + edge cases)
-  - [/docs/DESIGN_SYSTEM.md]       (UI tokens + accessibility expectations)
-  - [/docs/FRONTEND_GUIDELINES.md] (frontend patterns/perf/accessibility)
-  - [/docs/BACKEND_STRUCTURE.md]   (backend layering/security/data flow)
-  - [/docs/MEMORY.md]              (stable architectural decisions/glossary)
-  - [/docs/TASKS.md]               (atomic task tracking conventions)
+  - [/.agents/docs/PRD.md]                 (what to build / requirements)
+  - [/.agents/docs/TECH_STACK.md]          (what tools/versions are allowed)
+  - [/.agents/docs/IMPLEMENTATION_PLAN.md] (milestones, dependencies, verification)
+  - [/.agents/docs/TEST_STRATEGY.md]       (testing patterns; bug reproduction)
+  - [/.agents/docs/APP_FLOW.md]            (user journeys + edge cases)
+  - [/.agents/docs/DESIGN_SYSTEM.md]       (UI tokens + accessibility expectations)
+  - [/.agents/docs/FRONTEND_GUIDELINES.md] (frontend patterns/perf/accessibility)
+  - [/.agents/docs/BACKEND_STRUCTURE.md]   (backend layering/security/data flow)
+  - [/.agents/docs/MEMORY.md]              (stable architectural decisions/glossary)
+  - [/.agents/docs/TASKS.md]               (atomic task tracking conventions)
 
         |
         v
@@ -261,8 +261,8 @@ Loop per atomic task:
                       REASON: [why]
                    3) WAIT for approval
                    4) APPLY doc edits only after approval
-                   5) LOG decision in [/docs/LESSONS.md]
-                   6) UPDATE [/docs/PROGRESS.md]
+                   5) LOG decision in [/.agents/docs/LESSONS.md]
+                   6) UPDATE [/.agents/docs/PROGRESS.md]
 
 
         |
@@ -270,10 +270,10 @@ Loop per atomic task:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 8) SESSION CLOSEOUT                                                           │
 └──────────────────────────────────────────────────────────────────────────────┘
-{Update} [/docs/PROGRESS.md]
+{Update} [/.agents/docs/PROGRESS.md]
   - Completed / In Progress / Blockers / Notes
 
-{Update if needed} [/docs/LESSONS.md]
+{Update if needed} [/.agents/docs/LESSONS.md]
   - new patterns / mistakes / prevention rules
 
 {Ensure consistency}
@@ -284,22 +284,22 @@ Loop per atomic task:
 ================================================================================
 QUICK “WHICH DOC DO I USE?” MAP
 ================================================================================
-- Need to decide WHAT to build?            -> [/docs/PRD.md]
-- Need to confirm allowed tools/versions?  -> [/docs/TECH_STACK.md]
-- Need the execution roadmap?              -> [/docs/IMPLEMENTATION_PLAN.md]
-- Need user journey + error handling UX?   -> [/docs/APP_FLOW.md]
-- Need UI tokens/accessibility rules?      -> [/docs/DESIGN_SYSTEM.md]
-- Need frontend patterns/perf?             -> [/docs/FRONTEND_GUIDELINES.md]
-- Need backend layering/security patterns? -> [/docs/BACKEND_STRUCTURE.md]
-- Need test expectations?                 -> [/docs/TEST_STRATEGY.md]
-- Need long-lived decisions/glossary?      -> [/docs/MEMORY.md]
-- Need atomic task checklist conventions?  -> [/docs/TASKS.md]
-- Need session carry-over state?           -> [/docs/PROGRESS.md]
-- Need “what we learned / avoid next time”?-> [/docs/LESSONS.md]
+- Need to decide WHAT to build?            -> [/.agents/docs/PRD.md]
+- Need to confirm allowed tools/versions?  -> [/.agents/docs/TECH_STACK.md]
+- Need the execution roadmap?              -> [/.agents/docs/IMPLEMENTATION_PLAN.md]
+- Need user journey + error handling UX?   -> [/.agents/docs/APP_FLOW.md]
+- Need UI tokens/accessibility rules?      -> [/.agents/docs/DESIGN_SYSTEM.md]
+- Need frontend patterns/perf?             -> [/.agents/docs/FRONTEND_GUIDELINES.md]
+- Need backend layering/security patterns? -> [/.agents/docs/BACKEND_STRUCTURE.md]
+- Need test expectations?                 -> [/.agents/docs/TEST_STRATEGY.md]
+- Need long-lived decisions/glossary?      -> [/.agents/docs/MEMORY.md]
+- Need atomic task checklist conventions?  -> [/.agents/docs/TASKS.md]
+- Need session carry-over state?           -> [/.agents/docs/PROGRESS.md]
+- Need “what we learned / avoid next time”?-> [/.agents/docs/LESSONS.md]
 ```
 
 1. At the start of **every session**, the agent follows the **risk-tiered reading strategy** defined in `AGENTS.md` §2:
-   - **Always**: `AGENTS.md` (behavior rules) + `/docs/PROGRESS.md` (session state)
+   - **Always**: `AGENTS.md` (behavior rules) + `/.agents/docs/PROGRESS.md` (session state)
    - **Normal+**: Adds `PRD.md`, `IMPLEMENTATION_PLAN.md`, `TECH_STACK.md`
    - **High-risk**: Full reading of all files listed in the Documentation Map (§9)
 
@@ -338,7 +338,7 @@ Special thanks to the many developers who openly shared their `CLAUDE.md` / `AGE
 
 ## How to Use This Setup
 
-1. Place `AGENTS.md` in your project root and supporting docs (including `GUIDELINES.md`) under `/docs/`
+1. Place `AGENTS.md` in your project root and supporting docs (including `GUIDELINES.md`) under `/.agents/docs/`
 2. In your AI coding tool (Claude Code, Cursor, Aider, etc.):
    - Set `AGENTS.md` as the **project instruction file** / **custom system prompt** / **memory file**
    - Or use `@AGENTS.md` in prompts

@@ -11,7 +11,7 @@
 - **Version Control**: Changes should be committed with descriptive, atomic messages.
 - **Traceability**: Statements should be grounded in the codebase, requirements, or recorded decisions.
 - **Approval**: Major updates to any document should be proposed to the user for approval.
-- **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
+- **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/.agents/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
 
 ## Version Control Workflow
 
@@ -89,12 +89,12 @@ ROLLBACK / STOP CONDITIONS:
 
 ### Plan & Task Recordkeeping (RECOMMENDED)
 
-If you want plans and task breakdowns to remain traceable across sessions, use the conventions in `docs/PLANS.md`.
+If you want plans and task breakdowns to remain traceable across sessions, use the conventions in `.agents/docs/PLANS.md`.
 
 Recommended approach:
-- Keep the approved plan in a dated folder under `/docs/plans/.../plan.md`
-- Keep the plan’s atomic checklist in `/docs/plans/.../tasks.md`
-- Link to the plan folder from `docs/PROGRESS.md` (session timeline)
+- Keep the approved plan in a dated folder under `/.agents/docs/plans/.../plan.md`
+- Keep the plan’s atomic checklist in `/.agents/docs/plans/.../tasks.md`
+- Link to the plan folder from `.agents/docs/PROGRESS.md` (session timeline)
 - Avoid duplicating the same checklist in multiple places; prefer linking
 
 ### After Completing Work (RECOMMENDED)

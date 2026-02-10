@@ -8,15 +8,15 @@
 
 Use a dated folder per plan:
 
-- `/docs/plans/YYYY-MM-DD_short-title/`
-  - `plan.md` — the approved plan (use the Plan Template in `docs/GUIDELINES.md`)
+- `/.agents/docs/plans/YYYY-MM-DD_short-title/`
+  - `plan.md` — the approved plan (use the Plan Template in `.agents/docs/GUIDELINES.md`)
   - `tasks.md` — atomic task checklist for the plan
   - `decisions.md` (optional) — decisions + rationale + links
   - `outputs/` (optional) — screenshots, logs, diagrams, exported reports
 
 Example:
-- `/docs/plans/2026-02-09_traceable-plan-records/plan.md`
-- `/docs/plans/2026-02-09_traceable-plan-records/tasks.md`
+- `/.agents/docs/plans/2026-02-09_traceable-plan-records/plan.md`
+- `/.agents/docs/plans/2026-02-09_traceable-plan-records/tasks.md`
 
 ## How It Connects to Existing Docs
 
@@ -28,7 +28,7 @@ Example:
 
 ### plan.md (reference)
 
-Use the “Plan Template (RECOMMENDED)” from `docs/GUIDELINES.md`.
+Use the “Plan Template (RECOMMENDED)” from `.agents/docs/GUIDELINES.md`.
 
 ### tasks.md (recommended)
 
