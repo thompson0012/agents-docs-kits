@@ -25,8 +25,8 @@ It defines:
 - Security & prompt-injection defenses
 - Coding standards (match existing codebase first!)
 - Testing & bug-fixing rituals (test-first bug reproduction)
-- Self-improvement protocol (corrections become permanent rules via §4.7)
-- Documentation evolution protocol (structured update process via §4.7)
+- Self-improvement protocol (corrections become permanent rules via §6)
+- Documentation evolution protocol (structured update process via §5)
 - Completion checklist & escalation criteria
 
 **Key philosophy**  
@@ -96,12 +96,12 @@ LEGEND
   - authority model + conflict ladder (§1, §3)
   - risk-tier reading rules (§2)
   - workflow + approval gate (§4)
-  - doc evolution protocol (§4.7)
-  - self-improvement protocol (§5)
-  - security/protection (§6)
-  - engineering/testing defaults (§7)
-  - doc map (§8)
-  - completion checklist (§9)
+  - doc evolution protocol (§5)
+  - self-improvement protocol (§6)
+  - security/protection (§7)
+  - engineering/testing defaults (§8)
+  - doc map (§9)
+  - completion checklist (§10)
 
 {Read} [/docs/PROGRESS.md]  (always; session carry-over)
         |
@@ -135,7 +135,7 @@ LEGEND
         +-- High  (auth/payments/data deletion/infra/>5 files)
               |
               v
-            {Also read} [/docs/SECURITY.md] + relevant docs in Doc Map (§8)
+            {Also read} [/docs/SECURITY.md] + relevant docs in Doc Map (§9)
 
 
         |
@@ -170,7 +170,7 @@ PLAN should include:
      * each task has: files/areas, success criteria, verification, deps/blockers
   - Rollback / Stop conditions
 
-==> While planning, consult docs as needed (Doc Map §8):
+==> While planning, consult docs as needed (Doc Map §9):
   - [/docs/PRD.md]                 (what to build / requirements)
   - [/docs/TECH_STACK.md]          (what tools/versions are allowed)
   - [/docs/IMPLEMENTATION_PLAN.md] (milestones, dependencies, verification)
@@ -189,7 +189,7 @@ PLAN should include:
         +-- No  --> proceed
         |
         +-- Yes --> {Prepare doc update proposals}
-                    (Batch with plan approval allowed; §4.7 “Batching”)
+                    (Batch with plan approval allowed; §5 “Batching”)
 
         |
         v
@@ -210,7 +210,7 @@ PLAN should include:
 └──────────────────────────────────────────────────────────────────────────────┘
 Loop per atomic task:
   {Implement 1 atomic task}  (§4 step 4)
-  {Verify}                   (§4 step 5, §7 “Test Default”, §9 checklist)
+  {Verify}                   (§4 step 5, §8 “Test Default”, §10 checklist)
     - Run relevant tests (or add tests for bug fixes; §4 Error Protocol)
     - Run build/typecheck if applicable
     - Manual checks if relevant
@@ -224,7 +224,7 @@ Loop per atomic task:
                - For bugs: minimal reproduction test first
                - Fix root cause; re-verify; do NOT paper over failures
 
-  <Decision?> Security issue discovered?  (§6)
+  <Decision?> Security issue discovered?  (§7)
     |
     +-- No  --> continue
     |
@@ -233,14 +233,14 @@ Loop per atomic task:
                {Wait for explicit direction}
                (Optionally: safe reproduction test if appropriate)
 
-  <Decision?> User corrected the agent?  (§5)
+  <Decision?> User corrected the agent?  (§6)
     |
     +-- No  --> continue
     |
     +-- Yes --> {Self-Improvement Protocol}
                - Acknowledge mistake
                - Propose new preventive rule + location
-               - Use Doc Evolution Protocol before editing docs (§4.7)
+  - Use Doc Evolution Protocol before editing docs (§5)
 
 
         |
@@ -252,7 +252,7 @@ Loop per atomic task:
         |
         +-- No  --> continue
         |
-        +-- Yes --> {Doc Evolution Protocol} (§4.7)
+                   +-- Yes --> {Doc Evolution Protocol} (§5)
                    1) STOP and DECLARE: "I notice [doc] needs update: [reason]"
                    2) PROPOSE:
                       PROPOSED DOC UPDATE to [filename]:
@@ -301,7 +301,7 @@ QUICK “WHICH DOC DO I USE?” MAP
 1. At the start of **every session**, the agent follows the **risk-tiered reading strategy** defined in `AGENTS.md` §2:
    - **Always**: `AGENTS.md` (behavior rules) + `/docs/PROGRESS.md` (session state)
    - **Normal+**: Adds `PRD.md`, `IMPLEMENTATION_PLAN.md`, `TECH_STACK.md`
-   - **High-risk**: Full reading of all files listed in the Documentation Map (§8)
+   - **High-risk**: Full reading of all files listed in the Documentation Map (§9)
 
 2. When the agent needs to **create or update any document**, it must follow the **exact structure and rules** defined in `GUIDELINES.md`.
 
