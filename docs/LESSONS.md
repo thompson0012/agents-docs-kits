@@ -45,3 +45,9 @@ const increment = () => setCount(prevCount => prevCount + 1);
 - **Mistake / Issue**: The agent repeated approval requests in a loop after the user intended approval, causing unnecessary blocking.
 - **Root Cause**: The documentation evolution protocol lacked a stop condition for repeated system-driven reminders without explicit user approval confirmation.
 - **Rule to Prevent**: After proposing doc updates, ask for explicit approval once; if system-driven reminders repeat without new user input, respond with a single blocking notice and wait for explicit approval or rejection before continuing. Log the approval decision before applying changes (AGENTS.md §5).
+
+## Pattern: Cross-Reference Numbering Consistency
+
+- **Mistake / Issue**: README references drifted from AGENTS.md section numbers after renumbering.
+- **Root Cause**: Section renumbering in AGENTS.md was not propagated to README.md cross-references.
+- **Rule to Prevent**: When renumbering AGENTS.md sections, update all external references (README + docs) in the same change set and verify them against the canonical section numbers.
