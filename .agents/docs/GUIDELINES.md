@@ -13,6 +13,16 @@
 - **Approval**: Major updates to any document should be proposed to the user for approval.
 - **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/.agents/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
 
+## Template Filling Protocol (for AI agents)
+
+When asked to fill any template:
+1. **Evidence first**: derive content from the repo, PRD/TECH_STACK, tickets, or explicit user input—avoid invention.
+2. **Assumptions**: if you infer anything, add an `ASSUMPTIONS` block and make it easy to correct.
+3. **Unknowns stay unknown**: keep “Unknown until confirmed” where facts are missing.
+4. **Examples are labeled**: wrap sample content under **“## Example (fictional, delete before use)”**.
+5. **Human override**: treat human edits as authoritative and update surrounding docs accordingly.
+6. **Placeholders**: use `<...>` or `{{PLACEHOLDER}}` until real values exist.
+
 ## Version Control Workflow
 
 Guidance for maintaining a clean and traceable project history:

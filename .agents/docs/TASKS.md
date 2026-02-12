@@ -7,6 +7,22 @@
 
 **Purpose**: This document provides a concrete, actionable checklist of tasks grouped by priority or session. It should be used to track atomic progress and ensure no requirements are missed.
 
+## Template (fill this, then delete the example below)
+
+## High Priority
+- [ ] <task>
+
+## This Session: <YYYY-MM-DD>
+
+**Focus**: <focus>
+
+- [ ] <task>
+
+## Later (Backlog)
+- [ ] <task>
+
+## Example (fictional, delete before use)
+
 ## High Priority
 
 - [ ] Implement robust error handling for the user registration API.

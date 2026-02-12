@@ -7,6 +7,26 @@
 
 **Purpose**: This document provides a lightweight way to track progress and carry state between sessions. It should be updated at the end of every session.
 
+## Template (fill this, then delete the example below)
+
+## Session Summary: <YYYY-MM-DD>
+
+**Focus**: <short focus>
+
+## Completed This Session
+- [ ] <completed item>
+
+## Still In Progress / Next Up
+- [ ] <next item>
+
+## Blockers / Open Questions
+- <blocker or question>
+
+## Quick Notes / Metrics (optional)
+- <note>
+
+## Example (fictional, delete before use)
+
 ## Session Summary: February 10, 2026
 
 **Focus**: Documentation governance updates

@@ -4,6 +4,17 @@
 
 **Purpose**: This document tracks learned lessons, avoided mistakes, and operational optimizations to prevent repeat errors and improve agent performance over time.
 
+## Template (fill this, then delete the example below)
+
+## Pattern: <short title>
+
+- **Mistake / Issue**:
+- **Root Cause**:
+- **Rule to Prevent**:
+- **Example**:
+
+## Example (fictional, delete before use)
+
 ## Pattern: Defensive State Management
 
 - **Mistake / Issue**: Application state became inconsistent after multiple rapid UI updates.
