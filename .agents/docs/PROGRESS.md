@@ -34,8 +34,8 @@ SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL
 
 ## Completed This Session
 
-- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `.agents/docs/GUIDELINES.md`.
-- [x] Logged approval-loop avoidance lesson in `.agents/docs/LESSONS.md`.
+- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `/.agents/docs/GUIDELINES.md`.
+- [x] Logged approval-loop avoidance lesson in `/.agents/docs/LESSONS.md`.
 - [x] Updated README section-number references to match AGENTS.md.
 
 ## Still In Progress / Next Up

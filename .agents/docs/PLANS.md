@@ -13,7 +13,7 @@
 Use a dated folder per plan:
 
 - `/.agents/docs/plans/YYYY-MM-DD_short-title/`
-  - `plan.md` — the approved plan (use the Plan Template in `.agents/docs/GUIDELINES.md`)
+- `plan.md` — the approved plan (use the Plan Template in `/.agents/docs/GUIDELINES.md`)
   - `tasks.md` — atomic task checklist for the plan
   - `decisions.md` (optional) — decisions + rationale + links
   - `outputs/` (optional) — screenshots, logs, diagrams, exported reports
@@ -32,7 +32,7 @@ Example:
 
 ### plan.md (reference)
 
-Use the “Plan Template (RECOMMENDED)” from `.agents/docs/GUIDELINES.md`.
+Use the “Plan Template (RECOMMENDED)” from `/.agents/docs/GUIDELINES.md`.
 
 ### tasks.md (recommended)
 

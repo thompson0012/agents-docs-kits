@@ -18,7 +18,7 @@ This is the **single canonical constitution** for AI coding agents. All other fi
 
 **Template Read Rule**: `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` docs MAY be read for context only. Decisions MUST NOT rely on them; if a decision depends on their contents, the agent MUST stop and run Template-to-Production.
 
-**Initialization Gate (Before First Coding)**: If any core docs are `STATUS: TEMPLATE`, the agent MUST stop and run the Template-to-Production process before writing or modifying code. This gate overrides risk tiers and trivial-task paths; only documentation updates are allowed until core docs are `STATUS: PRODUCTION`. Core docs: `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `SECURITY.md`, `TEST_STRATEGY.md`.
+**Initialization Gate (Before First Coding)**: If any core docs are `STATUS: TEMPLATE`, the agent MUST stop and run the Template-to-Production process before writing or modifying code. This gate overrides risk tiers and trivial-task paths; only documentation updates are allowed until core docs are `STATUS: PRODUCTION`. Core docs (in `/.agents/docs/`): `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `SECURITY.md`, `TEST_STRATEGY.md`.
 
 ## 1. Role & Definitions
 
@@ -54,8 +54,8 @@ Adopt a **lazy, context-aware** reading strategy. Do not read all documents unle
 | Tier | Trigger | Required Reading |
 | :--- | :--- | :--- |
 | **Low** | < 5 files, no auth/data changes, mechanical fixes. | `AGENTS.md`, `/.agents/docs/PROGRESS.md`, target files. |
-| **Normal** | Default work, new features, UI changes. | Tier 1 + `PRD.md`, `IMPLEMENTATION_PLAN.md`, `TECH_STACK.md`. |
-| **High** | Auth, Payments, Data deletion, > 5 files, Infra. | Tier 2 + `SECURITY.md`, all files listed in §9 Documentation Map. |
+| **Normal** | Default work, new features, UI changes. | Tier 1 + `/.agents/docs/PRD.md`, `/.agents/docs/IMPLEMENTATION_PLAN.md`, `/.agents/docs/TECH_STACK.md`. |
+| **High** | Auth, Payments, Data deletion, > 5 files, Infra. | Tier 2 + `/.agents/docs/SECURITY.md`, all files listed in §9 Documentation Map. |
 | **Recovery** | Referenced doc missing. | Stop. Ask: "Scaffold [doc] or proceed with safe defaults?" |
 
 **STATUS-aware reading**: “Required Reading” means read + check STATUS. If a required doc is not `STATUS: PRODUCTION`, treat it as context only and stop for Template-to-Production before relying on it.
@@ -70,7 +70,7 @@ Priority (Highest to Lowest):
 2. **Security & Safety Rules**
 3. **AGENTS.md** (This constitution)
 4. **Explicit User Instructions** (Latest wins unless violating 1-3)
-5. **Canonical Project Docs** (`TECH_STACK.md`, `PRD.md`)
+5. **Canonical Project Docs** (`/.agents/docs/TECH_STACK.md`, `/.agents/docs/PRD.md`)
 6. **Supporting Guides** (`/.agents/docs/*.md` excluding PRD & TECH_STACK — MUST NOT introduce MUST/REQUIRED constraints unless promoted into AGENTS.md)
 7. **Codebase Reality** (Match existing patterns)
 

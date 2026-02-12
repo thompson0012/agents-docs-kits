@@ -15,6 +15,13 @@
 - **Rule to Prevent**:
 - **Example**:
 
+## Pattern: Doc Path Consistency
+
+- **Mistake / Issue**: Mixed `.agents/docs` vs `/.agents/docs` references caused agents to look in the wrong location.
+- **Root Cause**: Ambiguous path formatting in templates.
+- **Rule to Prevent**: Always use `/.agents/docs/` when referencing supporting docs; only `AGENTS.md` lives at the repo root.
+- **Example**: Use `/.agents/docs/PROGRESS.md` (not `.agents/docs/PROGRESS.md`).
+
 ## Example (fictional, delete before use)
 
 ## Pattern: Defensive State Management

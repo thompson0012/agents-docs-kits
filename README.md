@@ -63,10 +63,10 @@ It covers precise formats and rules for:
 
 - `AGENTS.md` is the constitution (highest priority rules).
 - `/.agents/docs/*` are supporting guides and project docs used as needed.
-- `.agents/docs/PROGRESS.md` carries session state forward.
+- `/.agents/docs/PROGRESS.md` carries session state forward.
 - Each doc starts with a **STATUS** header (TEMPLATE / PRODUCTION / EXAMPLES-ONLY).
 - Template-to-Production: after user feedback + clarified goals, the agent updates AGENTS.md + docs via the Documentation Evolution Protocol.
-- If you want durable, linkable plan/task records across sessions, see `.agents/docs/PLANS.md`.
+- If you want durable, linkable plan/task records across sessions, see `/.agents/docs/PLANS.md`.
 
 ## AI Agent Behavior Summary (when coding in this repo)
 - Always read `AGENTS.md` + `/.agents/docs/PROGRESS.md` first.
