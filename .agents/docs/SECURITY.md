@@ -7,7 +7,7 @@
 ### 1. Secrets Management
 **Guidance**: Never commit, log, or expose secrets in code, commit messages, or application logs.
 
-**Examples**:
+**Examples (fictional; replace per TECH_STACK)**:
 - ✅ Use environment variables: `process.env.API_KEY`
 - ✅ Use secret management services: AWS Secrets Manager, HashiCorp Vault
 - ❌ Hardcoded secrets: `const apiKey = "sk_live_12345"`
@@ -16,8 +16,8 @@
 ### 2. Input Validation
 **Guidance**: Treat all external data as untrusted. Validate and sanitize all inputs before processing.
 
-**Examples**:
-- ✅ Use schema validation libraries: Zod, Joi, or Marshmallow.
+**Examples (fictional; replace per TECH_STACK)**:
+- ✅ Use schema validation libraries (e.g., Zod, Joi, Marshmallow).
 - ✅ Sanitize HTML to prevent XSS: Use libraries like DOMPurify.
 - ✅ Validate file types and sizes for uploads.
 - ❌ Trusting client-side validation: Always perform validation on the server.
@@ -25,7 +25,7 @@
 ### 3. Safe Coding Patterns
 **Guidance**: Use established patterns to mitigate common vulnerabilities like SQL injection, XSS, and CSRF.
 
-**Examples**:
+**Examples (fictional; replace per TECH_STACK)**:
 - ✅ Parameterized queries: `db.query('SELECT * FROM users WHERE id = $1', [userId])`
 - ✅ Automatic XSS escaping: Use templating engines that escape output by default.
 - ✅ CSRF protection: Use anti-CSRF tokens for state-changing requests.
@@ -42,8 +42,8 @@
 ### 5. Authentication & Authorization
 **Guidance**: Implement robust identity management and follow the principle of least privilege.
 
-**Examples**:
-- ✅ Use strong password hashing: Argon2 or bcrypt.
+**Examples (fictional; replace per TECH_STACK)**:
+- ✅ Use strong password hashing (e.g., Argon2, bcrypt).
 - ✅ Implement Role-Based Access Control (RBAC) to restrict resource access.
 - ✅ Use secure, HttpOnly, and SameSite cookies for session management.
 - ❌ Storing passwords in plain text or using weak hashing algorithms (e.g., MD5).
@@ -51,7 +51,7 @@
 ### 6. Dependency Security
 **Guidance**: Regularly audit and update project dependencies to patch known vulnerabilities.
 
-**Examples**:
+**Examples (fictional; replace per TECH_STACK)**:
 - ✅ Run regular security audits: `npm audit`, `pip-audit`, or `snyk test`.
 - ✅ Keep dependencies up to date using tools like Dependabot.
 - ✅ Pin dependency versions to prevent unexpected breaking changes or malicious updates.

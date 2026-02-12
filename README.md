@@ -2,6 +2,8 @@
 
 This repository contains a **battle-tested configuration** for using AI coding agents (especially Claude Code / Claude 3.5 / Claude 4 / Cursor / Windsurf / Aider / etc.) to build and maintain production-grade software with high reliability, consistency, and safety.
 
+> **Template Kit Notice**: This repository is a **generic template system**. Any examples in `/.agents/docs/` are **fictional** and must be replaced or removed before real use.
+
 The heart of this setup is two central files:
 
 - **`AGENTS.md`** — the **operating system / constitution** of the AI coding agent  
@@ -335,6 +337,13 @@ This configuration is **not** invented from scratch. It is a **heavily synthesiz
 - **Public X threads** (2025–2026) on agent reliability, security hardening, prompt injection defense, and parallel sub-agents
 
 Special thanks to the many developers who openly shared their `CLAUDE.md` / `AGENTS.md` files and correction rituals — this is a collective distillation of what actually works in production.
+
+## Quick Start (Template Mode)
+1. Copy `AGENTS.md` to your project root.
+2. Copy `/.agents/docs/` into your project and keep filenames unchanged.
+3. Replace all **Example (fictional)** blocks in `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `PROGRESS.md`, `TASKS.md`, and `MEMORY.md`.
+4. Point your AI tool to `AGENTS.md` as the project instruction file.
+5. Start the first session and let the agent follow the risk-tiered reading rules.
 
 ## How to Use This Setup
 

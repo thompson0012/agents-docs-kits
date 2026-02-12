@@ -10,10 +10,10 @@
 
 | Token | Description | Value Example |
 |-------|-------------|---------------|
-| `color-primary` | Primary brand color. | `#3b82f6` (Blue-500) |
-| `color-surface` | Background color for cards and modals. | `#ffffff` (White) |
-| `spacing-base` | Base unit for all spacing. | `4px` |
-| `font-size-body` | Standard text size. | `16px` |
+| `color-primary` | Primary brand color. | `#3b82f6` *(Example — fictional, delete before use)* |
+| `color-surface` | Background color for cards and modals. | `#ffffff` *(Example — fictional, delete before use)* |
+| `spacing-base` | Base unit for all spacing. | `4px` *(Example — fictional, delete before use)* |
+| `font-size-body` | Standard text size. | `16px` *(Example — fictional, delete before use)* |
 
 ## Components
 
@@ -41,4 +41,3 @@
 - **Icon Library**: Prefer SVG-based icon libraries (e.g., Lucide, Heroicons) for scalability and performance.
 - **Alt Text**: All meaningful images should have descriptive `alt` text. Use `alt=""` for purely decorative images.
 - **Performance**: Optimize all raster images (PNG, JPEG) using modern formats like WebP or Avif where supported.
-

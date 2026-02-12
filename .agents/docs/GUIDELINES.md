@@ -63,6 +63,40 @@ Guidance for maintaining a clean and traceable project history:
 - **Purpose**: Defense-in-depth guidance for security-conscious development.
 - **Key Areas**: Secrets management, input validation, and safe coding patterns.
 
+## Document Minimum Sections (Best-Practice Baseline)
+Before a doc is considered “ready,” ensure these sections exist:
+
+**PRD.md**
+- Goals & success metrics
+- Personas / users
+- MoSCoW features
+- Non-functional requirements
+- Out of scope
+
+**TECH_STACK.md**
+- Tool list with versions
+- Runtime constraints
+- Prohibited/deprecated items
+- “Locked as of” date
+
+**IMPLEMENTATION_PLAN.md**
+- Milestones + verification
+- Dependencies & blockers
+- Risks & mitigations
+- Rollback/stop conditions
+
+**SECURITY.md**
+- Secrets management
+- Input validation
+- Safe coding patterns
+- Vulnerability response
+
+**TEST_STRATEGY.md**
+- Test pyramid
+- Coverage minimums
+- Where tests live
+- CI expectations
+
 ## Communication Standards
 
 ### Before Starting Work (RECOMMENDED)

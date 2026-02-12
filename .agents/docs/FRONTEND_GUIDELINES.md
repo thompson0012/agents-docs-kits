@@ -15,7 +15,7 @@
 - **Hooks for Logic**: Encapsulate reusable logic in custom hooks to keep components focused on the UI.
 - **Controlled Components**: Prefer controlled components for forms to ensure a single source of truth for the data.
 
-**Example: Custom Hook for Data Fetching**
+**Example (fictional, delete before use): Custom Hook for Data Fetching**
 ```typescript
 function useFetchData(url: string) {
   const [data, setData] = useState(null);

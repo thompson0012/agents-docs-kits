@@ -29,7 +29,7 @@ Per AGENTS.md §4 "Error Protocol":
 - Component tests: Co-located with components (`Button.test.tsx`)
 - Integration tests: `/tests/integration/`
 - E2E tests: `/tests/e2e/`
-- Use Vitest for unit/integration (per TECH_STACK.md)
+- Use the test runner defined in TECH_STACK.md (example: Vitest)
 
 ### Backend (from BACKEND_STRUCTURE.md)
 - Unit tests: Co-located with modules (`auth.test.ts`)

@@ -15,7 +15,7 @@
 - **DTOs (Data Transfer Objects)**: Use DTOs for request and response validation to ensure a clean interface.
 - **Middleware for Cross-Cutting Concerns**: Use middleware for authentication, logging, and error handling.
 
-**Example: Controller Method**
+**Example (fictional, delete before use): Controller Method**
 ```typescript
 async function createUser(req: Request, res: Response) {
   try {

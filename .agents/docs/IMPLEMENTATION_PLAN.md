@@ -8,14 +8,14 @@
 
 **Purpose**: Define the immediate focus and deadline.
 
-**Example**:
+**Example (fictional, delete before use)**:
 MVP Launch - February 28, 2026
 
 ## Phases
 
 **Purpose**: Break the project into logical, sequential phases.
 
-**Example**:
+**Example (fictional, delete before use)**:
 1. Foundation (Infra, Auth, DB) - *Medium Effort*
 2. Core Features (Messaging, Project Management) - *Large Effort*
 3. Polishing & Optimization (UI/UX, Performance) - *Small Effort*
@@ -50,7 +50,7 @@ MVP Launch - February 28, 2026
 
 **Purpose**: Identify external factors or internal tasks that prevent progress.
 
-**Example**:
+**Example (fictional, delete before use)**:
 - Deployment blocked by final approval of infrastructure budget. (Status: Pending)
 - Integration with third-party API requires API key from the user. (Status: Blocked)
 
@@ -61,7 +61,7 @@ MVP Launch - February 28, 2026
 > **EXAMPLE ASSUMPTIONS**: The examples below assume WebSocket-based real-time features and Redis for message brokering.
 > Replace with risks/mitigations that match your architecture.
 
-**Example**:
+**Example (fictional, delete before use)**:
 - **Risk**: Potential performance bottlenecks with high concurrent WebSocket connections.
 - **Mitigation**: Implement horizontal scaling for WebSocket servers and use a Redis-backed message broker.
 
