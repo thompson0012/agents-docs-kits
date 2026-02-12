@@ -32,6 +32,7 @@ Status meanings:
 - **Version Control**: Changes MUST be committed with descriptive, atomic messages.
 - **Traceability**: Statements MUST be grounded in the codebase, requirements, or recorded decisions.
 - **Approval**: Major updates to any document MUST be proposed to the user for explicit approval before implementation. `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates; `SUPER-APPROVED(ALL)` approves plan + doc updates + execution; `SUPER-APPROVED(NULL)` resets to standard approval behavior.
+- **Session Approval Mode**: Read `SESSION_APPROVAL_MODE` from `/.agents/docs/PROGRESS.md` (STANDARD | PLAN+DOC | ALL). Default STANDARD if missing. Mode applies for the entire session; explicit `SUPER-APPROVED(...)` still applies to the current proposal.
 - **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/.agents/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
 
 ## Template Filling Protocol (for AI agents)

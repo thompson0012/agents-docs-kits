@@ -75,6 +75,7 @@ It covers precise formats and rules for:
 - If core docs are TEMPLATE, stop and run Template-to-Production before coding (doc updates only).
 - Use risk tiers to decide which docs to read (PRD/TECH_STACK/IMPLEMENTATION_PLAN, then SECURITY/docs map for high-risk).
 - For non-trivial tasks (> 20 lines or > 1 file): write a plan and wait for explicit approval.
+- Session gate can be set in `/.agents/docs/PROGRESS.md` via `SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL`.
 - `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates in a single gate.
 - `SUPER-APPROVED(ALL)` approves plan + doc updates + execution for the current proposal.
 - `SUPER-APPROVED(NULL)` resets to standard approval behavior.
@@ -106,6 +107,7 @@ APPROVAL TOKENS
 SUPER-APPROVED(PLAN+DOC) = approve plan + doc updates
 SUPER-APPROVED(ALL)      = approve plan + doc updates + execution
 SUPER-APPROVED(NULL)     = reset to standard approval behavior
+SESSION_APPROVAL_MODE    = STANDARD | PLAN+DOC | ALL (set per session in PROGRESS.md)
 
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -128,6 +130,7 @@ SUPER-APPROVED(NULL)     = reset to standard approval behavior
   - completion checklist (§10)
 
 {Read} [/.agents/docs/PROGRESS.md]  (always; session carry-over)
+{Read} SESSION_APPROVAL_MODE (STANDARD | PLAN+DOC | ALL)
 {Check} STATUS headers (TEMPLATE / PRODUCTION / EXAMPLES-ONLY)
 {Rule} TEMPLATE/EXAMPLES-ONLY docs = context-only (non-authoritative)
 <Decision?> Any core doc still TEMPLATE?

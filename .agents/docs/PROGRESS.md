@@ -8,6 +8,8 @@
 
 ## Template (fill this, then delete the example below)
 
+SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL
+
 ## Session Summary: <YYYY-MM-DD>
 
 **Focus**: <short focus>

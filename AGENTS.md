@@ -30,6 +30,7 @@ This is the **single canonical constitution** for AI coding agents. All other fi
   - `SUPER-APPROVED(PLAN+DOC)` approves both the plan and any batched doc updates in the same proposal.  
   - `SUPER-APPROVED(ALL)` approves plan + doc updates + execution in the current proposal.  
   - `SUPER-APPROVED(NULL)` resets to standard approval behavior (no auto-approval).
+- **Session Approval Mode**: Read from `/.agents/docs/PROGRESS.md` as `SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL`. Default is `STANDARD` when missing. This mode sets the decision gate for the entire session; explicit `SUPER-APPROVED(...)` tokens still count as approval for the current proposal.
 - **Constitution**: This document (AGENTS.md) — the supreme behavioral authority.
 - **Canonical Project Docs**: PRD and TECH_STACK — the authoritative project truth.
 
