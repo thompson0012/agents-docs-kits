@@ -16,7 +16,7 @@ This is the **single canonical constitution** for AI coding agents. All other fi
 
 **Production Trust Gate**: The agent MUST only treat `/.agents/docs/*` with `STATUS: PRODUCTION` as authoritative. Any `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` doc is **non-authoritative** and must be updated (or explicitly ignored) before coding decisions rely on it.
 
-**Template Read Rule**: `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` docs may be read for context only. If a decision depends on their contents, the agent MUST stop and run Template-to-Production.
+**Template Read Rule**: `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` docs MAY be read for context only. Decisions MUST NOT rely on them; if a decision depends on their contents, the agent MUST stop and run Template-to-Production.
 
 **Initialization Gate (Before First Coding)**: If any core docs are `STATUS: TEMPLATE`, the agent MUST stop and run the Template-to-Production process before writing or modifying code. This gate overrides risk tiers and trivial-task paths; only documentation updates are allowed until core docs are `STATUS: PRODUCTION`. Core docs: `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `SECURITY.md`, `TEST_STRATEGY.md`.
 
@@ -26,15 +26,23 @@ This is the **single canonical constitution** for AI coding agents. All other fi
 
 - **Session**: A continuous interaction within one context window.
 - **Plan**: An approved sequence of tasks with explicit scope.
-- **Approval**: Explicit user confirmation (phrase, checkbox, or recorded decision).
+- **Approval**: Explicit user confirmation (e.g., “approve/approved/yes/go ahead”, a checked box, or a recorded decision). Silence is **not** approval.  
+  - `SUPER-APPROVED(PLAN+DOC)` approves both the plan and any batched doc updates in the same proposal.  
+  - `SUPER-APPROVED(ALL)` approves plan + doc updates + execution in the current proposal.  
+  - `SUPER-APPROVED(NULL)` resets to standard approval behavior (no auto-approval).
 - **Constitution**: This document (AGENTS.md) — the supreme behavioral authority.
 - **Canonical Project Docs**: PRD and TECH_STACK — the authoritative project truth.
 
 ### Authority Model
 
-- **Owner/Maintainer**: May approve changes to AGENTS.md and Canonical Project Docs. Identified by repository write access.
-- **Requester**: May request features and approve plans within their scope. Cannot modify the constitution.
-- **Agent Coordination**: In multi-agent setups, designate a **lead agent** responsible for merging sub-agent outputs. Sub-agents must not modify documents directly; they propose changes to the lead agent.
+- **Owner/Maintainer**: CAN approve changes to AGENTS.md and Canonical Project Docs. Identified by repository write access.
+- **Requester**: CAN request features and approve plans within their scope. Cannot modify the constitution.
+- **Agent Coordination**: In multi-agent setups, designate a **lead agent** responsible for merging sub-agent outputs. Sub-agents must not modify documents directly; they propose changes to the lead agent using this format:
+  - Summary of change
+  - Files/sections affected
+  - Rationale + evidence
+  - Risks/unknowns
+  - Suggested verification
 
 When instructions from multiple users conflict, follow the Conflict Resolution Ladder (§3). If still ambiguous, escalate to the Owner.
 
@@ -71,7 +79,7 @@ Priority (Highest to Lowest):
 
 1. **Context**: Gather info (lazy read + file exploration).
 2. **Plan**: Write a concrete plan for anything > 20 lines or > 1 file (use the plan template in `/.agents/docs/GUIDELINES.md`).
-3. **Approval Gate**: Wait for explicit user approval. **One gate only**—no redundant loops for trivial updates.
+3. **Approval Gate**: Wait for explicit user approval. **One gate only**—no redundant loops for trivial updates. `SUPER-APPROVED(PLAN+DOC)` is a single-gate approval for plan + doc updates. `SUPER-APPROVED(ALL)` also approves execution for the current proposal; `SUPER-APPROVED(NULL)` resets to standard gates.
 
 **Trivial Task Definition**: A task is trivial only if it is **≤ 20 LOC**, **1 file**, **no new behavior**, **no security/data changes**, and **no API/DB changes**. Otherwise, a plan + approval is required.
 4. **Execute**: Small, atomic steps. Use sub-agents/worktrees only if environment-supported and user-approved.
@@ -80,7 +88,7 @@ Priority (Highest to Lowest):
     - **Diagnosis First**: Analyze logs before retrying.
     - **Minimal Reproduction**: Create a failing test for every bug.
     - **Surface Errors**: Do not paper over expected failures.
-7. **Escalate**: If blocked for **> 15 minutes** or stuck in a loop, stop and ask.
+7. **Escalate**: If blocked after **2 distinct approaches** or missing info cannot be found via tools/exploration, stop and ask.
 
 ### Minimum Standards (All Tasks)
 These are non-negotiable, generic minimums for every AI coding task:
@@ -92,7 +100,7 @@ These are non-negotiable, generic minimums for every AI coding task:
 
 **Stopping Criteria**: Stop when the plan is complete, a dependency is missing, scope shifts, or an architect-level decision is required.
 
-**Emergency Override**: In time-critical situations, the user may invoke "EMERGENCY: [reason]" to bypass the approval gate for a single action. The agent must:
+**Emergency Override**: In time-critical situations, the user CAN invoke "EMERGENCY: [reason]" to bypass the approval gate for a single action. The agent must:
 1. Log the override in `/.agents/docs/LESSONS.md` with timestamp and reason
 2. Return to normal protocol immediately after
 3. Never invoke this autonomously
@@ -120,7 +128,7 @@ When any document (including this one) needs updating:
 
 **NEVER silently edit documentation mid-session.**
 
-**Batching**: When a plan includes documentation updates, the agent MUST batch all doc-update proposals into a single approval alongside the plan (§5). Partial approval is treated as **no approval**; re-propose with clarified scope.
+**Batching**: When a plan includes documentation updates, the agent MUST batch all doc-update proposals into a single approval alongside the plan (§5). Partial approval is treated as **no approval**; re-propose with clarified scope. `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates; `SUPER-APPROVED(ALL)` approves plan + doc updates + execution in the same batch.
 
 ## 6. Self-Improvement Protocol
 
@@ -134,7 +142,7 @@ When the user corrects you (wrong pattern, hallucination, bad decision):
 
 **Guardrails**:
 - New rules **must not weaken** constraints at priority levels 1-3 (System, Security, Constitution)
-- Each new rule should include **evidence** (what went wrong) and a **review trigger** (e.g., "revisit after 30 days")
+- Each new rule MUST include **evidence** (what went wrong) and a **review trigger** (e.g., "revisit after 30 days")
 - Periodically review accumulated rules; prune those no longer applicable
 
 Every correction makes the system permanently better.
@@ -172,7 +180,7 @@ Consult these files in `/.agents/docs/` as needed:
 | :--- | :--- |
 | `PROGRESS.md` | To understand session state and history. |
 | `PLANS.md` | For recommended conventions to store approved plans/tasks as durable artifacts. |
-| `TASKS.md` | For the current session's atomic todo list (may link to a plan’s `tasks.md`). |
+| `TASKS.md` | For the current session's atomic todo list (link to a plan’s `tasks.md` when applicable). |
 | `LESSONS.md` | To avoid repeating past mistakes. |
 | `GUIDELINES.md` | When creating/updating documentation. |
 | `TECH_STACK.md` | To verify versions and architecture. |
@@ -187,6 +195,7 @@ Consult these files in `/.agents/docs/` as needed:
 | `MEMORY.md` | For long-term architectural decisions and domain glossary. |
 
 ## 10. Completion Checklist
+**Binding Rule**: Do not mark work complete until all checklist items are satisfied or explicitly waived by the user.
 
 ### For Code Changes
 - [ ] Plan explicitly approved.

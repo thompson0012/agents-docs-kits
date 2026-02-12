@@ -75,6 +75,9 @@ It covers precise formats and rules for:
 - If core docs are TEMPLATE, stop and run Template-to-Production before coding (doc updates only).
 - Use risk tiers to decide which docs to read (PRD/TECH_STACK/IMPLEMENTATION_PLAN, then SECURITY/docs map for high-risk).
 - For non-trivial tasks (> 20 lines or > 1 file): write a plan and wait for explicit approval.
+- `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates in a single gate.
+- `SUPER-APPROVED(ALL)` approves plan + doc updates + execution for the current proposal.
+- `SUPER-APPROVED(NULL)` resets to standard approval behavior.
 - Execute in atomic steps and verify (tests/build/manual as applicable).
 - Update docs only via the Documentation Evolution Protocol (propose → approval → update → log).
 - Record session state in PROGRESS and new rules in LESSONS when corrected.
@@ -97,6 +100,12 @@ LEGEND
 {Action}     = action the agent performs
 -->          = next step
 ==>          = “consult /.agents/docs/* as needed” expansion
+
+APPROVAL TOKENS
+---------------
+SUPER-APPROVED(PLAN+DOC) = approve plan + doc updates
+SUPER-APPROVED(ALL)      = approve plan + doc updates + execution
+SUPER-APPROVED(NULL)     = reset to standard approval behavior
 
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -164,13 +173,13 @@ LEGEND
 │ 3) FOR EACH USER TASK: PLAN OR DO TRIVIAL                                     │
 └──────────────────────────────────────────────────────────────────────────────┘
 <Decision?> Is task trivial?  (§4)
-(heuristic: <= 20 lines AND 1 file AND obvious change)
+(trivial = ≤ 20 LOC, 1 file, no new behavior, no security/data changes, no API/DB changes)
         |
         +-- Yes (Trivial Path)
         |     |
         |     v
         |   {Implement minimal change}
-        |   {Verify} (tests/build/manual as applicable)
+  |   {Verify} (tests/build/manual as required)
 |   {Update} [/.agents/docs/PROGRESS.md] (what changed, what’s next)
         |   --> Done
         |
@@ -181,7 +190,7 @@ LEGEND
 │ 4) WRITE THE PLAN (how the agent breaks down work)                             │
 └──────────────────────────────────────────────────────────────────────────────┘
 {Write plan} using [/.agents/docs/GUIDELINES.md] "Plan Template (RECOMMENDED)"
-PLAN should include:
+PLAN MUST include:
   - Goal / Scope / Non-goals
   - Constraints (tools, time, compatibility, risk tier)
   - Assumptions (explicit; tie to PRD/TECH_STACK where relevant)
@@ -216,7 +225,7 @@ PLAN should include:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 5) APPROVAL GATE (no implementation without explicit approval)                │
 └──────────────────────────────────────────────────────────────────────────────┘
-<Decision?> User explicitly approves the plan?  (§4 step 3)
+<Decision?> User explicitly approves the plan OR uses SUPER-APPROVED(PLAN+DOC/ALL)?  (§4 step 3)
         |
         +-- No  --> {STOP} (do not implement)
         |
@@ -293,7 +302,7 @@ Loop per atomic task:
 {Update} [/.agents/docs/PROGRESS.md]
   - Completed / In Progress / Blockers / Notes
 
-{Update if needed} [/.agents/docs/LESSONS.md]
+{Update} [/.agents/docs/LESSONS.md] when the user corrects the agent
   - new patterns / mistakes / prevention rules
 
 {Ensure consistency}

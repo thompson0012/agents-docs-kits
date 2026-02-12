@@ -31,7 +31,7 @@ Status meanings:
 - **Formatting**: Use Markdown with semantic headings (`##`, `###`), bullet lists, and tables to improve readability.
 - **Version Control**: Changes MUST be committed with descriptive, atomic messages.
 - **Traceability**: Statements MUST be grounded in the codebase, requirements, or recorded decisions.
-- **Approval**: Major updates to any document MUST be proposed to the user for explicit approval before implementation.
+- **Approval**: Major updates to any document MUST be proposed to the user for explicit approval before implementation. `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates; `SUPER-APPROVED(ALL)` approves plan + doc updates + execution; `SUPER-APPROVED(NULL)` resets to standard approval behavior.
 - **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/.agents/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
 
 ## Template Filling Protocol (for AI agents)
@@ -48,9 +48,9 @@ When asked to fill any template:
 
 Guidance for maintaining a clean and traceable project history:
 
-- **Atomic Commits**: Each commit should represent a single, logical change.
+- **Atomic Commits**: Each commit MUST represent a single, logical change.
 - **Message Format**: Prefer `type(scope): description` (e.g., `feat(auth): add login form validation`).
-- **PR Hygiene**: Pull requests should include a clear summary of changes and reference relevant tasks or issues.
+- **PR Hygiene**: Pull requests MUST include a clear summary of changes and reference relevant tasks or issues.
 
 ## Document-Specific Guidance
 
@@ -172,7 +172,7 @@ CHANGES MADE:
 When updating any document (per AGENTS.md §5):
 1. Analyze current state and identify necessary changes
 2. Propose using `PROPOSED DOC UPDATE` format (see AGENTS.md §5)
-3. Wait for explicit user approval
+3. Wait for explicit user approval (or `SUPER-APPROVED(PLAN+DOC)` / `SUPER-APPROVED(ALL)` if provided; `SUPER-APPROVED(NULL)` resets to standard)
 4. Update and log summary in PROGRESS.md
 
 #### When to Update Docs (Trigger Checklist)
