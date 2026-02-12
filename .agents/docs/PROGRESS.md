@@ -8,7 +8,7 @@
 
 ## Template (fill this, then delete the example below)
 
-SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL
+SESSION_MODE: STANDARD | AUTO-PILOT
 
 ## Session Summary: <YYYY-MM-DD>
 

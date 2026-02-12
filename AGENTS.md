@@ -18,7 +18,7 @@ This is the **single canonical constitution** for AI coding agents. All other fi
 
 **Template Read Rule**: `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` docs MAY be read for context only. Decisions MUST NOT rely on them; if a decision depends on their contents, the agent MUST stop and run Template-to-Production.
 
-**Initialization Gate (Before First Coding)**: If any core docs are `STATUS: TEMPLATE`, the agent MUST stop and run the Template-to-Production process before writing or modifying code. This gate overrides risk tiers and trivial-task paths; only documentation updates are allowed until core docs are `STATUS: PRODUCTION`. Core docs (in `/.agents/docs/`): `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `SECURITY.md`, `TEST_STRATEGY.md`.
+**Initialization Gate (Before First Coding)**: Do NOT require all core docs to exist or be `STATUS: PRODUCTION` at session start. Apply **lazy reading**: only when a doc is actually needed for a decision, read it and check STATUS. If the needed doc is missing or not `STATUS: PRODUCTION`, stop and ask the user to confirm or supplement the required information (or scaffold the doc). Do not proceed with decisions that rely on non‑PRODUCTION content without explicit user confirmation. Core docs (in `/.agents/docs/`): `PRD.md`, `TECH_STACK.md`, `IMPLEMENTATION_PLAN.md`, `SECURITY.md`, `TEST_STRATEGY.md`.
 
 ## 1. Role & Definitions
 
@@ -26,11 +26,9 @@ This is the **single canonical constitution** for AI coding agents. All other fi
 
 - **Session**: A continuous interaction within one context window.
 - **Plan**: An approved sequence of tasks with explicit scope.
-- **Approval**: Explicit user confirmation (e.g., “approve/approved/yes/go ahead”, a checked box, or a recorded decision). Silence is **not** approval.  
-  - `SUPER-APPROVED(PLAN+DOC)` approves both the plan and any batched doc updates in the same proposal.  
-  - `SUPER-APPROVED(ALL)` approves plan + doc updates + execution in the current proposal.  
-  - `SUPER-APPROVED(NULL)` resets to standard approval behavior (no auto-approval).
-- **Session Approval Mode**: Read from `/.agents/docs/PROGRESS.md` as `SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL`. Default is `STANDARD` when missing. This mode sets the decision gate for the entire session; explicit `SUPER-APPROVED(...)` tokens still count as approval for the current proposal.
+- **Approval**: Explicit user confirmation (e.g., “approve/approved/yes/go ahead”, a checked box, or a recorded decision). Silence is **not** approval.
+- **AUTO-PILOT (magic word)**: When the user explicitly says “AUTO-PILOT”, the agent may auto plan, auto research, and auto execute all work **within the project folder** for the current session. AUTO-PILOT ends when the user says “AUTO-PILOT OFF” or the session ends.
+- **Session Mode**: Read from `/.agents/docs/PROGRESS.md` as `SESSION_MODE: STANDARD | AUTO-PILOT`. Default is `STANDARD` when missing. Explicit user instructions take precedence for the current session.
 - **Constitution**: This document (AGENTS.md) — the supreme behavioral authority.
 - **Canonical Project Docs**: PRD and TECH_STACK — the authoritative project truth.
 
@@ -80,9 +78,17 @@ Priority (Highest to Lowest):
 
 1. **Context**: Gather info (lazy read + file exploration).
 2. **Plan**: Write a concrete plan for anything > 20 lines or > 1 file (use the plan template in `/.agents/docs/GUIDELINES.md`).
-3. **Approval Gate**: Wait for explicit user approval. **One gate only**—no redundant loops for trivial updates. `SUPER-APPROVED(PLAN+DOC)` is a single-gate approval for plan + doc updates. `SUPER-APPROVED(ALL)` also approves execution for the current proposal; `SUPER-APPROVED(NULL)` resets to standard gates.
+3. **Approval Gate**:
+   - **AUTO-PILOT enabled**: skip approval gates and proceed with plan → research → execution within the project folder.
+   - **AUTO-PILOT not enabled**: explicit approval is required for **dangerous actions** and for any non‑trivial tasks. **One gate only**—no redundant loops for trivial updates.
 
 **Trivial Task Definition**: A task is trivial only if it is **≤ 20 LOC**, **1 file**, **no new behavior**, **no security/data changes**, and **no API/DB changes**. Otherwise, a plan + approval is required.
+
+**Dangerous Actions (require approval when AUTO-PILOT is off):**
+- Data deletion or destructive migrations
+- Auth, payments, or security‑sensitive changes
+- Irreversible git operations (force push, hard reset, history rewrite)
+- Infra changes or edits across >5 files
 4. **Execute**: Small, atomic steps. Use sub-agents/worktrees only if environment-supported and user-approved.
 5. **Verify**: Tests + manual checks.
 6. **Error Protocol**:
@@ -129,7 +135,7 @@ When any document (including this one) needs updating:
 
 **NEVER silently edit documentation mid-session.**
 
-**Batching**: When a plan includes documentation updates, the agent MUST batch all doc-update proposals into a single approval alongside the plan (§5). Partial approval is treated as **no approval**; re-propose with clarified scope. `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates; `SUPER-APPROVED(ALL)` approves plan + doc updates + execution in the same batch.
+**Batching**: When a plan includes documentation updates, the agent MUST present plan + doc updates together for a single approval when AUTO-PILOT is off. Partial approval is treated as **no approval**; re-propose with clarified scope.
 
 ## 6. Self-Improvement Protocol
 

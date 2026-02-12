@@ -75,10 +75,9 @@ It covers precise formats and rules for:
 - If core docs are TEMPLATE, stop and run Template-to-Production before coding (doc updates only).
 - Use risk tiers to decide which docs to read (PRD/TECH_STACK/IMPLEMENTATION_PLAN, then SECURITY/docs map for high-risk).
 - For non-trivial tasks (> 20 lines or > 1 file): write a plan and wait for explicit approval.
-- Session gate can be set in `/.agents/docs/PROGRESS.md` via `SESSION_APPROVAL_MODE: STANDARD | PLAN+DOC | ALL`.
-- `SUPER-APPROVED(PLAN+DOC)` approves plan + doc updates in a single gate.
-- `SUPER-APPROVED(ALL)` approves plan + doc updates + execution for the current proposal.
-- `SUPER-APPROVED(NULL)` resets to standard approval behavior.
+- Session mode can be set in `/.agents/docs/PROGRESS.md` via `SESSION_MODE: STANDARD | AUTO-PILOT`.
+- If the user says “AUTO-PILOT”, the agent can auto plan/research/execute within the project folder for the session.
+- If AUTO-PILOT is off, dangerous actions require explicit approval.
 - Execute in atomic steps and verify (tests/build/manual as applicable).
 - Update docs only via the Documentation Evolution Protocol (propose → approval → update → log).
 - Record session state in PROGRESS and new rules in LESSONS when corrected.
@@ -102,12 +101,10 @@ LEGEND
 -->          = next step
 ==>          = “consult /.agents/docs/* as needed” expansion
 
-APPROVAL TOKENS
----------------
-SUPER-APPROVED(PLAN+DOC) = approve plan + doc updates
-SUPER-APPROVED(ALL)      = approve plan + doc updates + execution
-SUPER-APPROVED(NULL)     = reset to standard approval behavior
-SESSION_APPROVAL_MODE    = STANDARD | PLAN+DOC | ALL (set per session in PROGRESS.md)
+SESSION MODE
+------------
+AUTO-PILOT = auto plan/research/execute within the project folder (session-scoped)
+SESSION_MODE = STANDARD | AUTO-PILOT (set per session in PROGRESS.md)
 
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -228,7 +225,7 @@ PLAN MUST include:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 5) APPROVAL GATE (no implementation without explicit approval)                │
 └──────────────────────────────────────────────────────────────────────────────┘
-<Decision?> User explicitly approves the plan OR uses SUPER-APPROVED(PLAN+DOC/ALL)?  (§4 step 3)
+<Decision?> AUTO-PILOT enabled OR user explicitly approves the plan?  (§4 step 3)
         |
         +-- No  --> {STOP} (do not implement)
         |
