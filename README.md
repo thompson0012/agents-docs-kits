@@ -64,7 +64,19 @@ It covers precise formats and rules for:
 - `AGENTS.md` is the constitution (highest priority rules).
 - `/.agents/docs/*` are supporting guides and project docs used as needed.
 - `.agents/docs/PROGRESS.md` carries session state forward.
+- Each doc starts with a **STATUS** header (TEMPLATE / PRODUCTION / EXAMPLES-ONLY).
+- Template-to-Production: after user feedback + clarified goals, the agent updates AGENTS.md + docs via the Documentation Evolution Protocol.
 - If you want durable, linkable plan/task records across sessions, see `.agents/docs/PLANS.md`.
+
+## AI Agent Behavior Summary (when coding in this repo)
+- Always read `AGENTS.md` + `/.agents/docs/PROGRESS.md` first.
+- Respect STATUS headers; only trust `STATUS: PRODUCTION` docs as authoritative.
+- If core docs are TEMPLATE, stop and run Template-to-Production before coding.
+- Use risk tiers to decide which docs to read (PRD/TECH_STACK/IMPLEMENTATION_PLAN, then SECURITY/docs map for high-risk).
+- For non-trivial tasks (> 20 lines or > 1 file): write a plan and wait for explicit approval.
+- Execute in atomic steps and verify (tests/build/manual as applicable).
+- Update docs only via the Documentation Evolution Protocol (propose → approval → update → log).
+- Record session state in PROGRESS and new rules in LESSONS when corrected.
 
 ## AI Agent Activation Flow (ASCII)
 
@@ -106,6 +118,10 @@ LEGEND
   - completion checklist (§10)
 
 {Read} [/.agents/docs/PROGRESS.md]  (always; session carry-over)
+{Check} STATUS headers (TEMPLATE / PRODUCTION / EXAMPLES-ONLY)
+<Decision?> Any core doc still TEMPLATE?
+  +-- Yes --> {STOP} run Template-to-Production (update + approval)
+  +-- No  --> continue
         |
         v
 <Decision?> Any referenced doc missing?  (Missing-Doc Protocol §2)
@@ -186,7 +202,7 @@ PLAN should include:
 
         |
         v
-<Decision?> Does plan include doc changes?
+<Decision?> Does plan include doc changes OR STATUS needs promotion?
         |
         +-- No  --> proceed
         |
@@ -250,7 +266,7 @@ Loop per atomic task:
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ 7) DOCUMENTATION UPDATES (NOT AUTO; proposal + approval required)             │
 └──────────────────────────────────────────────────────────────────────────────┘
-<Decision?> Do any docs need updating due to work done?
+<Decision?> Do any docs need updating due to work done OR Template-to-Production trigger?
         |
         +-- No  --> continue
         |
@@ -280,6 +296,7 @@ Loop per atomic task:
 
 {Ensure consistency}
   - doc map references still correct
+  - STATUS headers reflect reality (TEMPLATE vs PRODUCTION)
   - no supporting doc overrides AGENTS.md (Conflict Ladder §3)
 
 

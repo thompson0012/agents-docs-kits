@@ -20,6 +20,11 @@ Status meanings:
 - PRODUCTION: validated and updated after Template-to-Production Rule
 - EXAMPLES-ONLY: fictional examples; delete before real use
 
+**Status-Driven Behavior Rules**
+- Only `STATUS: PRODUCTION` docs are authoritative.
+- `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` must be updated (or explicitly ignored) before decisions rely on them.
+- Before first coding, confirm core docs are `STATUS: PRODUCTION`: PRD, TECH_STACK, IMPLEMENTATION_PLAN, SECURITY, TEST_STRATEGY.
+
 ## General Principles
 
 - **Conciseness**: Documents should be concise yet complete, aiming for clarity over length.
