@@ -1,9 +1,8 @@
 # BACKEND_STRUCTURE.md — Backend Architecture & API Patterns
 
-> **TEMPLATE**: The patterns and code examples below are illustrative examples only. Adapt to your actual project's framework and conventions before use.
-
-> **EXAMPLE ASSUMPTIONS**: Examples use a TypeScript/Express-style controller and schema validation as illustration.
-> If your backend stack differs, keep the architecture intent (separation of concerns, validation, secure defaults) but rewrite examples to match your framework/runtime.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document provides deeper, example-heavy rules for backend development, focusing on maintainable API patterns, data flow, and security.
 

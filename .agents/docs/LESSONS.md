@@ -1,6 +1,8 @@
 # LESSONS.md — Self-Improvement & Operational Log
 
-> **TEMPLATE**: The patterns below are illustrative examples only. Replace with actual lessons learned from your project before use.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document tracks learned lessons, avoided mistakes, and operational optimizations to prevent repeat errors and improve agent performance over time.
 

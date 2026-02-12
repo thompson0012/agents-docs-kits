@@ -4,6 +4,10 @@
 <!-- Version: 1.1.0 | Last updated: 2026-02-09 -->
 <!-- Changelog: See /.agents/docs/LESSONS.md for rule change history -->
 
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
+
 This is the **single canonical constitution** for AI coding agents. All other files under `/.agents/docs/` are supporting guides.
 
 **Template Mode (this repo)**: This repository is a ready-to-use template system. All content under `/.agents/docs/` is **generic** and must be treated as **templates**. Any example content must be explicitly labeled **“Example (fictional, delete before use)”**; do not treat examples as real project history.

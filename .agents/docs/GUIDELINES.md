@@ -1,8 +1,24 @@
 # GUIDELINES.md — How to Write & Maintain Project Documentation
 
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
+
 **Purpose**: This document provides supporting guidance for AI agents on how to create, update, and structure the key documents referenced in `AGENTS.md`. 
 
 *Note: This is a supporting guide. Canonical rules reside in `AGENTS.md`.*
+
+## Status Header (Required)
+Every doc must include a STATUS header:
+
+> **STATUS**: TEMPLATE | PRODUCTION | EXAMPLES-ONLY
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: <YYYY-MM-DD or Unknown>
+
+Status meanings:
+- TEMPLATE: generic template, not project-specific
+- PRODUCTION: validated and updated after Template-to-Production Rule
+- EXAMPLES-ONLY: fictional examples; delete before real use
 
 ## General Principles
 

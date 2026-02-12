@@ -1,6 +1,8 @@
 # DESIGN_SYSTEM.md — Visual & Interaction Standards
 
-> **TEMPLATE**: The tokens, components, and guidelines below are illustrative examples only. Replace with actual design system values before use.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document defines the visual and interaction standards for the project, ensuring consistency and high-quality UI/UX across all components.
 

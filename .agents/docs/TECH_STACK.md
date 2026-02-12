@@ -1,5 +1,9 @@
 # TECH_STACK.md — Approved Technology Stack
 
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: Unknown
+
 **Purpose**: This document tracks the versions and tools approved for use in the project. 
 
 **Discipline**: Adhere to an "unknown until confirmed" policy. Do not assume the existence of tools or libraries unless they are explicitly listed here.
@@ -39,4 +43,3 @@
 
 - (Example): Libraries with known critical vulnerabilities or those that have been officially deprecated.
 - (Example): Tools that do not align with the project's performance or accessibility goals.
-

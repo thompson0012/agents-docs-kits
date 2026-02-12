@@ -1,5 +1,9 @@
 # SECURITY.md — Security Guidance for AI Agents
 
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
+
 **Purpose**: This document provides supporting guidance for security-conscious development. It follows defense-in-depth principles and complements the security rules defined in the root `AGENTS.md`.
 
 ## Defense-in-Depth Principles

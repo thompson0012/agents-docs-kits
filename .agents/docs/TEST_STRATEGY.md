@@ -1,6 +1,10 @@
 # TEST_STRATEGY.md — Testing Standards & Strategy
 
-*Note: This is a supporting guide. Core testing rules reside in `AGENTS.md` §4 (Error Protocol) and §7 (Engineering & Coding Standards — Test Default).*
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
+
+*Note: This is a supporting guide. Core testing rules reside in `AGENTS.md` §4 (Error Protocol) and §7 (Engineering & Coding Standards — Test Default).* 
 
 ## Test-First for Bugs (Per AGENTS.md §4)
 

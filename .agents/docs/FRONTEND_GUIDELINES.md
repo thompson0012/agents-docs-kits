@@ -1,9 +1,8 @@
 # FRONTEND_GUIDELINES.md — Frontend Development Standards
 
-> **TEMPLATE**: The patterns and code examples below are illustrative examples only. Adapt to your actual project's framework and conventions before use.
-
-> **EXAMPLE ASSUMPTIONS**: This document uses React + hooks syntax (and TypeScript-style examples) as illustration.
-> If your frontend stack differs, keep the intent (accessibility, maintainability, performance) but rewrite examples to match your framework.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document provides deeper, example-heavy rules for frontend development. It focuses on maintainable patterns, accessibility, and performance.
 

@@ -1,9 +1,8 @@
 # TASKS.md — Project & Session Task List
 
-> **TEMPLATE**: The tasks below are illustrative examples only. Replace with actual project tasks before use.
-
-> **EXAMPLE ASSUMPTIONS**: The sample tasks reference an “Authentication Module” and specific implementation details (e.g., Argon2).
-> Replace with your real backlog and ensure tasks align with your `PRD.md`, `IMPLEMENTATION_PLAN.md`, and `TECH_STACK.md`.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document provides a concrete, actionable checklist of tasks grouped by priority or session. It should be used to track atomic progress and ensure no requirements are missed.
 

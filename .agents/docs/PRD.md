@@ -1,6 +1,8 @@
 # PRD.md — Product Requirements Document
 
-> **TEMPLATE**: The requirements, personas, and features below are illustrative examples only. Replace with actual product requirements before use.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: Unknown
 
 **Purpose**: This document serves as the single source of truth for the product's vision, goals, and requirements. It should be used to align all stakeholders and guide the technical implementation.
 

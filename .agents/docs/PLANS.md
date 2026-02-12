@@ -1,5 +1,9 @@
 # PLANS.md — Durable Plan & Task Records
 
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
+
 **Purpose**: Provide a lightweight, version-controlled way to keep **approved plans**, their **task breakdowns**, and key outputs **traceable across sessions**.
 
 *Note: This is a supporting guide. Canonical rules reside in `AGENTS.md`.*

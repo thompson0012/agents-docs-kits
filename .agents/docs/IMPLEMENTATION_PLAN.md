@@ -1,6 +1,8 @@
 # IMPLEMENTATION_PLAN.md — Technical Roadmap
 
-> **TEMPLATE**: The milestones, phases, and decisions below are illustrative examples only. Replace with actual project plans before use.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document tracks the phased execution of the project. It provides a locked roadmap of tasks, architectural decisions, and verification steps.
 

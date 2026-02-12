@@ -1,9 +1,8 @@
 # MEMORY.md — Long-Term Architectural & Decision Log
 
-> **TEMPLATE**: The entries below are illustrative examples only. Replace with actual project decisions, patterns, and context before use.
-
-> **EXAMPLE ASSUMPTIONS**: Example entries mention specific architectures and technologies (e.g., microservices, React hooks, PostgreSQL).
-> Treat them as placeholders; replace with your project’s real decisions and keep this file focused on stable, long-lived context.
+> **STATUS**: TEMPLATE
+> **OWNER**: Human (final authority) / AI (maintenance)
+> **LAST REVIEWED**: 2026-02-12
 
 **Purpose**: This document tracks the stable, rarely changing knowledge of the project. It serves as the long-term memory for architectural decisions, adopted patterns, and historical context.
 
