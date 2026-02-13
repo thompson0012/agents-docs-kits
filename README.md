@@ -49,8 +49,8 @@ It covers precise formats and rules for:
 - LESSONS.md (learned lessons & anti-patterns)
 - PROGRESS.md
 - TECH_STACK.md
-- DESIGN_SYSTEM.md
-- APP_FLOW.md
+- DESIGN_SYSTEM.md (consolidated into FRONTEND_GUIDELINES.md)
+- APP_FLOW.md (consolidated into PRD.md)
 - FRONTEND_GUIDELINES.md / BACKEND_STRUCTURE.md
 - MEMORY.md (long-term architectural decisions)
 - TASKS.md
@@ -204,8 +204,8 @@ PLAN MUST include:
   - [/.agents/docs/TECH_STACK.md]          (what tools/versions are allowed)
   - [/.agents/docs/IMPLEMENTATION_PLAN.md] (milestones, dependencies, verification)
   - [/.agents/docs/TEST_STRATEGY.md]       (testing patterns; bug reproduction)
-  - [/.agents/docs/APP_FLOW.md]            (user journeys + edge cases)
-  - [/.agents/docs/DESIGN_SYSTEM.md]       (UI tokens + accessibility expectations)
+- [/.agents/docs/PRD.md]                 (user journeys + edge cases)
+- [/.agents/docs/FRONTEND_GUIDELINES.md] (UI tokens + accessibility expectations)
   - [/.agents/docs/FRONTEND_GUIDELINES.md] (frontend patterns/perf/accessibility)
   - [/.agents/docs/BACKEND_STRUCTURE.md]   (backend layering/security/data flow)
   - [/.agents/docs/MEMORY.md]              (stable architectural decisions/glossary)
@@ -317,8 +317,8 @@ QUICK “WHICH DOC DO I USE?” MAP
 - Need to decide WHAT to build?            -> [/.agents/docs/PRD.md]
 - Need to confirm allowed tools/versions?  -> [/.agents/docs/TECH_STACK.md]
 - Need the execution roadmap?              -> [/.agents/docs/IMPLEMENTATION_PLAN.md]
-- Need user journey + error handling UX?   -> [/.agents/docs/APP_FLOW.md]
-- Need UI tokens/accessibility rules?      -> [/.agents/docs/DESIGN_SYSTEM.md]
+- Need user journey + error handling UX?   -> [/.agents/docs/PRD.md]
+- Need UI tokens/accessibility rules?      -> [/.agents/docs/FRONTEND_GUIDELINES.md]
 - Need frontend patterns/perf?             -> [/.agents/docs/FRONTEND_GUIDELINES.md]
 - Need backend layering/security patterns? -> [/.agents/docs/BACKEND_STRUCTURE.md]
 - Need test expectations?                 -> [/.agents/docs/TEST_STRATEGY.md]

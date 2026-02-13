@@ -63,8 +63,8 @@ Guidance for maintaining a clean and traceable project history:
 - **Example**: "Finished API integration for user profiles; blocking on database migration script."
 
 ### PRD.md (Product Requirements)
-- **Purpose**: Single source of truth for product goals and features.
-- **Structure Recommendation**: Overview, Goals/Metrics, Personas, Features (MoSCoW), and Non-Functional Requirements.
+- **Purpose**: Single source of truth for product goals and features, including user journeys and edge cases.
+- **Structure Recommendation**: Overview, Goals/Metrics, Personas, Features (MoSCoW), Non-Functional Requirements, User Journeys & Edge Cases, Flow Diagrams (optional).
 - **Example Goal**: "Reduce page load time by 30% to improve user retention."
 
 ### IMPLEMENTATION_PLAN.md
@@ -99,6 +99,8 @@ Before a doc is considered “ready,” ensure these sections exist:
 - MoSCoW features
 - Non-functional requirements
 - Out of scope
+- User journeys & edge cases
+- Flow diagrams (optional)
 
 **TECH_STACK.md**
 - Tool list with versions
@@ -128,6 +130,11 @@ Before a doc is considered “ready,” ensure these sections exist:
 - Unreleased
 - Version entries (date or version)
 - Added / Changed / Fixed sections
+
+**FRONTEND_GUIDELINES.md**
+- UI tokens
+- Components
+- Motion & accessibility
 
 ## Communication Standards
 

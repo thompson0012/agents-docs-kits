@@ -42,6 +42,7 @@ SESSION_MODE: STANDARD | AUTO-PILOT
 - [x] Updated AGENTS.md escalation criteria to require human assistance when out of scope.
 - [x] Added Git Guide to enforce atomic commits with explicit approval.
 - [x] Logged the new escalation rule in LESSONS.md.
+- [x] Consolidated APP_FLOW into PRD and DESIGN_SYSTEM into FRONTEND_GUIDELINES.
 
 ## Example (fictional, delete before use)
 
