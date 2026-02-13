@@ -202,8 +202,6 @@ Consult these files in `/.agents/docs/` as needed:
 | `SECURITY.md` | For security patterns and defense-in-depth guidance (§2 High-risk tasks). |
 | `IMPLEMENTATION_PLAN.md` | For roadmap, milestones, architecture diagrams (§2 Normal+ tasks). |
 | `TEST_STRATEGY.md` | For testing standards, coverage targets, and test organization. |
-| `APP_FLOW.md` | Consolidated into `PRD.md` (user journeys, edge cases, diagrams). |
-| `DESIGN_SYSTEM.md` | Consolidated into `FRONTEND_GUIDELINES.md` (tokens, components, accessibility). |
 | `FRONTEND_GUIDELINES.md` | For frontend patterns, component structure, and accessibility standards. |
 | `BACKEND_STRUCTURE.md` | For backend architecture, API patterns, and service organization. |
 | `MEMORY.md` | For long-term architectural decisions and domain glossary. |

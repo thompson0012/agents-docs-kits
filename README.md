@@ -49,8 +49,6 @@ It covers precise formats and rules for:
 - LESSONS.md (learned lessons & anti-patterns)
 - PROGRESS.md
 - TECH_STACK.md
-- DESIGN_SYSTEM.md (consolidated into FRONTEND_GUIDELINES.md)
-- APP_FLOW.md (consolidated into PRD.md)
 - FRONTEND_GUIDELINES.md / BACKEND_STRUCTURE.md
 - MEMORY.md (long-term architectural decisions)
 - TASKS.md
