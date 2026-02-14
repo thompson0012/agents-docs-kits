@@ -5,31 +5,66 @@
 
 Frontend patterns and standards.
 
+> **Guide**: See [GUIDELINES.md Part 3: Frontend Documentation](/.agents/docs/GUIDELINES.md#frontend-documentation) for the teaching guide on how to write this.
+
 ---
 
-## Patterns
+## Quick Start
 
-- **[Pattern]**: [Description]
-- **[Pattern]**: [Description]
+**To fill this template:**
+1. Read GUIDELINES.md "How to write it" section for Frontend
+2. Examine 3-5 existing components in your codebase
+3. Extract patterns and document with examples
+
+---
+
+## Overview
+
+[One sentence what this frontend is]
+
+---
+
+## Component Patterns
+
+### 1. [Pattern Name]
+**What**: [Description]
+**Why**: [Rationale]
+**Example**:
+```typescript
+[Component example]
+```
+
+---
 
 ## Do / Don't
 
-| Do | Don't |
-|----|-------|
+| Do ✅ | Don't ❌ |
+|-------|----------|
 | [Good practice] | [Bad practice] |
 
-## Conventions
+---
 
-- **Files**: [Naming pattern]
-- **Components**: [Structure]
-- **Styles**: [Approach]
+## File Organization
 
-## Accessibility
+- **Components**: [Pattern]
+- **Styles**: [Pattern]
+- **Tests**: [Pattern]
 
-- [Requirement]
-- [Requirement]
+---
 
-## Performance
+## Accessibility Checklist
 
-- [Target]
-- [Target]
+Every component:
+- [ ] Semantic HTML?
+- [ ] Labels/aria attributes?
+- [ ] Keyboard accessible?
+- [ ] Focus states visible?
+- [ ] 4.5:1 contrast ratio?
+
+---
+
+## Performance Targets
+
+- First Contentful Paint: [target]
+- Time to Interactive: [target]
+- Bundle size: [target]

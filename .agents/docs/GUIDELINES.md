@@ -1,110 +1,482 @@
-# GUIDELINES.md
+# GUIDELINES.md — How to Write & Think Like an AI Agent
 
 > **Status**: TEMPLATE  
-> **Purpose**: Documentation writing standards
+> **Purpose**: Teaching guide for AI documentation and code thinking
 
-How to create and maintain project documentation.
+This document teaches **how to think** and **how to write** effective documentation. Follow it sequentially like a tutorial, or jump to specific sections as needed.
 
 ---
 
-## 1. Document Header (Required)
+## Part 1: The AI Mindset
 
-Every doc must start with:
+### How AI Should Think
 
-```markdown
-> **Status**: TEMPLATE | PRODUCTION | EXAMPLES-ONLY
-> **Last Updated**: YYYY-MM-DD
-
-Brief description of document purpose.
+**1. Evidence First, Inference Second**
+```
+❌ Bad: "The API probably uses REST"
+✅ Good: "The API uses REST (evidenced by routes in /src/routes/*.ts)"
 ```
 
-**Status meanings**:
-- `TEMPLATE`: Generic, not project-specific (default)
-- `PRODUCTION`: Validated, authoritative
-- `EXAMPLES-ONLY`: Fictional examples to remove
+Always ground claims in:
+- Code you can see (file contents, structure)
+- Explicit user statements
+- Project documents marked `STATUS: PRODUCTION`
 
----
-
-## 2. Writing Standards
-
-- **Concise**: Clear over complete
-- **Scannable**: Use tables, lists, and headings
-- **Evidence-based**: Derive from code or user input
-- **Assumptions labeled**: Mark inferences clearly
-
----
-
-## 3. Plan Template
-
-Use when proposing non-trivial work:
-
-```markdown
-## Plan: [Title]
-
-**Goal**: [What and why]
-
-**Scope**:
-- In: [What's included]
-- Out: [What's excluded]
-
-**Tasks**:
-1. [ ] [Task] — Verification: [how to confirm]
-2. [ ] [Task] — Verification: [how to confirm]
-
-**Risks**: [What could go wrong]
-
-**Rollback**: [How to recover]
+**2. Explicit Over Implicit**
+```
+❌ Bad: "Use the standard pattern"
+✅ Good: "Use the repository pattern (see UserRepository in src/repos/)"
 ```
 
----
+Name the specific thing. Don't assume shared context.
 
-## 4. Update Protocol
+**3. Questions Over Assumptions**
+```
+❌ Bad: (implements based on guess)
+✅ Good: 
+ASSUMPTIONS:
+- This uses PostgreSQL (correct if wrong)
+- Auth is JWT-based (confirm?)
+```
 
-When docs need changing:
-
-1. **Propose**:
-   ```markdown
-   PROPOSED UPDATE to [filename]:
-   
-   OLD:
-   [exact text]
-   
-   NEW:
-   [proposed text]
-   
-   REASON: [why]
-   ```
-
-2. **Wait**: For explicit approval
-3. **Apply**: Make the change
-4. **Log**: Record in LESSONS.md
+State what you're assuming so it can be corrected.
 
 ---
 
-## 5. Template Reference
+## Part 2: The Writing Process
 
-| File | Contains | Fill With |
-|------|----------|-----------|
-| **PRD.md** | Product requirements | Goals, features, user journeys |
-| **TECH_STACK.md** | Technology choices | Tools, versions, constraints |
-| **PROGRESS.md** | Session state | Completed tasks, blockers |
-| **LESSONS.md** | Learned patterns | Mistakes and prevention rules |
-| **FRONTEND_GUIDELINES.md** | Frontend patterns | UI conventions, accessibility |
-| **BACKEND_STRUCTURE.md** | Backend patterns | API conventions, data flow |
-| **MEMORY.md** | Decisions | ADRs, glossary, history |
+### Step 1: Before You Write — Gather Evidence
+
+**Ask yourself:**
+1. What does the code actually show? (Use grep, file reads)
+2. What has the user explicitly said?
+3. What do PRODUCTION-status docs tell me?
+4. What am I uncertain about?
+
+**Output format:**
+```markdown
+EVIDENCE GATHERED:
+- [fact]: [source]
+- [fact]: [source]
+
+UNCERTAINTIES:
+- [question]: [impact if wrong]
+```
+
+### Step 2: Structure Your Content
+
+**Every document needs:**
+
+| Section | Purpose | Length |
+|---------|---------|--------|
+| **Context** | Why this exists | 1-2 sentences |
+| **Key Points** | What matters most | 3-5 bullets |
+| **Details** | Supporting info | As needed |
+| **Next Steps** | What happens now | Bullet list |
+
+**Example — Good Structure:**
+```markdown
+# API Authentication
+
+Context: User login and token management for the REST API.
+
+Key Points:
+- JWT tokens with 24h expiry
+- Refresh tokens stored in httpOnly cookies
+- Rate limiting: 5 attempts per 15 minutes
+
+Details:
+[Implementation specifics...]
+
+Next Steps:
+- [ ] Implement refresh endpoint
+- [ ] Add rate limiting middleware
+```
+
+**Example — Bad Structure:**
+```markdown
+# Auth
+
+Authentication is important for security. We use tokens.
+There are many types of tokens. JSON Web Tokens are popular.
+They were invented in 2010 and are used by many companies...
+```
+*(No clear point, buried info, no action items)*
+
+### Step 3: Write for Scannability
+
+**Use visual hierarchy:**
+```markdown
+## Major Topic
+
+### Sub-topic
+
+Key insight here.
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| Option A | Fast | Complex |
+| Option B | Simple | Slow |
+
+**Decision**: Use Option A because [reason].
+```
+
+**Guidelines:**
+- Max 3 lines per paragraph
+- Use tables for comparisons
+- Bold the conclusion/decision
+- Code blocks for examples
+
+### Step 4: Label Uncertainty
+
+**When you're inferring:**
+```markdown
+ASSUMPTION: This uses React hooks (inferred from package.json).
+CONFIRM: Is this assumption correct?
+```
+
+**When content is example/fictional:**
+```markdown
+> **EXAMPLE ONLY**: The values below are fictional.
+> Replace with real project data.
+```
+
+### Step 5: Review Before Saving
+
+**Checklist:**
+- [ ] Can someone understand this without asking me questions?
+- [ ] Are all claims tied to evidence?
+- [ ] Are uncertainties labeled?
+- [ ] Is the next action clear?
+- [ ] Would I understand this in 6 months?
 
 ---
 
-## 6. Quick Reference
+## Part 3: Domain-Specific Guides
 
-**Before work**:
+### Backend Documentation
+
+**What to document:**
+
+```markdown
+# Backend Architecture — [Project Name]
+
+## Overview
+[One sentence: what this backend does]
+
+## Key Patterns
+
+### 1. Layer Structure
+```
+/src
+  /routes        # HTTP layer — validates input, calls services
+  /services      # Business logic — no HTTP, no DB directly
+  /repositories  # Data access — SQL/queries only
+  /models        # Types/schemas
+```
+
+**Why**: Separation allows testing business logic without HTTP/DB.
+
+### 2. API Conventions
+
+**Routes:**
+- Use plural nouns: `/users`, `/projects`
+- Actions via HTTP methods, not URLs:
+  - `POST /users` (create)
+  - `GET /users/:id` (read)
+  - `PUT /users/:id` (update)
+  - `DELETE /users/:id` (delete)
+
+**Response Format:**
+```json
+{
+  "data": { ... },
+  "error": null | { "code": "...", "message": "..." }
+}
+```
+
+### 3. Error Handling
+
+**Do:**
+```typescript
+// Service layer throws domain errors
+if (!user) throw new NotFoundError('User not found');
+
+// Route layer maps to HTTP status
+catch (e) {
+  if (e instanceof NotFoundError) return res.status(404).json(...);
+}
+```
+
+**Don't:**
+```typescript
+// Mix HTTP and business logic
+if (!user) return res.status(404).json(...); // ❌ in service
+```
+
+### 4. Security Checklist
+
+Every endpoint must consider:
+- [ ] Authentication required?
+- [ ] Authorization (who can access)?
+- [ ] Input validation (schema)?
+- [ ] Rate limiting?
+- [ ] SQL injection prevention (parameterized queries)?
+```
+
+**How to write it:**
+1. Read 3-5 existing files in each layer
+2. Extract the common patterns
+3. Document the pattern + the "why"
+4. Include one concrete example per pattern
+
+---
+
+### Frontend Documentation
+
+**What to document:**
+
+```markdown
+# Frontend Architecture — [Project Name]
+
+## Overview
+[One sentence: what this frontend is]
+
+## Component Patterns
+
+### 1. File Organization
+```
+/components
+  /Button
+    Button.tsx        # Component
+    Button.test.tsx   # Tests (co-located)
+    Button.module.css # Styles (co-located)
+```
+
+**Why**: Finding related files is instant.
+
+### 2. Component Structure
+
+**Template:**
+```typescript
+// 1. Imports (external first, internal second)
+import React from 'react';
+import { Button } from './Button';
+
+// 2. Types
+interface Props {
+  title: string;
+  onClick: () => void;
+}
+
+// 3. Component
+export function Card({ title, onClick }: Props) {
+  // State
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Effects
+  useEffect(() => { ... }, []);
+  
+  // Render
+  return (...);
+}
+```
+
+### 3. Styling Approach
+
+**Use CSS Modules:**
+```typescript
+import styles from './Button.module.css';
+
+<button className={styles.primary}>...</button>
+```
+
+**Naming:**
+- `.container` — outer wrapper
+- `.item` — repeated elements
+- `.active`, `.disabled` — states
+
+### 4. Accessibility Requirements
+
+Every component must:
+- [ ] Have semantic HTML (`<button>` not `<div onclick>`)
+- [ ] Include labels (`aria-label` if no visible text)
+- [ ] Support keyboard navigation
+- [ ] Show focus states
+- [ ] Maintain 4.5:1 contrast ratio
+
+**Example:**
+```tsx
+// Good
+<button 
+  onClick={handleClick}
+  aria-label="Close dialog"
+  className={styles.closeBtn}
+>
+  ×
+</button>
+
+// Bad
+<div onClick={handleClick}>×</div> // ❌ Not keyboard accessible
+```
+
+### 5. Performance Targets
+
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3s
+- Component bundle: < 200KB gzipped
+
+**Patterns:**
+- Lazy load routes: `const Admin = lazy(() => import('./Admin'))`
+- Code split large libraries
+- Use `React.memo()` for expensive renders
+```
+
+**How to write it:**
+1. Look at 3-5 existing components
+2. Identify the consistent structure
+3. Document as "pattern + example"
+4. Include the "why" for each rule
+
+---
+
+## Part 4: Document Templates
+
+### PROGRESS.md — Session State
+
+**Purpose:** Lightweight handoff between sessions.
+
+```markdown
+# Session Log
+
+## Current: [Date]
+**Focus**: [What we're working on]
+**Status**: [In progress / Blocked / Complete]
+
+### Completed
+- [x] [Task] — [Brief result]
+
+### In Progress
+- [ ] [Task] — [Current status]
+
+### Blockers
+- [Issue] — [What's needed to unblock]
+
+### Next Session
+- [Priority task]
+- [Priority task]
+```
+
+**When to update:** End of every session.
+**How long:** 5 minutes max. Brief is better.
+
+---
+
+### PRD.md — Product Requirements
+
+**Purpose:** What we're building and why.
+
+```markdown
+# [Feature Name]
+
+## Problem
+[Current pain point — 1-2 sentences]
+
+## Solution
+[What we're building — 1-2 sentences]
+
+## Success Metrics
+- [Metric]: [Target]
+
+## Requirements
+
+### Must Have
+- [ ] [Requirement]
+
+### Should Have
+- [ ] [Requirement]
+
+### Won't Have (Now)
+- [ ] [Out of scope item]
+
+## User Flow
+1. [Step 1]
+2. [Step 2]
+```
+
+**Key rule:** Every requirement ties to the Problem or Solution.
+
+---
+
+### TECH_STACK.md — Technology Choices
+
+**Purpose:** What we use and why.
+
+```markdown
+# Technology Stack
+
+## Runtime
+- **Node.js** v20 (LTS until 2026-04)
+
+## Core Dependencies
+| Package | Version | Purpose | Locked |
+|---------|---------|---------|--------|
+| Next.js | 14.x | Framework | 2024-01-15 |
+| Prisma  | 5.x | ORM | 2024-01-15 |
+
+## Constraints
+- **Database**: PostgreSQL 15+
+- **Browser Support**: Last 2 versions
+- **Node Version**: >= 20.0.0
+
+## Prohibited
+- ❌ Lodash (use native)
+- ❌ Moment.js (use date-fns)
+```
+
+**When to lock:** After any significant change. Date-stamp it.
+
+---
+
+## Part 5: Quality Checklist
+
+### Before Submitting Any Document
+
+**Clarity:**
+- [ ] First paragraph explains why this exists
+- [ ] Every claim has a source or is labeled ASSUMPTION
+- [ ] Examples are labeled EXAMPLE if fictional
+
+**Completeness:**
+- [ ] Next actions are listed
+- [ ] Links to related docs work
+- [ ] Status header is correct (TEMPLATE/PRODUCTION)
+
+**Maintainability:**
+- [ ] Scannable (headings, tables, bullets)
+- [ ] No paragraphs > 3 lines
+- [ ] Would make sense to future reader
+
+---
+
+## Quick Reference
+
+**Document Status:**
+- `TEMPLATE` — Generic, fill with project info
+- `PRODUCTION` — Validated, treat as authoritative
+- `EXAMPLES-ONLY` — Fictional, delete before use
+
+**Update Process:**
+1. Propose with OLD/NEW/REASON format
+2. Wait for approval
+3. Apply change
+4. Log in LESSONS.md
+
+**Communication Patterns:**
 ```markdown
 ASSUMPTIONS:
-- [Assumption to verify]
-```
+- [assumption to verify]
 
-**After work**:
-```markdown
 CHANGES:
 - [file]: [what changed and why]
 ```

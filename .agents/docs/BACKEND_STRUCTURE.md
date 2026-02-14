@@ -5,31 +5,63 @@
 
 Backend architecture and API patterns.
 
+> **Guide**: See [GUIDELINES.md Part 3: Backend Documentation](/.agents/docs/GUIDELINES.md#backend-documentation) for the teaching guide on how to write this.
+
 ---
 
-## Architecture
+## Quick Start
 
-- **[Pattern]**: [Description]
-- **[Pattern]**: [Description]
+**To fill this template:**
+1. Read GUIDELINES.md "How to write it" section for Backend
+2. Examine 3-5 files in each layer of your actual codebase
+3. Extract patterns and document with examples
+
+---
+
+## Architecture Overview
+
+[One sentence what this backend does]
+
+### Layer Structure
+```
+[Your actual structure here]
+```
+
+---
+
+## Patterns
+
+### 1. [Pattern Name]
+**What**: [Description]
+**Why**: [Rationale]
+**Example**:
+```typescript
+[Code example]
+```
+
+---
 
 ## Do / Don't
 
-| Do | Don't |
-|----|-------|
+| Do ✅ | Don't ❌ |
+|-------|----------|
 | [Good practice] | [Bad practice] |
 
-## Conventions
-
-- **Routes**: [Pattern]
-- **Controllers**: [Pattern]
-- **Services**: [Pattern]
+---
 
 ## API Standards
 
-- [Standard]
-- [Standard]
+- **Routes**: [Pattern]
+- **Request/Response**: [Format]
+- **Error Handling**: [Approach]
 
-## Security
+---
 
-- [Requirement]
-- [Requirement]
+## Security Checklist
+
+Every endpoint:
+- [ ] Authentication required?
+- [ ] Authorization checked?
+- [ ] Input validated?
+- [ ] Rate limited?
+- [ ] SQL injection safe?
