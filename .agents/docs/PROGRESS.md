@@ -1,127 +1,42 @@
-# PROGRESS.md — Session & Project State Log
+# PROGRESS.md
 
-> **STATUS**: TEMPLATE
-> **OWNER**: Human (final authority) / AI (maintenance)
-> **LAST REVIEWED**: 2026-02-12
+> **Status**: TEMPLATE  
+> **Last Updated**: YYYY-MM-DD
 
-**Purpose**: This document provides a lightweight way to track progress and carry state between sessions. It should be updated at the end of every session.
-
-## Template (fill this, then delete the example below)
-
-SESSION_MODE: STANDARD | AUTO-PILOT
-
-## Session Summary: <YYYY-MM-DD>
-
-**Focus**: <short focus>
-
-**Active Plan (optional)**:
-- Link: /.agents/docs/plans/YYYY-MM-DD_short-title/
-
-## Completed This Session
-- [ ] <completed item>
-
-## Still In Progress / Next Up
-- [ ] <next item>
-
-## Blockers / Open Questions
-- <blocker or question>
-
-## Quick Notes / Metrics (optional)
-- <note>
-
-## Rollup (weekly/monthly, optional)
-- **Key outcomes**:
-- **Next up**:
-- **Risks/blockers**:
-
-## Change Log (Consolidated)
-
-### Unreleased
-
-- **Added**: <entry>
-- **Changed**: <entry>
-- **Fixed**: <entry>
-
-### <YYYY-MM-DD or vX.Y.Z>
-
-- **Added**: <entry>
-- **Changed**: <entry>
-- **Fixed**: <entry>
-
-## Session Summary: 2026-02-13
-
-**Focus**: Governance updates (escalation + git guide)
-
-## Completed This Session
-- [x] Updated AGENTS.md escalation criteria to require human assistance when out of scope.
-- [x] Added Git Guide to enforce atomic commits with explicit approval.
-- [x] Logged the new escalation rule in LESSONS.md.
-- [x] Consolidated APP_FLOW into PRD and DESIGN_SYSTEM into FRONTEND_GUIDELINES.
-
-## Example (fictional, delete before use)
-
-## Session Summary: February 10, 2026
-
-**Focus**: Documentation governance updates
-
-## Completed This Session
-
-- [x] Added explicit documentation self-maintenance requirement to `AGENTS.md` and `/.agents/docs/GUIDELINES.md`.
-- [x] Logged approval-loop avoidance lesson in `/.agents/docs/LESSONS.md`.
-- [x] Updated README section-number references to match AGENTS.md.
-
-## Still In Progress / Next Up
-
-- [x] Update `AGENTS.md` §5 to address approval-loop stop conditions.
-
-## Blockers / Open Questions
-
-- None.
-
-## Session Summary: February 7, 2026
-
-**Focus**: Foundation - Authentication Implementation
-
-**Active Plan (optional)**:
-- Link: /.agents/docs/plans/YYYY-MM-DD_short-title/
-
-## Completed This Session
-
-- [x] Initialized project repository with basic folder structure.
-- [x] Implemented `POST /auth/register` endpoint with password hashing.
-- [x] Added unit tests for user registration flow.
-- [x] Verified database schema for `users` table.
-
-## Still In Progress / Next Up
-
-- [ ] Implement `POST /auth/login` and JWT generation.
-- [ ] Create basic React login form and integrate with the API.
-- [ ] Implement logout functionality.
-
-## Blockers / Open Questions
-
-- **Blocker**: Waiting for finalized security requirements regarding password complexity rules.
-- **Question**: Should we support social login (OAuth) in the initial MVP?
-
-## Quick Notes / Metrics
-
-- **API Performance**: Registration endpoint averages 150ms latency.
-- **Test Coverage**: Current coverage is 85% for the authentication module.
-- **Decision**: Decided to use Argon2 for password hashing over bcrypt for better security.
+Session state and project progress.
 
 ---
 
-## Session Summary: February 6, 2026
+**Mode**: STANDARD | AUTO-PILOT  
+**Session**: YYYY-MM-DD
 
-**Focus**: Infrastructure Setup
+## Focus
 
-## Completed This Session
+[Current work focus]
 
-- [x] Configured Docker Compose for local PostgreSQL and Redis.
-- [x] Set up ESLint and Prettier for code consistency.
-- [x] Defined initial project architecture in `MEMORY.md`.
+## Completed
 
-## Still In Progress / Next Up
+- [x] [Item 1]
+- [x] [Item 2]
 
-- [ ] Implement project initialization scripts.
-- [ ] Set up basic CI/CD pipeline using GitHub Actions.
+## In Progress
+
+- [ ] [Item 1]
+- [ ] [Item 2]
+
+## Blockers
+
+- [Blocker and status]
+
+## Notes
+
+- [Decisions, metrics, context]
+
+---
+
+## Changelog
+
+### Unreleased
+- **Added**: [Entry]
+- **Changed**: [Entry]
+- **Fixed**: [Entry]

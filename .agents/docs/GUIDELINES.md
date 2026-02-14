@@ -1,194 +1,110 @@
-# GUIDELINES.md — How to Write & Maintain Project Documentation
+# GUIDELINES.md
 
-> **STATUS**: TEMPLATE
-> **OWNER**: Human (final authority) / AI (maintenance)
-> **LAST REVIEWED**: 2026-02-12
+> **Status**: TEMPLATE  
+> **Purpose**: Documentation writing standards
 
-**Purpose**: This document provides supporting guidance for AI agents on how to create, update, and structure the key documents referenced in `AGENTS.md`. 
+How to create and maintain project documentation.
 
-*Note: This is a supporting guide. Canonical rules reside in `AGENTS.md`.*
+---
 
-## Status Header (Required)
-Every doc must include a STATUS header:
+## 1. Document Header (Required)
 
-> **STATUS**: TEMPLATE | PRODUCTION | EXAMPLES-ONLY
-> **OWNER**: Human (final authority) / AI (maintenance)
-> **LAST REVIEWED**: <YYYY-MM-DD or Unknown>
+Every doc must start with:
 
-Status meanings:
-- TEMPLATE: generic template, not project-specific
-- PRODUCTION: validated and updated after Template-to-Production Rule
-- EXAMPLES-ONLY: fictional examples; delete before real use
+```markdown
+> **Status**: TEMPLATE | PRODUCTION | EXAMPLES-ONLY
+> **Last Updated**: YYYY-MM-DD
 
-**Status-Driven Behavior Rules**
-- Only `STATUS: PRODUCTION` docs are authoritative.
-- `STATUS: TEMPLATE` or `STATUS: EXAMPLES-ONLY` may be read for context only; decisions MUST NOT rely on them.
-- Before first coding, confirm core docs are `STATUS: PRODUCTION`: PRD, TECH_STACK, IMPLEMENTATION_PLAN, SECURITY, TEST_STRATEGY.
-
-## General Principles
-
-- **Conciseness**: Documents MUST be concise yet complete, prioritizing clarity over length.
-- **Formatting**: Use Markdown with semantic headings (`##`, `###`), bullet lists, and tables to improve readability.
-- **Version Control**: Changes MUST be committed with descriptive, atomic messages.
-- **Traceability**: Statements MUST be grounded in the codebase, requirements, or recorded decisions.
-- **Approval**: Major updates to any document MUST be proposed to the user for explicit approval before implementation when AUTO-PILOT is off.
-- **Session Mode**: Read `SESSION_MODE` from `/.agents/docs/PROGRESS.md` (STANDARD | AUTO-PILOT). Default STANDARD if missing. AUTO-PILOT allows autonomous plan/research/execute for the current session.
-- **Iteration**: Documents should be updated as new insights or corrections occur. **Self‑maintenance**: `AGENTS.md` and `/.agents/docs/*` are agent‑maintained artifacts; the agent must keep them current and aligned with user conversations and decisions, using the Doc Evolution Protocol.
-
-## Template Filling Protocol (for AI agents)
-
-When asked to fill any template:
-1. **Evidence first**: derive content from the repo, PRD/TECH_STACK, tickets, or explicit user input—avoid invention.
-2. **Assumptions**: if you infer anything, add an `ASSUMPTIONS` block and make it easy to correct.
-3. **Unknowns stay unknown**: keep “Unknown until confirmed” where facts are missing.
-4. **Examples are labeled**: wrap sample content under **“## Example (fictional, delete before use)”**.
-5. **Human override**: treat human edits as authoritative and update surrounding docs accordingly.
-6. **Placeholders**: use `<...>` or `{{PLACEHOLDER}}` until real values exist.
-
-## Version Control Workflow
-
-Guidance for maintaining a clean and traceable project history:
-
-- **Atomic Commits**: Each commit MUST represent a single, logical change.
-- **Message Format**: Prefer `type(scope): description` (e.g., `feat(auth): add login form validation`).
-- **PR Hygiene**: Pull requests MUST include a clear summary of changes and reference relevant tasks or issues.
-
-## Document-Specific Guidance
-
-### PROGRESS.md (Session State Log)
-- **Purpose**: Lightweight state carry-over between sessions.
-- **Structure Recommendation**:
-  - Session summary and date at the top.
-  - Sections for Completed, In Progress, Blockers, and Quick Notes.
-- **Example**: "Finished API integration for user profiles; blocking on database migration script."
-
-### PRD.md (Product Requirements, Plan & Tasks)
-- **Purpose**: Single source of truth for requirements, implementation plan, and tasks.
-- **Structure Recommendation**: Overview, Goals/Metrics, Personas, Features (MoSCoW), Non-Functional Requirements, User Journeys & Edge Cases, Flow Diagrams (optional), Implementation Plan, Task Board.
-- **Example Goal**: "Reduce page load time by 30% to improve user retention."
-
-### TECH_STACK.md
-- **Purpose**: Documentation of versions and allowed tools, including security and test strategy.
-- **Discipline**: Use an "unknown until confirmed" approach for any tech stack assumptions.
-
-### LESSONS.md (Operational Patterns)
-- **Purpose**: Log of learned optimizations and avoided mistakes.
-- **Structure Recommendation**: Issue description, Root cause, and a pattern to prevent recurrence.
-- **Example**: "Avoided using global state for temporary form data; used local component state instead."
-
-### PROGRESS.md
-- **Purpose**: Session log plus consolidated changelog.
-- **Structure Recommendation**: Session summary, completed/in‑progress/blockers, rollups, and changelog entries.
-
-## Document Minimum Sections (Best-Practice Baseline)
-Before a doc is considered “ready,” ensure these sections exist:
-
-**PRD.md**
-- Goals & success metrics
-- Personas / users
-- MoSCoW features
-- Non-functional requirements
-- Out of scope
-- User journeys & edge cases
-- Flow diagrams (optional)
-- Implementation plan (milestones, phases, risks)
-- Task board (atomic tasks + statuses)
-
-**TECH_STACK.md**
-- Tool list with versions
-- Runtime constraints
-- Prohibited/deprecated items
-- Security guidance
-- Test strategy
-- “Locked as of” date
-
-**IMPLEMENTATION_PLAN.md**
-- Milestones + verification
-- Dependencies & blockers
-- Risks & mitigations
-- Rollback/stop conditions
-
-**PROGRESS.md**
-- Session summary
-- Completed / In Progress / Blockers
-- Rollup (weekly/monthly, optional)
-- Changelog (Added / Changed / Fixed)
-
-**FRONTEND_GUIDELINES.md**
-- UI tokens
-- Components
-- Motion & accessibility
-
-## Communication Standards
-
-### Before Starting Work (RECOMMENDED)
-```
-ASSUMPTIONS I'M MAKING:
-- [Assumption 1 - let user correct before wasted work]
-- [Assumption 2]
+Brief description of document purpose.
 ```
 
-### Plan Template (RECOMMENDED)
-Use this format when proposing a plan (especially for anything > 20 lines or > 1 file per `AGENTS.md` §4).
+**Status meanings**:
+- `TEMPLATE`: Generic, not project-specific (default)
+- `PRODUCTION`: Validated, authoritative
+- `EXAMPLES-ONLY`: Fictional examples to remove
 
-```
-PLAN:
-- Goal:
-- Scope (in):
-- Non-goals (out):
-- Constraints (tools, time, compatibility, risk tier):
-- Assumptions (explicit; link to PRD/TECH_STACK where relevant):
-- Risks / unknowns:
+---
 
-TASK BREAKDOWN (atomic, verifiable):
-- Task 1:
-  - Files/areas:
-  - Success criteria:
-  - Verification (tests/build/lsp/manual):
-  - Dependencies/blockers:
-- Task 2:
-  - ...
+## 2. Writing Standards
 
-ROLLBACK / STOP CONDITIONS:
-- If [X] fails, do [Y] (revert, pause, escalate, ask for approval).
-```
+- **Concise**: Clear over complete
+- **Scannable**: Use tables, lists, and headings
+- **Evidence-based**: Derive from code or user input
+- **Assumptions labeled**: Mark inferences clearly
 
-### Plan & Task Recordkeeping (RECOMMENDED)
+---
 
-If you want plans and task breakdowns to remain traceable across sessions, use the conventions in `.agents/docs/PLANS.md`.
+## 3. Plan Template
 
-Recommended approach:
-- Keep the approved plan in a dated folder under `/.agents/docs/plans/.../plan.md`
-- Keep the plan’s atomic checklist in `/.agents/docs/plans/.../tasks.md`
-- Link to the plan folder from `.agents/docs/PROGRESS.md` (session timeline)
-- Avoid duplicating the same checklist in multiple places; prefer linking
+Use when proposing non-trivial work:
 
-### After Completing Work (RECOMMENDED)
-```
-CHANGES MADE:
-- [file/location]: [what changed and why]
+```markdown
+## Plan: [Title]
+
+**Goal**: [What and why]
+
+**Scope**:
+- In: [What's included]
+- Out: [What's excluded]
+
+**Tasks**:
+1. [ ] [Task] — Verification: [how to confirm]
+2. [ ] [Task] — Verification: [how to confirm]
+
+**Risks**: [What could go wrong]
+
+**Rollback**: [How to recover]
 ```
 
-### Proposing Documentation Updates
-When updating any document (per AGENTS.md §5):
-1. Analyze current state and identify necessary changes
-2. Propose using `PROPOSED DOC UPDATE` format (see AGENTS.md §5)
-3. Wait for explicit user approval (or `SUPER-APPROVED(PLAN+DOC)` / `SUPER-APPROVED(ALL)` if provided; `SUPER-APPROVED(NULL)` resets to standard)
-4. Update and log summary in PROGRESS.md
+---
 
-#### When to Update Docs (Trigger Checklist)
-Update docs when any of the following occur:
-- **User feedback / clarified goals** → update AGENTS.md + canonical docs (Template-to-Production Rule).
-- **User correction** (wrong pattern / hallucination / bad decision) → add rule in AGENTS.md or LESSONS.md.
-- **Plan includes doc changes** → batch doc updates with plan approval.
-- **Code changes completed** → update PROGRESS.md and (if applicable) LESSONS.md.
-- **Doc map drift** → sync Doc Map with actual `/.agents/docs/` contents.
+## 4. Update Protocol
 
-## Writing Conventions
+When docs need changing:
 
-- Use active voice and professional tone.
-- Avoid jargon unless it is part of the project's domain glossary.
-- Prefer tables for comparing options or listing tokens.
-- Keep examples practical and easy to follow.
+1. **Propose**:
+   ```markdown
+   PROPOSED UPDATE to [filename]:
+   
+   OLD:
+   [exact text]
+   
+   NEW:
+   [proposed text]
+   
+   REASON: [why]
+   ```
 
-This document may be updated by following `AGENTS.md` §5 (Documentation Evolution Protocol).
+2. **Wait**: For explicit approval
+3. **Apply**: Make the change
+4. **Log**: Record in LESSONS.md
+
+---
+
+## 5. Template Reference
+
+| File | Contains | Fill With |
+|------|----------|-----------|
+| **PRD.md** | Product requirements | Goals, features, user journeys |
+| **TECH_STACK.md** | Technology choices | Tools, versions, constraints |
+| **PROGRESS.md** | Session state | Completed tasks, blockers |
+| **LESSONS.md** | Learned patterns | Mistakes and prevention rules |
+| **FRONTEND_GUIDELINES.md** | Frontend patterns | UI conventions, accessibility |
+| **BACKEND_STRUCTURE.md** | Backend patterns | API conventions, data flow |
+| **MEMORY.md** | Decisions | ADRs, glossary, history |
+
+---
+
+## 6. Quick Reference
+
+**Before work**:
+```markdown
+ASSUMPTIONS:
+- [Assumption to verify]
+```
+
+**After work**:
+```markdown
+CHANGES:
+- [file]: [what changed and why]
+```

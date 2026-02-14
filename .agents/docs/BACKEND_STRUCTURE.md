@@ -1,66 +1,35 @@
-# BACKEND_STRUCTURE.md — Backend Architecture & API Patterns
+# BACKEND_STRUCTURE.md
 
-> **STATUS**: TEMPLATE
-> **OWNER**: Human (final authority) / AI (maintenance)
-> **LAST REVIEWED**: 2026-02-12
+> **Status**: TEMPLATE  
+> **Last Updated**: YYYY-MM-DD
 
-**Purpose**: This document provides deeper, example-heavy rules for backend development, focusing on maintainable API patterns, data flow, and security.
+Backend architecture and API patterns.
 
-## Preferred Patterns
+---
 
-**Purpose**: Document the architectural styles and coding patterns used throughout the backend.
+## Architecture
 
-- **Controller-Service-Repository**: Decouple the API handling, business logic, and data access layers.
-- **DTOs (Data Transfer Objects)**: Use DTOs for request and response validation to ensure a clean interface.
-- **Middleware for Cross-Cutting Concerns**: Use middleware for authentication, logging, and error handling.
+- **[Pattern]**: [Description]
+- **[Pattern]**: [Description]
 
-**Example (fictional, delete before use): Controller Method**
-```typescript
-async function createUser(req: Request, res: Response) {
-  try {
-    const userData = createUserDto.parse(req.body);
-    const user = await userService.register(userData);
-    res.status(201).json(user);
-  } catch (error) {
-    next(error); // Delegate to error handling middleware
-  }
-}
-```
-
-## Do / Don’t Table
-
-**Purpose**: Quick reference for common backend development practices.
+## Do / Don't
 
 | Do | Don't |
 |----|-------|
-| Use parameterized queries to prevent SQL injection. | Use string concatenation for building database queries. |
-| Return appropriate HTTP status codes (e.g., 404 for Not Found). | Return 200 OK for every request, even when an error occurs. |
-| Implement structured logging for easier debugging. | Use `console.log` for logging in production. |
+| [Good practice] | [Bad practice] |
 
-## Folder & Naming Conventions
+## Conventions
 
-**Purpose**: Maintain a consistent project structure.
+- **Routes**: [Pattern]
+- **Controllers**: [Pattern]
+- **Services**: [Pattern]
 
-- **Layered Structure**: Group files by layer (e.g., `src/controllers/`, `src/services/`, `src/repositories/`).
-- **camelCase**: Use camelCase for function names and variables.
-- **Singular/Plural**: Use plural for route paths (e.g., `/users`) and singular for resource models (e.g., `User`).
+## API Standards
 
-## Common Gotchas & Anti-patterns
+- [Standard]
+- [Standard]
 
-**Purpose**: Highlight pitfalls to avoid.
+## Security
 
-- **Fat Controllers**: Avoid putting business logic in the controllers. Delegate to services instead.
-- **Deep Nesting**: Avoid deeply nested callbacks or promise chains. Use `async/await` for better readability.
-- **Unvalidated Input**: Never trust data from the client. Always validate input against a schema.
-
-## Security & Data Flow
-
-> **AUTHORITATIVE SOURCE**: All security requirements are defined in `AGENTS.md` §7 (Defense-in-Depth Security).
-
-### Backend-Specific Patterns
-
-- **Secrets Management**: Use environment variables or secret management services (AWS Secrets Manager, HashiCorp Vault).
-- **Input Validation**: Validate all incoming request data using schema libraries (Zod, Joi, etc.).
-- **Authentication/Authorization**: Ensure protected routes are properly authenticated and authorized based on user roles.
-
-See `AGENTS.md` §7 for complete security requirements and vulnerability response protocols.
+- [Requirement]
+- [Requirement]
