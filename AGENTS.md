@@ -68,6 +68,24 @@ Read additional docs based on task risk:
 
 **Template Content**: Examples and fictional content must be labeled clearly. Never treat example content as real project history.
 
+### 3.4 Session Lifecycle
+
+**Session Start:**
+1. Read AGENTS.md, PROGRESS.md, LESSONS.md (if recent entries)
+2. Assess task risk tier (Low/Normal/High)
+3. Read additional docs per tier
+4. Check for in-progress work in PROGRESS.md
+
+**Session End:**
+1. Update PROGRESS.md with completed tasks
+2. Log any lessons in LESSONS.md
+3. Mark task complete or document blockers
+
+**Mid-Session Task Switch:**
+- If switching to unrelated task, update PROGRESS.md first
+- Re-assess risk tier for new task
+- No need to re-read AGENTS.md
+
 ---
 
 ## 4. Execution Protocol
@@ -124,7 +142,23 @@ Plan must include:
 2. **Verify**: LSP diagnostics → Tests → Build → Manual check
 3. **Document**: Update PROGRESS.md
 
-### 4.5 Confidence Framework
+### 4.5 Tool Selection
+
+| Task | Preferred Tool | Reason |
+|------|---------------|--------|
+| Find specific text | `grep` | Fast, targeted |
+| Read file content | `read` | Full context |
+| Search code patterns | `ast_grep_search` | AST-aware |
+| Complex analysis | `task` with subagent | Parallel, specialized |
+| Browser automation | `skill: playwright` | Domain expertise |
+| Multi-file refactor | `ast_grep_replace` | Safe, pattern-based |
+
+**Guidelines**:
+- Use `grep` before `read` for exploration (lazy reading)
+- Spawn parallel agents for independent searches
+- Use skills for domain-specific work (frontend, git, browser)
+
+### 4.6 Confidence Framework
 
 Express uncertainty levels explicitly:
 
@@ -141,9 +175,42 @@ Express uncertainty levels explicitly:
 [CONFIDENCE: UNCERTAIN] Not sure if this should be a service or repository
 ```
 
+**When to Use Confidence Tags:**
+- Start of major work blocks when assumptions are made
+- Before proposing solutions based on inference
+- When user asks for your assessment
+- NOT needed for every statement—use judiciously
+
+**Examples by Level:**
+
+**[CONFIDENCE: CERTAIN]**
+- "The API uses REST (evidenced by routes in /src/routes/*.ts)"
+- "This is a React component (import React from 'react')"
+- Use when: You can point to specific evidence
+
+**[CONFIDENCE: PROBABLE]**
+- "This uses JWT auth (inferred from middleware pattern)"
+- "Database is PostgreSQL (package.json dependency)"
+- Use when: Strong inference, one piece missing
+
+**[CONFIDENCE: UNCERTAIN]**
+- "Not sure if this should be a service or repository"
+- "Unclear whether to use hooks or class components"
+- Use when: Multiple valid interpretations exist
+
+**[CONFIDENCE: UNKNOWN]**
+- "No basis to determine the architecture pattern"
+- "Cannot infer testing framework from code"
+- Use when: No evidence, must ask or escalate
+
+**Boundaries:**
+- PROBABLE: Proceed but note assumption; user can correct
+- UNCERTAIN: Ask before proceeding; don't guess
+- UNKNOWN: Stop and ask or escalate immediately
+
 **Override Rule**: Escalation (§7) overrides Confidence Framework. If clarification fails or escalation is triggered, proceed with escalation regardless of confidence level.
 
-### 4.6 Error Handling
+### 4.7 Error Handling
 
 1. **Diagnose**: Analyze before fixing
 2. **Reproduce**: Create minimal failing test for bugs
@@ -312,6 +379,25 @@ Before marking complete:
 - [ ] **Frontend changes**: Compared against `FRONTEND.md` patterns
 - [ ] **Security changes**: Severity assessed, appropriate action taken
 - [ ] **Lessons checked**: Reviewed `LESSONS.md` for related past errors
+
+### Completion Criteria
+
+**Marking Complete:**
+- All checklist items checked
+- User confirms satisfaction OR
+- AUTO-PILOT mode with all verifications passed
+
+**If Verification Fails:**
+1. Do NOT mark complete
+2. Document failure in PROGRESS.md
+3. Create fix plan
+4. Re-verify after fix
+5. If 2+ verification failures, escalate per §7
+
+**Who Decides:**
+- **Standard Mode**: User explicitly confirms completion
+- **AUTO-PILOT**: Agent marks complete when all checks pass
+- **Blocked**: Mark as blocked in PROGRESS.md if cannot complete
 
 ---
 
