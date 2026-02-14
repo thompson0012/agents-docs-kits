@@ -134,6 +134,24 @@ Plan must include:
 
 **Never** edit docs without approval (unless AUTO-PILOT).
 
+### 5.3 Architecture Documentation Maintenance
+
+When you modify code that establishes or changes architectural patterns:
+
+1. **Update FRONTEND.md** when:
+   - Adding new component patterns
+   - Changing state management approach
+   - Modifying file organization
+   - **Update the ASCII diagram** to reflect new structure
+
+2. **Update BACKEND.md** when:
+   - Adding new API patterns
+   - Changing layer structure (routes/services/repos)
+   - Modifying error handling conventions
+   - **Update the ASCII diagram** to reflect new architecture
+
+3. **Keep diagrams current**: The ASCII architecture diagrams are the single source of truth for system structure. When patterns change, diagrams must change too.
+
 ---
 
 ## 6. Self-Improvement Protocol
