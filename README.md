@@ -15,8 +15,8 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/docs/MEMORY.md` | Architectural decisions (template) | Fill per project |
 
 **Domain-Specific** (fill based on GUIDELINES.md Part 3):
-- `/.agents/docs/BACKEND_STRUCTURE.md` — Backend patterns
-- `/.agents/docs/FRONTEND_GUIDELINES.md` — Frontend standards
+- `/.agents/docs/BACKEND.md` — Backend patterns
+- `/.agents/docs/FRONTEND.md` — Frontend standards
 
 ## Quick Start
 
@@ -125,7 +125,7 @@ AGENTS.md → PROGRESS.md → [Tier-based docs]
 
 1. **Thinking**: See GUIDELINES.md Part 1 (The AI Mindset)
 2. **Writing**: See GUIDELINES.md Part 2 (The Writing Process)
-3. **Backend/Frontend**: See GUIDELINES.md Part 3 (Domain Guides)
+3. **Backend/Frontend**: See GUIDELINES.md Part 3 (Domain Guides)  
 4. **Templates**: See GUIDELINES.md Part 4 (Document Templates)
 
 See `AGENTS.md` for complete behavior rules.

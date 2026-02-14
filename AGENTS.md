@@ -175,8 +175,8 @@ When corrected by user (wrong pattern, hallucination, bad decision):
 | **TECH_STACK.md** | Tools and versions | Technical decisions |
 | **PROGRESS.md** | Session state | Every session start |
 | **LESSONS.md** | Learned patterns | Reviewing past mistakes |
-| **FRONTEND_GUIDELINES.md** | Frontend patterns | UI work |
-| **BACKEND_STRUCTURE.md** | Backend patterns | API work |
+| **FRONTEND.md** | Frontend patterns | UI work |
+| **BACKEND.md** | Backend patterns | API work |
 | **MEMORY.md** | Architectural decisions | Long-term context |
 
 ---
