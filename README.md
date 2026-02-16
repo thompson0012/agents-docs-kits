@@ -13,11 +13,26 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/docs/PROGRESS.md` | Session state (template) | Update each session |
 | `/.agents/docs/LESSONS.md` | Learned patterns (template) | Log corrections here |
 | `/.agents/docs/MEMORY.md` | Architectural decisions (template) | Fill per project |
-| `/.agents/skills/self-cognitive/SKILL.md` | Self-cognitive meta skill | Use for verification/retrospectives |
+| `/.agents/skills/self-cognitive/SKILL.md` | Self-cognitive meta skill | Use for verification/retrospectives; includes iterative “revolve” loop |
 
 **Domain-Specific** (fill based on GUIDELINES.md Part 3):
 - `/.agents/docs/BACKEND.md` — Backend patterns
 - `/.agents/docs/FRONTEND.md` — Frontend standards
+
+## Installed Skills
+
+| Path | Purpose |
+|------|---------|
+| `/.agents/skills/self-cognitive/SKILL.md` | Self-cognitive meta skill (verification, retrospectives, persistence) |
+| `/.agents/skills/tailwind-design-system/SKILL.md` | Tailwind v4 design system and UI standardization |
+| `/.agents/skills/remotion-best-practices/SKILL.md` | Remotion video creation best practices |
+| `/.agents/skills/better-auth-best-practices/SKILL.md` | Better Auth integration guidance |
+| `/.agents/skills/ui-ux-pro-max/SKILL.md` | UI/UX design intelligence and guidelines |
+| `/.agents/skills/agent-browser/SKILL.md` | Browser automation CLI workflows |
+| `/.agents/skills/web-design-guidelines/SKILL.md` | UI/UX review against Web Interface Guidelines |
+| `/.agents/skills/brainstorming/SKILL.md` | Required pre-design brainstorming workflow |
+| `/.agents/skills/skill-creator/SKILL.md` | Skill authoring guidance |
+| `/.agents/skills/find-skills/SKILL.md` | Discover/install skills from skills.sh |
 
 ## Quick Start
 
