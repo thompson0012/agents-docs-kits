@@ -21,6 +21,15 @@ Choose the smallest set of modes that match the request:
 - Never include secrets or sensitive data in any output.
 - Keep outputs concise; prefer bullets.
 - Always include the JSON artifact.
+- If the template grows, move detailed guidance to `references/` and keep this file lean.
+
+## Iteration Loop (Revolve)
+Use an iterative loop to strengthen outputs over time:
+1. Draft with the required template.
+2. Compare against the required sections and JSON artifact.
+3. Capture rationalizations or omissions.
+4. Update the skill update proposal accordingly.
+5. Re-run pressure scenarios until compliant.
 
 ## Required Output Template
 
@@ -109,6 +118,7 @@ If no target skill exists, propose a new skill outline and frontmatter suggestio
 - Omitting the JSON artifact.
 - Mixing assumptions with facts.
 - Declaring confidence without evidence.
+- Treating the first draft as final instead of iterating.
 
 ## Rationalization Table
 | Excuse | Reality |
@@ -116,6 +126,7 @@ If no target skill exists, propose a new skill outline and frontmatter suggestio
 | "We’re in a rush, skip verification." | Speed is not a reason to omit required sections. |
 | "We already wrote most of it." | Sunk cost doesn’t replace RED/GREEN/REFACTOR. |
 | "High-level is enough." | The template is mandatory regardless of brevity. |
+| "One pass is enough." | Iteration is required to close gaps and strengthen compliance. |
 
 ## Red Flags — STOP and Restart
 - “Skip verification to move faster.”
