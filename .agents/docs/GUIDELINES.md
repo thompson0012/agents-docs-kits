@@ -43,6 +43,39 @@ State what you're assuming so it can be corrected.
 
 ---
 
+### 4. Structure Over Prompting
+
+When AI is powerful, **quality depends on the system you build around it**, not the cleverness of a single prompt.
+Treat AI as a **team member with tools**, and organize the work so it can operate safely and verify its results.
+
+**Four workflow layers (outer → inner):**
+
+| Layer | What it does | Why it matters |
+|------|-------------|----------------|
+| **Parallelize** | Run multiple agents in parallel on independent tasks | Turns AI from a “chat partner” into scalable compute |
+| **Persist Rules** | Keep a shared rules file (e.g., CLAUDE.md) that captures mistakes and preferences | Errors compound into improvements over time |
+| **Plan First** | Require a plan before execution; iterate on plan until aligned | Prevents costly rewrites and misalignment |
+| **Verify Loops** | Always verify with tests, scripts, or UI checks | Feedback loops multiply quality |
+
+**Minimum viable workflow (apply to any task):**
+- Split work into parallel subtasks when independent
+- Write/maintain project rules in a shared file
+- Ask for a plan before edits begin
+- Run verification after changes (tests, lint, build, manual check)
+
+**Automation accelerators (optional):**
+- **Slash commands** for repeated workflows (e.g., commit → push → PR)
+- **Subagents** for follow-up tasks (review, simplify, verify)
+- **Hooks** to auto-format or run checks post-edit
+- **Permissions** to pre-authorize safe commands
+- **MCP tools** to connect logs/metrics and close the feedback loop
+
+> **Sources (for reference):**
+> - Boris Cherny’s Claude Code workflow thread (ThreadReader mirror)
+> - Anthropic Claude Code docs: subagents + hooks
+
+---
+
 ## Part 2: The Writing Process
 
 ### Step 1: Before You Write — Gather Evidence
