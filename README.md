@@ -13,6 +13,11 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/docs/PROGRESS.md` | Session state (template) | Update each session |
 | `/.agents/docs/LESSONS.md` | Learned patterns (template) | Log corrections here |
 | `/.agents/docs/MEMORY.md` | Architectural decisions (template) | Fill per project |
+| `/.agents/docs/CODEMAP.md` | Architecture codemap — load at session start | Update after structural changes |
+| `/.agents/docs/CHANGELOG.md` | System change log — load last 5 entries | Add entry after system changes |
+| `/.agents/docs/OBJECTIVE_LEDGER.md` | Task objective schema and template | Create per non-trivial task |
+| `/.agents/docs/SESSION_BOOTSTRAP.md` | Session startup protocol | Follow at every session start |
+| `/.agents/docs/ledgers/` | Active task objective ledgers (one per task) | Create + update during tasks |
 
 **Domain-Specific** (fill based on GUIDELINES.md Part 3):
 - `/.agents/docs/BACKEND.md` — Backend patterns
@@ -68,6 +73,8 @@ LESSONS.md ◄──► Log when corrected
                        ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  READ: AGENTS.md → PROGRESS.md → Risk-based tiered docs     │
+│  LOAD: CODEMAP.md + last 5 CHANGELOG entries (architecture)  │
+│  LOAD: Objective Ledger for current task                     │
 │  ├─ Low:   Target files only                                │
 │  ├─ Normal: + PRD.md, TECH_STACK.md                         │
 │  └─ High:   + SECURITY.md, all relevant docs                │

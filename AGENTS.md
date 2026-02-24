@@ -39,6 +39,8 @@ Supporting docs (`/.agents/docs/*`) contain:
 1. **AGENTS.md** (this file) — behavior rules
 2. **/.agents/docs/PROGRESS.md** — session state
 3. **/.agents/docs/LESSONS.md** — recent corrections (if entries from last 30 days)
+4. **/.agents/docs/CODEMAP.md** — architecture overview (load last 5 CHANGELOG entries too)
+5. **/.agents/docs/OBJECTIVE_LEDGER.md** — active task objective (create if missing)
 
 ### 3.2 Tiered Reading
 
@@ -72,14 +74,19 @@ Read additional docs based on task risk:
 
 **Session Start:**
 1. Read AGENTS.md, PROGRESS.md, LESSONS.md (if recent entries)
-2. Assess task risk tier (Low/Normal/High)
-3. Read additional docs per tier
-4. Check for in-progress work in PROGRESS.md
+2. Load CODEMAP.md + last 5 CHANGELOG.md entries (architecture context)
+3. Load or create Objective Ledger for current task (`.agents/docs/ledgers/`)
+4. Assess task risk tier (Low/Normal/High)
+5. Read additional docs per tier
+6. Check for in-progress work in PROGRESS.md
 
 **Session End:**
-1. Update PROGRESS.md with completed tasks
-2. Log any lessons in LESSONS.md
-3. Mark task complete or document blockers
+1. Record final checkpoint in Objective Ledger
+2. Update PROGRESS.md with completed tasks
+3. Add CHANGELOG.md entry if system structure changed
+4. Update CODEMAP.md if modules were added or modified
+5. Log any lessons in LESSONS.md
+6. Mark task complete or document blockers
 
 **Mid-Session Task Switch:**
 - If switching to unrelated task, update PROGRESS.md first
@@ -335,6 +342,10 @@ When corrected by user (wrong pattern, hallucination, bad decision):
 | **FRONTEND.md** | Frontend patterns | UI work |
 | **BACKEND.md** | Backend patterns | API work |
 | **MEMORY.md** | Architectural decisions | Long-term context |
+| **OBJECTIVE_LEDGER.md** | Task objective + checkpoints | Every long-running task |
+| **CODEMAP.md** | Architecture overview | Session start, structural changes |
+| **CHANGELOG.md** | System change history | Session start (last 5), after changes |
+| **SESSION_BOOTSTRAP.md** | Session startup protocol | Reference when starting sessions |
 
 ---
 
@@ -398,6 +409,82 @@ Before marking complete:
 - **Standard Mode**: User explicitly confirms completion
 - **AUTO-PILOT**: Agent marks complete when all checks pass
 - **Blocked**: Mark as blocked in PROGRESS.md if cannot complete
+
+---
+
+## 11. Objective Persistence & Drift Control
+
+### 11.1 Objective Ledger
+
+Every non-trivial task requires an Objective Ledger stored at `.agents/docs/ledgers/[task-id].md`.
+
+**Required fields:**
+- `objective` — one-line summary + details
+- `scope` — in/out of scope + constraints
+- `success_criteria` — verifiable completion criteria
+- `checkpoints` — rolling log of progress
+- `status` — active | completed | blocked | abandoned
+
+See `.agents/docs/OBJECTIVE_LEDGER.md` for full schema and template.
+
+### 11.2 Checkpoint Rules
+
+| Trigger | Action |
+|---------|--------|
+| Every 20-30 min of work | Record time-based checkpoint |
+| Major milestone reached | Record milestone checkpoint |
+| Scope/objective divergence detected | Record drift checkpoint + decide |
+
+### 11.3 Drift Detection
+
+```
+[Work vs Objective]
+     |
+     v
++-----------------------------+
+| Compare current work        |
+| to original objective       |
+| and in_scope items          |
++-----------------------------+
+     |
+     +---> Aligned? ----> Continue
+     |
+     +---> Drifted? ---->
+               |
+               v
+         +---------------------+
+         | Record drift flag   |
+         | in checkpoint       |
+         | Decide:             |
+         | - Accept + update   |
+         |   objective         |
+         | - Reject + correct  |
+         | - Modify scope      |
+         +---------------------+
+```
+
+**Rule**: If drift is accepted, update the objective/scope with explicit rationale. Never silently expand scope.
+
+### 11.4 Codemap Maintenance
+
+```
+[After System Change]
+     |
+     v
++-----------------------------+
+| Structural change?          |
+| (new module, new pattern,   |
+|  new entry point)           |
++-----------------------------+
+     |
+     +---> Yes: Update CODEMAP.md
+     |          Add CHANGELOG entry
+     |          Commit both together
+     |
+     +---> No: Add CHANGELOG entry only
+```
+
+**Rule**: CODEMAP.md must never be more than 30 days stale. If stale at session start, update before beginning work.
 
 ---
 
