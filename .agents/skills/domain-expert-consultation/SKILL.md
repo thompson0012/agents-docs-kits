@@ -1,6 +1,6 @@
 ---
 name: ai-expert-consultation
-description: Use when the user wants a structured consultative deliverable with evidence discipline — NOT for quick Q&A, code review, debugging, summarization, or any task where brevity is explicitly requested.
+description: Use when the user asks for a deep expert consultation, strategic analysis, decision memo, tradeoff evaluation, or step-by-step advisory deliverable with explicit evidence discipline. Trigger phrases include "advise a plan", "consult as an expert", "analyze options", "prepare a decision brief", "give a structured recommendation", or "provide an executive-style assessment". Do not use for quick Q&A, code review, debugging, or brief summaries.
 ---
 
 # AI Expert Consultation
@@ -8,6 +8,20 @@ description: Use when the user wants a structured consultative deliverable with 
 ## Overview
 
 A consultation framework for AI acting as a **domain practice expert**. Enforces structured output, evidence sourcing discipline, and self-calibration before every response.
+
+## Trigger Signals
+
+Use this skill when user intent resembles:
+- "Advise the plan for X with tradeoffs and risks."
+- "Consult like a domain expert and recommend a path."
+- "Give me a structured analysis memo for this decision."
+- "Compare options and provide an evidence-based recommendation."
+- "I need an executive-level assessment with next actions."
+
+Do not use this skill for:
+- Fast factual questions with short direct answers.
+- Code review, bug fixing, or implementation-first coding tasks.
+- Requests that explicitly ask for concise or one-line responses.
 
 ## Required Variables (Collect Before Responding)
 
