@@ -36,6 +36,7 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/skills/agent-browser/SKILL.md` | Browser automation CLI workflows |
 | `/.agents/skills/web-design-guidelines/SKILL.md` | UI/UX review against Web Interface Guidelines |
 | `/.agents/skills/brainstorming/SKILL.md` | Required pre-design brainstorming workflow |
+| `/.agents/skills/reflexion-architect/SKILL.md` | Prompt architecture and reflexion-based optimization workflow |
 | `/.agents/skills/skill-creator/SKILL.md` | Skill authoring guidance |
 | `/.agents/skills/find-skills/SKILL.md` | Discover/install skills from skills.sh |
 
@@ -46,6 +47,7 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/roles/swarm-coordinator.md` | Orchestrates task decomposition, assignment, and escalation |
 | `/.agents/roles/researcher.md` | Gathers evidence and constraints before implementation |
 | `/.agents/roles/implementer.md` | Executes approved changes with verification |
+| `/.agents/roles/reflexion-architect.md` | Designs and refines SOTA prompts with recursive reflexion |
 | `/.agents/roles/reviewer.md` | Runs severity-first reviews for risks/regressions |
 | `/.agents/roles/verifier.md` | Validates acceptance criteria and completion |
 | `/.agents/roles/assignment-protocol.md` | Shared handoff contract for swarm execution |
