@@ -18,10 +18,6 @@ Supporting docs (`/.agents/docs/*`) contain:
 - **Templates** for project-specific information (PRD, TECH_STACK, etc.)
 - **Guidelines** for writing documentation
 
-Role prompts (`/.agents/roles/*`) contain:
-- **System prompts** for role-based execution
-- **Swarm assignment protocol** for agent handoffs
-
 ---
 
 ## 2. Core Principles
@@ -56,8 +52,6 @@ Read additional docs based on task risk:
 | **Normal** | Features, UI changes | + PRD.md, TECH_STACK.md |
 | **High** | Auth, data, payments, infra, >5 files | + All relevant docs from §8 |
 
-**Swarm Add-on**: When tasking multiple agents, also read `/.agents/roles/README.md`, the assigned role file, and `/.agents/roles/assignment-protocol.md`.
-
 ### 3.3 Document Status
 
 - **TEMPLATE**: Generic template, non-authoritative
@@ -85,7 +79,6 @@ Read additional docs based on task risk:
 4. Assess task risk tier (Low/Normal/High)
 5. Read additional docs per tier
 6. Check for in-progress work in PROGRESS.md
-7. If swarm mode is used, load role prompts from `/.agents/roles/`
 
 **Session End:**
 1. Record final checkpoint in Objective Ledger
@@ -353,8 +346,6 @@ When corrected by user (wrong pattern, hallucination, bad decision):
 | **CODEMAP.md** | Architecture overview | Session start, structural changes |
 | **CHANGELOG.md** | System change history | Session start (last 5), after changes |
 | **SESSION_BOOTSTRAP.md** | Session startup protocol | Reference when starting sessions |
-| **/.agents/roles/README.md** | Role catalog and usage | Multi-agent/swarm tasks |
-| **/.agents/roles/assignment-protocol.md** | Assignment and handoff contract | Multi-agent/swarm tasks |
 | **/.agents/docs/DESIGN_TOKEN.md** | Brand design tokens template | Creating/updating brand identity tokens |
 
 ---
