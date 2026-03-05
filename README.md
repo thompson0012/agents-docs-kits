@@ -19,6 +19,7 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/docs/SESSION_BOOTSTRAP.md` | Session startup protocol | Follow at every session start |
 | `/.agents/docs/ledgers/` | Active task objective ledgers (one per task) | Create + update during tasks |
 | `/.agents/roles/` | Agent role system prompts + swarm assignment protocol | Load when using multi-agent workflows |
+| `/.agents/docs/DESIGN_TOKEN.md` | Design token template — brand identity tokens | Fill per project using `generating-design-tokens` skill |
 
 **Domain-Specific** (fill based on GUIDELINES.md Part 3):
 - `/.agents/docs/BACKEND.md` — Backend patterns
@@ -41,6 +42,7 @@ Battle-tested configuration for AI coding agents.
 | `/.agents/skills/find-skills/SKILL.md` | Discover/install skills from skills.sh |
 | `/.agents/skills/seedance2.0-prompt-skill/SKILL.md` | Generate production-ready video prompts for ByteDance Seedance 2.0 (即梦) |
 | `/.agents/skills/context-compaction/SKILL.md` | Compact long sessions into a canonical state snapshot for handoff or continuation |
+| `/.agents/skills/generating-design-tokens/SKILL.md` | Generate brand design tokens via structured discovery (v1.2 framework) |
 
 ## Installed Roles
 

@@ -355,6 +355,7 @@ When corrected by user (wrong pattern, hallucination, bad decision):
 | **SESSION_BOOTSTRAP.md** | Session startup protocol | Reference when starting sessions |
 | **/.agents/roles/README.md** | Role catalog and usage | Multi-agent/swarm tasks |
 | **/.agents/roles/assignment-protocol.md** | Assignment and handoff contract | Multi-agent/swarm tasks |
+| **/.agents/docs/DESIGN_TOKEN.md** | Brand design tokens template | Creating/updating brand identity tokens |
 
 ---
 
