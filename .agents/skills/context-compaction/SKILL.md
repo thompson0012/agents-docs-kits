@@ -19,9 +19,10 @@ Transform a long conversation history into a **single canonical state snapshot**
 1. **Lossless Signal Preservation** — Verbatim accuracy for critical data: file paths, IDs, variable values, constraints, agreed definitions. Never approximate.
 2. **Single Canonical Representation** — If a decision evolved, record only the final state. Strip the history of changes, keep only the result.
 3. **Lazy Load via Document References** — Do NOT inline full file contents. Reference paths instead: `"re-read when needed: docs/reference/design.md"`. This prevents bloating the compacted context.
-4. **Agents.md Instructions are Sacred** — Always extract and preserve active behavioral rules from `AGENTS.md` and session-level overrides.
+4. **Separate Persistent Rules from Session Constraints** — Treat `AGENTS.md` as the cross-session operating contract. Do not duplicate its standing rules into the compacted snapshot unless they were overridden, narrowed, or explicitly reinforced in this session.
 5. **Objective Drift Awareness** — Record both the original objective AND the current focus objective separately if they have diverged.
 6. **Style Normalization** — Strip all emotional tone, hesitation, conversational filler. Output reads like a system log.
+7. **Instruction Lifetime Classification** — For each important instruction, decide whether it is persistent, session-scoped, task-scoped, or expired. Only carry forward active session/task instructions into the compacted state.
 
 ## Required Output Format
 
@@ -41,13 +42,27 @@ Transform a long conversation history into a **single canonical state snapshot**
 </preserve>
 
 <preserve>
-## 📜 Active Agents.md Rules (Session-Level)
-- [Any AGENTS.md protocols currently active, e.g. "AUTO-PILOT mode ON", "EMERGENCY override active"]
-- [Any user-overridden behaviors explicitly set this session]
-- No active overrides: [state this explicitly if none]
+## 📜 Persistent Rules Base
+- Persistent repo/session-start rules live in: `AGENTS.md`
+- Do not restate standing `AGENTS.md` rules unless they were overridden, narrowed, or explicitly reinforced in this session.
+- Persistent rules to re-read on resume: [state only if needed]
 
 → Full rules: re-read when needed: `AGENTS.md`
 </preserve>
+
+<preserve>
+## 🧷 Active Session Constraints
+- [User hard rule introduced in this session]
+  - Source: user / AGENTS override / system behavior reminder
+  - Scope: session / task
+  - Status: active
+- No active session-specific constraints: [state this explicitly if none]
+</preserve>
+
+## 🎯 Objective Continuity
+- **Original Objective:** [What the session was originally opened to do]
+- **Current Focus:** [What is actively being worked on right now]
+- **Drift Explanation:** [Why focus changed, or "None" if unchanged]
 
 ## 🧬 Knowledge Graph (Merged & De-duplicated)
 - `[entity/variable]`: **[value]**
@@ -73,6 +88,11 @@ Transform a long conversation history into a **single canonical state snapshot**
 - [ ] [Task 1]
 - [ ] [Task 2]
 
+## 🧾 Expired / Superseded Instructions
+- [Instruction or temporary tactic that no longer applies]
+  - Status: expired / superseded
+  - Replaced by: [final active rule, if any]
+
 ## ⚠️ Critical Persistent Info
 <!-- Things that MUST NOT be lost between sessions -->
 - [e.g., "Invariant: all inputs sanitized before DB write"]
@@ -91,8 +111,8 @@ Transform a long conversation history into a **single canonical state snapshot**
 | :--- | :--- |
 | Final decisions and rationale | History of how decisions evolved |
 | Current file paths and status | Old tool output logs |
-| Active constraints and invariants | Repeated explanations |
-| Agents.md rule overrides | Verbose earlier turns |
+| Active session constraints and invariants | Repeated explanations |
+| AGENTS.md overrides, reinforcements, or narrowed interpretations from this session | Standing AGENTS.md rules already recoverable from file |
 | Open tasks | Resolved/cancelled tasks |
 | Critical config/values | Intermediate variable states |
 
@@ -142,14 +162,27 @@ Inline only if ALL of these are true:
 - It is short: < 5 lines or a single critical value
 - It would be expensive or impossible to rediscover (e.g., a resolved ambiguity, a one-time token)
 
-## Agents.md Preservation Rule
+## Instruction Classification Rule
 
-Extract from `AGENTS.md` and the conversation any active session-level overrides:
-- AUTO-PILOT ON/OFF status
-- EMERGENCY override (log reason)
-- Any user-stated behavioral changes ("for this session, skip approval for X")
+Classify instructions by lifetime before preserving them:
 
-If none: explicitly state `"No active AGENTS.md session overrides."` — never leave this blank.
+- **Persistent** — belongs in `AGENTS.md` or another durable project doc; reference it instead of duplicating it
+- **Session-scoped** — introduced in this session and must survive compaction to resume correctly
+- **Task-scoped** — only relevant to the current objective/subtask; keep only if still active on resume
+- **Expired / superseded** — preserve only in the dedicated expired section when it prevents confusion
+
+Preserve from the conversation only the active session/task instructions that are not already recoverable from `AGENTS.md`.
+
+Examples to preserve:
+- "For this session, ask before editing docs"
+- "Do not commit from this task"
+- "Use repo docs, not external notes, as source of truth"
+
+Examples to reference instead of duplicating:
+- Standing startup/read-order rules already defined in `AGENTS.md`
+- Stable repo workflow conventions unchanged during the session
+
+If there are no active session-specific constraints: explicitly state `"No active session-specific constraints."`
 
 ## Common Mistakes
 
@@ -163,7 +196,9 @@ If none: explicitly state `"No active AGENTS.md session overrides."` — never l
 | Recording decision history | Keep only the final state |
 | Vague milestone entries | Include concrete output/result data |
 | Omitting original objective | Always record both original + current focus |
-| Leaving Agents.md section blank | Explicitly state "no active overrides" |
+| Copying standing `AGENTS.md` rules into the snapshot | Reference `AGENTS.md`; keep only session-specific overrides/reinforcements |
+| Leaving the session-constraints section blank | Explicitly state "no active session-specific constraints" |
+| Mixing expired instructions with active ones | Move them to `Expired / Superseded Instructions` |
 | Approximating numbers/paths | Copy verbatim or omit entirely |
 
 ## Rationalization Table
@@ -172,7 +207,8 @@ If none: explicitly state `"No active AGENTS.md session overrides."` — never l
 | :--- | :--- |
 | "The history is short, no need to compact" | If context is long enough to cause concern, compact it |
 | "I'll just summarize loosely" | Loose summaries lose critical constraints — use the format |
-| "Agents.md rules are obvious, skip" | Rules must be explicit; next session can't infer session overrides |
+| "I'll just paste AGENTS.md rules into the summary" | Duplication creates drift; reference persistent rules and preserve only session-specific deltas |
+| "Agents.md rules are obvious, skip" | Standing rules can be re-read, but session overrides and reinforcements must be explicit |
 | "File contents are important, include them" | Reference paths; inline only if modified and unsaved |
 | "Memory tool entries are internal, skip them" | They are external state the next session must know exists |
 | "I'll just use the query command, easier" | If the file path is known, use it — one read beats a search |
@@ -186,5 +222,7 @@ If none: explicitly state `"No active AGENTS.md session overrides."` — never l
 - External scratch/note/memory files written this session not captured at all
 - More than ~3 lazy-load references listed — consolidate or drop lower-priority ones
 - Original objective missing (only current focus recorded)
-- Agents.md section absent or blank
+- Snapshot duplicates standing `AGENTS.md` rules instead of referencing the file
+- Active session constraints missing, mixed with persistent rules, or left blank
+- Objective drift not explained when original objective and current focus differ
 - Decision history included instead of final decision only
