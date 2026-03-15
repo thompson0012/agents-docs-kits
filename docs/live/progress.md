@@ -4,11 +4,11 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-A new root-level `skills.md` now distills the kube.io Liquid Glass CSS/SVG article into a reusable implementation note covering the optics model, SVG displacement-map pipeline, component patterns, and browser limitations.
+The packaged strategic scenario-planning skill now lives at `templates/base/.agents/skills/strategic-foresight/` with clearer trigger guidance that keys on a concrete signal plus implications under uncertainty.
 
 ## Latest Completed Work
 
-Fetched the source article, extracted its reusable implementation steps, and wrote `skills.md` with surface profiles, normalization and channel-encoding guidance, SVG filter wiring, specular-highlight notes, component patterns, and failure modes.
+Renamed the packaged skill directory from `future-catcher` to `strategic-foresight`, changed the frontmatter name, rewrote the description for more precise activation, and added body sections for positioning, trigger rules, strong signals, and non-triggers.
 
 ## In Progress
 
@@ -24,15 +24,15 @@ None for this objective.
 
 ## Touched Files
 
-- `skills.md`
+- `templates/base/.agents/skills/strategic-foresight/SKILL.md`
 - `docs/live/current-focus.md`
 - `docs/live/progress.md`
 - `docs/live/todo.md`
 
 ## Verification Status
 
-Re-read `skills.md` after writing it and confirmed it includes the requested article conversion plus the critical Chromium-only backdrop-filter caveat, implementation workflow, and operational limits.
+Re-read `templates/base/.agents/skills/strategic-foresight/SKILL.md` after editing and confirmed the frontmatter name is `strategic-foresight`, the description encodes explicit positive and negative trigger conditions, and the body distinguishes it from generic advisory or summary work. Searched `templates/base/.agents/skills` for `future-catcher` / `Future Catcher` and found no remaining packaged-skill references. Confirmed the old `templates/base/.agents/skills/future-catcher/` directory was removed. `docs/live/*` intentionally retains the old name as historical context for this rename.
 
 ## Hand-off Note
 
-Objective is complete. If this gets promoted into a real skill later, decide whether it should remain a plain `skills.md` note or become a packaged `templates/base/.agents/skills/<name>/SKILL.md` artifact.
+If this template is consumed by any external system-level skill registry, update that registry to call the renamed skill `strategic-foresight`; within this repository, the rename is complete.
