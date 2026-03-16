@@ -12,3 +12,4 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 11: rename `future-catcher` to `strategic-foresight` and tighten triggering | High | Completed |
 | Task 12: turn the startup pressure-test prompt into an English packaged skill | High | Completed |
 | Task 13: build the packaged reasoning skill suite from the PDF discussion | High | Completed |
+| Task 14: validate the three packaged reasoning skills with `skill-creator` | High | Completed |

@@ -4,27 +4,23 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Create a packaged three-skill reasoning system from the supplied PDF discussion and final conclusion: `problem-definition` for unclear problems, `dynamic-problem-solving` for clearly defined complicated problems, and `thinking-ground` for pre-analysis state calibration.
+Validation is complete for the packaged three-skill reasoning suite; preserve the validated state and artifacts until a new task supersedes them.
 
 ## Scope
 
-- Add `templates/base/.agents/skills/problem-definition/SKILL.md`.
-- Add `templates/base/.agents/skills/dynamic-problem-solving/SKILL.md` plus the minimal supporting references and quick-invoke asset the workflow needs.
-- Add `templates/base/.agents/skills/thinking-ground/SKILL.md` plus a compact whole-system pocket card.
-- Remove generated placeholder resource files from all three initialized skill directories.
-- Package each completed skill into `dist/`.
+- Keep the skill source under `templates/base/.agents/skills/` unchanged from the validated state.
+- Keep the validation artifacts under `templates/base/.agents/skills/reasoning-suite-workspace/iteration-1/`.
+- Keep the packaged `.skill` artifacts present in `dist/`.
 
 ## Constraints
 
-- Keep skill frontmatter limited to `name` and `description`.
-- Keep the skill bodies in English and optimize for reusable agent workflows, not raw transcript copy.
-- `dynamic-problem-solving` must only apply to clearly defined, complicated problems and must route vague problems to `problem-definition`.
-- `thinking-ground` must rely on observable signals and explicit limits, not unverifiable claims about inner state or consciousness.
+- Use the repository `skill-creator` workflow for future revalidation, not ad hoc checks.
+- Preserve the routing boundaries: vague problems -> `problem-definition`; clearly defined complicated problems -> `dynamic-problem-solving`; state distortion before analysis -> `thinking-ground`.
+- Use `.tmp-pyyaml-real` for local packaging until the broken `.tmp-pyyaml` target is repaired or removed.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- The three skill directories exist under `templates/base/.agents/skills/` with coherent English workflows.
-- Unneeded generated placeholder files are removed from all three skills.
-- `templates/base/.agents/skills/skill-creator/scripts/package_skill.py` validates each skill and produces `dist/problem-definition.skill`, `dist/dynamic-problem-solving.skill`, and `dist/thinking-ground.skill`.
-- The live docs record the completed work and verification state.
+- The validation summary and paired output artifacts remain available in the workspace.
+- `dist/` continues to contain `problem-definition.skill`, `dynamic-problem-solving.skill`, and `thinking-ground.skill`.
+- The live docs reflect the completed validation result and the packaging caveat.
