@@ -4,11 +4,11 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-The reasoning-suite now has an optimized iteration-2 rerun under `templates/base/.agents/skills/reasoning-suite-workspace/`. Iteration 2 compares current optimized skills against reconstructed iteration-1 skill snapshots (`old_skill`) across five evals and produces a new benchmark plus static HTML review artifact.
+The first-party skill suite now has an owned routing layer. `using-agent-practices` routes across the whole suite, `using-reasoning` routes the overlapping reasoning skills, and `using-agent-practices/references/category-map.md` records the current category abstraction for the 11 live leaf skills.
 
 ## Latest Completed Work
 
-Edited `strategic-foresight`, `thinking-ground`, `problem-definition`, `dynamic-problem-solving`, and `startup-pressure-test` to tighten ending discipline, observable grounding, and output contracts; created `iteration-2/skill-snapshot/` copies that preserve the iteration-1 skill behavior; reran all five evals against `with_skill` and `old_skill`; graded all ten runs; aggregated `iteration-2/benchmark.json` and `benchmark.md`; generated analyzer notes; and produced `html/reasoning-suite-iteration-2-review.html`.
+Created `templates/base/.agents/skills/using-agent-practices/SKILL.md`, `templates/base/.agents/skills/using-reasoning/SKILL.md`, a shared category map reference under `using-agent-practices/references/`, and starter `evals/evals.json` fixtures for both routers. The suite is now abstracted into Orchestration and Continuity, Reasoning and Strategy, Prompt Artifact Creation, Commercial Reality Testing, and Design Systems and Visual Prototyping, with only the reasoning cluster routed through a family router.
 
 ## In Progress
 
@@ -20,31 +20,24 @@ None.
 
 ## Next Recommended Action
 
-Open `templates/base/.agents/skills/reasoning-suite-workspace/html/reasoning-suite-iteration-2-review.html` and decide whether to strengthen the eval suite itself, because only `strategic-foresight` showed a measurable benchmark gain; the other four skills tied their iteration-1 snapshots on this sample.
+If these routers will become stable entry points, run a true `skill-creator` eval loop against the new router skills next so the category ordering and descriptions can be pressure-tested on ambiguous prompts instead of only structurally validated.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/strategic-foresight/SKILL.md`
-- `templates/base/.agents/skills/problem-definition/SKILL.md`
-- `templates/base/.agents/skills/thinking-ground/SKILL.md`
-- `templates/base/.agents/skills/dynamic-problem-solving/SKILL.md`
-- `templates/base/.agents/skills/startup-pressure-test/SKILL.md`
-- `templates/base/.agents/skills/reasoning-suite-workspace/iteration-2/`
-- `templates/base/.agents/skills/reasoning-suite-workspace/html/reasoning-suite-iteration-2-review.html`
-- `templates/base/.agents/skills/reasoning-suite-workspace/scripts/aggregate_suite_benchmark.py`
+- `templates/base/.agents/skills/using-agent-practices/SKILL.md`
+- `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
+- `templates/base/.agents/skills/using-agent-practices/evals/evals.json`
+- `templates/base/.agents/skills/using-reasoning/SKILL.md`
+- `templates/base/.agents/skills/using-reasoning/evals/evals.json`
 - `docs/live/current-focus.md`
 - `docs/live/progress.md`
 - `docs/live/todo.md`
 
 ## Verification Status
 
-Ran and observed success for:
-- ten iteration-2 execution runs (five `with_skill`, five `old_skill`) via the task tool
-- ten iteration-2 grading runs producing `grading.json` for every run
-- `python3 templates/base/.agents/skills/reasoning-suite-workspace/scripts/aggregate_suite_benchmark.py templates/base/.agents/skills/reasoning-suite-workspace/iteration-2 --skill-name reasoning-suite --baseline-config old_skill`
-- `python3 skill://skill-creator/eval-viewer/generate_review.py templates/base/.agents/skills/reasoning-suite-workspace/iteration-2 --skill-name reasoning-suite --benchmark templates/base/.agents/skills/reasoning-suite-workspace/iteration-2/benchmark.json --previous-workspace templates/base/.agents/skills/reasoning-suite-workspace/iteration-1 --static templates/base/.agents/skills/reasoning-suite-workspace/html/reasoning-suite-iteration-2-review.html`
-Verified separately that every iteration-2 `grading.json` parses as valid JSON, that the optimized current skill files remain in place, and that the new static HTML artifact exists and begins with the expected `<!DOCTYPE html>` header.
+Read back both new SKILL files plus the new category map and eval fixtures. Ran and observed success for:
+- `python3` frontmatter/JSON validation covering `templates/base/.agents/skills/using-agent-practices/SKILL.md`, `templates/base/.agents/skills/using-reasoning/SKILL.md`, both router `evals/evals.json` files, and the required sections in `using-agent-practices/references/category-map.md`.
 
 ## Hand-off Note
 
-Iteration 2 removed the previous regressions: `strategic-foresight` improved from 0.8 to 1.0 against its old-skill snapshot, and `thinking-ground` now ties its old snapshot at 1.0 instead of underperforming. The overall delta vs `old_skill` is +0.04 because four evals are ties, so the next bottleneck is benchmark sensitivity rather than obvious skill defects.
+The suite abstraction is now documented without renaming the existing leaf skills. The next leverage point is evaluation quality, not more taxonomy: the owned routers exist, but their category order and trigger wording still need real ambiguous-prompt testing if you want them to become default entry points.

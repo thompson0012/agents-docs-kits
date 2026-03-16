@@ -4,24 +4,25 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Optimize the five reasoning-suite skills from the iteration-1 benchmark findings, rerun a true `skill-creator`-style A/B comparison against iteration-1 skill snapshots, and preserve the iteration-2 benchmark plus static HTML review output.
+Keep the first-party skill suite under `templates/base/.agents/skills/` organized around an owned routing model: a suite router (`using-agent-practices`), a reasoning-family router (`using-reasoning`), the existing leaf skills, and a shared category map that explains how the pieces fit together.
 
 ## Scope
 
-- Keep the optimized target skill sources under `templates/base/.agents/skills/`.
-- Keep the evaluation workspace under `templates/base/.agents/skills/reasoning-suite-workspace/`, including both `iteration-1/` and `iteration-2/`.
-- Keep the iteration-2 old-skill snapshots under `templates/base/.agents/skills/reasoning-suite-workspace/iteration-2/skill-snapshot/`.
-- Keep the static HTML review artifacts under `templates/base/.agents/skills/reasoning-suite-workspace/html/`.
-- Preserve the previously repaired packaging workflow and packaged artifacts in `dist/`.
+- Keep the new router skills under `templates/base/.agents/skills/using-agent-practices/` and `templates/base/.agents/skills/using-reasoning/`.
+- Keep the suite taxonomy reference under `templates/base/.agents/skills/using-agent-practices/references/category-map.md`.
+- Keep the starter skill-creator eval fixtures under each new router's `evals/evals.json`.
+- Keep the existing 11 live leaf skills in place without renaming them.
 
 ## Constraints
 
-- Use the `skill-creator` workflow for further iteration: rerun workspace executions, grading, benchmark aggregation, and viewer output rather than ad hoc prose-only checks.
-- The current benchmarks capture pass-rate structure only; no time, token, or tool-call metrics were collected for either iteration.
+- Use owned suite terminology; do not depend on third-party `superpowers` naming inside the first-party router skills.
+- Keep the skill directory flat for now; express categories through routers and references rather than nested discovery assumptions.
+- Preserve the existing leaf skill names and descriptions unless a future task explicitly asks to retune them.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- `templates/base/.agents/skills/reasoning-suite-workspace/iteration-2/benchmark.json` and `benchmark.md` exist and summarize the rerun against `old_skill`.
-- Each iteration-2 run directory contains `outputs/analysis.md`, `transcript.md`, and `grading.json`.
-- `templates/base/.agents/skills/reasoning-suite-workspace/html/reasoning-suite-iteration-2-review.html` exists and loads as a static review artifact.
+- `using-agent-practices/SKILL.md` routes across the current owned suite categories and points reasoning requests to `using-reasoning`.
+- `using-reasoning/SKILL.md` routes cleanly among `thinking-ground`, `problem-definition`, `dynamic-problem-solving`, `domain-expert-consultation`, and `strategic-foresight`.
+- Both router skills include starter `evals/evals.json` fixtures for future `skill-creator` iteration.
+- `using-agent-practices/references/category-map.md` records the suite categories and routing rule of thumb.
