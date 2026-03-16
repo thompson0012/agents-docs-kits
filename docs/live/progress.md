@@ -4,11 +4,11 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-The packaged strategic scenario-planning skill now lives at `templates/base/.agents/skills/strategic-foresight/` with clearer trigger guidance that keys on a concrete signal plus implications under uncertainty.
+A new packaged skill, `startup-pressure-test`, now lives at `templates/base/.agents/skills/startup-pressure-test/` as an English, agentic workflow for brutally realistic startup idea simulation and business viability stress-testing, and a distributable artifact now exists at `dist/startup-pressure-test.skill`.
 
 ## Latest Completed Work
 
-Renamed the packaged skill directory from `future-catcher` to `strategic-foresight`, changed the frontmatter name, rewrote the description for more precise activation, and added body sections for positioning, trigger rules, strong signals, and non-triggers.
+Initialized the packaged skill directory, replaced the template `SKILL.md` with a trigger-rich English workflow, added a fact-check gate, pessimistic commercial benchmark defaults, a state ledger, day-based simulation stages, and interactive decision-point rules, deleted the generated placeholder resource files, and validated/packaged the skill into `dist/startup-pressure-test.skill`.
 
 ## In Progress
 
@@ -20,19 +20,23 @@ None.
 
 ## Next Recommended Action
 
-None for this objective.
+None.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/strategic-foresight/SKILL.md`
+- `templates/base/.agents/skills/startup-pressure-test/SKILL.md`
+- `templates/base/.agents/skills/startup-pressure-test/scripts/example.py` (deleted)
+- `templates/base/.agents/skills/startup-pressure-test/references/api_reference.md` (deleted)
+- `templates/base/.agents/skills/startup-pressure-test/assets/example_asset.txt` (deleted)
 - `docs/live/current-focus.md`
 - `docs/live/progress.md`
 - `docs/live/todo.md`
+- `dist/startup-pressure-test.skill`
 
 ## Verification Status
 
-Re-read `templates/base/.agents/skills/strategic-foresight/SKILL.md` after editing and confirmed the frontmatter name is `strategic-foresight`, the description encodes explicit positive and negative trigger conditions, and the body distinguishes it from generic advisory or summary work. Searched `templates/base/.agents/skills` for `future-catcher` / `Future Catcher` and found no remaining packaged-skill references. Confirmed the old `templates/base/.agents/skills/future-catcher/` directory was removed. `docs/live/*` intentionally retains the old name as historical context for this rename.
+Re-read `templates/base/.agents/skills/startup-pressure-test/SKILL.md` after editing and confirmed the frontmatter uses only `name` and `description`, the name is hyphen-case, the description encodes trigger and non-trigger conditions, and the body is fully English with the required fact-check gate, 180-day structure, and financial decision points. Searched the new skill directory for `TODO`, `placeholder`, and generated example filenames and found no remaining placeholder content. Installed `PyYAML` into an isolated temporary target directory and reran `templates/base/.agents/skills/skill-creator/scripts/package_skill.py`, which validated the skill and produced `dist/startup-pressure-test.skill`.
 
 ## Hand-off Note
 
-If this template is consumed by any external system-level skill registry, update that registry to call the renamed skill `strategic-foresight`; within this repository, the rename is complete.
+The skill is complete, validated by the packager, and ready to be consumed from the packaged-skill path or distributed via `dist/startup-pressure-test.skill`.
