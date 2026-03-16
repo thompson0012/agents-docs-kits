@@ -4,23 +4,24 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Validation is complete for the packaged three-skill reasoning suite; preserve the validated state and artifacts until a new task supersedes them.
+The packaging repair is complete for `strategic-foresight`, `startup-pressure-test`, and `liquid-glass-design`; preserve the repaired workflow, packaged artifacts, and evaluation records until a new task supersedes them.
 
 ## Scope
 
-- Keep the skill source under `templates/base/.agents/skills/` unchanged from the validated state.
-- Keep the validation artifacts under `templates/base/.agents/skills/reasoning-suite-workspace/iteration-1/`.
+- Keep the repaired packaging helper under `templates/base/.agents/skills/skill-creator/scripts/package_skill.py`.
+- Keep the repaired skill sources under `templates/base/.agents/skills/`, including the frontmatter now present in `liquid-glass-design/SKILL.md`.
+- Keep the updated evaluation artifacts under `templates/base/.agents/skills/evaluation-2026-03-16/`.
 - Keep the packaged `.skill` artifacts present in `dist/`.
 
 ## Constraints
 
-- Use the repository `skill-creator` workflow for future revalidation, not ad hoc checks.
-- Preserve the routing boundaries: vague problems -> `problem-definition`; clearly defined complicated problems -> `dynamic-problem-solving`; state distortion before analysis -> `thinking-ground`.
-- Use `.tmp-pyyaml-real` for local packaging until the broken `.tmp-pyyaml` target is repaired or removed.
+- Use the repository `skill-creator` workflow for future re-evaluation, not ad hoc checks.
+- Continue using `PYTHONPATH=.tmp-pyyaml-real` for local packaging; `PyYAML==6.0.3` is now installed there and required by `quick_validate.py`.
+- The packager now intentionally skips `.DS_Store` and `__pycache__` so packaged skills contain only real resources.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- The validation summary and paired output artifacts remain available in the workspace.
-- `dist/` continues to contain `problem-definition.skill`, `dynamic-problem-solving.skill`, and `thinking-ground.skill`.
-- The live docs reflect the completed validation result and the packaging caveat.
+- `dist/` contains `strategic-foresight.skill`, `startup-pressure-test.skill`, and `liquid-glass-design.skill`.
+- Zip inspection confirms each packaged skill contains only `SKILL.md` under its skill directory.
+- The evaluation records in `templates/base/.agents/skills/evaluation-2026-03-16/` reflect the successful rerun and the applied repairs.

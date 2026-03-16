@@ -1,3 +1,9 @@
+---
+name: liquid-glass-design
+description: Use when implementing or evaluating experimental Apple-like liquid glass UI effects in the browser with CSS/SVG refraction, displacement maps, and backdrop filters. Best for Chromium or Electron prototypes; not for general visual design, cross-browser parity, or production-ready glass.
+---
+
+
 # Liquid Glass CSS/SVG
 
 Source: <https://kube.io/blog/liquid-glass-css-svg/>
