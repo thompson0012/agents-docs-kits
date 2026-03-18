@@ -9,7 +9,7 @@
   "children": [
     {
       "name": "sales-call-prep",
-      "target": "sales-call-prep",
+      "target": "using-sales/sales-call-prep",
       "relationship": "routes_to",
       "summary": "Builds a practical prep brief for an upcoming sales conversation using meeting context, account history, attendee research, and recent company news.",
       "route_when": [
@@ -22,17 +22,17 @@
       ],
       "requires": [],
       "recommends": [
-        "account-research"
+        "using-sales/account-research"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "sales-call-prep",
+        "package": "using-sales/sales-call-prep",
         "notes": "Install this child before routing when the runtime does not already include the meeting-prep skill."
       }
     },
     {
       "name": "sales-draft-outreach",
-      "target": "sales-draft-outreach",
+      "target": "using-sales/sales-draft-outreach",
       "relationship": "routes_to",
       "summary": "Drafts personalized outbound email or LinkedIn outreach after enough research exists to support a credible hook and clear CTA.",
       "route_when": [
@@ -45,17 +45,17 @@
       ],
       "requires": [],
       "recommends": [
-        "account-research"
+        "using-sales/account-research"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "sales-draft-outreach",
+        "package": "using-sales/sales-draft-outreach",
         "notes": "Install this child before routing when the runtime does not already include the outbound drafting skill."
       }
     },
     {
       "name": "account-research",
-      "target": "account-research",
+      "target": "using-sales/account-research",
       "relationship": "routes_to",
       "summary": "Builds an account or contact intelligence brief from web, enrichment, and CRM context before outreach or meeting prep.",
       "route_when": [
@@ -68,12 +68,12 @@
       ],
       "requires": [],
       "recommends": [
-        "sales-call-prep",
-        "sales-draft-outreach"
+        "using-sales/sales-call-prep",
+        "using-sales/sales-draft-outreach"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "account-research",
+        "package": "using-sales/account-research",
         "notes": "Install this child before routing when the runtime does not already include the research skill."
       }
     }

@@ -39,7 +39,7 @@ If you cannot answer these from the request and repo context, ask the smallest f
 
 | Decision | Default |
 | --- | --- |
-| Directory shape | `skill-name/` with `SKILL.md` required |
+| Directory shape | `skill-name/` by default, or `router-name/skill-name/` when the skill belongs inside an existing family router |
 | Frontmatter | `name`, `description` only |
 | Name style | lowercase letters, numbers, hyphens; match directory exactly |
 | Description style | start with `Use when ...`; describe trigger conditions, not the workflow |
@@ -94,6 +94,8 @@ SKILL.md + evals/             -> structured evaluation or baseline comparison ma
 ```
 
 Use [scaffold.py](scripts/scaffold.py) when creating a new package from scratch: `python3 scripts/scaffold.py <skill-name>`.
+
+If the skill belongs under an existing router family, point the scaffold at that router directory instead of the repo root. Example: `python3 scripts/scaffold.py skill-name --path ../router-name`.
 
 ### Phase 3 — Author `SKILL.md`
 

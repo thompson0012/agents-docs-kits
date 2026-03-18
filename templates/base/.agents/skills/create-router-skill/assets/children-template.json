@@ -8,7 +8,7 @@
   "children": [
     {
       "name": "child-skill-name",
-      "target": "child-skill-name",
+      "target": "router-name/child-skill-name",
       "relationship": "routes_to",
       "summary": "What this child does and how it differs from siblings.",
       "route_when": [
@@ -22,8 +22,8 @@
       "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "child-skill-name",
-        "notes": "Install this child before routing when the runtime cannot discover it automatically."
+        "package": "router-name/child-skill-name",
+        "notes": "Install this child path before routing when the runtime cannot discover nested skills automatically."
       }
     }
   ]

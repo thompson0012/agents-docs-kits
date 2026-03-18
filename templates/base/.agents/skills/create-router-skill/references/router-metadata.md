@@ -39,8 +39,8 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
       "recommends": ["self-cognitive"],
       "fallbacks_to": ["dynamic-problem-solving"],
       "install_if_missing": {
-        "package": "problem-definition",
-        "notes": "Install the child before routing when the runtime cannot discover nested skills."
+        "package": "using-reasoning/problem-definition",
+        "notes": "Install the nested child path before routing when the runtime cannot discover nested skills automatically."
       }
     }
   ]
@@ -65,7 +65,7 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
 - `requires` — local child names or external skill identifiers that must also be available before the selected child is safe to use
 - `recommends` — optional companion children or external post-checks worth suggesting
 - `fallbacks_to` — explicit degraded alternatives, usually another child in the same router family
-- `install_if_missing` — package hint for runtimes that can install missing children on demand
+- `install_if_missing` — nested child-path hint for runtimes that can install missing children on demand
 
 ## Design Rules
 

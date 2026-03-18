@@ -216,6 +216,6 @@ State your goal — "I want to get them to agree to a pilot"
 Flag concerns — "They mentioned budget is tight"
 
 Related Skills
-account-research — Deep dive on a company before first contact
+using-sales/account-research — Deep dive on a company before first contact
 call-follow-up — Process call notes and execute post-call workflow
-draft-outreach — Write personalized outreach after research
+using-sales/sales-draft-outreach — Write personalized outreach after research

@@ -23,9 +23,9 @@ Describe the family boundary this router owns and what kinds of requests should 
 
 ## Router Output
 Return one of these forms and then invoke the selected child if needed:
-- `Route to <child-name>.`
-- `Install <child-name>, then route to <child-name>.`
-- `Fallback to <fallback-name>.`
+- `Route to <child-path>.`
+- `Install <child-path>, then route to <child-path>.`
+- `Fallback to <fallback-path>.`
 - `No family child fits; answer directly.`
 
 Add one sentence explaining why the selected child is the narrowest correct fit.

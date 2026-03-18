@@ -22,7 +22,7 @@ Do not perform the full child workflow here. Select the narrowest correct sales 
 Apply these checks in order.
 
 ### 1. Is the user preparing for a specific meeting or call?
-Route to `sales-call-prep` when the request is about a scheduled or imminent discovery call, demo, negotiation, proposal review, check-in, or QBR.
+Route to `using-sales/sales-call-prep` when the request is about a scheduled or imminent discovery call, demo, negotiation, proposal review, check-in, or QBR.
 
 Typical signs:
 - known meeting type, attendees, or calendar context
@@ -30,7 +30,7 @@ Typical signs:
 - request to prepare before a call or meeting
 
 ### 2. Is the user asking for a personalized outbound message?
-Route to `sales-draft-outreach` when the main deliverable is a cold email, warm email, LinkedIn note, re-engagement note, or follow-up message.
+Route to `using-sales/sales-draft-outreach` when the main deliverable is a cold email, warm email, LinkedIn note, re-engagement note, or follow-up message.
 
 Typical signs:
 - drafting, writing, or revising outreach copy
@@ -38,7 +38,7 @@ Typical signs:
 - explicit outbound channel request
 
 ### 3. Is the user primarily gathering account or contact intelligence?
-Route to `account-research` when the main need is to understand a company, person, or domain before a sales action.
+Route to `using-sales/account-research` when the main need is to understand a company, person, or domain before a sales action.
 
 Typical signs:
 - research, intel, or lookup request
@@ -52,10 +52,10 @@ If none of the above fits cleanly, do not force a sales skill.
 
 Return one of these forms and then invoke the selected child if needed:
 
-- `Route to sales-call-prep.`
-- `Route to sales-draft-outreach.`
-- `Route to account-research.`
-- `Install <child-name>, then route to <child-name>.`
+- `Route to using-sales/sales-call-prep.`
+- `Route to using-sales/sales-draft-outreach.`
+- `Route to using-sales/account-research.`
+- `Install <child-path>, then route to <child-path>.`
 - `No sales skill needed; answer directly.`
 
 Add one sentence explaining why the selected child is the narrowest correct fit.

@@ -29,9 +29,18 @@ Route through `using-reasoning` when the request could plausibly fit more than o
 
 Route through `using-sales` when the request could plausibly fit more than one of these:
 
-- `account-research` — gather company, contact, and qualification intelligence before sales action
-- `sales-call-prep` — build a prep brief for an upcoming sales conversation
-- `sales-draft-outreach` — draft personalized outbound email or LinkedIn outreach
+- `using-sales/account-research` — gather company, contact, and qualification intelligence before sales action
+- `using-sales/sales-call-prep` — build a prep brief for an upcoming sales conversation
+- `using-sales/sales-draft-outreach` — draft personalized outbound email or LinkedIn outreach
+
+
+## Marketing Workflow Routing
+
+Route through `using-marketing` when the request could plausibly fit more than one of these:
+
+- `using-marketing/marketing-performance-analytics` — measure performance, choose KPIs, and diagnose funnel or attribution issues
+- `using-marketing/marketing-competitive-analysis` — compare competitors, messaging, positioning, and battlecards
+- `using-marketing/content-creation` — draft or structure marketing content artifacts across channels
 
 
 ## Design Systems and Visual Prototyping
@@ -51,3 +60,4 @@ Ask first: what is the primary artifact needed?
 - liquid-glass implementation note -> `liquid-glass-design`
 - analytical framing, calibration, advisory judgment, or scenario reasoning -> `using-reasoning`
 - ambiguous sales help across research, meeting prep, or outreach -> `using-sales`
+- ambiguous marketing help across analytics, competitor analysis, or content creation -> `using-marketing`

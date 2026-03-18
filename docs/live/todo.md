@@ -11,5 +11,5 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 21: upgrade `create-skill` into a portable LLM-agnostic skill-authoring package | High | Completed |
 | Task 22: extract `create-router-skill` as a separate specialist package for family routers | High | Completed |
 | Task 23: pilot the router model on `using-sales` and wire top-level suite routing into it | High | Completed |
-| Task 24: run prompt-pressure evaluations against `using-sales` and compare it to direct leaf selection | High | Pending |
-| Task 25: decide whether `using-marketing` should be the next router or whether the generic router package needs refinement first | Medium | Pending |
+| Task 24: adopt nested leaf placement for `using-sales` and add `using-marketing` as the second real router family | High | Completed |
+| Task 25: run prompt-pressure evaluations against `using-sales` and `using-marketing`, then decide whether the nested-family convention is ready for the next router candidate | High | Pending |

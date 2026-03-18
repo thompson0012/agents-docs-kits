@@ -277,6 +277,6 @@ Focus on: Attendee backgrounds, recent news, relationship history
 
 ## Related Skills
 
-- **call-prep** — Full meeting prep with this research plus context
-- **draft-outreach** — Write personalized message based on research
+- **using-sales/sales-call-prep** — Full meeting prep with this research plus context
+- **using-sales/sales-draft-outreach** — Write personalized message based on research
 - **prospecting** — Qualify and prioritize research targets

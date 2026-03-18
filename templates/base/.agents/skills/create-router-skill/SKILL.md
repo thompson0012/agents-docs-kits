@@ -5,7 +5,7 @@ description: Use when creating or upgrading a discoverable router skill that sel
 
 # Create Router Skill
 
-Use this skill to create or upgrade a top-level router package that keeps a skill family discoverable without forcing the filesystem to carry the full routing logic.
+Use this skill to create or upgrade a top-level router package that keeps a skill family discoverable and houses its leaf skills under one explicit family entrypoint.
 
 A router skill is not just a category label. It is a real entrypoint with a narrow job: decide which child skill should handle the request, then hand off cleanly.
 
@@ -16,7 +16,7 @@ Use `create-skill` for leaf skills and single-job packages. Use this skill only 
 - Keep the router itself discoverable. A family hidden in nested folders with no top-level router is easy to miss and hard to load.
 - Keep the router honest. It selects and hands off; it does not quietly perform the full child workflow itself.
 - Keep child metadata explicit in `references/children.json`. Do not rely on folder names alone to explain routing, dependencies, or fallbacks.
-- Keep full child skill bodies lazy. Initial discovery should need only the router plus the child inventory, not every leaf body loaded up front.
+- Keep child leaf skills inside the router package, but keep their full bodies lazy. Initial discovery should need only the router plus the child inventory, not every nested leaf body loaded up front.
 - Keep missing-child behavior truthful. Install the right child when possible; otherwise disclose the fallback instead of silently degrading.
 
 ## Entry Gate
@@ -75,9 +75,13 @@ router-name/
 ├── assets/
 │   ├── router-skill-template.md
 │   └── children-template.json
-└── evals/
-    ├── evals.json
-    └── trigger-evals.json
+├── evals/
+│   ├── evals.json
+│   └── trigger-evals.json
+├── child-one/
+│   └── SKILL.md
+└── child-two/
+    └── SKILL.md
 ```
 
 Use this shape when the router needs:
@@ -86,7 +90,7 @@ Use this shape when the router needs:
 - deterministic validation of routing metadata
 - evaluation of both trigger quality and handoff behavior
 
-Keep family-specific child skills outside this package unless the family is a true umbrella with shared assets and nested children. The router should work whether children are flat, nested, or mixed.
+Keep family-specific child skills inside this package by default so the router path tells the truth about the family boundary. Use an external child target only when the skill is intentionally shared across families.
 
 ### Phase 3 — Author the Router `SKILL.md`
 
@@ -102,9 +106,9 @@ The router body should not duplicate the full child inventory. Put change-prone 
 
 A good router output looks like this:
 
-- `Route to problem-definition.`
-- `Install problem-definition, then route to problem-definition.`
-- `Fallback to dynamic-problem-solving.`
+- `Route to using-reasoning/problem-definition.`
+- `Install using-reasoning/problem-definition, then route to using-reasoning/problem-definition.`
+- `Fallback to using-reasoning/dynamic-problem-solving.`
 - `No family child fits; answer directly.`
 
 Add one sentence explaining why the selected child is the narrowest correct fit.
@@ -179,7 +183,8 @@ Review whether the router:
 A router does not replace leaf skill creation.
 
 After the router boundary is stable:
-- use `create-skill` for any new child leaf skill
+- use `create-skill` to author each child leaf package, but place it under the router directory (for example `router-name/child-name/`)
+- move existing family leaf skills under the router package when adopting the nested convention
 - keep leaf execution guidance in the child package, not in the router
 - update the router's `references/children.json` whenever the child set changes
 
