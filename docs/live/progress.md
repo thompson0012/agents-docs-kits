@@ -4,11 +4,11 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-`create-skill` remains the portable leaf-skill authoring package, and `templates/base/.agents/skills/create-router-skill/` now exists as the separate specialist package for discoverable family routers with explicit child metadata and install/fallback rules.
+`create-router-skill` is now being exercised on a real family: `templates/base/.agents/skills/using-sales/` exists as the first concrete family router, and `using-agent-practices` now delegates ambiguous sales requests into it.
 
 ## Latest Completed Work
 
-Created `create-router-skill/` as a dedicated package with a router-focused `SKILL.md`, `references/router-metadata.md`, `references/relationship-types.md`, starter assets for router bodies and child inventories, eval prompts, and `scripts/validate_router.py` for deterministic router-package validation. Updated `create-skill/SKILL.md` plus `references/anti-patterns.md` so router-entrypoint work now routes to `create-router-skill` instead of being forced into leaf-skill guidance.
+Created `using-sales/` with a router-focused `SKILL.md`, `references/children.json`, eval prompts, and a local `scripts/validate_router.py`. The router selects among `account-research`, `sales-call-prep`, and `sales-draft-outreach` using a concrete priority order. Updated `using-agent-practices/SKILL.md` plus `references/category-map.md` so the suite router now sends ambiguous sales requests to `using-sales` rather than forcing a premature leaf choice.
 
 ## In Progress
 
@@ -20,35 +20,32 @@ None.
 
 ## Next Recommended Action
 
-Run a real prompt-pressure loop against `create-router-skill`, then pilot the metadata model on one actual family router before deciding whether the suite should adopt nested family packages or stay flat with router indexes only.
+Run prompt-pressure evaluations against `using-sales`, then decide whether the next pilot should be `using-marketing` or whether the sales pilot exposed model changes that should be folded back into `create-router-skill` first.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/create-router-skill/SKILL.md`
-- `templates/base/.agents/skills/create-router-skill/references/router-metadata.md`
-- `templates/base/.agents/skills/create-router-skill/references/relationship-types.md`
-- `templates/base/.agents/skills/create-router-skill/assets/router-skill-template.md`
-- `templates/base/.agents/skills/create-router-skill/assets/children-template.json`
-- `templates/base/.agents/skills/create-router-skill/evals/evals.json`
-- `templates/base/.agents/skills/create-router-skill/evals/trigger-evals.json`
-- `templates/base/.agents/skills/create-router-skill/scripts/validate_router.py`
-- `templates/base/.agents/skills/create-skill/SKILL.md`
-- `templates/base/.agents/skills/create-skill/references/anti-patterns.md`
+- `templates/base/.agents/skills/using-sales/SKILL.md`
+- `templates/base/.agents/skills/using-sales/references/children.json`
+- `templates/base/.agents/skills/using-sales/evals/evals.json`
+- `templates/base/.agents/skills/using-sales/evals/trigger-evals.json`
+- `templates/base/.agents/skills/using-sales/scripts/validate_router.py`
+- `templates/base/.agents/skills/using-agent-practices/SKILL.md`
+- `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
 - `docs/live/current-focus.md`
 - `docs/live/progress.md`
 - `docs/live/todo.md`
 
 ## Verification Status
 
-Read back the new router package and updated `create-skill` guidance. Ran and observed success for:
+Read back the new sales router and root-routing changes. Ran and observed success for:
 
-- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/create-router-skill --strict`
-- `python3 templates/base/.agents/skills/create-router-skill/scripts/validate_router.py tmp/router-skill-check --strict` against a valid temporary router fixture
-- `python3 templates/base/.agents/skills/create-router-skill/scripts/validate_router.py tmp/router-skill-check-invalid --strict` failing on an unknown fallback target
-- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/create-skill --strict` after integrating the new router boundary
-- `python3 -m py_compile templates/base/.agents/skills/create-router-skill/scripts/validate_router.py`
-- reviewer re-check on `create-router-skill` confirming the previous validator issues were resolved and no material issues remain
+- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/using-sales --strict`
+- `python3 templates/base/.agents/skills/using-sales/scripts/validate_router.py templates/base/.agents/skills/using-sales --strict`
+- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/using-agent-practices --strict`
+- `python3 -m py_compile templates/base/.agents/skills/using-sales/scripts/validate_router.py`
+- `python3 templates/base/.agents/skills/using-sales/scripts/validate_router.py tmp/using-sales-invalid --strict` failing on an unknown fallback target
+- reviewer pass on `using-sales` and root-router integration; fixed one contract inconsistency in `using-agent-practices` and revalidated
 
 ## Hand-off Note
 
-The suite now has an explicit split: use `create-skill` for leaf execution packages and `create-router-skill` when the package's primary job is selection, handoff, and child metadata. The next decision should be exercised on a real router family before committing to a broader filesystem reorganization.
+The first real router pilot is in place. `using-sales` demonstrates that the router-package model can mediate between research, meeting prep, and outreach without flattening the leaf skills. The next useful decision is whether this pattern transfers cleanly to `using-marketing` or whether the sales pilot surfaced enough edge cases to refine the generic router-authoring package first.

@@ -1,6 +1,6 @@
 ---
 name: using-agent-practices
-description: Use when the user may need any first-party skill from this repository's owned suite under `.agents/skills`. Route analytical requests to `using-reasoning`; route prompt-engineering requests to `meta-prompting`; route continuity, retrospective, startup stress-test, design-token, and liquid-glass requests to their specific skills. Use this router before direct action when more than one suite skill might plausibly fit.
+description: Use when the user may need a first-party skill from `.agents/skills` and the right leaf skill or family router is not obvious yet.
 ---
 
 # Using Agent Practices
@@ -13,7 +13,7 @@ For the current category map and skill inventory, read `references/category-map.
 
 ## Core Contract
 
-- Choose exactly one target: a single leaf skill, `using-reasoning`, or no suite skill.
+- Choose exactly one target: a single leaf skill, a family router such as `using-reasoning` or `using-sales`, or no suite skill.
 - Prefer the narrowest correct fit over the most impressive fit.
 - If no first-party skill clearly adds value, say so and answer directly.
 - Do not stack multiple primary suite skills from this router.
@@ -35,10 +35,13 @@ Apply these checks in order.
 - Need design tokens, a brand system, or a brand spec from brand inputs -> `generating-design-tokens`
 - Need an Apple-like liquid glass browser effect using CSS/SVG refraction and displacement maps -> `liquid-glass-design`
 
-### 4. Reasoning and strategy requests
+### 4. Sales workflows
+- Need sales help and the request could plausibly mean account research, meeting prep, or personalized outreach -> `using-sales`
+
+### 5. Reasoning and strategy requests
 If the task is mainly about understanding, framing, advising, or scenario-planning a problem, route to `using-reasoning`.
 
-### 5. No suite skill
+### 6. No suite skill
 If none of the above fits cleanly, do not force a suite skill.
 
 ## Router Output
@@ -51,6 +54,7 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to startup-pressure-test.`
 - `Route to generating-design-tokens.`
 - `Route to liquid-glass-design.`
+- `Route to using-sales.`
 - `Route to using-reasoning.`
 - `No agent-practices skill needed; answer directly.`
 
@@ -62,3 +66,4 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 - routing to `using-reasoning` for requests that are clearly prompt, continuity, startup, or design work
 - sending a request to multiple sibling skills in parallel from this router
 - forcing a suite skill onto a simple request that does not benefit from special instructions
+- routing an ambiguous sales request straight to one leaf when `using-sales` should narrow it first

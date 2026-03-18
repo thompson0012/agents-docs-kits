@@ -25,6 +25,15 @@ Route through `using-reasoning` when the request could plausibly fit more than o
 
 - `startup-pressure-test` — pressure-test a startup idea with market, funnel, and runway realism
 
+## Sales Workflow Routing
+
+Route through `using-sales` when the request could plausibly fit more than one of these:
+
+- `account-research` — gather company, contact, and qualification intelligence before sales action
+- `sales-call-prep` — build a prep brief for an upcoming sales conversation
+- `sales-draft-outreach` — draft personalized outbound email or LinkedIn outreach
+
+
 ## Design Systems and Visual Prototyping
 
 - `generating-design-tokens` — turn brand inputs into a design token spec or brand system
@@ -41,3 +50,4 @@ Ask first: what is the primary artifact needed?
 - design token spec -> `generating-design-tokens`
 - liquid-glass implementation note -> `liquid-glass-design`
 - analytical framing, calibration, advisory judgment, or scenario reasoning -> `using-reasoning`
+- ambiguous sales help across research, meeting prep, or outreach -> `using-sales`

@@ -4,24 +4,24 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Extract a separate `create-router-skill` package from the skill-authoring work so discoverable family routers can be built without overloading `create-skill` or breaking portable leaf-skill conventions.
+Pilot the new router-package model on a real family by adding `using-sales` as the first concrete sales router and wiring the top-level suite router to delegate ambiguous sales requests into it.
 
 ## Scope
 
-- Keep the work inside `templates/base/.agents/skills/create-router-skill/`, the touched `create-skill/` guidance, and the live docs updated for continuity.
-- Preserve the portable core approach: router packages should remain useful without one runtime's loader or install model.
-- Clarify the boundary between leaf skill creation and router/family-entrypoint creation.
+- Keep the work inside `templates/base/.agents/skills/using-sales/`, the touched `using-agent-practices/` files, and the live docs updated for continuity.
+- Preserve the portable router approach: explicit child metadata, truthful install behavior, and lazy leaf loading.
+- Use the pilot to validate whether the router-package model works on a real family before applying it to more families.
 
 ## Constraints
 
-- Do not encode Anthropic-, OpenAI-, or other vendor-specific runtime rules as the canonical router workflow.
-- Keep the portable core aligned with suite conventions: `name` and `description` frontmatter by default, explicit metadata in bundled files only when justified.
-- Router packages must keep selection, install, and fallback behavior truthful rather than relying on folder layout alone.
+- Do not encode Anthropic-, OpenAI-, or other vendor-specific runtime rules as the canonical sales-router workflow.
+- Keep the router narrow: select among `account-research`, `sales-call-prep`, and `sales-draft-outreach` without absorbing their full workflows.
+- Keep the root suite router honest: route sales ambiguity to `using-sales` without forcing unrelated requests into the sales family.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- `create-router-skill/SKILL.md` teaches when and how to build a discoverable family router.
-- Bundled references and assets define a reusable child-metadata model and typed relationship vocabulary.
-- `scripts/validate_router.py` succeeds on a valid router package and rejects malformed router metadata.
-- `create-skill` clearly redirects router-entrypoint work to `create-router-skill` instead of overloading leaf-skill guidance.
+- `using-sales/SKILL.md` cleanly routes among the three sales leaves and exposes explicit router outputs.
+- `using-sales/references/children.json` captures selection order, child boundaries, and install hints honestly.
+- `using-agent-practices` and its category map delegate ambiguous sales requests to `using-sales`.
+- Focused validation proves the new sales router package is structurally valid and the local validator rejects malformed router metadata.

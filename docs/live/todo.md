@@ -10,6 +10,6 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | --- | --- | --- |
 | Task 21: upgrade `create-skill` into a portable LLM-agnostic skill-authoring package | High | Completed |
 | Task 22: extract `create-router-skill` as a separate specialist package for family routers | High | Completed |
-| Task 23: run prompt-pressure evaluations against `create-router-skill` on one real family router | High | Pending |
-| Task 24: pilot the router child-metadata model on an actual family such as `using-research` or `using-commercial` | Medium | Pending |
-| Task 25: decide whether the suite should adopt nested family packages, flat routers plus indexes, or a hybrid after the pilot | Medium | Pending |
+| Task 23: pilot the router model on `using-sales` and wire top-level suite routing into it | High | Completed |
+| Task 24: run prompt-pressure evaluations against `using-sales` and compare it to direct leaf selection | High | Pending |
+| Task 25: decide whether `using-marketing` should be the next router or whether the generic router package needs refinement first | Medium | Pending |
