@@ -4,25 +4,23 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Keep the first-party skill suite under `templates/base/.agents/skills/` organized around an owned routing model: a suite router (`using-agent-practices`), a reasoning-family router (`using-reasoning`), the existing leaf skills, and a shared category map that explains how the pieces fit together.
+Replace the legacy `create-skill` guidance with a production-ready, universal `skills-creator` package that matches the provided structure, scripts, and references for scaffolding, authoring, validating, and evaluating SKILL.md packages.
 
 ## Scope
 
-- Keep the new router skills under `templates/base/.agents/skills/using-agent-practices/` and `templates/base/.agents/skills/using-reasoning/`.
-- Keep the suite taxonomy reference under `templates/base/.agents/skills/using-agent-practices/references/category-map.md`.
-- Keep the starter skill-creator eval fixtures under each new router's `evals/evals.json`.
-- Keep the existing 11 live leaf skills in place without renaming them.
+- Work inside `templates/base/.agents/skills/skills-creator/` plus the live docs that track progress.
+- Include SKILL.md, `scripts/scaffold.py`, `scripts/validate.py`, `assets/skill_template.md`, `assets/eval_template.md`, and references for patterns, platforms, security, and antipatterns.
+- Retire the old `create-skill` folder; do not alter other skills or routers.
 
 ## Constraints
 
-- Use owned suite terminology; do not depend on third-party `superpowers` naming inside the first-party router skills.
-- Keep the skill directory flat for now; express categories through routers and references rather than nested discovery assumptions.
-- Preserve the existing leaf skill names and descriptions unless a future task explicitly asks to retune them.
-- Do not commit from this task.
+- Keep the skill universal across surfaces (no platform-bound instructions).
+- Follow the naming and validation rules from the specification (gerund form preferred, forbidden words, ≤64 chars, ≤500 body lines, ≤1-level references).
+- Preserve unrelated skills and existing router work.
 
 ## Success Criteria
 
-- `using-agent-practices/SKILL.md` routes across the current owned suite categories and points reasoning requests to `using-reasoning`.
-- `using-reasoning/SKILL.md` routes cleanly among `thinking-ground`, `problem-definition`, `dynamic-problem-solving`, `domain-expert-consultation`, and `strategic-foresight`.
-- Both router skills include starter `evals/evals.json` fixtures for future `skill-creator` iteration.
-- `using-agent-practices/references/category-map.md` records the suite categories and routing rule of thumb.
+- `skills-creator/SKILL.md` reflects the seven-phase lifecycle and progressive disclosure rules, with clear references to supporting files.
+- Scripts scaffold and validate skill packages per the naming/frontmatter/line-count rules.
+- Assets and references match the required templates and checklists.
+- Live docs reflect the updated objective and completed work.
