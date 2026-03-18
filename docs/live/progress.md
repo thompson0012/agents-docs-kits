@@ -4,11 +4,14 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-The first-party skill suite now has an owned routing layer. `using-agent-practices` routes across the whole suite, `using-reasoning` routes the overlapping reasoning skills, and `using-agent-practices/references/category-map.md` records the current category abstraction for the 11 live leaf skills.
+The legacy `create-skill` guidance has been replaced by a universal `skills-creator` package with SKILL.md, scripts, references, and templates for scaffolding, validating, and evaluating new skills.
 
 ## Latest Completed Work
 
-Created `templates/base/.agents/skills/using-agent-practices/SKILL.md`, `templates/base/.agents/skills/using-reasoning/SKILL.md`, a shared category map reference under `using-agent-practices/references/`, and starter `evals/evals.json` fixtures for both routers. The suite is now abstracted into Orchestration and Continuity, Reasoning and Strategy, Prompt Artifact Creation, Commercial Reality Testing, and Design Systems and Visual Prototyping, with only the reasoning cluster routed through a family router.
+- Added `templates/base/.agents/skills/skills-creator/SKILL.md` with the seven-phase lifecycle, progressive disclosure rules, and links to supporting resources.
+- Added assets (`skill_template.md`, `eval_template.md`) and references (`PATTERNS.md`, `PLATFORMS.md`, `SECURITY.md`, `ANTIPATTERNS.md`).
+- Implemented `scripts/scaffold.py` (name checks + scaffold + eval template copy) and `scripts/validate.py` (frontmatter/name/description/line-count/reference-depth checks, optional eval count gate).
+- Retired the old `create-skill` folder and refreshed live docs (current-focus, todo, progress).
 
 ## In Progress
 
@@ -20,24 +23,28 @@ None.
 
 ## Next Recommended Action
 
-If these routers will become stable entry points, run a true `skill-creator` eval loop against the new router skills next so the category ordering and descriptions can be pressure-tested on ambiguous prompts instead of only structurally validated.
+Author real evaluation scenarios for `skills-creator` (or downstream skills) and run the validator with `--full` once scenarios exist; optionally tune the gerund warning if keeping the `skills-creator` name as-is.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/using-agent-practices/SKILL.md`
-- `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
-- `templates/base/.agents/skills/using-agent-practices/evals/evals.json`
-- `templates/base/.agents/skills/using-reasoning/SKILL.md`
-- `templates/base/.agents/skills/using-reasoning/evals/evals.json`
+- `templates/base/.agents/skills/skills-creator/SKILL.md`
+- `templates/base/.agents/skills/skills-creator/assets/skill_template.md`
+- `templates/base/.agents/skills/skills-creator/assets/eval_template.md`
+- `templates/base/.agents/skills/skills-creator/references/PATTERNS.md`
+- `templates/base/.agents/skills/skills-creator/references/PLATFORMS.md`
+- `templates/base/.agents/skills/skills-creator/references/SECURITY.md`
+- `templates/base/.agents/skills/skills-creator/references/ANTIPATTERNS.md`
+- `templates/base/.agents/skills/skills-creator/scripts/scaffold.py`
+- `templates/base/.agents/skills/skills-creator/scripts/validate.py`
 - `docs/live/current-focus.md`
 - `docs/live/progress.md`
 - `docs/live/todo.md`
 
 ## Verification Status
 
-Read back both new SKILL files plus the new category map and eval fixtures. Ran and observed success for:
-- `python3` frontmatter/JSON validation covering `templates/base/.agents/skills/using-agent-practices/SKILL.md`, `templates/base/.agents/skills/using-reasoning/SKILL.md`, both router `evals/evals.json` files, and the required sections in `using-agent-practices/references/category-map.md`.
+- `python3 -m compileall templates/base/.agents/skills/skills-creator/scripts`
+- `python3 templates/base/.agents/skills/skills-creator/scripts/validate.py templates/base/.agents/skills/skills-creator` (passes with a gerund-name warning because the spec keeps `skills-creator`)
 
 ## Hand-off Note
 
-The suite abstraction is now documented without renaming the existing leaf skills. The next leverage point is evaluation quality, not more taxonomy: the owned routers exist, but their category order and trigger wording still need real ambiguous-prompt testing if you want them to become default entry points.
+`skills-creator` now packages the full lifecycle guidance plus scaffold/validate helpers and supporting references/templates. Add evaluation scenarios and re-run validation with `--full` when ready; adjust or silence the gerund warning if you prefer to keep the non-gerund name.
