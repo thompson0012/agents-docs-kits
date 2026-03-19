@@ -15,7 +15,7 @@
 | CLI page rendering | pdftoppm | [libraries/cli-tools.md](libraries/cli-tools.md) |
 | OCR scanned PDFs | pytesseract + pdf2image | Convert to images, then OCR |
 | Fill PDF forms | pypdf or pdf-lib | [form-filling.md](form-filling.md) |
-| Convert PDF to Word | pdf2docx (load docx skill) | See docx skill — Converting PDF to Word |
+| Convert PDF to Word | pdf2docx (load `using-documents/docx`) | See `using-documents/docx` — PDF to Word |
 
 **Form filling:** You MUST read [form-filling.md](form-filling.md) before attempting to fill any PDF form.
 

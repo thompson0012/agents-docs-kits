@@ -14,7 +14,7 @@ Under the hood, .docx is a ZIP container holding XML parts. Creation, reading, a
 | Handle legacy .doc format | `soffice --headless --convert-to docx file.doc` | Convert before any XML work |
 | Rebuild from a PDF | Run `pdf2docx`, then patch issues | See below |
 | Export pages as images | `soffice` to PDF, then `pdftoppm` | See below |
-| Flatten tracked changes | `python skills/docx/scripts/accept_changes.py in.docx out.docx` | Requires LibreOffice |
+| Flatten tracked changes | `python skills/using-documents/docx/scripts/accept_changes.py in.docx out.docx` | Requires LibreOffice |
 
 All tools referenced above (`pandoc`, `soffice`, `pdftoppm`, `docx` npm module, `pdf2docx`) are pre-installed in the sandbox.
 

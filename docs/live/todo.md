@@ -14,4 +14,5 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 24: adopt nested leaf placement for `using-sales` and add `using-marketing` as the second real router family | High | Completed |
 | Task 25: complete the remaining nested family routers (`using-reasoning`, `using-research`, `using-finance`) and generalize `create-router-skill` | High | Completed |
 | Task 26: formalize `website-building` and add `using-legal` as discoverable nested router families | High | Completed |
-| Task 27: run prompt-pressure evaluations against the expanded router suite before building the deferred document-format family | High | Pending |
+| Task 27: add `using-documents` as the canonical nested router for `docx`, `pdf`, `pptx`, and `xlsx` | High | Completed |
+| Task 28: run prompt-pressure evaluations against the expanded router suite including `using-documents` before creating any more families | High | Pending |

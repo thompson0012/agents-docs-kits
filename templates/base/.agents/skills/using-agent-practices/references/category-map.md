@@ -23,6 +23,15 @@ Route through `website-building` when the request could plausibly fit more than 
 - `website-building/webapp` — build fullstack or app-like web products such as SaaS tools, dashboards, admin panels, and ecommerce apps
 - `website-building/game` — build browser games and real-time interactive web experiences
 
+## Document Workflow Routing
+
+Route through `using-documents` when the request could plausibly fit more than one of these:
+
+- `using-documents/docx` — create or edit editable Word documents, tracked changes, or PDF-to-Word conversions
+- `using-documents/pdf` — fill, extract, OCR, render, split, merge, or otherwise manipulate fixed-layout PDFs
+- `using-documents/pptx` — create, edit, or QA slide decks and presentation templates
+- `using-documents/xlsx` — create, update, or debug spreadsheet workbooks, formulas, pivots, and workbook automation
+
 ## Legal Workflow Routing
 
 Route through `using-legal` when the request could plausibly fit more than one of these:
@@ -85,6 +94,7 @@ Ask first: what is the primary artifact or workflow needed?
 - prompt -> `meta-prompting`
 - startup simulation -> `startup-pressure-test`
 - ambiguous website or browser-based build across site, app, or game -> `website-building`
+- ambiguous document work across Word, PDF, PowerPoint, or Excel artifacts -> `using-documents`
 - ambiguous legal help across contract redlines or privacy compliance -> `using-legal`
 - design token spec -> `generating-design-tokens`
 - liquid-glass implementation note -> `liquid-glass-design`
