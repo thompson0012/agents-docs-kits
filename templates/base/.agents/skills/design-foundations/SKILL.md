@@ -1,3 +1,8 @@
+---
+name: design-foundations
+description: Use when choosing colors, typography, spacing, or chart styling for a visual artifact and no project-specific design system already governs the work.
+---
+
 # Design Foundations
 
 Artifact-agnostic design guidance — works for CSS, PowerPoint, matplotlib, PDF, or any visual output.
@@ -23,7 +28,7 @@ Color is emphasis — every non-neutral color must answer: **what does this help
 
 ## Default Palette — Nexus
 
-**Use when the user gives no color direction.** Perplexity-aligned — warm, professional, accessible.
+**Use when the user gives no color direction.** Warm, professional, and accessible.
 
 **These are roles, not a mandate.** A typical output uses Background + Text + Primary. Add semantic colors (error, warning, success) only when the content requires them. Do not introduce color for decoration.
 

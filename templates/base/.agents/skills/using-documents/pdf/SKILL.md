@@ -1,3 +1,9 @@
+---
+name: pdf
+description: Use when creating, editing, extracting, OCRing, filling, or converting fixed-layout PDF files, especially for forms, scans, rendering, metadata, or source-cited deliverables.
+---
+
+
 # PDF Processing
 
 ## When to Use Which Tool
@@ -21,21 +27,21 @@
 
 ## Design and Typography
 
-**Design defaults:** See `skills/design-foundations/SKILL.md` for palette, fonts + PDF pairings, chart colors, and core principles (1 accent + neutrals, no decorative imagery, accessibility).
+**Design defaults:** See `.agents/skills/design-foundations/SKILL.md` for palette, fonts + PDF pairings, chart colors, and core principles (1 accent + neutrals, no decorative imagery, accessibility).
 
-**Typography:** PDFs embed any TTF font — use distinctive, professional fonts, not system defaults. Download from Google Fonts at runtime, register with ReportLab, and it embeds automatically. See [libraries/reportlab.md](libraries/reportlab.md) (Custom Fonts section) and `skills/design-foundations/SKILL.md` (PDF Pairings table + Font Strategy by Format). Default to a clean sans-serif (Inter, DM Sans, Work Sans).
+**Typography:** PDFs embed any TTF font — use distinctive, professional fonts, not system defaults. Download from Google Fonts at runtime, register with ReportLab, and it embeds automatically. See [libraries/reportlab.md](libraries/reportlab.md) (Custom Fonts section) and `.agents/skills/design-foundations/SKILL.md` (PDF Pairings table + Font Strategy by Format). Default to a clean sans-serif (Inter, DM Sans, Work Sans).
 
 **CJK text:** Fonts like Inter and DM Sans only cover Latin glyphs. ReportLab has no automatic font fallback — unregistered scripts render as tofu. Register Noto Sans CJK for Chinese, Japanese, or Korean text. See [libraries/reportlab.md](libraries/reportlab.md) (CJK Font Support).
 
 ## PDF Metadata
 
 Always set metadata when creating PDFs:
-- **Author** MUST be `"Perplexity Computer"`
+- **Author** should reflect the producing party. Use the user or organization name when known; otherwise default to `"Agent"`.
 - **Title** MUST be a descriptive name relevant to the document contents
 
-Canvas API: `c.setTitle(...)`, `c.setAuthor("Perplexity Computer")` right after creating the canvas.
-SimpleDocTemplate: pass `title=...`, `author="Perplexity Computer"` as constructor kwargs.
-pdf-lib (JS): `doc.setTitle(...)`, `doc.setAuthor("Perplexity Computer")`.
+Canvas API: `c.setTitle(...)`, `c.setAuthor("Agent")` right after creating the canvas.
+SimpleDocTemplate: pass `title=...`, `author="Agent"` as constructor kwargs.
+pdf-lib (JS): `doc.setTitle(...)`, `doc.setAuthor("Agent")`.
 
 ## Source Citations
 

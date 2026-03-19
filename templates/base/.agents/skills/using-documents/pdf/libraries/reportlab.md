@@ -4,10 +4,10 @@ ReportLab creates PDFs from scratch using either the low-level Canvas API or the
 
 ## PDF Metadata
 
-Always set metadata on every PDF you create. The author MUST be `"Perplexity Computer"` and the title MUST describe the document contents.
+Always set metadata on every PDF you create. The author should reflect the producing party; if none is supplied, use a neutral default like `"Agent"`. The title must describe the document contents.
 
-- **Canvas**: call `c.setTitle(...)` and `c.setAuthor("Perplexity Computer")` immediately after creating the canvas
-- **SimpleDocTemplate**: pass `title=...` and `author="Perplexity Computer"` as constructor kwargs
+- **Canvas**: call `c.setTitle(...)` and `c.setAuthor("Agent")` immediately after creating the canvas
+- **SimpleDocTemplate**: pass `title=...` and `author="Agent"` as constructor kwargs
 
 ## Canvas API
 
@@ -19,7 +19,7 @@ from reportlab.pdfgen import canvas
 
 c = canvas.Canvas("status.pdf", pagesize=letter)
 c.setTitle("Q4 Project Status")
-c.setAuthor("Perplexity Computer")
+c.setAuthor("Agent")
 w, h = letter
 
 c.setFont("Helvetica-Bold", 18)
@@ -48,7 +48,7 @@ doc = SimpleDocTemplate(
     "sprint_review.pdf",
     pagesize=letter,
     title="Sprint 14 Review",
-    author="Perplexity Computer",
+    author="Agent",
 )
 styles = getSampleStyleSheet()
 story = []
@@ -142,7 +142,7 @@ For canvas-drawn text, manually adjust font size and y-offset — do not use Uni
 
 ## Custom Fonts (Google Fonts)
 
-Download TTF files at runtime from Google Fonts, register with ReportLab, and they embed automatically. See `skills/design-foundations/SKILL.md` for font pairings and rules.
+Download TTF files at runtime from Google Fonts, register with ReportLab, and they embed automatically. See `.agents/skills/design-foundations/SKILL.md` for font pairings and rules.
 
 ```python
 import urllib.request
@@ -161,7 +161,7 @@ if not font_path.exists():
 pdfmetrics.registerFont(TTFont("Inter", str(font_path)))
 ```
 
-**Fallback**: Helvetica (built-in, no download). **Blacklist**: see `skills/design-foundations/SKILL.md` Font Rules.
+**Fallback**: Helvetica (built-in, no download). **Blacklist**: see `.agents/skills/design-foundations/SKILL.md` Font Rules.
 
 ## CJK Font Support
 

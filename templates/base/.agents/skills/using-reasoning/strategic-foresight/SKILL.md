@@ -1,12 +1,6 @@
 ---
 name: strategic-foresight
-description: >
-  Use for scenario planning around a concrete external change or threshold: a new technology, model,
-  product launch, startup move, pricing change, hardware cost curve, policy shift, scientific result,
-  platform decision, or market shock. Trigger when the user asks what it means, what happens next,
-  who wins or loses, what second- or third-order effects follow, what to watch, or asks to run
-  base/upside/failure scenarios or a tabletop exercise. Do not use for generic strategy advice,
-  pure summaries, or implementation questions without a concrete signal.
+description: Use when a concrete external change or threshold needs scenario planning, such as a launch, pricing move, policy shift, scientific result, cost curve, or market shock, and the user wants implications, winners and losers, second-order effects, or indicators to watch.
 ---
 
 # Strategic Foresight — Scenario Planning for Emerging Change

@@ -1,6 +1,6 @@
 ---
 name: generating-design-tokens
-description: Use when generating design tokens, a brand design system, or a brand spec from brand identity inputs. Triggers include "generate design tokens", "create a design system", "build a brand spec", or when brand discovery answers (purpose, audience, differentiator, personality, perception, visual references) are provided. Always checks existing project docs (for example `docs/reference/design.md`, `docs/reference/memory.md`, or product vision docs) before asking questions.
+description: Use when turning brand inputs or existing product docs into a portable design-token spec, brand system, or brand spec with traceable decisions and resolved visual conflicts.
 ---
 
 # Generating Design Tokens

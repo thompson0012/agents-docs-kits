@@ -1,8 +1,8 @@
 # 2D Canvas Game Engineering
 
-Engineering patterns for building 2D browser games with HTML5 Canvas API. Companion reference to `skills/website-building/game/game.md`.
+Engineering patterns for building 2D browser games with HTML5 Canvas API. Companion reference to `.agents/skills/website-building/game/game.md`.
 
-**Mandatory shared files (read if not already loaded):** `skills/website-building/shared/01-design-tokens.md`.
+**Mandatory shared files (read if not already loaded):** `.agents/skills/website-building/shared/01-design-tokens.md`.
 
 ## Project Architecture
 

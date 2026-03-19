@@ -58,7 +58,7 @@ The foundation is clean, grid-aligned composition. Within that orderly structure
   }
   ```
 - **Full-bleed moments: intentional, not default.** Use `max-width` containers for most content, break out to full-width for 1-2 dramatic moments.
-- **The max-width ladder** (defined in `skills/website-building/shared/01-design-tokens.md` as CSS variables):
+- **The max-width ladder** (defined in `.agents/skills/website-building/shared/01-design-tokens.md` as CSS variables):
   - `var(--content-narrow)` (640px) — focused prose, forms, single-column content
   - `var(--content-default)` (960px) — most page content, card grids
   - `var(--content-wide)` (1200px) — dashboards, multi-column layouts

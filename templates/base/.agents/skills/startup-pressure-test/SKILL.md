@@ -1,6 +1,6 @@
 ---
 name: startup-pressure-test
-description: "Use when the user wants a brutally realistic, data-driven startup simulation, business viability stress test, or harsh go-to-market reality check for a startup idea. Trigger on requests to pressure-test an idea, simulate the first 180 days, validate commercial assumptions, examine CAC/churn/conversion/runway, or run an interactive launch-and-finance scenario for a SaaS, marketplace, content product, or other startup concept. Focus on demand, acquisition, retention, monetization, and cash survival under pessimistic but credible assumptions. Do not use for technical architecture, generic brainstorming, motivational coaching, or lightweight business advice without a concrete startup idea." 
+description: Use when pressure-testing a concrete startup idea, launch plan, or early unit economics with pessimistic but credible market, acquisition, retention, monetization, and runway assumptions.
 ---
 
 # Startup Pressure Test

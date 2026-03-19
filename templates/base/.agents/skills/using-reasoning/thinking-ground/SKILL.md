@@ -1,6 +1,6 @@
 ---
 name: thinking-ground
-description: "Use before heavy analysis when the stakes are high, the user or model appears attached to a preferred answer, urgency feels emotionally inflated, previous analysis sounds technically polished but hollow, or the conversation is looping without genuine update. This is a meta-skill for calibrating the state in which reasoning happens before using using-reasoning/problem-definition or using-reasoning/dynamic-problem-solving. Do not use as therapy, spirituality, or proof of consciousness. Use only observable conversational signals and route back to action once the state is good enough for honest reasoning." 
+description: Use when high-stakes reasoning feels distorted by attachment, urgency, looping, or polished-but-hollow analysis, and the goal is to recalibrate on observable signals before using problem-definition or dynamic-problem-solving.
 ---
 
 # Thinking Ground

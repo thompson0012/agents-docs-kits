@@ -1,37 +1,37 @@
 ---
 name: website-building
-description: Use when a web-project request could plausibly mean an informational site, a fullstack web application, or a browser game and the agent must choose the narrowest child first.
+description: Use when a request could plausibly be an informational site, a web application, or a browser game and the agent must choose the narrowest website-building child.
 ---
 
 # Website Building
 
 Use this router when the request is about building a website or browser-based experience and more than one web child could fit.
 
-Do not perform the full child workflow here. Select the narrowest correct child, then hand off.
+Do not perform the full child workflow here. Choose the narrowest correct child, then hand off.
 
-**Universal design principles** (color philosophy, default palette, font selection) are shared with other skills via `design-foundations`. This family's `shared/` files extend those foundations with web-specific implementation guidance, so child skills should load them directly instead of separately loading `design-foundations`.
+**Universal design principles** are shared with `design-foundations`. This family's `shared/` files extend those foundations with web-specific implementation guidance, so children should load the web references they need directly.
 
 ## Core Contract
 
 - Choose exactly one primary child skill or decide that no website-building child fits.
 - Prefer gameplay first, then app workflows, then informational sites.
 - Use `references/children.json` as the source of truth for child boundaries, install hints, and selection order.
-- If the best child is missing, say to install it rather than quietly doing weaker work under the wrong child.
+- If the best child is missing, say to install it rather than doing weaker work under the wrong child.
 - Do not route to multiple sibling web children in parallel for one request.
 
 ## Decision Order
 
 | Project Type | Route | Examples |
 |---|---|---|
-| Browser games | `load_skill("website-building/game")` | 2D Canvas games, Three.js/WebGL games, HTML5 games, interactive 3D experiences |
-| Web applications | `load_skill("website-building/webapp")` | SaaS products, dashboards, admin panels, e-commerce, brand experiences with app logic |
-| Informational sites | `load_skill("website-building/informational")` | Personal sites, portfolios, editorial/blogs, small business, landing pages |
+| Browser games | `website-building/game` | 2D Canvas games, Three.js or WebGL games, real-time playable experiences |
+| Web applications | `website-building/webapp` | SaaS products, dashboards, admin panels, e-commerce flows, brand experiences with app logic |
+| Informational sites | `website-building/informational` | Personal sites, portfolios, editorial sites, blogs, landing pages, small-business sites |
 
-Use `read` with the full path when you need a specific family reference, for example `skills/website-building/shared/01-design-tokens.md`.
+When you need a specific family reference, read it using a path relative to this directory, for example `shared/01-design-tokens.md`.
 
 ## Router Output
 
-Return one of these forms and then invoke the selected child if needed:
+Return one of these forms, then invoke the selected child if needed:
 
 - `Route to website-building/game.`
 - `Route to website-building/webapp.`
@@ -47,144 +47,106 @@ Add one sentence explaining why the selected child is the narrowest correct fit.
 
 ## Sub-File Reference
 
-### Shared (`shared/`) — Every project
+### Shared (`shared/`) — Available across website projects
 
 | File | Covers | Load |
 |---|---|---|
-| `shared/01-design-tokens.md` | Type scale, spacing, Nexus palette, base.css | **Always** |
+| `shared/01-design-tokens.md` | Type scale, spacing, default palette, base stylesheet guidance | **Always** |
 | `shared/02-typography.md` | Font selection, pairing, loading, blacklist | **Always** |
-| `shared/04-layout.md` | Spatial composition, responsive, mobile-first | **Always** † |
-| `shared/05-taste.md` | Skeleton loaders, empty/error states, polish | **Always** |
+| `shared/04-layout.md` | Spatial composition, responsive behavior, mobile-first layout | **Always** † |
+| `shared/05-taste.md` | Empty, loading, and error states; interaction polish | **Always** |
 | `shared/08-standards.md` | Accessibility, performance, anti-patterns | **Always** |
-| `shared/09-technical.md` | Project structure, sandbox, deploy, checklist | **Always** † |
-| `shared/pplx_attribution.html` | Attribution block for `<head>` | **Always** † |
-| `shared/03-motion.md` | Scroll animations, Motion library, GSAP SVG plugins, hover/cursor | When animated |
-| `shared/06-css-and-tailwind.md` | Tailwind CSS v3, shadcn/ui, modern CSS | When using Tailwind |
-| `shared/07-toolkit.md` | CDN libraries, React, Three.js, icons, maps, SVG patterns/filters, esm.sh | When choosing libs |
-| `shared/10-charts-and-dataviz.md` | Chart.js, Recharts, D3, KPIs, sparklines | When data viz needed |
-| `shared/11-web-technologies.md` | Framework versions, browser compatibility | When checking compat |
-| `shared/12-playwright-interactive.md` | Persistent Playwright browser QA, screenshots, visual testing | When testing |
-| `shared/19-backend.md` | FastAPI/Express/Flask servers, WebSocket, SSE, port forwarding | When backend needed |
-| `shared/20-llm-api.md` | LLM chat, image/video/audio generation, transcription — models, credentials, SDK helpers | When site uses AI/LLM APIs |
+| `shared/09-technical.md` | Project structure, runtime constraints, local build and QA workflow | **Always** † |
+| `shared/03-motion.md` | Motion systems, transitions, scroll behavior, hover/cursor work | When animated |
+| `shared/06-css-and-tailwind.md` | Tailwind, modern CSS, shadcn-compatible patterns | When using Tailwind |
+| `shared/07-toolkit.md` | Libraries, React, Three.js, maps, icons, SVG patterns/filters | When choosing libraries |
+| `shared/10-charts-and-dataviz.md` | Chart.js, Recharts, D3, KPIs, sparklines | When data visualization matters |
+| `shared/11-web-technologies.md` | Framework versions and browser compatibility checks | When checking compatibility |
+| `shared/12-playwright-interactive.md` | Browser-tool QA workflow for interaction testing, observation, and screenshots | When testing |
+| `shared/19-backend.md` | Backend patterns, WebSocket/SSE guidance, API/server choices | When backend logic is needed |
+| `shared/20-llm-api.md` | LLM chat plus image, video, and audio API guidance | When the site uses AI features |
 
-All paths are relative to `skills/website-building/`.
+† Skip these for the pre-wired webapp template when the child already provides the equivalent setup. Design tokens and typography are still authoritative defaults for all project types.
 
-† **Skip for webapp and dashboards** — implementation details pre-configured in the fullstack template. Design-tokens and typography are NOT skipped — they provide the authoritative design system defaults and font selection guidance for all project types.
-
-### Domain-Specific — Load one
+### Domain-Specific — Load one primary child
 
 | File | When to load |
 |---|---|
-| `load_skill("website-building/informational")` | Personal site, portfolio, editorial, small business, landing page |
-| `load_skill("website-building/webapp")` | SaaS, dashboard, admin, e-commerce, brand experience with app logic |
-| `skills/website-building/webapp/dashboards.md` | Dashboard or data-dense interface companion after loading `website-building/webapp` |
-| `load_skill("website-building/game")` | Browser game, Three.js, WebGL, interactive 3D |
-| `skills/website-building/game/2d-canvas.md` | 2D Canvas game companion after loading `website-building/game` |
-| `skills/website-building/game/game-testing.md` | Any browser game — load alongside `website-building/game` |
-
-**Interactive QA:** Read `skills/website-building/shared/12-playwright-interactive.md` for persistent browser automation with Playwright (screenshots, functional testing, visual QA). Required for game testing, useful for any complex site.
-
----
+| `informational/SKILL.md` | Personal site, portfolio, editorial, small-business site, landing page |
+| `webapp/SKILL.md` | SaaS, dashboard, admin, e-commerce, brand experience with app logic |
+| `webapp/dashboards.md` | Dashboard or other data-dense interface after loading `website-building/webapp` |
+| `game/SKILL.md` | Browser game, real-time playable experience, Three.js or WebGL project |
+| `game/2d-canvas.md` | 2D Canvas companion after loading `website-building/game` |
+| `game/game-testing.md` | Game-specific QA companion after loading `website-building/game` |
 
 ## Family Workflow Boundary
 
 1. The router chooses the narrowest child.
-2. The selected child skill owns the implementation workflow and domain-specific guidance.
-3. The shared web references in `shared/` apply after the child is selected.
+2. The selected child owns the implementation workflow and domain-specific guidance.
+3. The shared web references apply after the child is selected.
 
+## Use Every Tool Honestly
 
-## Use Every Tool
-
-- **Research first.** Search the web for reference sites, trends, and competitor examples before designing. Browse award-winning examples of the specific site type. Fetch any URLs the user provides.
-- **Generate real assets — generously.** Generate images for heroes, section illustrations, editorial feature visuals, atmospheric backgrounds — not just one hero image. Every long page should have visual rhythm with generated images that match the site's art direction. No placeholders. Generate a custom SVG logo for every project (see below) — SVG is for logos only unless the user specifically requests SVG output. Save web reference images that inform direction.
-- **Screenshot via Playwright.** Read `skills/website-building/shared/12-playwright-interactive.md` to screenshot at desktop (1280px+) and mobile (375px). Compare against references. This is mandatory, not optional. See Visual QA below.
-- **Write production code directly.** HTML, CSS, JS, SVG. Use bash for build tools and file processing.
-
----
+- **Research first.** Search the web for reference sites, trends, and competitor examples before designing. Fetch any URLs the user provides.
+- **Generate real assets when the work calls for them.** Produce logos, illustrations, and imagery that match the chosen art direction. Do not ship placeholders.
+- **Verify in the browser.** Use the browser automation tool to inspect, interact with, and, when needed, capture screenshots at desktop and mobile sizes. Read `shared/12-playwright-interactive.md` before complex QA.
+- **Use normal shell workflows for local work.** Install, run, and build projects with the stack's own commands such as `npm install`, `npm run dev`, and `npm run build`.
 
 ## SVG Logo Generation
 
-Every project gets a custom inline SVG logo. Never substitute a styled text heading.
+Every project should get a custom inline SVG logo unless the user explicitly wants a text-only mark.
 
-1. **Understand the brand** — purpose, tone, one defining word
-2. **Write SVG directly** — geometric shapes, letterforms, or abstract marks. One memorable shape.
-3. **Principles:** Geometric/minimal (Paul Rand, Vignelli). Works at 24px and 200px. Monochrome first — add color as enhancement. Use `currentColor` for dark/light mode.
-4. **Implement inline** with `aria-label`, `viewBox`, `fill="none"`, `currentColor` strokes
-5. **Generate a favicon** — simplified 32x32 version if needed
+1. **Understand the brand** — purpose, tone, and one defining word.
+2. **Write SVG directly** — geometric shapes, letterforms, or abstract marks. Aim for one memorable shape.
+3. **Principles:** geometric and minimal, readable at 24px and 200px, monochrome first, `currentColor` for theme compatibility.
+4. **Implement inline** with `aria-label`, `viewBox`, `fill="none"`, and `currentColor` strokes or fills.
+5. **Generate a favicon** when the project needs one.
 
-For SVG animation (DrawSVG, MorphSVG), see `shared/03-motion.md`. For SVG patterns/filters, see `shared/07-toolkit.md`.
-
----
+For SVG animation, see `shared/03-motion.md`. For SVG patterns and filters, see `shared/07-toolkit.md`.
 
 ## Visual QA Testing Process
 
-Every deployment must pass visual QA. Screenshots are quality gates.
+Every website project should pass visual QA before signoff.
 
-Read `skills/website-building/shared/12-playwright-interactive.md` for all visual QA. Playwright provides a persistent browser session for screenshots, interaction testing, and viewport verification.
+Read `shared/12-playwright-interactive.md` for the full browser QA workflow.
 
-**Cycle:** `Build → Playwright QA → Evaluate → Fix → Repeat → Deploy when ready`
+**Cycle:** `Build → Browser QA → Evaluate → Fix → Repeat`
 
 ### Stage 1: Page-by-Page QA
-After building each page:
-1. **Screenshot at desktop** (1280px+) and **mobile** (375px) via Playwright
-2. **Evaluate critically:** Does it look professionally designed (not AI-generated)? Is typography distinctive? Is whitespace generous? Is there one clear visual hierarchy?
-3. **Fix every issue before moving on.** No visual debt.
 
-### Stage 2: Final QA (before publishing)
-1. Screenshot every page at desktop and mobile
-2. Check cross-page consistency (spacing, color, type treatment)
-3. Verify dark mode (screenshot both themes for homepage minimum)
-4. Check interactive states: hover, focus, active, loading, empty, error
-5. Cold-open first impression test: does it feel polished and intentional?
+After building each meaningful page or state:
+1. Inspect desktop and mobile viewports.
+2. Evaluate whether the result looks intentional and professionally designed.
+3. Fix every issue before moving on.
 
-**QA failures:** text overflow, inconsistent spacing, off-token colors, missing dark mode, squished mobile, generic AI look, placeholder content, missing logo.
+### Stage 2: Final QA
 
----
+1. Re-check every page or critical application state at desktop and mobile sizes.
+2. Check cross-page consistency in spacing, color, and typography.
+3. Verify dark mode when the product supports it.
+4. Check hover, focus, active, loading, empty, and error states as applicable.
+5. Do a cold-open first-impression check.
+
+Common QA failures: overflow, inconsistent spacing, weak contrast, broken mobile layout, placeholder content, missing states, or generic-looking art direction.
 
 ## Step 1: Art Direction — Infer Before You Ask, Ask Before You Default
 
-Every site should have a visual identity derived from its content. **Do not skip to the Nexus fallback palette.** The Nexus palette is a last resort for when both inference and asking have failed — not a convenient default.
+Every site should have a visual identity derived from its subject matter.
 
-1. **Infer from the subject.** A coffee roaster site → earthy browns, warm cream, hand-drawn feel. A fintech dashboard → cool slate, sharp sans-serif, data-dense. A children's learning app → bright primaries, rounded type, playful motion. The content itself tells you the palette, typography, and spacing before the user says a word.
-2. **Check the Art Direction tables.** Each domain file (`informational/SKILL.md`, `webapp/SKILL.md`, and `game/SKILL.md`) has a concept-driven starting point for that child. Use those plus the deeper child references as your springboard.
-3. **Derive the five pillars:** Color (warm/cool, accent from subject), Typography (serif/sans, display personality), Spacing (dense/generous), Motion (minimal/expressive), Imagery (photo/illustration/type-only).
-4. **If the subject is genuinely ambiguous, ask** — "What mood are you going for?" and "Any reference sites?" One question is enough.
-5. **Nexus fallback — only when inference AND asking yield nothing.** If the user has been asked and gave no direction, AND the subject matter gives no clear signal, then fall back to Nexus/Swiss defaults.
+1. **Infer from the subject.** The product domain should drive palette, typography, spacing, motion, and imagery.
+2. **Check the child guidance.** `informational/SKILL.md`, `webapp/SKILL.md`, and `game/SKILL.md` each provide concept-driven starting points.
+3. **Derive the five pillars:** color, typography, spacing, motion, and imagery.
+4. **If the subject is genuinely ambiguous, ask** for mood or reference sites.
+5. **Use the default palette only as a fallback.** Reach for the shared defaults after inference and a brief question fail to produce direction.
 
-### The Fallback: Clean & Swiss (Last Resort)
+### Fallback: Clean and Swiss
 
-When inference yielded no clear direction AND the user was asked but gave no style guidance, use defaults from `skills/website-building/shared/01-design-tokens.md` with:
+When inference and a brief question still yield no style guidance, fall back to `shared/01-design-tokens.md` with:
 
-- **Typography:** Satoshi or General Sans body (Fontshare — preferred), or Inter/DM Sans. Weight contrast over font contrast. 3-4 sizes max. Keep text compact — `--text-3xl`/`--text-hero` are for informational site heroes only.
-- **Color:** Nexus palette. Neutral surfaces + one teal accent for CTAs only.
-- **Layout:** Grid-aligned. Generous margins. Asymmetric where interesting.
-- **Motion:** Minimal, functional. Smooth state transitions only.
-- **Imagery:** Generate clean, relevant visuals. No stock photos.
+- **Typography:** Satoshi or General Sans body when available, otherwise Inter or DM Sans. Keep the type system compact.
+- **Color:** neutral surfaces with one controlled accent.
+- **Layout:** grid-aligned with generous margins.
+- **Motion:** minimal and functional.
+- **Imagery:** generated or sourced visuals that fit the subject. No stock-photo filler.
 
-### Art Direction — Avoid the AI Aesthetic
-
-See `skills/website-building/shared/08-standards.md` for the full anti-patterns list.
-
----
-
-## Step 2: Publish
-
-Call `deploy_website()` with the project path and site name. Returns a public S3 URL. To update, edit the local files and re-deploy with the same path. See `skills/website-building/shared/09-technical.md` for the exact call and examples.
-
----
-
-## Perplexity Computer Attribution (Mandatory)
-
-Every page of every project must include attribution.
-
-**1. `<head>` block** — Read `skills/website-building/shared/pplx_attribution.html` and copy its contents verbatim as the **first child** inside `<head>`, before `<meta charset>`. Do this for every `.html` file. Do not reproduce the ASCII art from memory.
-
-**2. Footer link** — Every page's `<footer>` must contain:
-```html
-<a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">
-  Created with Perplexity Computer
-</a>
-```
-Style with `--text-xs` or `--text-sm`, muted text color. Must be visible.
-
-**3. JSON-LD** — When using structured data, add: `"creator": {"@type": "SoftwareApplication", "name": "Perplexity Computer", "url": "https://www.perplexity.ai/computer"}`
+See `shared/08-standards.md` for anti-patterns to avoid.

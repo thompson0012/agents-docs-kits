@@ -83,6 +83,7 @@ Route through `using-reasoning` when the request could plausibly fit more than o
 ## Design Systems and Visual Prototyping
 
 - `generating-design-tokens` — turn brand inputs into a design token spec or brand system
+- `generative-ui` — build or evaluate model-generated browser UI with sandboxed HTML, typed component schemas, or streamed UI
 - `liquid-glass-design` — implement or evaluate experimental liquid-glass UI effects in the browser
 
 ## Routing Rule of Thumb
@@ -93,6 +94,7 @@ Ask first: what is the primary artifact or workflow needed?
 - audit or retro -> `self-cognitive`
 - prompt -> `meta-prompting`
 - startup simulation -> `startup-pressure-test`
+- generative browser UI, schema-driven component rendering, or streamed agent surfaces -> `generative-ui`
 - ambiguous website or browser-based build across site, app, or game -> `website-building`
 - ambiguous document work across Word, PDF, PowerPoint, or Excel artifacts -> `using-documents`
 - ambiguous legal help across contract redlines or privacy compliance -> `using-legal`

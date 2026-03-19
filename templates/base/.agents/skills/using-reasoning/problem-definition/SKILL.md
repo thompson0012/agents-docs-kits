@@ -1,6 +1,6 @@
 ---
 name: problem-definition
-description: "Use when the user senses a problem but cannot define it cleanly, is solving symptoms without progress, keeps mixing solutions into the problem statement, or needs help turning a messy situation into one precise, actionable problem statement. Trigger on requests like 'something feels wrong', 'I am stuck', 'help me figure out the real problem', 'why is this not working', or any case where the problem is vague, overloaded, or possibly misframed. Do not use when the problem is already stated clearly and solution-neutrally in one or two sentences; route those cases to using-reasoning/dynamic-problem-solving instead." 
+description: Use when the user has symptoms, confusion, or competing frames but not a clean problem statement, and you need to define the real problem before solving it.
 ---
 
 # Problem Definition

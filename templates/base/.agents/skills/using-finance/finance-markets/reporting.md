@@ -161,6 +161,7 @@ $XXX.XX — $XXX.XX (currently at XX% of range)
 2. **Include context** - absolute values need benchmarks (vs sector, vs history)
 3. **Highlight key insights** - don't just dump data, tell the user what matters
 4. **Use consistent precision** - don't mix `$1.234B` with `$2B`
-5. **Date your data** - Always state the reference date used: "As of Jan 15, 2025" or "TTM ending Q3 2024". Every table and report should make clear what reference date drove the `as_of` parameters
-6. **Cite limitations** - note if data is delayed, estimated, or incomplete
-7. **Cite sources** - Link each ticker to `https://perplexity.ai/finance/<TICKER>` so users can verify the data
+5. **Date your data** - Always state the reference date used: "As of Jan 15, 2025" or "TTM ending Q3 2024". Every table and report should make clear what date or reporting period drives the numbers.
+6. **Cite limitations** - note if data is delayed, estimated, revised, or incomplete
+7. **Cite sources directly** - link each material figure to the original filing, investor-relations page, sponsor holdings page, exchange quote page, or official macro release used to support it
+8. **Separate source types** - clearly distinguish reported results, management guidance, market prices, holdings snapshots, and secondary commentary so readers know what is factual versus interpretive

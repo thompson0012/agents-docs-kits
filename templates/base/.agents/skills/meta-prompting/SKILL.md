@@ -1,121 +1,79 @@
 ---
 name: meta-prompting
-description: "USE THIS SKILL whenever the user wants a production-grade, high-performance prompt engineered from requirements. This is the ONLY reliable way to produce prompts that actually work—baseline attempts almost always produce insufficient, undertested prompts. Covers model-specific optimization, framework selection (CoT/ToT/GoT), and delivers a structured final prompt artifact. Trigger phrases: \"optimize this prompt\", \"design a system prompt\", \"create a prompt architecture\", \"refine prompt with reflection\", \"convert requirements into a production prompt\", \"make this prompt better\", \"prompt engineering\". If the user is asking for ANY non-trivial prompt work, this skill applies."
+description: Use when the user wants a prompt, system instruction set, or prompt architecture that must be reliable, testable, and tailored to a specific runtime or workflow.
 ---
 
-# Meta-Prompting Skill
+# Meta-Prompting
 
-## Overview
-
-This skill converts user intent into a **production-grade** prompt artifact via a recursive 5-phase process: discovery, strategy, drafting, reflexion, and deployment. It is the difference between a prompt that *seems* fine and one that **reliably performs** under real conditions.
+Use this skill for non-trivial prompt work where structure matters more than a quick rewrite.
 
 ## Required Inputs
 
-Collect these before finalizing output:
-- `Use Case`: what the target AI must do
-- `Target Model`: for example GPT-4o, Claude 3.5
-- `Success Metric`: what good output looks like
-- `Constraints`: policy, tone, format, refusal boundaries
+Collect the minimum information needed before finalizing:
+- **Use case** — what the target system must accomplish
+- **Target runtime** — model, agent, or platform constraints that materially affect prompt shape
+- **Success metric** — what good output looks like
+- **Constraints** — policy boundaries, tone, output format, refusal rules, latency limits, or token limits
 
-If any required input is missing, ask up to 3 focused questions.
+If a missing input changes the design, ask focused follow-up questions before drafting.
 
-## Process Workflow
+## Workflow
 
-### Phase 1: Discovery and Triage
-- Identify ambiguity and gather missing requirements.
-- Clarify creativity vs reliability bias when relevant.
-- Confirm edge cases and refusal boundaries.
+### 1. Discovery
+- Remove ambiguity from the task.
+- Identify edge cases, likely failure modes, and refusal boundaries.
+- Decide whether the user needs reliability, creativity, or a deliberate balance.
 
-### Phase 2: Architectural Strategy
-Choose framework by task type:
-- `CoT`: rigorous reasoning, logic, or math
-- `ToT`: planning, branching alternatives, exploration
-- `GoT`: synthesis across connected concepts
-- `Role-Play Immersion`: persona or style-critical outputs
+### 2. Prompt Architecture
+Choose the lightest structure that will survive real use:
+- **Direct instruction** — straightforward tasks with low ambiguity
+- **Reasoning scaffolding** — reasoning-heavy work where internal rigor matters
+- **Branching plans** — exploration, option comparison, or planning
+- **Role and rubric structure** — style-critical or policy-sensitive outputs
+- **Examples and counter-examples** — when behavior needs anchoring
 
-### Phase 3: Drafting (Internal)
-- Build a structured prompt skeleton using XML-style tags.
-- Keep sections explicit: task, rules, constraints, examples, output format.
+Do not add scaffolding that the use case does not earn.
 
-### Phase 4: Reflexion Loop
-Run a silent quality loop:
-1. Simulate likely model failure mode.
-2. Patch prompt to mitigate failure.
-3. Align final tone and strictness to user goal.
+### 3. Draft
+Build the prompt with explicit sections for:
+- role or persona, if needed
+- task definition
+- constraints and non-goals
+- required process or checks
+- output format
+- examples only when they materially reduce ambiguity
 
-### Phase 5: Deployment
-Return output with the required protocol.
+### 4. Stress Test
+Before delivering, silently pressure-test the draft:
+- What will the target system misunderstand?
+- Where will it over-answer, hedge, or ignore a boundary?
+- What assumptions are still implicit?
+- Can any section be removed without reducing reliability?
 
-## Response Protocol
+Patch the draft until the structure matches the risk.
 
-Use this exact top-level structure:
+## Delivery Format
 
-### 🧠 Meta-Prompting Architectural Logic
-- Brief explanation of chosen strategy and why it matches the use case.
+Return two parts:
 
-### 🚀 The Architected Prompt 
-```markdown
-<system_persona>
-...
-</system_persona>
+### Prompt strategy
+Briefly explain the chosen structure and why it fits the use case.
 
-<instruction_set>
-...
-</instruction_set>
-
-<user_input_variables>
-{VARIABLES_TO_FILL}
-</user_input_variables>
-```
-
-## Quick Decision Flowchart
-
-```dot
-digraph should_use {
-  rankdir=TB;
-  node [shape=diamond];
-  
-  start [label="User wants prompt\nengineering or design?" shape=diamond];
-  quality [label="Needs reliability,\nstructure, or\nmodel-awareness?" shape=diamond];
-  use [label="USE this skill" shape=box style=filled fillcolor="#d4edda"];
-  skip [label="Handle normally\n(no skill needed)" shape=box style=filled fillcolor="#f8d7da"];
-  
-  start -> quality [label="Yes"];
-  start -> skip [label="No — simple Q&A,\ncode-only, or\ncasual rewrite"];
-  quality -> use [label="Yes"];
-  quality -> skip [label="No — trivial\none-liner"];
-}
-```
-
-**Rule of thumb**: If the user's request involves crafting, improving, or architecting a prompt for an AI system, **use this skill**. When in doubt, use it—the quality gain far outweighs the cost.
-
-## Trigger Signals
-
-Use this skill when user requests include:
-- "Engineer a better prompt for this workflow"
-- "Design a system prompt for my agent"
-- "Refactor this prompt to be more reliable"
-- "Create a model-specific prompt template"
-- "Turn these requirements into a production-grade prompt"
-- Any request involving prompt quality, reliability, or structure
-
-## When NOT to Use
-
-Do **not** invoke this skill for:
-- **Simple factual Q&A** — user asks a question, not for prompt design
-- **Code-only requests** — debugging, refactoring, or writing code with no prompt-design intent
-- **One-line casual rewrites** — "make this shorter" with no architectural requirement
-- **Already-complete prompts** that only need minor copy edits (typos, grammar)
-
-If you're unsure, check: *Is the user asking me to BUILD a prompt, or just to ANSWER a question?* Only the former triggers this skill.
+### Final prompt
+Provide a copyable prompt artifact with clearly marked variables for the user to fill in.
 
 ## Quality Bar
 
-- Prompt must be model-aware and constraint-aware.
-- Output must include clear variables for user customization.
-- Safety and refusal criteria must be explicit when risk exists.
-- Avoid unnecessary verbosity unless user requests depth.
+A good prompt:
+- matches the user's real objective rather than the surface wording,
+- makes success and failure legible,
+- states constraints explicitly,
+- avoids unnecessary verbosity,
+- and is ready to use without hidden assumptions.
 
-## Token Efficiency Note
+## When Not to Use
 
-This skill produces thorough, structured outputs that may use more tokens than a quick-and-dirty prompt rewrite. **This is intentional.** Baseline prompt attempts almost always produce undertested, fragile prompts that fail under real conditions. The token investment here pays for itself by delivering prompts that actually work the first time—saving multiple rounds of debugging and iteration downstream.
+Skip this skill for:
+- a simple factual answer,
+- a minor copy edit,
+- or a one-line rewrite that does not need architectural thinking.

@@ -1,10 +1,10 @@
 # Web Technologies — Browser Support & Emerging Standards (2026)
 
 Library-specific details live in their dedicated files:
-- Animation: `skills/website-building/shared/03-motion.md`
-- CSS & Tailwind: `skills/website-building/shared/06-css-and-tailwind.md`
-- Toolkit & CDN setup: `skills/website-building/shared/07-toolkit.md`
-- Charts & data viz: `skills/website-building/shared/10-charts-and-dataviz.md`
+- Animation: `.agents/skills/website-building/shared/03-motion.md`
+- CSS & Tailwind: `.agents/skills/website-building/shared/06-css-and-tailwind.md`
+- Toolkit & CDN setup: `.agents/skills/website-building/shared/07-toolkit.md`
+- Charts & data viz: `.agents/skills/website-building/shared/10-charts-and-dataviz.md`
 
 This file covers only browser compatibility baselines and emerging web platform features.
 

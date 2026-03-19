@@ -1,109 +1,71 @@
 ---
 name: self-cognitive
-description: >
-  Structured self-verification, retrospective, and skill extraction.
-  USE when the user says: "confidence check", "sanity check", "am I thinking about this right",
-  "retrospective", "postmortem", "lessons learned", "what went wrong",
-  "make this repeatable", "turn into a skill", "persist this", "extract a workflow".
-  Also USE proactively before risky decisions or after failures—do not wait to be asked.
+description: Use when the user asks for a confidence check, retrospective, repeatable workflow extraction, or when a risky decision needs explicit verification before action.
 ---
 
-# Self-Cognitive Meta Skill
+# Self-Cognitive
 
-Provide a structured self-cognitive response that verifies reasoning, captures lessons, and produces persistable updates. This skill follows skill-creator writing guidelines.
+Use this skill to force a verification pass before a risky decision, or to turn completed work into durable lessons and reusable instructions.
 
 ## Modes
 
-Choose the smallest set that matches the request:
-- **Preflight Verification**: Before execution or decisions.
-- **Postflight Retro**: After work is done or after errors.
-- **Skill Extraction**: When the user wants persistence or repeatability.
+Choose the smallest mode that fits the request:
+- **Preflight verification** — before execution or before committing to a decision.
+- **Postflight retrospective** — after work completes or after something goes wrong.
+- **Skill extraction** — when the user wants a repeatable workflow, guardrail, or reusable pattern.
 
 ## Core Rules
 
 - Separate facts from assumptions.
-- State risks and how to validate quickly.
-- Calibrate confidence (low/medium/high) with evidence.
+- State the main risks and how to validate them quickly.
+- Calibrate confidence as low, medium, or high and justify it with evidence.
 - Never include secrets or sensitive data.
-- Keep outputs concise; prefer bullets.
-- Always include the JSON artifact (see `references/artifacts.json` for full template).
-- If this file grows, move detailed guidance to `references/`.
-
-## Iteration Loop
-
-1. Draft with the required template.
-2. Compare against required sections and JSON artifact.
-3. Capture rationalizations or omissions.
-4. Update skill update proposal accordingly.
-5. Re-run pressure scenarios until compliant.
+- Keep outputs concise; prefer bullets over narrative.
+- Include the JSON artifact when the request calls for a persistable record or workflow handoff; the schema lives in `references/artifacts.json`.
 
 ## Required Output Template
 
 ### Goal
-One sentence: what is being verified or improved.
+One sentence describing what is being verified, reviewed, or extracted.
 
 ### Current context
-- Bullet facts from the conversation.
+- Bullet facts from the conversation or work performed.
 
 ### Verification
-**Assumptions** — list each, mark validated or unvalidated.
-**Risks and failure modes** — what breaks and impact.
-**Checks** — concrete actions to validate.
-**Confidence** — level (low/medium/high), why, and how to raise it.
+- **Assumptions** — list each assumption and mark it validated or unvalidated.
+- **Risks and failure modes** — what could break, and what the impact would be.
+- **Checks** — concrete actions that would validate the conclusion.
+- **Confidence** — low, medium, or high; explain why and what would raise it.
 
 ### Lessons learned
-**Technical** | **Process** | **Prompting and coordination** — bullets for each.
+- **Technical** — what changed in the system understanding.
+- **Process** — what to repeat, stop, or tighten next time.
+- **Prompting and coordination** — what would improve future delegation or execution.
 
 ### Persistable updates
-**Memory summary** — user preferences, project facts, open questions.
-**Skill update proposal** — if a target skill exists, propose minimal patch. Otherwise, propose new skill outline.
-**Artifacts JSON** — populated JSON per `references/artifacts.json` template.
+- **Memory summary** — durable preferences, project facts, and open questions worth carrying forward.
+- **Skill update proposal** — the minimal reusable rule, checklist, or skill patch suggested by the work.
+- **Artifacts JSON** — populate the schema from `references/artifacts.json` when requested.
+
+## Iteration Loop
+
+1. Draft the response with the required sections.
+2. Check whether facts, assumptions, risks, and confidence are clearly separated.
+3. Remove unsupported claims or vague confidence.
+4. Tighten the skill update proposal until it is specific enough to reuse.
 
 ## Common Mistakes
 
-- Skipping verification to save time.
-- Omitting the JSON artifact.
-- Mixing assumptions with facts.
-- Declaring confidence without evidence.
-- Treating the first draft as final instead of iterating.
+- Skipping verification because the answer feels obvious.
+- Mixing assumptions with established facts.
+- Declaring confidence without naming the evidence.
+- Writing lessons learned that are too vague to reuse.
+- Omitting the structured artifact when the user asked for something persistable.
 
-## Rationalization Table
+## Red Flags
 
-| Excuse | Reality |
-|---|---|
-| "Skip verification, we're in a rush." | Speed never justifies omitting required sections. |
-| "High-level is enough." | The full template is mandatory. |
-| "One pass is enough." | Iteration is required to close gaps. |
-
-## Red Flags — STOP and Restart
-
-- "Skip verification to move faster."
-- "I'll add lessons learned later."
-- "This is too simple to structure."
-- "No JSON needed."
-
-Violating the letter of the rules is violating the spirit of the rules.
-
-## Example
-
-### Goal
-Validate whether the deployment plan is safe to execute today.
-
-### Current context
-- Deployment touches auth config and rate limits.
-
-### Verification
-- **Assumptions**: Rate limit change is backward compatible.
-- **Risks**: Auth flow could reject valid tokens.
-- **Checks**: Dry-run staging deploy and login.
-- **Confidence**: Medium — staging verified, no prod traffic tested. To raise: run canary on 5% traffic.
-
-### Lessons learned
-- **Technical**: Staging coverage missed token edge case.
-- **Process**: Add token-matrix checklist to deploys.
-- **Prompting**: Ask for rollout window upfront.
-
-### Persistable updates
-- **Memory**: User wants explicit confidence levels. Auth uses token rotation. Open: canary tooling availability.
-- **Skill update**: Draft rollout-checklist skill if repeated.
-- **Artifacts JSON**: *(populated per `references/artifacts.json`)*
+If you catch yourself thinking any of the following, stop and restructure the output:
+- "I can skip the checks because I already know the answer."
+- "High level is enough; the details do not matter."
+- "I will add the lessons learned later."
+- "Confidence can stay implicit."

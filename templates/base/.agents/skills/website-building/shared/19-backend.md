@@ -1,26 +1,26 @@
 # Long-Running Backend Servers
 
-Run a real server process (FastAPI, Express, Flask, etc.) inside the sandbox and connect it to your frontend via port forwarding. Use this when you need:
+Run a real server process (FastAPI, Express, Flask, etc.) alongside the site during development. Use this when you need:
 
 - WebSocket or SSE streaming
 - In-memory state across requests
 - Framework features (middleware, dependency injection, ORMs)
 - Background tasks or scheduled work
 - Multiple related endpoints with shared state
-- LLM or media generation (text, image, video, audio) — **read `shared/20-llm-api.md`** for all available APIs, helpers, and usage examples
+- LLM or media generation (text, image, video, audio) — **read `shared/20-llm-api.md`** for SDKs, models, and helper scripts
 
 ## How It Works
 
-1. Write a server that listens on a port (e.g., 8000)
-2. Start it as a background process in the sandbox with `api_credentials=["llm-api:website"]` if it needs LLM/media access
-3. After testing locally, use `__PORT_8000__` in your frontend code — `deploy_website` replaces it with the real proxy path at deploy time
-4. All traffic flows through the same JWT-authenticated proxy as static assets
+1. Write a server that listens on a port (for example `8000`)
+2. Start it yourself from the project directory with the repo's normal runner (`python`, `uvicorn`, `node`, `npm run dev`, etc.)
+3. Point the frontend at an explicit base URL during local development, usually `http://localhost:8000`
+4. Treat preview and deployment routing as project-specific configuration. This shared file does not assume an automatic port proxy or placeholder replacement.
 
 ## Visitor Data Isolation
 
-The proxy injects an `X-Visitor-Id` header on every request (HTTP and WebSocket) that identifies the browser. Sites run in sandboxed iframes where cookies, localStorage, and sessionStorage are all unavailable — this header is the only way to distinguish visitors.
+If the site stores visitor-created or per-session data, make that boundary explicit in your own auth or session layer. Use signed session identifiers, auth tokens, or another server-side visitor key that you control. Do not assume the runtime injects special visitor headers for you.
 
-Use it when the site stores visitor-created content. Read-only content that the agent authored does not need per-visitor scoping.
+Read-only content authored at build time usually does not need per-visitor scoping.
 
 ## Step-by-Step
 
@@ -76,27 +76,26 @@ if __name__ == "__main__":
 
 ### 2. Start the Server
 
-Pre-installed in the sandbox: `fastapi`, `uvicorn`, `flask`, `websockets` (Python); `express`, `socket.io` (Node).
+Start the backend with a normal shell command from the project directory. Keep the command in `package.json`, a Make target, or another checked-in script so the launch path stays repeatable.
 
+```bash
+python api_server.py
 ```
-start_server(command="python api_server.py", project_path="/home/user/workspace/my-project", port=8000, api_credentials=["llm-api:website"])
-```
 
-`start_server` kills any existing process on the port, starts the command in the background, and polls until the port is listening (up to 60s). It returns the PID, URL, and recent logs — no manual health check needed.
+If you prefer live reload, use the framework's normal dev entrypoint instead (for example `uvicorn api_server:app --reload --host 0.0.0.0 --port 8000` or `node server.js`).
 
-Use `api_credentials=["llm-api:website"]` when the server calls any LLM or media generation API (Anthropic SDK, image/video/audio generation, etc.). This injects credentials as environment variables. Use `:website` for long-lived website backend servers. Omit secrets entirely if the server doesn't need LLM access. **Read `shared/20-llm-api.md`** for available models, async SDK helpers, and usage examples.
+If the server calls LLM or media APIs, provide credentials through environment variables or whatever secret mechanism the current runtime supports. This shared file does not assume automatic credential injection. **Read `shared/20-llm-api.md`** for SDK details and helper scripts.
 
-**Billing note:** When a deployed website uses LLM or media generation APIs, each request consumes credits billed to the user. The site starts private but can be shared publicly — if shared, all visitors' usage is billed to the user. Before building the website, you MUST use `confirm_action` to warn about this. The confirmation should warn that usage costs credits and that if the site is shared publicly, visitors' usage is also billed to the user. Keep it concise — use "Build website" as the accept label.
+Fail fast on missing configuration at process startup rather than on the first user request.
 
-**Sharing note:** When a deployed website uses external tool connectors, the connectors are accessible to anyone who can reach the site. Before building the website, you MUST use `confirm_action` to warn that if the site is shared publicly, visitors will be able to trigger the user's connected tools. Keep it concise — use "Build website" as the accept label.
+If the site can trigger paid APIs or external systems, make the billing and sharing risk explicit in the product behavior and project handoff. Public traffic turns every request into real spend or real side effects.
 
 ### 3. Connect the Frontend
 
-Set the API base URL dynamically so it works both during local testing and after deployment. `__PORT_8000__` is replaced with `port/8000` at deploy time by `deploy_website`.
+Keep the API base URL configurable instead of scattering backend origins through the codebase.
 
 ```js
-// Works locally (http://localhost:8000) AND after deploy (port/8000 via proxy)
-const API = "__PORT_8000__".startsWith("__") ? "http://localhost:8000" : "__PORT_8000__";
+const API = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
 
 async function loadItems() {
   const res = await fetch(`${API}/api/items`);
@@ -113,11 +112,15 @@ async function addItem(name) {
 }
 ```
 
-### 4. Deploy
+### 4. Preview and Deployment
 
-Deploy with `deploy_website` as usual. The proxy handles routing:
-- `/port/8000/api/items` → forwarded to the sandbox server on port 8000
-- `/index.html`, `/style.css` → served from S3
+This shared reference does not prescribe a deployment command or a built-in backend proxy. When moving beyond local development, document three things explicitly:
+
+- where the backend runs
+- which base URL the frontend should call
+- how secrets are provisioned in that environment
+
+Prefer one config surface such as `VITE_API_BASE_URL` and `VITE_WS_URL` rather than placeholder strings spread throughout the app.
 
 ## WebSocket Example
 
@@ -142,10 +145,11 @@ asyncio.run(main())
 Client:
 
 ```js
-const ws = new WebSocket(`${location.origin}${location.pathname.replace(/\/[^/]*$/, '')}/__PORT_8000__/ws`);
+const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8000/ws";
+const ws = new WebSocket(WS_URL);
 ```
 
-For WebSocket, construct the URL relative to the current page origin and path prefix so it routes through the same proxy.
+Keep the WebSocket URL configurable for the target runtime instead of deriving it from special placeholder paths.
 
 ## Express.js Example
 
@@ -168,26 +172,23 @@ app.post("/api/items", (req, res) => {
 app.listen(8000, "0.0.0.0", () => console.log("listening on 8000"));
 ```
 
-```
-start_server(command="node server.js", project_path="/home/user/workspace/my-project", port=8000)
+```bash
+node server.js
 ```
 
 ## Multiple Ports
 
-You can run multiple servers on different ports. Use a separate placeholder for each:
+You can run multiple servers on different ports. Keep each one configurable:
 
 ```js
-const API = "__PORT_8000__";       // REST API
-const WS_URL = "__PORT_8001__";    // WebSocket server
+const API = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8001/ws";
 ```
 
-## Limits
+## Limits and Guardrails
 
-- **Status**: HTTP status code (default: `200`). 5xx codes are clamped to `422` by the proxy — use 4xx codes for errors (e.g., `400`, `404`, `422`)
-- **5-minute read timeout** per HTTP request (resets on each chunk — SSE and streaming work indefinitely)
-- **10MB max request body**
-- **5 retries** with 1s intervals if the backend isn't ready yet (sandbox wake-up)
-- SSE (`text/event-stream`), chunked responses, and long-polling all work through the proxy
-- WebSocket connections have automatic ping/keepalive (20s interval)
-- Server must bind to `0.0.0.0`, not `127.0.0.1` or `localhost`
-- Sandbox ports are private — all traffic goes through the authenticated proxy
+- Bind to `0.0.0.0` if the server must be reachable outside the current process or container boundary; use `localhost` only for same-machine-only testing
+- Use `4xx` for caller errors and `5xx` for real server faults
+- Make request-size limits and timeouts explicit in framework config
+- SSE and WebSocket endpoints need heartbeat or keepalive behavior if you expect long-lived connections
+- Do not hide infrastructure assumptions in magic path placeholders; keep base URLs configurable

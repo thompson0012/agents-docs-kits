@@ -1,3 +1,9 @@
+---
+name: content-creation
+description: Use when drafting or refining marketing content such as blog posts, social posts, emails, landing pages, press releases, or case studies, especially when channel structure, hooks, CTAs, and SEO basics matter.
+---
+
+
 # Content Creation Skill
 
 Guidelines and frameworks for creating effective marketing content across channels.

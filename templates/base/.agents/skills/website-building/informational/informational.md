@@ -2,7 +2,7 @@
 
 Build distinctive, content-first websites -- personal sites, portfolios, editorial publications, small business pages, blogs, and landing pages.
 
-**Mandatory shared files (read if not already loaded):** `skills/website-building/shared/01-design-tokens.md`, `skills/website-building/shared/02-typography.md`.
+**Mandatory shared files (read if not already loaded):** `.agents/skills/website-building/shared/01-design-tokens.md`, `.agents/skills/website-building/shared/02-typography.md`.
 
 ---
 
@@ -15,7 +15,7 @@ Build distinctive, content-first websites -- personal sites, portfolios, editori
 | **Small business** | A bakery is warm and inviting. A consulting firm is authoritative and minimal. A yoga studio is calm and organic. The business's character sets the palette and typography. | Font and palette from the business's personality. Strong CTA contrast for conversion. |
 | **Landing page** | A developer tool page is technical and precise. A wellness product is soft and aspirational. A creative agency is bold and distinctive. | ONE hero moment (`--text-2xl`+); all other text compact. Accent from the product's brand. |
 
-See `skills/website-building/shared/01-design-tokens.md` for size floors and color restraint rules.
+See `.agents/skills/website-building/shared/01-design-tokens.md` for size floors and color restraint rules.
 
 ---
 
@@ -71,7 +71,7 @@ Informational sites should feel editorially rich, not like a single-column blog 
 - **Photo grids for visual storytelling.** CSS Grid with varying `span` values: one large hero image (2×2) alongside 2-3 smaller supporting images creates a magazine-spread feel.
 - **Masonry for variable-height content.** Image galleries, portfolios, or mixed-media collections. Use CSS columns or JS Masonry.
 
-On mobile, all multi-column layouts collapse to a single column — but maintain visual rhythm by keeping full-bleed images and pull quotes as section dividers. See `skills/website-building/shared/04-layout.md` for grid implementation.
+On mobile, all multi-column layouts collapse to a single column — but maintain visual rhythm by keeping full-bleed images and pull quotes as section dividers. See `.agents/skills/website-building/shared/04-layout.md` for grid implementation.
 
 ### 6. Distinctive Visual Identity
 
@@ -134,7 +134,7 @@ On mobile, all multi-column layouts collapse to a single column — but maintain
 
 ## Accessibility
 
-Beyond baseline in `skills/website-building/shared/08-standards.md`:
+Beyond baseline in `.agents/skills/website-building/shared/08-standards.md`:
 
 - **Reading order must match visual order.** Screen readers follow the DOM, not CSS layout.
 - **Language attribute** — `<html lang="en">` (or appropriate language).

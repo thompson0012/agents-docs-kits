@@ -1,19 +1,22 @@
 # LLM & Media API Access
 
-The `anthropic` and `openai` SDKs (Python and Node.js) and `pplx.python.sdks.llm_api` are pre-installed in the sandbox. **Credentials are NOT available by default** — you must inject them via the `api_credentials` field on the `start_server` tool every time you start or restart a server.
+The `anthropic` and `openai` SDKs (Python and Node.js) and `pplx.python.sdks.llm_api` are pre-installed in the sandbox. Credential handling depends on the current harness and runtime. This shared reference does not assume a special server-start helper or automatic secret injection.
 
 **Important:** The OpenAI proxy only supports the Responses API (`client.responses.create`), not Chat Completions.
 
-### Credential Presets
+## Runtime Credential Handling
 
-| Preset | TTL | Use when |
-|--------|-----|----------|
-| `llm-api:website` | Auto-refreshed | Website backend servers |
+- Provide required API keys through environment variables or the runtime's supported secret mechanism before starting the server
+- Do not hardcode secrets in source, commit them, or ship them to the browser
+- Validate required configuration at startup and fail loudly if it is missing
+- Treat any helper-specific secret plumbing as environment-specific documentation, not a shared baseline
 
-**Every `start_server()` call that starts a server using LLM/media APIs must include `api_credentials=["llm-api:website"]`.** Without it, API calls will fail with authentication errors.
+Example local setup:
 
-```
-start_server(command="python server.py", project_path="/home/user/workspace", port=8000, api_credentials=["llm-api:website"])
+```bash
+export ANTHROPIC_API_KEY=...
+export OPENAI_API_KEY=...
+python server.py
 ```
 
 ## Available Models
@@ -30,7 +33,8 @@ start_server(command="python server.py", project_path="/home/user/workspace", po
 
 ```python
 from anthropic import Anthropic
-client = Anthropic()
+
+client = Anthropic()  # Reads ANTHROPIC_API_KEY from the environment
 message = client.messages.create(
     model="claude_sonnet_4_6",
     max_tokens=1024,
@@ -42,7 +46,8 @@ message = client.messages.create(
 
 ```python
 from openai import OpenAI
-client = OpenAI()
+
+client = OpenAI()  # Reads OPENAI_API_KEY from the environment
 response = client.responses.create(
     model="gpt_5_1",
     input="Hello",
@@ -62,7 +67,7 @@ Media generation (image, video, audio) and transcription use a separate SDK (`pp
 
 ### Website Backend Example
 
-Read the helper file, copy it into your project, then import it. **Always use `start_server` with `api_credentials=["llm-api:website"]`** — this is required every time you start or restart the server process.
+Read the helper file, copy it into your project, then import it. Ensure the server process already has the required API key(s) before handling requests.
 
 ```python
 from generate_image import generate_image

@@ -1,42 +1,48 @@
 # Financial Analysis Guide
 
-Before calling any finance tool, you **must** call `describe_external_tools(source_id="finance", tool_names=[...])` — the system enforces this.
+Use supported public-data research tools as a three-step pipeline:
+1. `web_search` locates the best public source
+2. `fetch` reads the source URL, PDF, HTML page, or JSON endpoint
+3. `calc` or local arithmetic turns reported figures into ratios, growth rates, and valuation outputs
+
+Search snippets are discovery aids, not evidence.
 
 ## Fetching Financial Statements
 
 ### Statement Types
 
-| Type            | Contains                                   |
-| --------------- | ------------------------------------------ |
-| `income`        | Revenue, expenses, net income, EPS         |
-| `balance_sheet` | Assets, liabilities, equity                |
-| `cash_flow`     | Operating, investing, financing cash flows |
+| Type | Contains |
+| --- | --- |
+| `income` | Revenue, expenses, net income, EPS |
+| `balance_sheet` | Assets, liabilities, equity |
+| `cash_flow` | Operating, investing, financing cash flows |
 
-### Basic Request
+### Public-source workflow
 
-```python
-# Historical financials for DCF
-await call_external_tool(tool_name="finance_financials", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL"],
-    "period": "annual",
-    "as_of_fiscal_year": 2025,
-    "limit": 5,
-    "income_statement_metrics": ["revenue", "netIncome"],
-    "cash_flow_metrics": ["operatingCashFlow", "capitalExpenditure", "freeCashFlow"]
-})
-```
+1. Resolve the exact company and ticker with `web_search` if needed.
+2. Fetch SEC submissions JSON to locate the latest 10-K, 10-Q, or 8-K filing page.
+3. Fetch SEC company facts JSON for standardized reported metrics.
+4. Fetch the matching investor-relations earnings release or presentation when you need quarter framing, guidance, or KPIs not cleanly exposed in XBRL.
+5. Keep the fiscal period end, filing date, and source URL with every number.
 
-### Period Formats
+### Useful public URLs
 
-- Annual: `"2024"`, `"2023"`
-- Quarterly: `"2024-Q1"`, `"2024-Q2"`
-- TTM (trailing twelve months): `"TTM"`
+- SEC submissions: `https://data.sec.gov/submissions/CIK##########.json`
+- SEC company facts: `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json`
+- Filing page or primary filing document from the submissions result
+- Official investor-relations earnings release or quarterly-results PDF
+
+### Period discipline
+
+- Annual analysis: anchor every figure to the fiscal year end and filing date
+- Quarterly analysis: anchor to the fiscal quarter end plus release or filing date
+- TTM analysis: state exactly which four quarters are included
 
 ## Ratio Analysis
 
 ### Profitability Ratios
 
-Calculate from income statement and balance sheet:
+Calculate from reported income statement and balance sheet data:
 
 ```
 Gross Margin = Gross Profit / Revenue
@@ -63,110 +69,80 @@ Debt-to-EBITDA = Total Debt / EBITDA
 Interest Coverage = EBIT / Interest Expense
 ```
 
-### Calculating Ratios
+### Calculating ratios
 
-Fetch the required metrics via `finance_financials`, then calculate ratios locally:
+1. Fetch the reported numerator and denominator from the filing, SEC company facts JSON, or the official earnings release.
+2. Confirm both figures use the same reporting period and accounting basis.
+3. Calculate the ratio locally.
+4. Report the ratio with the underlying figures, period end, and source URLs.
 
-```python
-# ROE calculation data
-await call_external_tool(tool_name="finance_financials", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL"],
-    "period": "annual",
-    "as_of_fiscal_year": 2025,
-    "limit": 1,
-    "income_statement_metrics": ["netIncome"],
-    "balance_sheet_metrics": ["totalStockholdersEquity"]
-})
-```
-
-```
-# Calculate ROE locally from the returned data
-# ROE = Net Income / Shareholders Equity
-```
+Example source routing:
+- ROE: net income from the income statement, total stockholders' equity from the balance sheet
+- Current ratio: current assets and current liabilities from the balance sheet
+- Debt-to-EBITDA: total debt from the balance sheet, EBITDA reconstructed from reported operating data when not shown directly
 
 ## Comparable Company Analysis
 
 ### Step 1: Identify Peer Group
 
-Identify peer companies based on sector and size (screener is currently unavailable).
-Use domain knowledge or external research to select comparable tickers.
+Identify peers using business model, geography, customer base, size, and capital intensity.
 
-### Step 2: Fetch Valuation Multiples
+Use `web_search` to confirm:
+- official company descriptions and investor-relations pages
+- sector and industry classification
+- whether the candidate peers report on a comparable basis
 
-Use `finance_quotes` only when the reference date is today. For past reference dates, use `finance_ohlcv_histories` for price data and `finance_financials` for EPS/market cap.
+Do not build a comp set from ticker familiarity alone.
 
-```python
-# Valuation snapshot
-await call_external_tool(tool_name="finance_quotes", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL", "MSFT", "GOOGL"],
-    "fields": ["price", "marketCap", "pe", "eps", "dividendYieldTTM"]
-})
-```
+### Step 2: Build valuation inputs
 
-### Step 3: Fetch Growth Metrics
+For each company:
+1. Fetch the current quote from the issuer IR stock page or the primary exchange quote page.
+2. Record the displayed timestamp, currency, and delay status.
+3. Fetch the latest filing or SEC company facts for shares, cash, debt, revenue, book value, and earnings inputs.
+4. Calculate equity value, enterprise value, and valuation multiples locally.
 
-```python
-# Peer group revenue comparison
-await call_external_tool(tool_name="finance_financials", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL", "MSFT", "GOOGL", "META"],
-    "period": "annual",
-    "as_of_fiscal_year": 2025,
-    "limit": 3,
-    "income_statement_metrics": ["revenue"]
-})
-```
+For past reference dates, only use a public historical price source if the fetched page exposes the exact date and pricing basis. If you cannot fetch a reliable point-in-time source, say the historical price is unavailable from current supported sources.
 
-```
-# Calculate revenue growth YoY for each
-```
+### Step 3: Fetch growth metrics
+
+1. Pull at least two comparable reported periods from filings, SEC company facts, or official earnings materials.
+2. Standardize period labels across peers before calculating growth.
+3. Calculate YoY or CAGR locally.
+4. Flag when one peer is using a different fiscal calendar or incomplete period coverage.
 
 ### Common Multiples
 
-| Multiple  | Formula                   | Best For                     |
-| --------- | ------------------------- | ---------------------------- |
-| P/E       | Price / EPS               | Profitable companies         |
+| Multiple | Formula | Best For |
+| --- | --- | --- |
+| P/E | Price / EPS | Profitable companies |
 | EV/EBITDA | Enterprise Value / EBITDA | Capital-intensive businesses |
-| P/S       | Price / Revenue per Share | High-growth, unprofitable    |
-| P/B       | Price / Book Value        | Asset-heavy (banks, REITs)   |
-| PEG       | P/E / EPS Growth Rate     | Growth-adjusted valuation    |
+| P/S | Price / Revenue per Share | High-growth, unprofitable companies |
+| P/B | Price / Book Value | Asset-heavy sectors such as banks or REITs |
+| PEG | P/E / EPS Growth Rate | Growth-adjusted valuation |
 
 ## DCF Valuation
 
 ### Required Inputs
 
-1. **Free Cash Flow projection** - from historical cash flow statements
-2. **Discount rate (WACC)** - calculate or use industry average
-3. **Terminal growth rate** - typically 2-3% (GDP growth)
-4. **Projection period** - typically 5-10 years
+1. **Historical free cash flow** — from reported cash flow statements
+2. **Discount rate (WACC)** — calculated from public assumptions or clearly labeled as an estimate
+3. **Terminal growth rate** — usually a conservative long-run growth assumption
+4. **Projection period** — typically 5-10 years depending on business maturity
 
 ### Workflow
 
-```python
-# Historical financials for DCF
-await call_external_tool(tool_name="finance_financials", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL"],
-    "period": "annual",
-    "as_of_fiscal_year": 2025,
-    "limit": 5,
-    "income_statement_metrics": ["revenue", "netIncome"],
-    "cash_flow_metrics": ["operatingCashFlow", "capitalExpenditure", "freeCashFlow"]
-})
+1. Fetch 5+ years of reported revenue, operating cash flow, capex, and net income from filings or SEC company facts.
+2. Fetch the latest IR earnings release, presentation, or shareholder letter for management guidance and business drivers.
+3. Calculate historical free cash flow locally:
+
+```
+FCF = Operating Cash Flow - CapEx
 ```
 
-```python
-# 2. Calculate historical FCF locally
-# FCF = Operating Cash Flow - CapEx
-
-# 3. Project future FCF (use growth assumptions)
-
-# 4. Calculate present value locally
-# Example calculation:
-# wacc = 0.10
-# fcf_projections = [10e9, 11e9, 12e9, 13e9, 14e9]
-# terminal_value = 200e9
-# pv = sum(fcf / (1 + wacc)**i for i, fcf in enumerate(fcf_projections, 1))
-# pv += terminal_value / (1 + wacc)**5
-```
+4. Project future free cash flow from explicit operating assumptions.
+5. Discount projected cash flows and terminal value locally.
+6. Reconcile enterprise value to equity value using reported cash, debt, and share count from the same reporting date.
 
 ### Terminal Value
 
@@ -177,37 +153,47 @@ Terminal Value = FCF_final * (1 + g) / (r - g)
 ```
 
 Where:
-
-- `g` = perpetual growth rate (2-3%)
+- `g` = perpetual growth rate
 - `r` = discount rate (WACC)
+
+### DCF discipline
+
+- Keep operating assumptions separate from management guidance and separate both from your own scenario inputs.
+- Do not mix current market inputs with stale balance-sheet data without saying so.
+- If the company does not have stable positive cash flow, say the DCF is highly assumption-sensitive.
 
 ## Statistical Analysis
 
-For statistical analysis, fetch price history via `finance_ohlcv_histories` and perform calculations locally:
+For returns, volatility, correlation, or beta, use a public historical price source only when the fetched source exposes the exact series period and price field you are using.
 
-```python
-# Correlation analysis data
-await call_external_tool(tool_name="finance_ohlcv_histories", source_id="finance", arguments={
-    "ticker_symbols": ["AAPL", "MSFT"],
-    "query": "AAPL and MSFT price correlation",
-    "start_date_yyyy_mm_dd": "2024-01-01",
-    "end_date_yyyy_mm_dd": "2024-12-31",
-    "fields": ["close"]
-})
+### Workflow
+
+1. Fix the start date, end date, frequency, and price basis first.
+2. Fetch the historical series from a public source that can be cited directly.
+3. Calculate locally:
+
+```
+Daily Return = (close[i] - close[i-1]) / close[i-1]
+Correlation = corr(asset_a_returns, asset_b_returns)
+Annualized Volatility = std(daily_returns) * sqrt(252)
+Beta = covariance(stock, benchmark) / variance(benchmark)
 ```
 
-```python
-# 2. Calculate locally:
-# - Daily returns: (close[i] - close[i-1]) / close[i-1]
-# - Correlation between assets
-# - Annualized volatility: std(daily_returns) * sqrt(252)
-# - Beta: covariance(stock, benchmark) / variance(benchmark)
-```
+4. Report the exact series source, date range, and whether prices are adjusted or unadjusted.
 
-**Common analyses:**
+### Common analyses
 
 - Correlation between assets
-- Beta calculation (regression vs benchmark)
+- Beta calculation versus a benchmark
 - Sharpe ratio
 - Portfolio variance
-- Moving averages and technical indicators
+- Moving averages and other technical indicators
+
+## What Not To Claim
+
+Do not claim any of the following unless you fetched a real public source or the user provided the data:
+- live brokerage holdings
+- private portfolio or watchlist access
+- proprietary consensus databases
+- private transcript access
+- precise historical prices without a fetched point-in-time source

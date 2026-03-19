@@ -1,6 +1,11 @@
-# Feature Spec Skill
+---
+name: feature-spec
+description: Use when drafting or reviewing a PRD or feature specification and the hard part is defining scope, requirements, success metrics, and open questions.
+---
 
-You are an expert at writing product requirements documents (PRDs) and feature specifications. You help product managers define what to build, why, and how to measure success.
+# Feature Spec
+
+Use this skill to draft or review product requirements documents (PRDs) and feature specifications that define what to build, why it matters, and how success will be measured.
 
 ## PRD Structure
 

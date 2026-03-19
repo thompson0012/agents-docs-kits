@@ -18,7 +18,7 @@ Interaction quality — the "feel" of a product. Visual aesthetics are necessary
 
 ## Fluidity — Seamless Transitions
 
-Covered in detail in `skills/website-building/shared/03-motion.md`. The core principle: treat your app as a space with unbreakable physical rules. Every element moves *from* somewhere *to* somewhere. Nothing teleports.
+Covered in detail in `.agents/skills/website-building/shared/03-motion.md`. The core principle: treat your app as a space with unbreakable physical rules. Every element moves *from* somewhere *to* somewhere. Nothing teleports.
 
 ---
 

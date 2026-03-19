@@ -16,3 +16,5 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 26: formalize `website-building` and add `using-legal` as discoverable nested router families | High | Completed |
 | Task 27: add `using-documents` as the canonical nested router for `docx`, `pdf`, `pptx`, and `xlsx` | High | Completed |
 | Task 28: run prompt-pressure evaluations against the expanded router suite including `using-documents` before creating any more families | High | Pending |
+| Task 29: add a portable `generative-ui` skill and route it from `using-agent-practices` | High | Completed |
+| Task 30: standardize the shipped skill corpus and add a suite portability audit gate | High | Completed |

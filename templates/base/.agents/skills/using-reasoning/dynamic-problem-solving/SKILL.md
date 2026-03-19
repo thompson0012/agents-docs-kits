@@ -1,6 +1,6 @@
 ---
 name: dynamic-problem-solving
-description: "Use when the user has already stated a specific problem, decision, diagnosis, or question in one or two sentences and wants a rigorous multi-lens analysis. Trigger on requests like 'help me decide', 'analyze this problem', 'why is this failing', 'stress-test my plan', 'what am I missing', or 'challenge my thinking' when the object of analysis is already clear. This skill is for clearly defined, complicated problems only. Do not use when the problem is still vague or solution-contaminated; route those cases to using-reasoning/problem-definition. Do not use for simple best-practice tasks, chaotic emergencies, or complex situations where small experiments are safer than analysis." 
+description: Use when the user has already stated a specific decision, diagnosis, or question and needs rigorous multi-lens analysis of a clearly defined complicated problem.
 ---
 
 # Dynamic Problem Solving

@@ -7,7 +7,7 @@ description: Guide for building browser games — 3D (Three.js/WebGL) and 2D (Ca
 
 Build 3D browser games using Three.js. Use WebGL 2 rendering, Rapier for physics, ECS for architecture, and GLTF/GLB for assets. All games are static HTML/CSS/JS deployed to a public URL and rendered inside a sandboxed iframe.
 
-**Mandatory shared files (read if not already loaded):** `skills/website-building/shared/01-design-tokens.md`, `skills/website-building/shared/02-typography.md`.
+**Mandatory shared files (read if not already loaded):** `.agents/skills/website-building/shared/01-design-tokens.md`, `.agents/skills/website-building/shared/02-typography.md`.
 
 ---
 
@@ -36,7 +36,7 @@ Because `fetch()` fails for local binary files, follow this rule:
 
 - **3D models, textures, audio, WASM** → load from external CDN URLs (Poly Pizza, Kenney, ambientCG, esm.sh, etc.)
 - **HTML, CSS, JS, JSON, text files** → can be local (served inline by the proxy)
-- **Generated images** (from `generate_image`) → deployed alongside the site as local files. Use `<img>` elements to display them, NOT `fetch()` + canvas. For Three.js textures from local images, **always set `crossOrigin`** before `src` — the sandbox proxy redirects to S3, which taints the canvas for WebGL unless CORS is explicitly requested:
+- **Generated images** (from your image-generation workflow) → deployed alongside the site as local files. Use `<img>` elements to display them, NOT `fetch()` + canvas. For Three.js textures from local images, **always set `crossOrigin`** before `src` — the sandbox proxy redirects to S3, which taints the canvas for WebGL unless CORS is explicitly requested:
 
 ```js
 const img = new Image();
@@ -64,8 +64,8 @@ Before writing code, establish a cohesive art direction based on the game's subj
 - **Match lighting to mood**: Warm directional light for adventure, cold blue ambient for horror, high-contrast rim lighting for action.
 - **UI must match the game world**: Menu screens, HUD, loading screens, and game-over states should share the same palette and typographic style as the game itself.
 
-### Generate Game Art with `generate_image`
-Use the image generation tool to create custom art for the game. Do NOT use placeholder rectangles or skip visual assets — generate real art that matches the art direction.
+### Generate Game Art
+Use the available image-generation workflow to create custom art for the game. Do NOT use placeholder rectangles or skip visual assets — generate real art that matches the art direction.
 
 **Always generate these assets:**
 - **Title screen / splash image** — a hero image that establishes the game's visual identity
@@ -87,7 +87,7 @@ Use the image generation tool to create custom art for the game. Do NOT use plac
 
 ## Game UI Typography
 
-**Read `skills/website-building/shared/02-typography.md` for font selection, pairing rules, loading, and the blacklist.** All rules apply to games. Below adapts them to game-specific contexts.
+**Read `.agents/skills/website-building/shared/02-typography.md` for font selection, pairing rules, loading, and the blacklist.** All rules apply to games. Below adapts them to game-specific contexts.
 
 ### Rules
 
@@ -123,11 +123,11 @@ For in-world 3D text (damage numbers, name tags), use `THREE.CanvasTexture` with
 
 ## Game Design System
 
-Every game screen (HUD, menus, loading, dialogs, settings, game-over, title) must share a unified token system. **Read `skills/website-building/shared/01-design-tokens.md` for token architecture.**
+Every game screen (HUD, menus, loading, dialogs, settings, game-over, title) must share a unified token system. **Read `.agents/skills/website-building/shared/01-design-tokens.md` for token architecture.**
 
 ### Building the System
 
-**1. Define tokens** adapted from `skills/website-building/shared/01-design-tokens.md`:
+**1. Define tokens** adapted from `.agents/skills/website-building/shared/01-design-tokens.md`:
 
 ```css
 :root {
@@ -480,15 +480,14 @@ composer.addPass(new SMAAPass(innerWidth, innerHeight));
 
 ## Testing & Debugging
 
-**Read `skills/website-building/game/game-testing.md` for the complete testing guide.** It covers:
+**Read `.agents/skills/website-building/game/game-testing.md` for the complete testing guide.** It covers:
 
 - **Debug overlay** (required for every game) — FPS, frame time, draw calls, triangle count, memory. Visible in screenshots for evaluation.
-- **Screenshot-based evaluation** — what to screenshot, when, and how to evaluate each capture.
+- **Screenshot-based evaluation** — what to capture, when, and how to evaluate each state.
 - **Video capture** — MediaRecorder API for recording gameplay to evaluate animations and physics.
-- **Deterministic testing hooks** — `window.advanceTime(ms)`, `window.render_game_to_text()`, `window.simulateInput()` for reproducible, automated testing.
+- **Deterministic testing hooks** — `window.advanceTime(ms)` and `window.render_game_to_text()` for reproducible automated checks alongside real browser input.
 - **Performance profiling** — `renderer.info`, Performance API marks, CPU vs. GPU bottleneck identification, memory leak detection.
 - **Common bug prevention** — Three.js resource disposal, animation frame leaks, event listener cleanup, z-fighting, audio context, GC stutter avoidance.
 - **Sandbox testing** — defensive API usage, asset loading verification, pre-ship quality checklist.
 
-
-**Shared files reference:** See `skills/website-building/SKILL.md` for the full shared file table. Key files for games: `game/game-testing.md` (mandatory), `shared/07-toolkit.md` (CDN/Three.js imports), `game/2d-canvas.md` (2D Canvas games).
+**Shared files reference:** See `.agents/skills/website-building/SKILL.md` for the full shared file table. Key files for games: `game/game-testing.md` (mandatory), `shared/07-toolkit.md` (CDN/Three.js imports), `game/2d-canvas.md` (2D Canvas games).

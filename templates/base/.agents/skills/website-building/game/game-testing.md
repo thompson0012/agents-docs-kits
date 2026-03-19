@@ -1,6 +1,6 @@
 # Game Testing & Development
 
-**Prerequisite:** Read `skills/website-building/shared/12-playwright-interactive.md` for persistent browser automation.
+**Prerequisite:** Read `.agents/skills/website-building/shared/12-playwright-interactive.md` for the current browser automation workflow.
 
 Build games in small steps and validate every change. Treat each iteration as: implement → act → pause → observe → adjust.
 
@@ -8,38 +8,26 @@ Build games in small steps and validate every change. Treat each iteration as: i
 
 1. **Pick a goal.** Define a single feature or behavior to implement.
 2. **Implement small.** Make the smallest change that moves the game forward.
-3. **Ensure integration points.** Provide a single canvas and `window.render_game_to_text` so the test loop can read state.
-4. **Add `window.advanceTime(ms)`.** Strongly prefer a deterministic step hook so the Playwright script can advance frames reliably; without it, automated tests can be flaky.
-5. **Initialize progress.md.** If `progress.md` exists, read it first and confirm the original user prompt is recorded at the top (prefix with `Original prompt:`). Also note any TODOs and suggestions left by the previous agent. If missing, create it and write `Original prompt: <prompt>` at the top before appending updates.
-6. **Verify Playwright availability.** Ensure `playwright` is available (local dependency or global install). If unsure, check `npx` first.
-7. **Run the Playwright test script.** You must run `skills/website-building/game/scripts/web_game_playwright_client.js` after each meaningful change; do not invent a new client unless required.
-8. **Use the payload reference.** Base actions on `skills/website-building/game/references/action_payloads.json` to avoid guessing keys.
-9. **Inspect state.** Capture screenshots and text state after each burst.
-10. **Inspect screenshots.** Open the latest screenshot, verify expected visuals, fix any issues, and rerun the script. Repeat until correct.
+3. **Ensure integration points.** Provide a single primary game surface and `window.render_game_to_text` so the browser QA loop can read state.
+4. **Add `window.advanceTime(ms)`.** Strongly prefer a deterministic step hook so the browser tool can advance frames reliably when timing matters.
+5. **Start or confirm the local runtime.** Use the stack's normal shell command from the project directory.
+6. **Open the browser session and navigate to the local URL.** Keep one session open while you iterate.
+7. **Use `observe` before interacting.** Map visible controls and stable element IDs before clicks, typing, or keyboard input.
+8. **Drive one scenario at a time with real input.** Use normal browser actions for controls. Use `evaluate` only for deterministic hooks such as `window.advanceTime(ms)` or `window.render_game_to_text()`.
+9. **Inspect state after each burst.** Compare observed UI, screenshots, and text state before moving on.
+10. **Inspect screenshots when visual evidence matters.** Save them, review them with the image-inspection tool, fix issues, and rerun.
 11. **Verify controls and state (multi-step focus).** Exhaustively exercise all important interactions. For each, think through the full multi-step sequence it implies (cause → intermediate states → outcome) and verify the entire chain works end-to-end. Confirm `render_game_to_text` reflects the same state shown on screen. If anything is off, fix and rerun.
   Examples of important interactions: move, jump, shoot/attack, interact/use, select/confirm/cancel in menus, pause/resume, restart, and any special abilities or puzzle actions defined by the request. Multi-step examples: shooting an enemy should reduce its health; when health reaches 0 it should disappear and update the score; collecting a key should unlock a door and allow level progression.
-12. **Check errors.** Review console errors and fix the first new issue before continuing.
+12. **Check errors.** Review browser console output and local runtime logs. Fix the first new issue before continuing.
 13. **Reset between scenarios.** Avoid cross-test state when validating distinct features.
-14. **Iterate with small deltas.** Change one variable at a time (frames, inputs, timing, positions), then repeat steps 7–13 until stable.
+14. **Iterate with small deltas.** Change one variable at a time (frames, inputs, timing, positions), then repeat steps 8–13 until stable.
 
-Example command (actions required):
+Example browser QA loop:
 
-```
-node "skills/website-building/game/scripts/web_game_playwright_client.js" --url http://localhost:5173 --actions-file "skills/website-building/game/references/action_payloads.json" --click-selector "#start-btn" --iterations 3 --pause-ms 250
-```
-
-Example actions (inline JSON):
-
-```json
-{
-  "steps": [
-    { "buttons": ["left_mouse_button"], "frames": 2, "mouse_x": 120, "mouse_y": 80 },
-    { "buttons": [], "frames": 6 },
-    { "buttons": ["right"], "frames": 8 },
-    { "buttons": ["space"], "frames": 4 }
-  ]
-}
-```
+- Start the local runtime with the project's normal dev command.
+- Open the browser automation tool, `goto` the local URL, and `observe` the page.
+- Use `click_id`, `press`, or other normal actions for gameplay, then `evaluate` `window.advanceTime?.(250)` when deterministic stepping helps.
+- Use `evaluate` to read `window.render_game_to_text?.()`, and capture screenshots only when they add evidence.
 
 ## Test Checklist
 
@@ -56,10 +44,10 @@ Examples of things to test:
 
 ## Test Artifacts to Review
 
-- Latest screenshots from the Playwright run.
+- Latest screenshots from the browser QA pass.
 - Latest `render_game_to_text` JSON output.
 - Console error logs (fix the first new error before continuing).
-You must actually open and visually inspect the latest screenshots after running the Playwright script, not just generate them. Ensure everything that should be visible on screen is actually visible. Go beyond the start screen and capture gameplay screenshots that cover all newly added features. Treat the screenshots as the source of truth; if something is missing, it is missing in the build. If you suspect a headless/WebGL capture issue, rerun the Playwright script in headed mode and re-check. Fix and rerun in a tight loop until the screenshots and text state look correct. Once fixes are verified, re-test all important interactions and controls, confirm they work, and ensure your changes did not introduce regressions. If they did, fix them and rerun everything in a loop until interactions, text state, and controls all work as expected. Be exhaustive in testing controls; broken games are not acceptable.
+You must actually review the latest screenshots after capturing them, not just generate them. Ensure everything that should be visible on screen is actually visible. Go beyond the start screen and capture gameplay screenshots that cover all newly added features. Treat the screenshots as the source of truth; if something is missing, it is missing in the build. If a screenshot disagrees with what the browser tool reported, investigate the mismatch before signoff. Fix and rerun in a tight loop until the screenshots and text state look correct. Once fixes are verified, re-test all important interactions and controls, confirm they work, and ensure your changes did not introduce regressions. If they did, fix them and rerun everything in a loop until interactions, text state, and controls all work as expected. Be exhaustive in testing controls; broken games are not acceptable.
 
 ## Core Game Guidelines
 
@@ -75,7 +63,7 @@ You must actually open and visually inspect the latest screenshots after running
 
 ### Generated Art Assets
 
-When using `generate_image` for game sprites, tiles, or UI elements, generate with transparent backgrounds to get PNGs with transparent backgrounds ready for compositing.
+When generating game sprites, tiles, or UI elements, use transparent backgrounds so the exported PNGs are ready for compositing.
 
 ### Text State Output (render_game_to_text)
 
@@ -101,19 +89,22 @@ Include a clear coordinate system note (origin and axis directions), and encode 
 
 ### Waiting for Game State
 
-Use `waitForFunction` with `render_game_to_text` to wait for state transitions instead of blind timeouts:
+Use the browser tool's `evaluate` action to poll `render_game_to_text` for state transitions instead of relying on blind timeouts:
 
 ```javascript
-await page.waitForFunction(
-  () => { try { return JSON.parse(window.render_game_to_text()).phase === 'racing'; } catch { return false; } },
-  null, { timeout: 15000 }
-);
+() => {
+  try {
+    return JSON.parse(window.render_game_to_text()).phase === 'racing';
+  } catch {
+    return false;
+  }
+}
 ```
 
 ### Time Stepping Hook
 
-Provide a deterministic time-stepping hook so the Playwright client can advance the game in controlled increments. Expose `window.advanceTime(ms)` (or a thin wrapper that forwards to your game update loop) and have the game loop use it when present.
-The Playwright test script uses this hook to step frames deterministically during automated testing.
+Provide a deterministic time-stepping hook so the browser tool can advance the game in controlled increments. Expose `window.advanceTime(ms)` (or a thin wrapper that forwards to your game update loop) and have the game loop use it when present.
+Use this hook for reproducible automated checks, then confirm the same behavior with normal browser input before signoff.
 
 Minimal pattern:
 
@@ -125,11 +116,11 @@ window.advanceTime = (ms) => {
 };
 ```
 
-### Fullscreen Toggle
+### Viewport Fit and Resize
 
-- Use a single key (prefer `f`) to toggle fullscreen on/off.
-- Allow `Esc` to exit fullscreen.
-- When fullscreen toggles, resize the canvas/rendering so visuals and input mapping stay correct.
+- Fullscreen API is not available in the sandbox; design the game to fill the iframe viewport instead.
+- On resize or orientation change, resize the canvas or render target and keep input mapping aligned with the visible game surface.
+- Re-check desktop and narrow mobile widths during browser QA so the initial playable view remains usable.
 
 ## Debug Overlay (Required)
 
@@ -333,31 +324,19 @@ Pre-allocate vectors/objects outside the game loop. Avoid `map()`, `filter()`, s
 
 **Cleanup:** RAF IDs stored · listeners removable · Three.js resources disposed · no orphaned timers
 
-## Progress Tracking
+## Browser QA Companion
 
-Create a `progress.md` file if it doesn't exist, and append TODOs, notes, gotchas, and loose ends as you go so another agent can pick up seamlessly.
-If a `progress.md` file already exists, read it first, including the original user prompt at the top (you may be continuing another agent's work). Do not overwrite the original prompt; preserve it.
-Update `progress.md` after each meaningful chunk of work (feature added, bug found, test run, or decision made).
-At the end of your work, leave TODOs and suggestions for the next agent in `progress.md`.
+Read `.agents/skills/website-building/shared/12-playwright-interactive.md` before signoff. Use that guide for the browser-session workflow, observation posture, and screenshot discipline.
 
-## Playwright Prerequisites
+## Browser Tool Notes
 
-- Prefer a local `playwright` dependency if the project already has it.
-- If unsure whether Playwright is available, check for `npx`:
-  ```
-  command -v npx >/dev/null 2>&1
-  ```
-- If `npx` is missing, install Node/npm and then install Playwright globally:
-  ```
-  npm install -g @playwright/mcp@latest
-  ```
-- Do not switch to `@playwright/test` unless explicitly asked; stick to the client script.
-
-## Scripts
-
-- `skills/website-building/game/scripts/web_game_playwright_client.js` — Playwright-based action loop with virtual-time stepping, screenshot capture, and console error buffering. You must pass an action burst via `--actions-file`, `--actions-json`, or `--click`.
+- Prefer one browser session per QA pass instead of reopening between every check.
+- Use `observe` to find stable element IDs before clicks or typing.
+- Use `evaluate` for deterministic helpers such as `window.advanceTime(ms)` or `window.render_game_to_text()`, not as a replacement for real interaction.
+- Capture screenshots only for states where visual evidence matters, then inspect them before signoff.
 
 ## References
 
-- `skills/website-building/game/references/action_payloads.json` — example action payloads (keyboard + mouse, per-frame capture). Use these to build your burst.
+- `.agents/skills/website-building/shared/12-playwright-interactive.md` — browser-tool workflow for observation, interaction, screenshots, and viewport checks.
+- `window.advanceTime(ms)` and `window.render_game_to_text()` — deterministic hooks owned by the game under test, not substitutes for real user input.
 

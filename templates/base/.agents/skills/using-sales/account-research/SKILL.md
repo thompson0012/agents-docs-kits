@@ -1,3 +1,9 @@
+---
+name: account-research
+description: Use when researching a company or person before outreach, discovery, or account planning, especially to gather company facts, recent news, key people, hiring signals, product context, and qualification cues from web and connected systems.
+---
+
+
 # Account Research
 
 Get a complete picture of any company or person before outreach. This skill always works with web search, and gets significantly better with enrichment and CRM data.
@@ -165,8 +171,8 @@ Connect your tools to supercharge this skill:
 ---
 
 ## Sources
-- [Source 1](URL)
-- [Source 2](URL)
+- Source 1: [URL]
+- Source 2: [URL]
 ```
 
 ---

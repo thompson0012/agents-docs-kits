@@ -1,6 +1,6 @@
 # Standards — Accessibility, Performance, Anti-Patterns
 
-Non-negotiable quality standards. Attribution is mandatory on every page (see `skills/website-building/SKILL.md`).
+Non-negotiable quality standards. Attribution is mandatory on every page (see `.agents/skills/website-building/SKILL.md`).
 
 ---
 
@@ -71,13 +71,13 @@ Font/size/color/spacing/layout rules in `shared/01-design-tokens.md`, `shared/02
 
 ### Dashboard Anti-Patterns
 
-For scroll rules, hierarchy, and data viz, see `skills/website-building/webapp/dashboards.md`. Additional guidance:
+For scroll rules, hierarchy, and data viz, see `.agents/skills/website-building/webapp/dashboards.md`. Additional guidance:
 
 - **Forms as stacked inputs** — break into steps with transitions
 - **Toasts for important outcomes** — toasts are background info. Success/error feedback must be inline, contextual, animated.
 
 ### Mobile Anti-Patterns
 
-For responsive design, touch targets, tap states, and collapse patterns, see `skills/website-building/shared/04-layout.md` Mobile-First. Additional guidance:
+For responsive design, touch targets, tap states, and collapse patterns, see `.agents/skills/website-building/shared/04-layout.md` Mobile-First. Additional guidance:
 
 - **Fixed-position elements blocking content** — sticky header + sticky footer + cookie banner = no visible content on a phone

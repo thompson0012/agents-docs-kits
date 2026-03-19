@@ -1,6 +1,12 @@
+---
+name: xlsx
+description: Use when creating, editing, formatting, recalculating, or validating Excel .xlsx workbooks, including formulas, charts, pivot tables, and spreadsheet automation.
+---
+
+
 # Requirements for Outputs
 
-**Design guidance:** For styled spreadsheets (dashboard reports, branded workbooks), see `skills/design-foundations/SKILL.md` for the default accent color and chart colors. Reserve color for emphasis — most cells should use default black text on white. Use the accent color sparingly (header rows, key totals). Financial model color conventions below are industry-standard overrides and take priority.
+**Design guidance:** For styled spreadsheets (dashboard reports, branded workbooks), see `.agents/skills/design-foundations/SKILL.md` for the default accent color and chart colors. Reserve color for emphasis — most cells should use default black text on white. Use the accent color sparingly (header rows, key totals). Financial model color conventions below are industry-standard overrides and take priority.
 
 ## All Excel files
 
@@ -305,46 +311,25 @@ ws.row_dimensions[3].height = 25   # Header row
 
 ### Data Visualization
 
-**Data Bars** — compare magnitude within a column without leaving the cell:
+Use native conditional formatting for cell-level comparisons. Data bars suit single numeric columns; color scales suit ranges or matrices.
 
 ```python
-from openpyxl.formatting.rule import DataBarRule
+from openpyxl.formatting.rule import ColorScaleRule, DataBarRule
 
-# Blue data bars (default Excel blue)
-rule = DataBarRule(
-    start_type='min',
-    end_type='max',
-    color='4472C4'  # Excel default blue
+ws.conditional_formatting.add(
+    'C5:C50',
+    DataBarRule(start_type='min', end_type='max', color='4472C4'),
 )
-ws.conditional_formatting.add('C5:C50', rule)
-```
 
-**Color Scale** — heatmap effect for matrices and ranges:
-
-```python
-from openpyxl.formatting.rule import ColorScaleRule
-
-# White to blue gradient
-rule = ColorScaleRule(
-    start_type='min', start_color='FFFFFF',
-    end_type='max', end_color='4472C4'
-)
-ws.conditional_formatting.add('D5:H20', rule)
-
-# Three-color scale (low-mid-high)
-rule = ColorScaleRule(
-    start_type='min', start_color='F8696B',     # Red
-    mid_type='percentile', mid_value=50, mid_color='FFEB84',  # Yellow
-    end_type='max', end_color='63BE7B'          # Green
+ws.conditional_formatting.add(
+    'D5:H20',
+    ColorScaleRule(
+        start_type='min', start_color='F8696B',
+        mid_type='percentile', mid_value=50, mid_color='FFEB84',
+        end_type='max', end_color='63BE7B',
+    ),
 )
 ```
-
-**When to use**:
-| Feature | Use Case |
-|---------|----------|
-| Data Bars | Numeric columns needing quick magnitude comparison |
-| Color Scale (2-color) | Single metric ranges, distributions |
-| Color Scale (3-color) | Performance data with good/neutral/bad interpretation |
 
 ### Conditional Formatting Rules
 
@@ -352,44 +337,29 @@ When a user asks to "highlight", "color", or "conditionally format" cells based 
 
 ### Charts
 
-Place charts below tables with a 2-row gap, left-aligned with content:
-
-```python
-from openpyxl.chart import BarChart, LineChart, Reference
-
-# Create chart
-chart = BarChart()
-chart.title = "Revenue by Region"
-chart.style = 10  # Built-in style
-
-# Set data and categories
-data = Reference(ws, min_col=2, min_row=header_row, max_row=last_row)
-cats = Reference(ws, min_col=1, min_row=header_row + 1, max_row=last_row)
-chart.add_data(data, titles_from_data=True)
-chart.set_categories(cats)
-
-# Size and position
-chart.width = 15  # inches
-chart.height = 7.5
-ws.add_chart(chart, f"A{last_row + 3}")  # 2 rows below data
-```
-
-**Chart type selection**:
-| Chart Type | Use When |
-|------------|----------|
-| Bar/Column | Comparing values across categories |
-| Line | Time series, trends over time |
-| Pie | Part-to-whole (≤6 categories only) |
-
-**Preventing overlap**: Chart `width` and `height` are in centimeters, not rows. To place content after a chart without overlap:
+Place charts below tables with a 2-row gap, left-aligned with content.
 
 ```python
 from math import ceil
+from openpyxl.chart import BarChart, Reference
 
-# ~2 rows per cm of chart height (at default ~15pt row height)
+chart = BarChart()
+chart.title = "Revenue by Region"
+chart.style = 10
+chart.add_data(Reference(ws, min_col=2, min_row=header_row, max_row=last_row), titles_from_data=True)
+chart.set_categories(Reference(ws, min_col=1, min_row=header_row + 1, max_row=last_row))
+chart.width = 15
+chart.height = 7.5
+chart_row = last_row + 3
+ws.add_chart(chart, f"A{chart_row}")
+
 rows_for_chart = ceil(chart.height * 2)
-next_content_row = chart_row + rows_for_chart + 2  # 2-row gap
+next_content_row = chart_row + rows_for_chart + 2
 ```
+
+- Bar/column: compare categories
+- Line: show time-series trends
+- Pie: part-to-whole with six or fewer categories
 
 ### Comparison Columns
 
@@ -420,30 +390,15 @@ Use **pandas** for data analysis and bulk operations. Use **openpyxl** for formu
 
 ## Recalculating Formulas
 
-openpyxl writes formulas as strings but does not evaluate them. The `scripts/recalc.py` script drives LibreOffice headless to recalculate all formulas and then scans every cell for Excel errors.
+openpyxl writes formulas as strings but does not evaluate them. Run `scripts/recalc.py` after saving; it recalculates via headless LibreOffice and scans every cell for Excel errors.
 
 ```bash
 python scripts/recalc.py <excel_file> [timeout_seconds]
 ```
 
-On success:
-```json
-{"status": "success", "total_errors": 0, "total_formulas": 42, "error_summary": {}}
-```
+Expect JSON with `status`, `total_errors`, `total_formulas`, and `error_summary`. If `status` is `errors_found`, fix the listed cells and re-run.
 
-When errors remain:
-```json
-{
-  "status": "errors_found",
-  "total_errors": 2,
-  "total_formulas": 42,
-  "error_summary": {
-    "#REF!": {"count": 2, "locations": ["Sheet1!B5", "Sheet1!C10"]}
-  }
-}
-```
-
-If `errors_found`, fix the referenced cells and re-run. Common errors: `#REF!` (bad cell reference), `#DIV/0!` (division by zero), `#VALUE!` (wrong type), `#NAME?` (unknown function).
+Common failures: `#REF!` (bad reference), `#DIV/0!` (division by zero), `#VALUE!` (wrong type), `#NAME?` (unknown function).
 
 ## Pivot Tables
 

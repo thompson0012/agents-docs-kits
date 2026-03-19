@@ -4,23 +4,22 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Pressure-test the expanded router suite (`website-building`, `using-documents`, `using-legal`, `using-sales`, `using-marketing`, `using-reasoning`, `using-research`, and `using-finance`) and decide whether the router model is mature enough before creating any additional family routers.
+Run prompt-pressure evaluations against the expanded router suite now that the base template portability cleanup and audit gate are in place.
 
 ## Scope
 
-- Keep the work inside the existing router packages, the touched root-router docs, and the router-authoring guidance only if eval results expose a generic model gap.
-- Compare router behavior against believable direct-leaf baselines and check whether nested paths, install hints, and selection order hold up under realistic prompts.
-- Treat `using-documents/` as the canonical home for `docx`, `pdf`, `pptx`, and `xlsx`; do not create more router families until the expanded suite has been pressure-tested.
+- Keep `scripts/audit_base_template_skills.py` and `.github/workflows/base-template-skill-audit.yml` green while evaluating router behavior.
+- Use the newly standardized portable skill corpus as the baseline; do not add more router families unless prompt-pressure evidence justifies it.
+- Limit follow-up changes to eval-driven fixes and continuity docs; the portability cleanup itself is complete.
 
 ## Constraints
 
-- Do not encode vendor-specific runtime rules as the canonical router workflow.
-- Treat the current router families as the canonical structure unless evaluation reveals a concrete problem.
-- If an eval exposes a flaw, patch the smallest honest rule or metadata field rather than widening the routers speculatively.
+- Keep shipped skill names and directory layout stable; rely on portable YAML frontmatter and current-tool-surface guidance only.
+- Do not reintroduce stale `skills/` paths, vendor branding, or unsupported tool names in skill docs.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- Prompt-pressure evals exist for the expanded router suite and compare router behavior against a believable baseline.
-- Any routing failures are documented with concrete prompts and fixed at the correct boundary.
-- A clear decision is recorded on whether the expanded router convention is ready for more families or needs another refinement pass first.
+- Prompt-pressure evidence exists for the expanded router suite.
+- Any resulting fixes preserve a passing `python3 scripts/audit_base_template_skills.py`.
+- A clear decision is recorded on whether additional router families are still justified.

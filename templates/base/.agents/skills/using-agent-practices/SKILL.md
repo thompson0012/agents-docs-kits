@@ -33,11 +33,11 @@ Apply these checks in order.
 ### 3. Specialized business and design skills
 - Need a harsh startup viability simulation, market reality check, CAC/churn/runway stress test, or 180-day startup narrative -> `startup-pressure-test`
 - Need design tokens, a brand system, or a brand spec from brand inputs -> `generating-design-tokens`
+- Need model-generated, streamed, or schema-driven interactive UI in the browser, including sandboxed HTML or agent-rendered components -> `generative-ui`
 - Need an Apple-like liquid glass browser effect using CSS/SVG refraction and displacement maps -> `liquid-glass-design`
 
 ### 4. Web project routing
 - Need help building a web project and the request could plausibly mean an informational site, a fullstack web application, or a browser game -> `website-building`
-
 ### 5. Document workflows
 - Need help creating, editing, converting, extracting, or QA-ing a document artifact and the request could plausibly mean Word, PDF, PowerPoint, or Excel work -> `using-documents`
 
@@ -71,6 +71,7 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to meta-prompting.`
 - `Route to startup-pressure-test.`
 - `Route to generating-design-tokens.`
+- `Route to generative-ui.`
 - `Route to liquid-glass-design.`
 - `Route to website-building.`
 - `Route to using-documents.`
@@ -90,6 +91,7 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 - routing to `using-reasoning` for requests that are clearly prompt, continuity, startup, design, web-project, document, or legal work
 - sending a request to multiple sibling skills in parallel from this router
 - forcing a suite skill onto a simple request that does not benefit from special instructions
+- routing model-generated or schema-driven browser UI work to `website-building` when the generative layer itself is the main problem
 - routing an ambiguous website request straight to one child when `website-building` should narrow it first
 - routing an ambiguous document request straight to one leaf when `using-documents` should narrow it first
 - routing an ambiguous legal request straight to one child when `using-legal` should narrow it first

@@ -1,12 +1,13 @@
-# CLI Commands
+---
+name: media
+description: Use when generating or transcribing media with the harness CLI commands documented here, including images, video, speech, and audio transcription.
+---
 
-All media commands run via bash. Accept JSON params as a single argument. Use a separate bash tool call for each media command — do not chain multiple media commands in a single bash call. This allows parallel execution and correct UI rendering.
+# Media
 
-Use the correct `api_credentials` suffix for billing:
-- `api_credentials=["llm-api:image"]` — image generation
-- `api_credentials=["llm-api:video"]` — video generation
-- `api_credentials=["llm-api:audio"]` — text-to-speech and transcription
+Use this skill when the active harness exposes the media CLI commands documented below. Run one media command per bash call, pass JSON parameters as a single argument, and avoid chaining multiple media commands in one call.
 
+If the current harness does not expose these commands, stop and use the available media tooling instead of inventing a wrapper.
 ## asi-generate-image
 
 Generate images from text prompts. Supports img2img with reference images.
@@ -20,9 +21,9 @@ asi-generate-image '{"prompt": "A sunset over mountains", "filename": "sunset", 
 | `prompt` | yes | — | Detailed description of the image |
 | `filename` | yes | — | Output filename without extension (adds .png) |
 | `aspect_ratio` | no | `"1:1"` | `"1:1"`, `"3:4"`, `"4:3"`, `"9:16"`, `"16:9"` |
-| `model` | no | `"nano_banana_2"` | `"nano_banana_2"`, `"nano_banana_pro"`, `"gpt_image_1_5"` |
+| `model` | no | harness default | Harness-supported image model identifier when you need non-default behavior |
 | `images` | no | — | List of absolute image paths for img2img (max 10, PNG/JPEG/WebP) |
-| `background` | no | — | `"transparent"`, `"opaque"`, or `"auto"` (only for `gpt_image_1_5`) |
+| `background` | no | — | Background handling mode when the selected image backend supports it |
 
 Good for: photos, illustrations, artistic images, decorative graphics, AI-powered edits.
 Bad for: charts, graphs, timelines, infographics — AI hallucinates text/numbers. Use Python scripts for programmatic visuals.
@@ -40,8 +41,8 @@ asi-generate-video '{"prompt": "A wave crashing on shore at sunset", "filename":
 | `prompt` | yes | — | Scene description including action, camera movement, style |
 | `filename` | yes | — | Output filename without extension (adds .mp4) |
 | `aspect_ratio` | no | `"16:9"` | `"16:9"` (landscape) or `"9:16"` (portrait) |
-| `duration` | no | `8` | Sora: 4, 8, 12 seconds. Veo: 4, 6, 8 seconds |
-| `model` | no | `"sora_2"` | `"sora_2"`, `"sora_2_pro"`, `"veo_3_1"`, `"veo_3_1_fast"` |
+| `duration` | no | `8` | Supported values depend on the installed backend; check the command help when you need a non-default duration |
+| `model` | no | harness default | Harness-supported video model identifier when you need non-default behavior |
 | `image_path` | no | — | Absolute path to starting frame image |
 
 ## asi-text-to-speech
@@ -56,7 +57,7 @@ asi-text-to-speech '{"file_path": "/home/user/workspace/script.txt", "voice": "c
 |-----------|----------|---------|-------------|
 | `file_path` | yes | — | Absolute path to .txt (single speaker) or .json (multi-speaker dialogue) |
 | `voice` | no | `"kore"` | Voice name for single-speaker .txt files. Ignored for .json dialogue |
-| `model` | no | `"gemini_2_5_pro_tts"` | `"gemini_2_5_pro_tts"` or `"elevenlabs_tts_v3"` |
+| `model` | no | harness default | Harness-supported text-to-speech model identifier when you need non-default behavior |
 
 ## asi-transcribe-audio
 

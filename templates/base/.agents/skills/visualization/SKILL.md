@@ -1,8 +1,13 @@
+---
+name: visualization
+description: Use when selecting chart types, writing Python visualization code, or applying chart-specific accessibility and styling guidance.
+---
+
 # Data Visualization Skill
 
-Chart selection guidance, Python visualization code patterns, design principles, and accessibility considerations for creating effective data visualizations.
+Use this skill when you need chart selection guidance, Python visualization code patterns, or chart-specific design and accessibility guidance.
 
-**Design defaults:** See `skills/design-foundations/SKILL.md` for the canonical chart color sequence and default palette.
+**Design defaults:** See `../design-foundations/SKILL.md` for the canonical chart color sequence and default palette.
 
 ## Chart Selection Guide
 
@@ -58,8 +63,8 @@ plt.rcParams.update({
     'figure.titlesize': 16,
 })
 
-# Default categorical palette — from skills/design-foundations/SKILL.md
-# See skills/design-foundations/SKILL.md for full chart color guidance
+# Default categorical palette — from ../design-foundations/SKILL.md
+# See ../design-foundations/SKILL.md for full chart color guidance
 PALETTE_CATEGORICAL = ['#20808D', '#A84B2F', '#1B474D', '#BCE2E7', '#944454', '#FFC553', '#848456', '#6E522B']
 PALETTE_SEQUENTIAL = 'YlOrRd'
 PALETTE_DIVERGING = 'RdBu_r'

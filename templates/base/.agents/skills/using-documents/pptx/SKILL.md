@@ -1,3 +1,9 @@
+---
+name: pptx
+description: Use when creating, editing, templating, or quality-checking PowerPoint .pptx presentations, especially when slide XML edits, deck generation, or rendered-slide QA are required.
+---
+
+
 # PPTX Skill
 
 ## Choosing an approach
@@ -20,7 +26,7 @@ Render equations with Unicode math symbols only. Do not use OMML or generate equ
 
 ## Design Ideas
 
-**Design defaults:** See `skills/design-foundations/SKILL.md` for palette, fonts + pairings, chart colors, and core principles (1 accent + neutrals, no decorative imagery, accessibility). Below is **slides-specific** guidance only.
+**Design defaults:** See `.agents/skills/design-foundations/SKILL.md` for palette, fonts + pairings, chart colors, and core principles (1 accent + neutrals, no decorative imagery, accessibility). Below is **slides-specific** guidance only.
 
 ### Before Starting
 
@@ -38,9 +44,9 @@ Render equations with Unicode math symbols only. Do not use OMML or generate equ
 - *Healthcare overview* → calming blue or teal builds trust
 - *Creative brief* → warmer accent (terracotta, berry) adds energy
 
-Build every palette as **1 accent + neutral surface + neutral text**. The accent is for emphasis only (headings, key data, section markers) — everything else stays neutral. See `skills/design-foundations/SKILL.md` for the full "Earn Every Color" philosophy, contrast rules, and the custom-palette workflow (user hue → derive surfaces by desaturating → test contrast).
+Build every palette as **1 accent + neutral surface + neutral text**. The accent is for emphasis only (headings, key data, section markers) — everything else stays neutral. See `.agents/skills/design-foundations/SKILL.md` for the full "Earn Every Color" philosophy, contrast rules, and the custom-palette workflow (user hue → derive surfaces by desaturating → test contrast).
 
-**When no topic-specific color is obvious**, fall back to the Nexus palette: teal `#01696F` accent on warm beige `#F7F6F2` (see `skills/design-foundations/SKILL.md` → Default Palette).
+**When no topic-specific color is obvious**, fall back to the Nexus palette: teal `#01696F` accent on warm beige `#F7F6F2` (see `.agents/skills/design-foundations/SKILL.md` → Default Palette).
 
 ### For Each Slide
 
@@ -60,7 +66,7 @@ Build every palette as **1 accent + neutral surface + neutral text**. The accent
 
 ### Typography
 
-See `skills/design-foundations/SKILL.md` for font pairings (Slides Pairings table) and size hierarchy. Default to professional sans-serif. Use serif for headings only when formal tone is needed.
+See `.agents/skills/design-foundations/SKILL.md` for font pairings (Slides Pairings table) and size hierarchy. Default to professional sans-serif. Use serif for headings only when formal tone is needed.
 
 ### Spacing
 
@@ -130,9 +136,9 @@ python -m markitdown output.pptx | grep -iE "xxxx|lorem|ipsum|this.*(page|slide)
 
 If grep returns results, fix them before proceeding.
 
-### Step 2: Visual QA via subagent
+### Step 2: Visual QA
 
-You MUST delegate visual inspection to a subagent. Do NOT read slide images yourself — you've been staring at the code and will see what you expect, not what's there. Subagents have fresh eyes.
+You MUST perform image-based visual inspection with supported tools. Do not rely on the XML or extracted text alone.
 
 1. Convert slides to images:
 
@@ -141,18 +147,14 @@ soffice --headless --convert-to pdf output.pptx
 pdftoppm -jpeg -r 150 output.pdf slide
 ```
 
-2. Call `run_subagent` with the slide images and this prompt:
+2. Inspect each rendered slide image with `inspect_image` and an adversarial prompt such as:
 
-```
-Visually inspect these slides. Assume there are issues — find them.
+```text
+Visually inspect this slide. Assume there are issues and list every confirmed problem.
 
 Check for: stray dots/circles (orphan shapes, bullets at display size — any unexpected circle is likely this bug), overlapping elements, text overflow/cutoff, decorative lines mispositioned after title wrap, source footers colliding with content, elements too close (< 0.3" gaps), uneven spacing, insufficient slide-edge margins (< 0.5"), misaligned columns, low-contrast text or icons, narrow text boxes causing excessive wrapping, leftover placeholder content.
 
-For each slide, list ALL issues found, even minor ones.
-
-Read and analyze these images:
-1. /path/to/slide-01.jpg (Expected: [brief description])
-2. /path/to/slide-02.jpg (Expected: [brief description])
+Return slide-specific findings only. Do not guess about content that is not visible in the image.
 ```
 
 ### Step 3: Fix-and-verify cycle
@@ -161,7 +163,7 @@ Fix every issue the subagent found, then re-verify:
 
 1. Fix issues identified by the subagent
 2. Re-convert affected slides to images (`soffice` + `pdftoppm`)
-3. Verify fixes visually (subagent or self-review for re-checks)
+3. Verify fixes visually with `inspect_image` or another supported image-review tool
 
 At least one fix-and-verify cycle before delivering the file. Fixes create new problems — always re-check.
 

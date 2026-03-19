@@ -1,8 +1,14 @@
+---
+name: docx
+description: Use when creating, editing, converting, or extracting Microsoft Word .docx documents, including tracked changes, XML-level fixes, PDF-to-Word conversion, or legacy .doc cleanup.
+---
+
+
 # Word Document Skill
 
 Under the hood, .docx is a ZIP container holding XML parts. Creation, reading, and modification all operate on this XML structure.
 
-**Visual and typographic standards:** Consult `skills/design-foundations/SKILL.md` for color palette, typeface selection, and layout principles (single accent color with neutral tones, no decorative graphics, WCAG-compliant contrast). Use widely available sans-serif typefaces like Arial or Calibri as your baseline.
+**Visual and typographic standards:** Consult `.agents/skills/design-foundations/SKILL.md` for color palette, typeface selection, and layout principles (single accent color with neutral tones, no decorative graphics, WCAG-compliant contrast). Use widely available sans-serif typefaces like Arial or Calibri as your baseline.
 
 ## Choosing an approach
 
@@ -14,7 +20,7 @@ Under the hood, .docx is a ZIP container holding XML parts. Creation, reading, a
 | Handle legacy .doc format | `soffice --headless --convert-to docx file.doc` | Convert before any XML work |
 | Rebuild from a PDF | Run `pdf2docx`, then patch issues | See below |
 | Export pages as images | `soffice` to PDF, then `pdftoppm` | See below |
-| Flatten tracked changes | `python skills/using-documents/docx/scripts/accept_changes.py in.docx out.docx` | Requires LibreOffice |
+| Flatten tracked changes | `python .agents/skills/using-documents/docx/scripts/accept_changes.py in.docx out.docx` | Requires LibreOffice |
 
 All tools referenced above (`pandoc`, `soffice`, `pdftoppm`, `docx` npm module, `pdf2docx`) are pre-installed in the sandbox.
 

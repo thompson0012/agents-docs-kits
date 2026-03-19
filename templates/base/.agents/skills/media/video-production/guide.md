@@ -90,7 +90,7 @@ For multi-scene productions, plan before generating. For narrated content (expla
 2. Work scene by scene. For each segment:
    a. Generate the voiceover for this segment with `asi-text-to-speech`. Measure its duration with `ffprobe`.
    b. Plan video clips to cover that duration (e.g., 18s of narration → 3 × 8s clips). Each clip should depict a distinct moment — don't reuse starting images.
-   c. Generate a unique storyboard keyframe for each clip using `asi-generate-image` or `run_subagent` with type "asset_designer". Match the video aspect ratio. **Review each keyframe** — verify it matches the intended style, subject consistency, and composition before proceeding. Regenerate any that miss the mark.
+   c. Generate a unique storyboard keyframe for each clip using `asi-generate-image`. Match the video aspect ratio. **Review each keyframe** — visually inspect it against the shot brief, style string, subject consistency, and composition before proceeding. If you need a structured second pass, use `inspect_image` with a specific question about style or continuity. Regenerate any that miss the mark.
    d. Generate video clips from each keyframe. **Review each clip** — check that motion, style, and subject look correct. Measure actual durations — if total video falls short, frame-chain one more clip to cover the gap.
    e. Segment is done and locked. Move to the next.
 3. Stitch all segments together and concatenate the per-segment voiceovers into the final audio track.

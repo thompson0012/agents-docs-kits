@@ -2,9 +2,9 @@
 
 **Two environments, one standard:**
 - **Vanilla HTML/CSS/JS** (default) — CDN scripts and import maps. No npm, no build step.
-- **React projects** — npm/esm.sh imports. shadcn/ui patterns and companion libraries (Sonner, Vaul, cmdk, TanStack Table, React Hook Form + Zod) in `skills/website-building/shared/06-css-and-tailwind.md`.
+- **React projects** — npm/esm.sh imports. shadcn/ui patterns and companion libraries (Sonner, Vaul, cmdk, TanStack Table, React Hook Form + Zod) in `.agents/skills/website-building/shared/06-css-and-tailwind.md`.
 
-Animation libraries (Motion, GSAP, Lenis) are covered in `skills/website-building/shared/03-motion.md`. Chart libraries (Chart.js, Recharts, D3, Nivo, etc.) are covered in `skills/website-building/shared/10-charts-and-dataviz.md`.
+Animation libraries (Motion, GSAP, Lenis) are covered in `.agents/skills/website-building/shared/03-motion.md`. Chart libraries (Chart.js, Recharts, D3, Nivo, etc.) are covered in `.agents/skills/website-building/shared/10-charts-and-dataviz.md`.
 
 ---
 
@@ -155,7 +155,7 @@ When a project needs a map — never use Google Maps (requires API key and billi
 
 ## Three.js & 3D (When Appropriate)
 
-Use 3D sparingly — for hero moments, product showcases, or immersive experiences. Covered in detail in `skills/website-building/game/game.md`.
+Use 3D sparingly — for hero moments, product showcases, or immersive experiences. Covered in detail in `.agents/skills/website-building/game/game.md`.
 
 **CDN Setup:**
 ```html
