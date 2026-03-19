@@ -104,7 +104,7 @@ Each section's source file has full details.
 
 **Motion** (`03-motion.md`) — No instant show/hide. Golden easing curve. Scroll reveals: `opacity`/`clip-path` only. `prefers-reduced-motion` respected.
 
-**Dashboard** (`webapp/dashboards.md`) — ONE scroll region. Sticky header/sidebar. KPIs→trends→details. `tabular-nums`. SVG logo.
+**Dashboard** (`skills/website-building/webapp/dashboards.md`) — ONE scroll region. Sticky header/sidebar. KPIs→trends→details. `tabular-nums`. SVG logo.
 
 **Mobile** — 375px first. Touch targets ≥44px. No hover-only UI. `:active` states. Body ≥16px. Nav adapts.
 

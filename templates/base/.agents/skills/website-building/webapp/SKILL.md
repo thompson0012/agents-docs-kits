@@ -7,7 +7,7 @@ Build fullstack web applications using an opinionated pre-wired template: Expres
 Copy the template to your project directory, then install dependencies:
 
 ```bash
-cp -r skills/webapp/template/ <project-name>/
+cp -r skills/website-building/webapp/template/ <project-name>/
 cd <project-name>
 npm install
 ```
@@ -62,7 +62,7 @@ If the subject gives no clear color signal AND the user provided no direction af
 | Product Type | Concept-Driven Direction | Token Starting Points |
 |---|---|---|
 | **SaaS / productivity** | A writing tool is calm and typographic. A project management tool is structured and efficient. A design tool is visual and spacious. Match personality to purpose. | Neutral surfaces. 1 accent. Body font that matches the product's character. |
-| **Dashboard / analytics** | Finance dashboards demand precision and sobriety. Marketing dashboards can be warmer and more visual. The data's domain sets the tone. | Sans-serif + monospace for data. High-contrast. Load `skills/webapp/dashboards.md`. |
+| **Dashboard / analytics** | Finance dashboards demand precision and sobriety. Marketing dashboards can be warmer and more visual. The data's domain sets the tone. | Sans-serif + monospace for data. High-contrast. Load `skills/website-building/webapp/dashboards.md`. |
 | **E-commerce** | Luxury goods: muted surfaces, serif display, restrained accent. Kids' toys: warm, bright, rounded. Outdoor gear: earthy tones, rugged sans-serif. | Warm palette derived from product category. Strong CTA contrast. |
 | **Brand experience** | A music streaming brand differs from an architecture studio. Derive everything from the brand. | Display font at `--text-xl` in-app; `--text-2xl` ONLY for marketing/landing hero sections. 1-2 custom accent hues. Theatrical motion. |
 | **Admin panel** | Utilitarian, clear, efficient. A healthcare admin panel feels different from a developer tools panel. | Inter or DM Sans (loaded via CDN, not system fonts). Functional color only. Dense layout. |

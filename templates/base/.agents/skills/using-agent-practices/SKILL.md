@@ -13,7 +13,7 @@ For the current category map and skill inventory, read `references/category-map.
 
 ## Core Contract
 
-- Choose exactly one target: a single leaf skill, a family router such as `using-reasoning`, `using-sales`, `using-marketing`, `using-research`, or `using-finance`, or no suite skill.
+- Choose exactly one target: a single leaf skill, a family router such as `website-building`, `using-legal`, `using-reasoning`, `using-sales`, `using-marketing`, `using-research`, or `using-finance`, or no suite skill.
 - Prefer the narrowest correct fit over the most impressive fit.
 - If no first-party skill clearly adds value, say so and answer directly.
 - Do not stack multiple primary suite skills from this router.
@@ -35,22 +35,28 @@ Apply these checks in order.
 - Need design tokens, a brand system, or a brand spec from brand inputs -> `generating-design-tokens`
 - Need an Apple-like liquid glass browser effect using CSS/SVG refraction and displacement maps -> `liquid-glass-design`
 
-### 4. Sales workflows
+### 4. Web project routing
+- Need help building a web project and the request could plausibly mean an informational site, a fullstack web application, or a browser game -> `website-building`
+
+### 5. Legal workflows
+- Need legal help and the request could plausibly mean commercial contract review or operational privacy-compliance support -> `using-legal`
+
+### 6. Sales workflows
 - Need sales help and the request could plausibly mean account research, meeting prep, or personalized outreach -> `using-sales`
 
-### 5. Marketing workflows
+### 7. Marketing workflows
 - Need marketing help and the request could plausibly mean performance analytics, competitor analysis, or content creation -> `using-marketing`
 
-### 6. Research workflows
+### 8. Research workflows
 - Need research help and the request could plausibly mean broad deep-dive research, market-framework analysis, or investment-oriented research -> `using-research`
 
-### 7. Finance workflows
+### 9. Finance workflows
 - Need finance help and the request could plausibly mean audit-control support or finance-data tooling -> `using-finance`
 
-### 8. Reasoning and strategy requests
+### 10. Reasoning and strategy requests
 If the task is mainly about understanding, framing, advising, or scenario-planning a problem, route to `using-reasoning`.
 
-### 9. No suite skill
+### 11. No suite skill
 If none of the above fits cleanly, do not force a suite skill.
 
 ## Router Output
@@ -63,11 +69,13 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to startup-pressure-test.`
 - `Route to generating-design-tokens.`
 - `Route to liquid-glass-design.`
+- `Route to website-building.`
+- `Route to using-legal.`
 - `Route to using-sales.`
-- `Route to using-reasoning.`
 - `Route to using-marketing.`
 - `Route to using-research.`
 - `Route to using-finance.`
+- `Route to using-reasoning.`
 - `No agent-practices skill needed; answer directly.`
 
 Add one sentence explaining why the selected route is the narrowest correct fit.
@@ -75,10 +83,12 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 ## Failure Modes to Avoid
 
 - routing to a specialist because of one keyword when the artifact type points elsewhere
-- routing to `using-reasoning` for requests that are clearly prompt, continuity, startup, or design work
+- routing to `using-reasoning` for requests that are clearly prompt, continuity, startup, design, web-project, or legal work
 - sending a request to multiple sibling skills in parallel from this router
 - forcing a suite skill onto a simple request that does not benefit from special instructions
+- routing an ambiguous website request straight to one child when `website-building` should narrow it first
+- routing an ambiguous legal request straight to one child when `using-legal` should narrow it first
 - routing an ambiguous sales request straight to one leaf when `using-sales` should narrow it first
+- routing an ambiguous marketing request straight to one leaf when `using-marketing` should narrow it first
 - routing an ambiguous research request straight to one leaf when `using-research` should narrow it first
 - routing an ambiguous finance request straight to one leaf when `using-finance` should narrow it first
-- routing an ambiguous marketing request straight to one leaf when `using-marketing` should narrow it first

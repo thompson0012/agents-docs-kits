@@ -1,30 +1,49 @@
+---
+name: website-building
+description: Use when a web-project request could plausibly mean an informational site, a fullstack web application, or a browser game and the agent must choose the narrowest child first.
+---
+
 # Website Building
 
-Build distinctive, production-grade websites that avoid generic "AI slop" aesthetics. Every choice — type, color, motion, layout — must be intentional. Deploy as static HTML/CSS/JS bundles to S3.
+Use this router when the request is about building a website or browser-based experience and more than one web child could fit.
 
-**This skill covers everything for web projects.** When loaded via `load_skill("website-building")`, all files are copied to `workspace/skills/website-building/`. Read sub-files as needed based on your project type. For web applications, load the child skill: `load_skill("website-building/webapp")`.
+Do not perform the full child workflow here. Select the narrowest correct child, then hand off.
 
-**Universal design principles** (color philosophy, default palette, font selection) are shared with other skills via `design-foundations`. This skill's shared files extend those foundations with web-specific implementation (CSS variables, responsive tokens, base stylesheets). You don't need to load `design-foundations` separately — the web-specific versions in `shared/` are comprehensive.
+**Universal design principles** (color philosophy, default palette, font selection) are shared with other skills via `design-foundations`. This family's `shared/` files extend those foundations with web-specific implementation guidance, so child skills should load them directly instead of separately loading `design-foundations`.
 
-Use `read` with the full path, e.g. `skills/website-building/shared/01-design-tokens.md`
+## Core Contract
 
----
+- Choose exactly one primary child skill or decide that no website-building child fits.
+- Prefer gameplay first, then app workflows, then informational sites.
+- Use `references/children.json` as the source of truth for child boundaries, install hints, and selection order.
+- If the best child is missing, say to install it rather than quietly doing weaker work under the wrong child.
+- Do not route to multiple sibling web children in parallel for one request.
 
-## Project Type Routing
+## Decision Order
 
-**Step 1: Identify project type and load domain-specific guidance:**
-
-| Project Type | Action | Examples |
+| Project Type | Route | Examples |
 |---|---|---|
-| Informational sites | `read` `skills/website-building/informational/informational.md` | Personal sites, portfolios, editorial/blogs, small business, landing pages |
-| Web applications | `load_skill("website-building/webapp")` | SaaS products, dashboards, admin panels, e-commerce, brand experiences |
-| Browser games | `read` `skills/website-building/game/game.md` + `skills/website-building/game/game-testing.md` | 2D Canvas games, Three.js/WebGL, HTML5 games, interactive 3D experiences |
+| Browser games | `load_skill("website-building/game")` | 2D Canvas games, Three.js/WebGL games, HTML5 games, interactive 3D experiences |
+| Web applications | `load_skill("website-building/webapp")` | SaaS products, dashboards, admin panels, e-commerce, brand experiences with app logic |
+| Informational sites | `load_skill("website-building/informational")` | Personal sites, portfolios, editorial/blogs, small business, landing pages |
 
-**Step 2: Read shared files** — read `skills/website-building/shared/01-design-tokens.md` and `skills/website-building/shared/02-typography.md` first (mandatory for ALL project types, including webapp). These establish the Nexus design system defaults and typography rules that apply universally. For web applications and dashboards, skip files marked with `†` below — those contain implementation details pre-configured in the fullstack template.
+Use `read` with the full path when you need a specific family reference, for example `skills/website-building/shared/01-design-tokens.md`.
 
-If the user says just "website" or "site" with no detail, ask what type or default to informational.
+## Router Output
 
----
+Return one of these forms and then invoke the selected child if needed:
+
+- `Route to website-building/game.`
+- `Route to website-building/webapp.`
+- `Route to website-building/informational.`
+- `Install <child-path>, then route to <child-path>.`
+- `No website-building child fits; answer directly.`
+
+Add one sentence explaining why the selected child is the narrowest correct fit.
+
+## References
+
+- `references/children.json`
 
 ## Sub-File Reference
 
@@ -56,24 +75,23 @@ All paths are relative to `skills/website-building/`.
 
 | File | When to load |
 |---|---|
-| `load_skill("website-building/webapp")` | SaaS, dashboard, admin, e-commerce, brand experience (child skill with fullstack template) |
-| `webapp/dashboards.md` | Dashboard or data-dense interface (companion to webapp) |
-| `informational/informational.md` | Personal site, portfolio, editorial, small business, landing |
-| `game/game.md` | Browser game, Three.js, WebGL, interactive 3D |
-| `game/2d-canvas.md` | 2D Canvas game (companion to game.md) |
-| `game/game-testing.md` | Any browser game — load alongside game.md |
+| `load_skill("website-building/informational")` | Personal site, portfolio, editorial, small business, landing page |
+| `load_skill("website-building/webapp")` | SaaS, dashboard, admin, e-commerce, brand experience with app logic |
+| `skills/website-building/webapp/dashboards.md` | Dashboard or data-dense interface companion after loading `website-building/webapp` |
+| `load_skill("website-building/game")` | Browser game, Three.js, WebGL, interactive 3D |
+| `skills/website-building/game/2d-canvas.md` | 2D Canvas game companion after loading `website-building/game` |
+| `skills/website-building/game/game-testing.md` | Any browser game — load alongside `website-building/game` |
 
 **Interactive QA:** Read `skills/website-building/shared/12-playwright-interactive.md` for persistent browser automation with Playwright (screenshots, functional testing, visual QA). Required for game testing, useful for any complex site.
 
 ---
 
-## Workflow
+## Family Workflow Boundary
 
-1. **Design Direction**: Clarify purpose, pick aesthetic direction
-2. **Build**: Build the site page by page, screenshotting via Playwright for QA
-3. **Publish**: `deploy_website()` returns public URL
+1. The router chooses the narrowest child.
+2. The selected child skill owns the implementation workflow and domain-specific guidance.
+3. The shared web references in `shared/` apply after the child is selected.
 
----
 
 ## Use Every Tool
 
@@ -128,7 +146,7 @@ After building each page:
 Every site should have a visual identity derived from its content. **Do not skip to the Nexus fallback palette.** The Nexus palette is a last resort for when both inference and asking have failed — not a convenient default.
 
 1. **Infer from the subject.** A coffee roaster site → earthy browns, warm cream, hand-drawn feel. A fintech dashboard → cool slate, sharp sans-serif, data-dense. A children's learning app → bright primaries, rounded type, playful motion. The content itself tells you the palette, typography, and spacing before the user says a word.
-2. **Check the Art Direction tables.** Each domain file (`informational.md`, `webapp/SKILL.md`, `game/game.md`) has an Art Direction table mapping site/product types to concept-driven directions and token starting points. Use these as a springboard.
+2. **Check the Art Direction tables.** Each domain file (`informational/SKILL.md`, `webapp/SKILL.md`, and `game/SKILL.md`) has a concept-driven starting point for that child. Use those plus the deeper child references as your springboard.
 3. **Derive the five pillars:** Color (warm/cool, accent from subject), Typography (serif/sans, display personality), Spacing (dense/generous), Motion (minimal/expressive), Imagery (photo/illustration/type-only).
 4. **If the subject is genuinely ambiguous, ask** — "What mood are you going for?" and "Any reference sites?" One question is enough.
 5. **Nexus fallback — only when inference AND asking yield nothing.** If the user has been asked and gave no direction, AND the subject matter gives no clear signal, then fall back to Nexus/Swiss defaults.

@@ -71,7 +71,7 @@ Font/size/color/spacing/layout rules in `shared/01-design-tokens.md`, `shared/02
 
 ### Dashboard Anti-Patterns
 
-For scroll rules, hierarchy, and data viz, see `skills/webapp/dashboards.md`. Additional guidance:
+For scroll rules, hierarchy, and data viz, see `skills/website-building/webapp/dashboards.md`. Additional guidance:
 
 - **Forms as stacked inputs** — break into steps with transitions
 - **Toasts for important outcomes** — toasts are background info. Success/error feedback must be inline, contextual, animated.
