@@ -13,7 +13,7 @@ For the current category map and skill inventory, read `references/category-map.
 
 ## Core Contract
 
-- Choose exactly one target: a single leaf skill, a family router such as `using-reasoning`, `using-sales`, or `using-marketing`, or no suite skill.
+- Choose exactly one target: a single leaf skill, a family router such as `using-reasoning`, `using-sales`, `using-marketing`, `using-research`, or `using-finance`, or no suite skill.
 - Prefer the narrowest correct fit over the most impressive fit.
 - If no first-party skill clearly adds value, say so and answer directly.
 - Do not stack multiple primary suite skills from this router.
@@ -41,10 +41,16 @@ Apply these checks in order.
 ### 5. Marketing workflows
 - Need marketing help and the request could plausibly mean performance analytics, competitor analysis, or content creation -> `using-marketing`
 
-### 6. Reasoning and strategy requests
+### 6. Research workflows
+- Need research help and the request could plausibly mean broad deep-dive research, market-framework analysis, or investment-oriented research -> `using-research`
+
+### 7. Finance workflows
+- Need finance help and the request could plausibly mean audit-control support or finance-data tooling -> `using-finance`
+
+### 8. Reasoning and strategy requests
 If the task is mainly about understanding, framing, advising, or scenario-planning a problem, route to `using-reasoning`.
 
-### 7. No suite skill
+### 9. No suite skill
 If none of the above fits cleanly, do not force a suite skill.
 
 ## Router Output
@@ -60,6 +66,8 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to using-sales.`
 - `Route to using-reasoning.`
 - `Route to using-marketing.`
+- `Route to using-research.`
+- `Route to using-finance.`
 - `No agent-practices skill needed; answer directly.`
 
 Add one sentence explaining why the selected route is the narrowest correct fit.
@@ -71,4 +79,6 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 - sending a request to multiple sibling skills in parallel from this router
 - forcing a suite skill onto a simple request that does not benefit from special instructions
 - routing an ambiguous sales request straight to one leaf when `using-sales` should narrow it first
+- routing an ambiguous research request straight to one leaf when `using-research` should narrow it first
+- routing an ambiguous finance request straight to one leaf when `using-finance` should narrow it first
 - routing an ambiguous marketing request straight to one leaf when `using-marketing` should narrow it first

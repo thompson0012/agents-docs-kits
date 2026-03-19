@@ -4,25 +4,23 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Apply the router-package model to real families with nested leaf placement, starting with `using-sales` and `using-marketing`, so family entrypoints become the canonical discoverable paths and leaf skills live under their routers.
+Pressure-test the nested router families (`using-sales`, `using-marketing`, `using-reasoning`, `using-research`, and `using-finance`) and decide whether the router model is mature enough before adding any more family routers.
 
 ## Scope
 
-- Keep the work inside `templates/base/.agents/skills/using-sales/`, `templates/base/.agents/skills/using-marketing/`, the touched router-authoring guidance, the root suite router files, and the live docs updated for continuity.
-- Preserve the portable router approach: explicit child metadata, truthful install behavior, and lazy nested leaf loading.
-- Remove the old top-level sales and marketing leaf placement as the canonical representation for those families.
+- Keep the work inside the nested router packages, the touched root router docs, and the router-authoring guidance only if eval results expose generic model gaps.
+- Compare router behavior against direct leaf selection and check whether nested paths, install hints, and selection order hold up under realistic prompts.
+- Do not start new router families until the eval evidence is reviewed.
 
 ## Constraints
 
-- Do not encode Anthropic-, OpenAI-, or other vendor-specific runtime rules as the canonical router workflow.
-- Keep routers narrow: they select among their child leaves and do not absorb the leaves' full workflows.
-- The router path should tell the truth about family membership: sales leaves under `using-sales/`, marketing leaves under `using-marketing/`.
+- Do not encode vendor-specific runtime rules as the canonical router workflow.
+- Treat the current nested families as the canonical structure unless evaluation reveals a concrete problem.
+- If an eval exposes a flaw, patch the smallest honest rule or metadata field rather than widening the routers speculatively.
 - Do not commit from this task.
 
 ## Success Criteria
 
-- `using-sales` routes to nested child paths and its former top-level leaf skills now live under the router package.
-- `using-marketing` exists as a router package with nested marketing leaves and explicit child metadata.
-- `using-agent-practices` and its category map route ambiguous sales and marketing requests to the correct family routers.
-- `create-router-skill` and `create-skill` guidance both reflect the nested-family convention.
-- Focused validation proves the new nested router packages are structurally valid and the local validators reject malformed router metadata.
+- Prompt-pressure evals exist for the nested router families and compare router behavior against a believable baseline.
+- Any routing failures are documented with concrete prompts and fixed at the correct boundary.
+- A clear decision is recorded on whether the nested-router convention is ready for more families or needs another refinement pass first.

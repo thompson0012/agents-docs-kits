@@ -16,30 +16,30 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
 
 ```json
 {
-  "router_name": "using-reasoning",
-  "purpose": "Route analytical requests to the narrowest reasoning child.",
+  "router_name": "using-family",
+  "purpose": "Route family requests to the narrowest child.",
   "selection_order": [
-    "Distorted state before vague problem.",
-    "Vague problem before analysis."
+    "Time-sensitive operational work before generic background research.",
+    "Artifact creation only after enough context exists to do it honestly."
   ],
   "children": [
     {
-      "name": "problem-definition",
-      "target": "using-reasoning/problem-definition",
+      "name": "child-a",
+      "target": "using-family/child-a",
       "relationship": "routes_to",
-      "summary": "Turns messy situations into one precise problem statement.",
+      "summary": "Handles the most time-sensitive or concrete child job in the family.",
       "route_when": [
-        "Problem is still vague.",
-        "Symptoms and proposed solutions are mixed together."
+        "A concrete delivery or decision is already in scope.",
+        "The user needs this child artifact now."
       ],
       "avoid_when": [
-        "The problem is already stated clearly and solution-neutrally."
+        "The request still needs prerequisite context before this child would be honest."
       ],
       "requires": [],
-      "recommends": ["self-cognitive"],
-      "fallbacks_to": ["dynamic-problem-solving"],
+      "recommends": ["using-family/child-b"],
+      "fallbacks_to": ["using-family/child-b"],
       "install_if_missing": {
-        "package": "using-reasoning/problem-definition",
+        "package": "using-family/child-a",
         "notes": "Install the nested child path before routing when the runtime cannot discover nested skills automatically."
       }
     }
@@ -64,7 +64,7 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
 - `avoid_when` — negative signals that rule this child out
 - `requires` — local child names or external skill identifiers that must also be available before the selected child is safe to use
 - `recommends` — optional companion children or external post-checks worth suggesting
-- `fallbacks_to` — explicit degraded alternatives, usually another child in the same router family
+- `fallbacks_to` — explicit degraded alternatives, usually another nested child path in the same router family
 - `install_if_missing` — nested child-path hint for runtimes that can install missing children on demand
 
 ## Design Rules

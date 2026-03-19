@@ -11,11 +11,11 @@ This repository's first-party suite currently contains these live skills under `
 
 Route through `using-reasoning` when the request could plausibly fit more than one of these:
 
-- `thinking-ground` — calibrate reasoning state before analysis
-- `problem-definition` — turn a messy situation into one clean problem statement
-- `dynamic-problem-solving` — analyze a clearly defined complicated problem through multiple lenses
-- `domain-expert-consultation` — produce a structured advisory memo or expert recommendation
-- `strategic-foresight` — run scenarios around a concrete external signal or threshold
+- `using-reasoning/thinking-ground` — calibrate reasoning state before analysis
+- `using-reasoning/problem-definition` — turn a messy situation into one clean problem statement
+- `using-reasoning/dynamic-problem-solving` — analyze a clearly defined complicated problem through multiple lenses
+- `using-reasoning/domain-expert-consultation` — produce a structured advisory memo or expert recommendation
+- `using-reasoning/strategic-foresight` — run scenarios around a concrete external signal or threshold
 
 ## Prompt Artifact Creation
 
@@ -43,6 +43,22 @@ Route through `using-marketing` when the request could plausibly fit more than o
 - `using-marketing/content-creation` — draft or structure marketing content artifacts across channels
 
 
+## Research Workflow Routing
+
+Route through `using-research` when the request could plausibly fit more than one of these:
+
+- `using-research/investment-research` — research stocks, theses, investor styles, and portfolios
+- `using-research/market-research` — run framework-based market sizing, competitive, or strategic market research
+- `using-research/research-assistant` — deliver broad deep-dive research and synthesis when no narrower child fits
+
+## Finance Workflow Routing
+
+Route through `using-finance` when the request could plausibly fit more than one of these:
+
+- `using-finance/finance-audit-support` — support SOX, internal-control, workpaper, and deficiency-evaluation work
+- `using-finance/finance-markets` — handle finance data tools, connector patterns, and structured market-data retrieval
+
+
 ## Design Systems and Visual Prototyping
 
 - `generating-design-tokens` — turn brand inputs into a design token spec or brand system
@@ -61,3 +77,5 @@ Ask first: what is the primary artifact needed?
 - analytical framing, calibration, advisory judgment, or scenario reasoning -> `using-reasoning`
 - ambiguous sales help across research, meeting prep, or outreach -> `using-sales`
 - ambiguous marketing help across analytics, competitor analysis, or content creation -> `using-marketing`
+- ambiguous research help across broad research, market frameworks, or investment analysis -> `using-research`
+- ambiguous finance help across audit support or finance-data tooling -> `using-finance`

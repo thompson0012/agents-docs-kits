@@ -1,0 +1,131 @@
+{
+  "router_name": "using-reasoning",
+  "purpose": "Route structured reasoning requests to the narrowest reasoning child across state calibration, problem framing, advisory analysis, scenario planning, and multi-lens problem solving.",
+  "selection_order": [
+    "Distorted reasoning state beats every later reasoning step.",
+    "A vague problem beats analytical depth because solving the wrong problem well is still failure.",
+    "Concrete external-signal scenario work beats generic advisory work.",
+    "Structured advisory deliverables beat generic multi-lens analysis when the artifact is an expert recommendation or memo.",
+    "Default to dynamic problem solving only when the problem is already clear and the user wants rigorous analysis."
+  ],
+  "children": [
+    {
+      "name": "thinking-ground",
+      "target": "using-reasoning/thinking-ground",
+      "relationship": "routes_to",
+      "summary": "Calibrates the reasoning state before heavier analysis when attachment, urgency, looping, or performative analysis is distorting judgment.",
+      "route_when": [
+        "The user or model appears attached to a preferred answer, emotionally urgent beyond the evidence, looping, or performing analysis without real update.",
+        "The main need is to improve reasoning state before choosing the next analytical step."
+      ],
+      "avoid_when": [
+        "The user already has a clear, grounded problem statement and wants direct analytical work.",
+        "The request is merely factual or operational with no reasoning distortion signal."
+      ],
+      "requires": [],
+      "recommends": [
+        "using-reasoning/problem-definition",
+        "using-reasoning/dynamic-problem-solving"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/thinking-ground",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    },
+    {
+      "name": "problem-definition",
+      "target": "using-reasoning/problem-definition",
+      "relationship": "routes_to",
+      "summary": "Turns a messy situation into one precise, solution-neutral problem statement and handoff note.",
+      "route_when": [
+        "The user senses a problem but cannot define it cleanly, keeps mixing solutions into the problem statement, or is stuck in symptoms.",
+        "The main output should be one clearly defined problem statement rather than the solution."
+      ],
+      "avoid_when": [
+        "The problem is already stated clearly and solution-neutrally in one or two sentences.",
+        "A concrete external signal is the main object of analysis rather than the problem statement itself."
+      ],
+      "requires": [],
+      "recommends": [
+        "using-reasoning/dynamic-problem-solving",
+        "using-reasoning/domain-expert-consultation",
+        "using-reasoning/strategic-foresight"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/problem-definition",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    },
+    {
+      "name": "strategic-foresight",
+      "target": "using-reasoning/strategic-foresight",
+      "relationship": "routes_to",
+      "summary": "Runs scenarios and implication analysis when a concrete external signal or threshold creates uncertainty about downstream effects.",
+      "route_when": [
+        "The prompt includes a concrete external signal, threshold, launch, policy move, pricing shift, or scientific result and asks what it means or what happens next.",
+        "The main need is implications under uncertainty, scenarios, winners and losers, or indicators to watch."
+      ],
+      "avoid_when": [
+        "There is no concrete triggering signal and the user simply wants broad advisory support.",
+        "The request is only for a summary or explanation of an announcement."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/strategic-foresight",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    },
+    {
+      "name": "domain-expert-consultation",
+      "target": "using-reasoning/domain-expert-consultation",
+      "relationship": "routes_to",
+      "summary": "Produces a structured expert consultation, strategic recommendation, tradeoff evaluation, or decision memo once the problem is clear enough to advise on honestly.",
+      "route_when": [
+        "The user wants expert consultation, strategic analysis, tradeoff evaluation, a decision memo, or another structured advisory deliverable.",
+        "The problem is already clear enough that recommendation work would be honest rather than premature."
+      ],
+      "avoid_when": [
+        "The real issue is still that the problem is vague or solution-contaminated.",
+        "The request is primarily about external-signal scenarios rather than advisory judgment."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/domain-expert-consultation",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    },
+    {
+      "name": "dynamic-problem-solving",
+      "target": "using-reasoning/dynamic-problem-solving",
+      "relationship": "routes_to",
+      "summary": "Analyzes a clearly defined complicated problem through a minimum set of deliberately chosen lenses and ends in a concrete recommendation or test.",
+      "route_when": [
+        "The user has already stated a specific problem, decision, diagnosis, or question clearly and wants rigorous multi-lens analysis.",
+        "The main output should be analytical collision, tradeoff assessment, and a concrete next action rather than mere framing."
+      ],
+      "avoid_when": [
+        "The problem is still vague, emotionally defended, or solution-contaminated.",
+        "The situation is better treated as a simple best-practice task, chaotic emergency, or complex experiment-driven situation."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/dynamic-problem-solving",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    }
+  ]
+}

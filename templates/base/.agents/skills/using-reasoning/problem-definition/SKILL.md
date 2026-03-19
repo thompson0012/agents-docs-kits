@@ -1,6 +1,6 @@
 ---
 name: problem-definition
-description: "Use when the user senses a problem but cannot define it cleanly, is solving symptoms without progress, keeps mixing solutions into the problem statement, or needs help turning a messy situation into one precise, actionable problem statement. Trigger on requests like 'something feels wrong', 'I am stuck', 'help me figure out the real problem', 'why is this not working', or any case where the problem is vague, overloaded, or possibly misframed. Do not use when the problem is already stated clearly and solution-neutrally in one or two sentences; route those cases to dynamic-problem-solving instead." 
+description: "Use when the user senses a problem but cannot define it cleanly, is solving symptoms without progress, keeps mixing solutions into the problem statement, or needs help turning a messy situation into one precise, actionable problem statement. Trigger on requests like 'something feels wrong', 'I am stuck', 'help me figure out the real problem', 'why is this not working', or any case where the problem is vague, overloaded, or possibly misframed. Do not use when the problem is already stated clearly and solution-neutrally in one or two sentences; route those cases to using-reasoning/dynamic-problem-solving instead." 
 ---
 
 # Problem Definition
@@ -13,7 +13,7 @@ Use this skill to turn an unclear situation into a single, solution-neutral prob
 - Do **not** solve the problem here.
 - Do **not** recommend tactics, tools, or plans beyond what is needed to define the problem correctly.
 - If the user already gave enough context, do not make them repeat it.
-- If the problem is already clear, stop and route to `dynamic-problem-solving`.
+- If the problem is already clear, stop and route to `using-reasoning/dynamic-problem-solving`.
 
 ## Entry Gate
 
@@ -171,7 +171,7 @@ Return exactly these sections:
 ### Handoff
 Use one of these:
 
-- `Proceed to dynamic-problem-solving.`
+- `Proceed to using-reasoning/dynamic-problem-solving.`
 - `Stop here. More evidence is needed before the problem can be defined.`
 - `Stop here. This is not your problem to solve.`
 Stop after `Handoff`. Do not append solution categories, diagnostic action plans, or likely fixes.
@@ -188,6 +188,6 @@ Stop after `Handoff`. Do not append solution categories, diagnostic action plans
 
 ## Escalation Rules
 
-- If the issue is emotionally loaded and the user is clearly defending a conclusion, run `thinking-ground` before continuing.
+- If the issue is emotionally loaded and the user is clearly defending a conclusion, run `using-reasoning/thinking-ground` before continuing.
 - If the issue is existential, relational, or too ambiguous to reduce safely, say that the framework boundary has been reached.
 - If the user asks for solutions before the statement is stable, explain that solving the wrong problem well is still failure.

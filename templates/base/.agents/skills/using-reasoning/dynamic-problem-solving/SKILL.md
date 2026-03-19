@@ -1,6 +1,6 @@
 ---
 name: dynamic-problem-solving
-description: "Use when the user has already stated a specific problem, decision, diagnosis, or question in one or two sentences and wants a rigorous multi-lens analysis. Trigger on requests like 'help me decide', 'analyze this problem', 'why is this failing', 'stress-test my plan', 'what am I missing', or 'challenge my thinking' when the object of analysis is already clear. This skill is for clearly defined, complicated problems only. Do not use when the problem is still vague or solution-contaminated; route those cases to problem-definition. Do not use for simple best-practice tasks, chaotic emergencies, or complex situations where small experiments are safer than analysis." 
+description: "Use when the user has already stated a specific problem, decision, diagnosis, or question in one or two sentences and wants a rigorous multi-lens analysis. Trigger on requests like 'help me decide', 'analyze this problem', 'why is this failing', 'stress-test my plan', 'what am I missing', or 'challenge my thinking' when the object of analysis is already clear. This skill is for clearly defined, complicated problems only. Do not use when the problem is still vague or solution-contaminated; route those cases to using-reasoning/problem-definition. Do not use for simple best-practice tasks, chaotic emergencies, or complex situations where small experiments are safer than analysis." 
 ---
 
 # Dynamic Problem Solving
@@ -35,7 +35,7 @@ If not, stop and say:
 
 > Before analysis can begin, define the problem in one sentence: what specifically needs to be decided, diagnosed, or understood?
 
-Then route to `problem-definition`.
+Then route to `using-reasoning/problem-definition`.
 
 ### Gate 2 — Problem domain
 
@@ -105,7 +105,7 @@ If attachment is high:
 
 - restate the problem in third person
 - treat the preferred answer as a hypothesis
-- if the tone is defensive or anxious, run `thinking-ground` before continuing
+- if the tone is defensive or anxious, run `using-reasoning/thinking-ground` before continuing
 
 #### Required framing output
 
@@ -216,7 +216,7 @@ Ask:
 - If it overturned it, what was missed at first glance?
 - Does the answer feel hollow because the reasoning is weak, or because this problem should not be solved analytically at all?
 
-If the work feels hollow, performative, or defended, route through `thinking-ground` before giving final confidence.
+If the work feels hollow, performative, or defended, route through `using-reasoning/thinking-ground` before giving final confidence.
 
 ## Output Format
 

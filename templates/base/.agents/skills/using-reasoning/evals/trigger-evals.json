@@ -1,0 +1,20 @@
+[
+  {
+    "id": "should-trigger-ambiguous-reasoning",
+    "query": "I need help thinking through this decision, but I am not even sure whether the real issue is my framing or my analysis.",
+    "should_trigger": true,
+    "why": "The request is ambiguous across multiple reasoning children and should enter the reasoning family router first."
+  },
+  {
+    "id": "should-trigger-external-signal",
+    "query": "A new policy just changed the economics of this market. What happens next and who wins?",
+    "should_trigger": true,
+    "why": "This is clearly a reasoning-family request involving a concrete external signal and scenario implications."
+  },
+  {
+    "id": "should-not-trigger-simple-task",
+    "query": "Write me a concise status update for the team standup.",
+    "should_trigger": false,
+    "why": "This is not a reasoning-family request and should not route through using-reasoning."
+  }
+]

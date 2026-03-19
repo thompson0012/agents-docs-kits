@@ -110,7 +110,7 @@ Global budget: **maximum 50 total `search_web` calls per analysis**, shared acro
 **Phase 3c — Deep Dives (~10 searches)**: Follow up on most promising URLs via `fetch_url` (government reports, analyst publications, financial filings).
 
 **Phase 3d — Primary Source & Gap-Fill (~10 searches)**:
-1. **Primary source tracing**: Follow research-assistant's `fetch_url`-first approach — trace key statistics to original sources (SEC filings, government data, analyst reports).
+1. **Primary source tracing**: Follow `using-research/research-assistant`'s `fetch_url`-first approach — trace key statistics to original sources (SEC filings, government data, analyst reports).
 2. **Named examples**: Include company-level examples and case studies where available from search results.
 3. **Query-specific sub-topics**: If the user's query names specific concepts/events, dedicate a search to each.
 

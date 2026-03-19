@@ -106,9 +106,9 @@ The router body should not duplicate the full child inventory. Put change-prone 
 
 A good router output looks like this:
 
-- `Route to using-reasoning/problem-definition.`
-- `Install using-reasoning/problem-definition, then route to using-reasoning/problem-definition.`
-- `Fallback to using-reasoning/dynamic-problem-solving.`
+- `Route to router-name/child-a.`
+- `Install router-name/child-a, then route to router-name/child-a.`
+- `Fallback to router-name/child-b.`
 - `No family child fits; answer directly.`
 
 Add one sentence explaining why the selected child is the narrowest correct fit.

@@ -1,0 +1,23 @@
+{
+  "skill_name": "using-reasoning",
+  "evals": [
+    {
+      "id": "direct-distorted-state",
+      "prompt": "I keep coming back to the same answer and I mostly want you to confirm I am right, but something feels off. Can you help me think clearly first?",
+      "expected_output": "Routes to using-reasoning/thinking-ground because the request is about calibrating a distorted reasoning state before deeper analysis.",
+      "files": []
+    },
+    {
+      "id": "direct-vague-problem",
+      "prompt": "Something about our launch feels wrong, but I cannot tell whether it is positioning, pricing, or execution. Help me figure out what the real problem actually is.",
+      "expected_output": "Routes to using-reasoning/problem-definition because the user needs one clear problem statement before analysis.",
+      "files": []
+    },
+    {
+      "id": "noisy-clear-problem",
+      "prompt": "The problem is clear: our onboarding completion rate fell from 62% to 41% after the redesign. Challenge my diagnosis and help me decide what to test first.",
+      "expected_output": "Routes to using-reasoning/dynamic-problem-solving because the problem is already stated clearly and the user wants rigorous analysis and next steps.",
+      "files": []
+    }
+  ]
+}

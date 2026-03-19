@@ -1,11 +1,11 @@
 ---
 name: thinking-ground
-description: "Use before heavy analysis when the stakes are high, the user or model appears attached to a preferred answer, urgency feels emotionally inflated, previous analysis sounds technically polished but hollow, or the conversation is looping without genuine update. This is a meta-skill for calibrating the state in which reasoning happens before using problem-definition or dynamic-problem-solving. Do not use as therapy, spirituality, or proof of consciousness. Use only observable conversational signals and route back to action once the state is good enough for honest reasoning." 
+description: "Use before heavy analysis when the stakes are high, the user or model appears attached to a preferred answer, urgency feels emotionally inflated, previous analysis sounds technically polished but hollow, or the conversation is looping without genuine update. This is a meta-skill for calibrating the state in which reasoning happens before using using-reasoning/problem-definition or using-reasoning/dynamic-problem-solving. Do not use as therapy, spirituality, or proof of consciousness. Use only observable conversational signals and route back to action once the state is good enough for honest reasoning." 
 ---
 
 # Thinking Ground
 
-Use this skill to improve the quality of reasoning before invoking `problem-definition` or `dynamic-problem-solving`.
+Use this skill to improve the quality of reasoning before invoking `using-reasoning/problem-definition` or `using-reasoning/dynamic-problem-solving`.
 
 This skill does **not** tell you whether anyone is truly in some privileged inner state. It gives a practical calibration protocol based on observable signals so the next round of reasoning is less distorted.
 
@@ -18,7 +18,7 @@ For a compact whole-system reminder, see `assets/system-pocket-card.md`.
 - Treat motives, relief-seeking, and inner narratives as hypotheses only when the user stated them; otherwise leave them out.
 - Do not romanticize uncertainty, depth, or "presence."
 - Calibrate only enough to improve the next decision.
-- Route quickly back to the right next tool: action, experiment, `problem-definition`, or `dynamic-problem-solving`.
+- Route quickly back to the right next tool: action, experiment, `using-reasoning/problem-definition`, or `using-reasoning/dynamic-problem-solving`.
 - If the issue is better handled by direct experience, a real conversation, waiting, or human support, say so plainly.
 
 ## When to Trigger
@@ -128,8 +128,8 @@ Choose the active distortion. Do not run all protocols.
 
 After calibration, choose the next step explicitly.
 
-- Problem unclear or solution-contaminated -> `problem-definition`
-- Problem clear and complicated -> `dynamic-problem-solving`
+- Problem unclear or solution-contaminated -> `using-reasoning/problem-definition`
+- Problem clear and complicated -> `using-reasoning/dynamic-problem-solving`
 - Situation complex -> small experiments, not deep analysis
 - Situation chaotic -> stabilize first
 - Framework boundary reached -> say that direct experience or human judgment is the correct next move
@@ -149,8 +149,8 @@ Return these sections:
 - what changed after applying it, staying at the level of observable pressure rather than invented motive
 
 ### Next Step
-- route to `problem-definition`
-- route to `dynamic-problem-solving`
+- route to `using-reasoning/problem-definition`
+- route to `using-reasoning/dynamic-problem-solving`
 - gather evidence
 - run an experiment
 - stop analyzing and act

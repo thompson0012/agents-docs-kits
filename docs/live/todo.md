@@ -12,4 +12,5 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 22: extract `create-router-skill` as a separate specialist package for family routers | High | Completed |
 | Task 23: pilot the router model on `using-sales` and wire top-level suite routing into it | High | Completed |
 | Task 24: adopt nested leaf placement for `using-sales` and add `using-marketing` as the second real router family | High | Completed |
-| Task 25: run prompt-pressure evaluations against `using-sales` and `using-marketing`, then decide whether the nested-family convention is ready for the next router candidate | High | Pending |
+| Task 25: complete the remaining nested family routers (`using-reasoning`, `using-research`, `using-finance`) and generalize `create-router-skill` | High | Completed |
+| Task 26: run prompt-pressure evaluations against the nested router families before creating any more routers | High | Pending |
