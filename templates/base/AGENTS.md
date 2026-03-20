@@ -10,6 +10,13 @@ This repository uses a minimal agent documentation structure for recall, progres
 - Treat `AGENTS.md` as the only always-in-context index.
 - Retrieve additional docs on demand from `docs/live/` and `docs/reference/`; do not preload the full docs set.
 
+## Project-Local Skills
+
+- If a needed skill is not already loaded from `~/.agents/skills`, check the project's `.agents/skills/` directory before assuming the skill is unavailable.
+- Treat `.agents/skills/` as the project-local skill surface: use the most specific relevant skill there when the repository ships task-specific guidance.
+- Read `.agents/skills/using-agent-practices/SKILL.md` as the router index whenever the right project-local skill or family router is not obvious.
+- Read only the smallest relevant skill or subdirectory needed for the task; do not preload the entire project skill tree.
+
 ## Progressive Disclosure Rules
 
 - Start here, then read only the smallest set of docs needed for the task.

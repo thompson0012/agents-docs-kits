@@ -4,11 +4,11 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-Task 34 and the vendor-agnostic cleanup remain complete, and `templates/base/AGENTS.md` now routes agents to the full shipped doc surface instead of orphaning architecture, codemap, memory, and lessons. The next likely step is still a capability-based methodology refinement pass across the finance, research, and webapp docs that were already flagged as promising follow-up targets.
+Task 34 and the vendor-agnostic cleanup remain complete, and `templates/base/AGENTS.md` now tells future agents both to check the project-local `.agents/skills/` directory when a needed skill was not loaded from `~/.agents/skills` and to use `.agents/skills/using-agent-practices/SKILL.md` as the router index when the right local skill is unclear. The next likely step is still a capability-based methodology refinement pass across the finance, research, and webapp docs that were already flagged as promising follow-up targets.
 
 ## Latest Completed Work
 
-Enhanced `templates/base/AGENTS.md` so it now operationalizes `progress.md`'s `Next Recommended Action` and `Verification Status`, narrows when `todo.md` should be read, and adds read/update guidance for `architecture.md`, `codemap.md`, `memory.md`, and `lessons.md`. Diff hygiene is clean and the updated guidance was reviewed in full.
+Enhanced `templates/base/AGENTS.md` with a `Project-Local Skills` section that explicitly points agents at `.agents/skills/` as the fallback skill surface when the needed skill was not loaded from `~/.agents/skills`, and now also requires `.agents/skills/using-agent-practices/SKILL.md` as the router index when the correct local skill or family router is not obvious.
 
 ## In Progress
 
@@ -51,7 +51,9 @@ Observed success for:
 - `python3 scripts/audit_base_template_skills.py`
 - repo-wide grep for the removed vendor-name patterns returned no matches
 - `git diff --check` returned no output
+- readback review of `templates/base/AGENTS.md` confirmed the new `Project-Local Skills` section and the explicit `~/.agents/skills` → `.agents/skills/` fallback wording
+- readback review of `templates/base/AGENTS.md` confirmed the new router-index rule for `.agents/skills/using-agent-practices/SKILL.md`
 
 ## Hand-off Note
 
-`templates/base/AGENTS.md` now better matches the template's generated doc surface. Resume Task 35 next unless the user wants a deeper continuity-system pass; the AGENTS layer now explicitly points future sessions at architecture, codemap, memory, lessons, and progress verification state.
+`templates/base/AGENTS.md` now covers both the generated doc surface and the project-local skill surface. Generated projects will explicitly tell agents to fall back to `.agents/skills/` when a needed skill was not already loaded from `~/.agents/skills`, and to read `.agents/skills/using-agent-practices/SKILL.md` as the router index when local skill routing is unclear.
