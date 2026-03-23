@@ -9,8 +9,19 @@ This repository's first-party suite currently contains these live skills under `
 
 ## Prompt and Spec Artifact Creation
 
-- `meta-prompting` — design or optimize a production-grade prompt artifact
+- `meta-prompting` — design or evaluate a prompt artifact such as a system prompt, prompt template, prompt architecture, rubric, or eval plan
+- `prompt-augmentation` — enrich a sparse prompt or generate prompt variants for text, image, or video generation while preserving the user's core subject
 - `feature-spec` — draft or review a PRD, feature spec, or requirements document before implementation
+
+## Software Delivery Routing
+
+Route through `software-delivery` when the request is non-trivial software feature work and the user needs lifecycle guidance across discovery, plan review, implementation handoff, or ship-readiness.
+
+- `software-delivery/feature-discovery` — turn a fuzzy feature idea or change request into a clear problem statement, wedge, and next-step recommendation
+- `software-delivery/plan-product-review` — challenge a plan on user value, scope, sequencing, and MVP shape before implementation
+- `software-delivery/plan-engineering-review` — challenge a plan on architecture, failure modes, rollback, tests, and observability before implementation
+- `software-delivery/plan-design-review` — challenge a plan on UX flows, states, accessibility, and interface clarity before implementation
+- shared companions remain top-level: `feature-spec` for scoped artifacts, `coding-and-data` for repo-backed execution, `website-building` for web build or browser QA, and `self-cognitive` for confidence checks or retrospectives
 
 ## Code and Data Work
 
@@ -98,7 +109,10 @@ Ask first: what is the primary artifact or workflow needed?
 
 - compacted state -> `context-compaction`
 - audit or retro -> `self-cognitive`
-- prompt or system prompt artifact -> `meta-prompting`
+- system prompt, prompt template, prompt architecture, rubric, or eval plan -> `meta-prompting`
+- sparse prompt enrichment or prompt variants for text, image, or video generation -> `prompt-augmentation`
+- startup sanity check, business-model teardown, launch stress test, or startup simulation -> `startup-pressure-test`
+- non-trivial software feature work that still needs discovery, plan review, or stage-by-stage routing -> `software-delivery`
 - feature spec, PRD, or requirements document -> `feature-spec`
 - repo-backed coding, debugging, refactor, or structured data task -> `coding-and-data`
 - generative browser UI, schema-driven component rendering, or streamed agent surfaces -> `generative-ui`

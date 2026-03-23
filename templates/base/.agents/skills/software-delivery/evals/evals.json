@@ -1,0 +1,53 @@
+{
+  "skill_name": "software-delivery",
+  "evals": [
+    {
+      "id": "direct-fuzzy-feature",
+      "prompt": "Our support team says customers get angry after failed invoice retries, but I cannot tell whether the real need is better messaging, retry scheduling, or admin tooling. Help me figure out what feature we should even define.",
+      "expected_output": "Routes to software-delivery/feature-discovery because the user problem and feature shape are still fuzzy and need sharpening before a formal artifact or implementation.",
+      "files": []
+    },
+    {
+      "id": "direct-spec-artifact",
+      "prompt": "Turn our account-recovery idea into a lean feature spec with goals, non-goals, acceptance criteria, and rollout guardrails.",
+      "expected_output": "Routes to feature-spec because the user explicitly wants a scoped feature artifact rather than discovery, review, or implementation.",
+      "files": []
+    },
+    {
+      "id": "direct-product-review",
+      "prompt": "I already drafted a plan for scheduled exports. Challenge the scope, MVP cuts, rollout sequence, and whether the user value is strong enough before we commit engineers.",
+      "expected_output": "Routes to software-delivery/plan-product-review because the plan exists and the dominant need is product-value and scope challenge.",
+      "files": []
+    },
+    {
+      "id": "noisy-engineering-review",
+      "prompt": "Here is our multi-region write plan. Ignore the polished product pitch and red-team the architecture, rollback path, observability, tests, and failure modes before we start coding.",
+      "expected_output": "Routes to software-delivery/plan-engineering-review because the plan already exists and the dominant risk is engineering integrity under failure and rollout pressure.",
+      "files": []
+    },
+    {
+      "id": "direct-design-review",
+      "prompt": "Review this onboarding redesign plan for flow clarity, empty and error states, interaction load, and accessibility before we build it.",
+      "expected_output": "Routes to software-delivery/plan-design-review because the user wants UX and interface critique of a plan before implementation.",
+      "files": []
+    },
+    {
+      "id": "direct-web-build-and-qa",
+      "prompt": "Build the customer-facing pricing workflow in our Next.js app and verify desktop and mobile behavior in the browser before signoff.",
+      "expected_output": "Routes to website-building because the main implementation risk is user-facing web behavior plus browser QA, not generic repo mechanics alone.",
+      "files": []
+    },
+    {
+      "id": "direct-repo-implementation",
+      "prompt": "Implement the retry queue in the existing service repo, add tests around the new backoff rules, and fix the failing migration script.",
+      "expected_output": "Routes to coding-and-data because the plan is stable enough for repo-backed implementation and test work.",
+      "files": []
+    },
+    {
+      "id": "direct-ship-readiness",
+      "prompt": "Before we ship the new permission model, give me a confidence check on blind spots, reversibility, and what we would want in a postmortem if this fails.",
+      "expected_output": "Routes to self-cognitive because the main need is risk-focused readiness and reflective challenge rather than discovery, planning, or coding.",
+      "files": []
+    }
+  ]
+}

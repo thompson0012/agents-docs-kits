@@ -16,6 +16,7 @@ For the current category map and skill inventory, read `references/category-map.
 If this is your first request or you are not sure where to start, match your situation to a route below. Stop as soon as one stage gives you what you need.
 
 - Unclear problem, goal, or scope → `using-reasoning`
+- Non-trivial software feature work still needs discovery, plan review, or stage-by-stage routing → `software-delivery`
 - Need a spec or requirements document before building → `feature-spec`
 - Coding, debugging, or data work in an existing repo → `coding-and-data`
 - Building a web project → `website-building`
@@ -23,7 +24,7 @@ If this is your first request or you are not sure where to start, match your sit
 
 ## Core Contract
 
-- Choose exactly one target: a single leaf skill, a family router such as `website-building`, `using-documents`, `using-legal`, `using-reasoning`, `using-sales`, `using-marketing`, `using-research`, or `using-finance`, or no suite skill.
+- Choose exactly one target: a single leaf skill, a family router such as `software-delivery`, `website-building`, `using-documents`, `using-legal`, `using-reasoning`, `using-sales`, `using-marketing`, `using-research`, or `using-finance`, or no suite skill.
 - Prefer the narrowest correct fit over the most impressive fit.
 - If no first-party skill clearly adds value, say so and answer directly.
 - Do not stack multiple primary suite skills from this router.
@@ -38,7 +39,8 @@ Apply these checks in order.
 - Need a confidence check, postmortem, lessons learned, repeatable workflow extraction, or preflight verification -> `self-cognitive`
 
 ### 2. Prompt and spec artifact creation
-- The requested deliverable is itself a prompt, system prompt, prompt template, or prompt architecture -> `meta-prompting`
+- The requested deliverable is a system prompt, prompt template, prompt architecture, prompt rubric, or prompt eval plan -> `meta-prompting`
+- The request is to enrich a sparse prompt or generate prompt variants for text, image, or video generation while preserving the user's core subject -> `prompt-augmentation`
 - The request is to draft or review a feature spec, PRD, or requirements document -> `feature-spec`
 
 ### 3. Specialized business and design skills
@@ -47,33 +49,36 @@ Apply these checks in order.
 - Need model-generated, streamed, or schema-driven interactive UI in the browser, including sandboxed HTML or agent-rendered components -> `generative-ui`
 - Need an Apple-like liquid glass browser effect using CSS/SVG refraction and displacement maps -> `liquid-glass-design`
 
-### 4. Code and data work
+### 4. Software delivery routing
+- Need lifecycle guidance for non-trivial software feature work and the request could plausibly mean discovery, plan review, implementation handoff, web QA routing, or ship-readiness reflection -> `software-delivery`
+
+### 5. Code and data work
 - Need to delegate repo navigation, code changes, debugging, or structured data analysis to a focused subagent -> `coding-and-data`
 
-### 5. Web project routing
+### 6. Web project routing
 - Need help building a web project and the request could plausibly mean an informational site, a fullstack web application, or a browser game -> `website-building`
-### 6. Document workflows
+### 7. Document workflows
 - Need help creating, editing, converting, extracting, or QA-ing a document artifact and the request could plausibly mean Word, PDF, PowerPoint, or Excel work -> `using-documents`
 
-### 7. Legal workflows
+### 8. Legal workflows
 - Need legal help and the request could plausibly mean commercial contract review or operational privacy-compliance support -> `using-legal`
 
-### 8. Sales workflows
+### 9. Sales workflows
 - Need sales help and the request could plausibly mean account research, meeting prep, or personalized outreach -> `using-sales`
 
-### 9. Marketing workflows
+### 10. Marketing workflows
 - Need marketing help and the request could plausibly mean performance analytics, competitor analysis, or content creation -> `using-marketing`
 
-### 10. Research workflows
+### 11. Research workflows
 - Need research help and the request could plausibly mean broad deep-dive research, market-framework analysis, or investment-oriented research -> `using-research`
 
-### 11. Finance workflows
+### 12. Finance workflows
 - Need finance help and the request could plausibly mean audit-control support or finance-data tooling -> `using-finance`
 
-### 12. Reasoning and strategy requests
+### 13. Reasoning and strategy requests
 If the task is mainly about understanding, framing, advising, or scenario-planning a problem, route to `using-reasoning`.
 
-### 13. No suite skill
+### 14. No suite skill
 If none of the above fits cleanly, do not force a suite skill.
 
 ## Router Output
@@ -83,12 +88,14 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to context-compaction.`
 - `Route to self-cognitive.`
 - `Route to meta-prompting.`
+- `Route to prompt-augmentation.`
 - `Route to feature-spec.`
 - `Route to coding-and-data.`
 - `Route to startup-pressure-test.`
 - `Route to generating-design-tokens.`
 - `Route to generative-ui.`
 - `Route to liquid-glass-design.`
+- `Route to software-delivery.`
 - `Route to website-building.`
 - `Route to using-documents.`
 - `Route to using-legal.`
@@ -105,6 +112,7 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 
 - routing to a specialist because of one keyword when the artifact type points elsewhere
 - routing to `using-reasoning` for requests that are clearly prompt, continuity, startup, design, web-project, document, or legal work
+- routing prompt-architecture or system-prompt work to `prompt-augmentation` when the request is really about designing the artifact, not enriching it
 - sending a request to multiple sibling skills in parallel from this router
 - forcing a suite skill onto a simple request that does not benefit from special instructions
 - routing model-generated or schema-driven browser UI work to `website-building` when the generative layer itself is the main problem

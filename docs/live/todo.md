@@ -25,3 +25,4 @@ Use one row per work item. Prefer `High`, `Medium`, or `Low` for priority and `P
 | Task 35: refine capability-based methodology overlays in finance, research, and webapp docs | High | Pending |
 | Task 36: rename remaining legacy vendor residue to vendor-agnostic names and adapters | High | Completed |
 | Task 37: align `templates/base/AGENTS.md` with the full generated doc surface and live progress workflow | High | Completed |
+| Task 38: sharpen `meta-prompting`, add `prompt-augmentation`, and split prompt routing honestly | High | Completed |

@@ -1,0 +1,203 @@
+{
+  "router_name": "software-delivery",
+  "purpose": "Route non-trivial software feature delivery requests to the narrowest next skill across discovery, scoped artifacts, plan review, implementation, web-specific QA, and ship-readiness reflection.",
+  "selection_order": [
+    "Fuzzy feature ideas or unclear user problems beat every later stage because building the wrong thing efficiently is still failure.",
+    "Scoped-artifact work beats plan review when the team still needs explicit goals, non-goals, and acceptance criteria.",
+    "Specific plan review beats implementation when the plan exists but its product, engineering, or design assumptions still need challenge.",
+    "Browser-facing web work beats generic repo implementation when user-facing web behavior, browser QA, or web child routing is the main risk.",
+    "Default to repo-backed implementation only when the plan is stable enough to build.",
+    "Confidence checks, ship-readiness, and retrospectives come last because they are only honest once delivery work has actually happened."
+  ],
+  "children": [
+    {
+      "name": "feature-discovery",
+      "target": "software-delivery/feature-discovery",
+      "relationship": "routes_to",
+      "summary": "Turns a fuzzy feature idea or delivery problem into a clear problem statement, user outcome, constraints, and the next artifact to produce.",
+      "route_when": [
+        "The request is still exploratory, with competing ideas about the problem, user need, or what should be built.",
+        "The main need is to sharpen the opportunity, constraints, or success signal before writing a formal spec or plan."
+      ],
+      "avoid_when": [
+        "The user explicitly wants a PRD, acceptance criteria, or another scoped requirements artifact.",
+        "There is already a concrete plan and the user wants it challenged rather than discovered."
+      ],
+      "requires": [],
+      "recommends": [
+        "feature-spec"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "software-delivery/feature-discovery",
+        "notes": "Install this nested child path before routing when the runtime cannot discover software-delivery children automatically."
+      }
+    },
+    {
+      "name": "feature-spec",
+      "target": "feature-spec",
+      "relationship": "routes_to",
+      "summary": "Produces a scoped feature artifact such as a PRD, requirements brief, acceptance criteria set, or explicit in-scope and out-of-scope boundary.",
+      "route_when": [
+        "The user wants scope, requirements, acceptance criteria, success metrics, or a feature-spec-style artifact.",
+        "The delivery conversation is mature enough that a formal artifact is the next honest step."
+      ],
+      "avoid_when": [
+        "The feature idea is still too fuzzy and discovery should happen first.",
+        "The user already has a plan and mainly wants it challenged on product, engineering, or design grounds."
+      ],
+      "requires": [],
+      "recommends": [
+        "software-delivery/plan-product-review",
+        "software-delivery/plan-engineering-review",
+        "software-delivery/plan-design-review"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "feature-spec",
+        "notes": "Install this shared top-level skill before routing when the runtime does not already have it available."
+      }
+    },
+    {
+      "name": "plan-product-review",
+      "target": "software-delivery/plan-product-review",
+      "relationship": "routes_to",
+      "summary": "Challenges a feature plan on user value, scope discipline, sequencing, rollout shape, MVP cuts, and product tradeoffs.",
+      "route_when": [
+        "The user already has a plan and wants it challenged for value, scope, user outcomes, prioritization, or MVP shape.",
+        "The dominant risk is building the wrong slice, overcommitting scope, or missing the real customer outcome."
+      ],
+      "avoid_when": [
+        "The main concern is architecture, rollout safety, testability, or observability rather than product judgment.",
+        "The main concern is UI flow, interaction clarity, or accessibility rather than scope and value."
+      ],
+      "requires": [],
+      "recommends": [
+        "feature-spec",
+        "software-delivery/plan-engineering-review",
+        "software-delivery/plan-design-review"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "software-delivery/plan-product-review",
+        "notes": "Install this nested child path before routing when the runtime cannot discover software-delivery children automatically."
+      }
+    },
+    {
+      "name": "plan-engineering-review",
+      "target": "software-delivery/plan-engineering-review",
+      "relationship": "routes_to",
+      "summary": "Challenges a plan on system design, failure modes, reversibility, migration safety, observability, testing, and operational truthfulness.",
+      "route_when": [
+        "The user wants architecture review, edge-case challenge, rollout scrutiny, failure-mode analysis, testability checks, or observability feedback on a plan.",
+        "The dominant risk is that the plan looks plausible but would fail under real callers, scale, rollback pressure, or maintenance burden."
+      ],
+      "avoid_when": [
+        "The main concern is product value, MVP sizing, or prioritization rather than engineering integrity.",
+        "The main concern is UI quality, interaction flow, or accessibility rather than system design."
+      ],
+      "requires": [],
+      "recommends": [
+        "coding-and-data",
+        "website-building",
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "software-delivery/plan-engineering-review",
+        "notes": "Install this nested child path before routing when the runtime cannot discover software-delivery children automatically."
+      }
+    },
+    {
+      "name": "plan-design-review",
+      "target": "software-delivery/plan-design-review",
+      "relationship": "routes_to",
+      "summary": "Challenges a feature plan on user flows, states, accessibility, information hierarchy, and interaction clarity before implementation starts.",
+      "route_when": [
+        "The user wants UI or UX critique of a planned feature, including flows, empty or error states, accessibility, or interaction quality.",
+        "The dominant risk is that the feature will be confusing, inconsistent, or inaccessible even if the engineering plan is sound."
+      ],
+      "avoid_when": [
+        "The main concern is scope, sequencing, or customer value rather than interface quality.",
+        "The main concern is architecture, rollback, testing, or observability rather than UX and design quality."
+      ],
+      "requires": [],
+      "recommends": [
+        "website-building",
+        "software-delivery/plan-engineering-review"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "software-delivery/plan-design-review",
+        "notes": "Install this nested child path before routing when the runtime cannot discover software-delivery children automatically."
+      }
+    },
+    {
+      "name": "coding-and-data",
+      "target": "coding-and-data",
+      "relationship": "routes_to",
+      "summary": "Handles repo-backed implementation, debugging, refactoring, test additions, and structured data work once the feature direction is stable enough to execute.",
+      "route_when": [
+        "The user is ready to implement, debug, or change code in an existing repository or to perform structured data work tied to feature delivery.",
+        "The main need is execution inside code rather than more discovery, planning, or critique."
+      ],
+      "avoid_when": [
+        "The idea is still fuzzy, the requirements are still missing, or the plan still needs review before coding begins.",
+        "The main need is browser-facing web building or browser QA rather than generic repo work."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "coding-and-data",
+        "notes": "Install this shared top-level skill before routing when the runtime does not already have it available."
+      }
+    },
+    {
+      "name": "website-building",
+      "target": "website-building",
+      "relationship": "routes_to",
+      "summary": "Handles user-facing web implementation and browser QA when web project type, interaction behavior, or browser validation is the main delivery risk.",
+      "route_when": [
+        "The request is to build or QA a user-facing web experience and browser behavior is central to success.",
+        "The work could require routing inside the web family or real browser validation rather than only repo mechanics."
+      ],
+      "avoid_when": [
+        "The work is backend-only, non-web, or mainly about generic repo implementation rather than browser-facing behavior.",
+        "The request is still about feature discovery, spec writing, or plan review rather than building and QA."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "website-building",
+        "notes": "Install this shared top-level skill before routing when the runtime does not already have it available."
+      }
+    },
+    {
+      "name": "self-cognitive",
+      "target": "self-cognitive",
+      "relationship": "routes_to",
+      "summary": "Runs confidence checks, ship-readiness reviews, retrospectives, and postmortem-style reflection when the main need is judgment under risk.",
+      "route_when": [
+        "The user wants a confidence check, release readiness review, retrospective, postmortem, or explicit calibration before or after a risky software delivery decision.",
+        "The main need is to challenge blind spots, extract lessons, or assess readiness rather than define or build the feature itself."
+      ],
+      "avoid_when": [
+        "The team still needs discovery, a scoped artifact, plan review, or implementation help as the main next step.",
+        "The request is ordinary execution support rather than reflective or risk-focused judgment."
+      ],
+      "requires": [],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "self-cognitive",
+        "notes": "Install this shared top-level skill before routing when the runtime does not already have it available."
+      }
+    }
+  ]
+}

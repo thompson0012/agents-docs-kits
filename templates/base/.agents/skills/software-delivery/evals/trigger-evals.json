@@ -1,0 +1,38 @@
+[
+  {
+    "id": "should-trigger-ambiguous-feature-work",
+    "query": "We know customers struggle after role changes, but I cannot tell whether we need better audit logs, inline warnings, or admin approvals. Help me figure out what to build next.",
+    "should_trigger": true,
+    "why": "This is ambiguous feature-delivery work inside the software-delivery family and should enter the router before a narrower skill is chosen."
+  },
+  {
+    "id": "should-trigger-plan-review",
+    "query": "I already have a rollout plan for offline sync. Pressure-test the architecture, rollback plan, and observability before implementation starts.",
+    "should_trigger": true,
+    "why": "This is clearly a software-delivery plan-review request and should route through the family router to the engineering review child."
+  },
+  {
+    "id": "should-trigger-web-feature-build",
+    "query": "Build the new customer onboarding flow in our web app and use the browser to verify the responsive states before we call it done.",
+    "should_trigger": true,
+    "why": "This is software feature delivery work whose dominant risk is user-facing web behavior and browser QA."
+  },
+  {
+    "id": "should-trigger-ship-readiness",
+    "query": "We think the release is ready, but I want a confidence check on failure modes and what a serious postmortem would ask if launch goes badly.",
+    "should_trigger": true,
+    "why": "This is a software-delivery readiness and reflection request that belongs in this family before routing to self-cognitive."
+  },
+  {
+    "id": "should-not-trigger-non-software",
+    "query": "Review this vendor contract and tell me which clauses are commercially risky.",
+    "should_trigger": false,
+    "why": "This is a legal review request, not software feature delivery work."
+  },
+  {
+    "id": "should-not-trigger-generic-knowledge",
+    "query": "Explain eventual consistency in plain English with one short example.",
+    "should_trigger": false,
+    "why": "This is a knowledge request, not a request to deliver a software feature through discovery, planning, implementation, or review."
+  }
+]

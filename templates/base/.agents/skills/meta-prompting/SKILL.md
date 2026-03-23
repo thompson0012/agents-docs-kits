@@ -1,79 +1,83 @@
 ---
 name: meta-prompting
-description: Use when the user wants a prompt, system instruction set, or prompt architecture that must be reliable, testable, and tailored to a specific runtime or workflow.
+description: Use when the requested deliverable is a prompt artifact, system prompt, prompt template, or prompt architecture that must be reliable, testable, and shaped for a specific workflow or runtime.
 ---
 
 # Meta-Prompting
 
-Use this skill for non-trivial prompt work where structure matters more than a quick rewrite.
+Use this skill when the job is to design, repair, or evaluate the prompt itself. The output is a copyable prompt artifact, not the task answer.
 
-## Required Inputs
+## Boundary
 
-Collect the minimum information needed before finalizing:
-- **Use case** — what the target system must accomplish
-- **Target runtime** — model, agent, or platform constraints that materially affect prompt shape
-- **Success metric** — what good output looks like
-- **Constraints** — policy boundaries, tone, output format, refusal rules, latency limits, or token limits
+Use `prompt-augmentation` instead when the real need is to enrich a sparse prompt, generate prompt variants, build positive or negative prompts, or expand text, image, or video generation prompts without redesigning the surrounding prompt architecture.
 
-If a missing input changes the design, ask focused follow-up questions before drafting.
+## Discovery
+
+Infer or collect only what changes the design:
+
+- objective and success criteria
+- target workflow or runtime constraints that materially affect structure
+- hard boundaries, non-goals, and likely failure modes
+- required output shape, if the caller already knows it
+
+Ask follow-up questions only when the missing detail changes the prompt architecture.
 
 ## Workflow
 
-### 1. Discovery
-- Remove ambiguity from the task.
-- Identify edge cases, likely failure modes, and refusal boundaries.
-- Decide whether the user needs reliability, creativity, or a deliberate balance.
+### 1. Choose the lightest structure
 
-### 2. Prompt Architecture
-Choose the lightest structure that will survive real use:
-- **Direct instruction** — straightforward tasks with low ambiguity
-- **Reasoning scaffolding** — reasoning-heavy work where internal rigor matters
-- **Branching plans** — exploration, option comparison, or planning
-- **Role and rubric structure** — style-critical or policy-sensitive outputs
-- **Examples and counter-examples** — when behavior needs anchoring
+Use the smallest prompt shape that can survive the task:
+
+- direct instruction for clear, low-risk work
+- role plus rubric when style, policy, or decision quality matters
+- examples or counter-examples when behavior is easy to misread
+- branching or comparison structure when the model must weigh options
+- explicit output contract when downstream consumers depend on the format
 
 Do not add scaffolding that the use case does not earn.
 
-### 3. Draft
-Build the prompt with explicit sections for:
-- role or persona, if needed
-- task definition
+### 2. Draft the prompt
+
+Include only the sections that help:
+
+- role or operating stance, if needed
+- task and scope
+- context the model genuinely needs
 - constraints and non-goals
-- required process or checks
-- output format
-- examples only when they materially reduce ambiguity
+- process checks or evaluation rubric when reliability matters
+- output contract
+- examples only when they reduce ambiguity
 
-### 4. Stress Test
-Before delivering, silently pressure-test the draft:
-- What will the target system misunderstand?
-- Where will it over-answer, hedge, or ignore a boundary?
-- What assumptions are still implicit?
-- Can any section be removed without reducing reliability?
+Reasoning scaffolding is a design tool, not a disclosure requirement. Keep internal rigor and visible output separate unless the user explicitly wants the reasoning exposed.
 
-Patch the draft until the structure matches the risk.
+### 3. Stress-test the draft
 
-## Delivery Format
+Before delivering, silently check:
 
-Return two parts:
+- what the target system is most likely to misunderstand
+- where scope drift or over-answering will happen
+- which assumptions are still implicit
+- whether any section can be removed without reducing reliability
+- whether the output contract matches the caller's real need
 
-### Prompt strategy
-Briefly explain the chosen structure and why it fits the use case.
+Patch the prompt until the structure matches the risk.
 
-### Final prompt
-Provide a copyable prompt artifact with clearly marked variables for the user to fill in.
+## Delivery
+
+Return:
+
+1. a brief prompt strategy note explaining the chosen structure
+2. the final copyable prompt artifact with clearly marked variables
+3. any critical usage notes or known failure edges that the caller should watch
+
+Match the artifact format to the user or runtime. Do not force one syntax as universal truth.
 
 ## Quality Bar
 
-A good prompt:
-- matches the user's real objective rather than the surface wording,
-- makes success and failure legible,
-- states constraints explicitly,
-- avoids unnecessary verbosity,
-- and is ready to use without hidden assumptions.
+A good prompt artifact:
 
-## When Not to Use
-
-Skip this skill for:
-- a simple factual answer,
-- a minor copy edit,
-- or a one-line rewrite that does not need architectural thinking.
+- solves the real task rather than the surface phrasing
+- makes success and failure legible
+- states boundaries explicitly
+- stays as simple as the job allows
+- is ready to copy without hidden assumptions
