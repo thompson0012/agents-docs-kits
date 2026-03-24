@@ -44,6 +44,27 @@ This repository uses a minimal agent documentation structure for recall, progres
 - Learn from prior mistakes or failed attempts: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/lessons.md`
 - Cross-cutting work: read `docs/reference/architecture.md` first, then `docs/reference/implementation.md` and `docs/reference/design.md` as needed after the live docs.
 
+## Pre-Implementation Alignment Check
+
+Before writing code or creating files, answer these questions aloud:
+
+1. **Objective Match**: Which line in `docs/live/current-focus.md` Objective defines this work?
+2. **Scope Boundary**: Which "Explicitly Out of Scope" item prevents something I might otherwise do?
+3. **Minimal Change**: What's the smallest change that achieves the objective?
+
+If you cannot answer all three with specific references, read `docs/live/current-focus.md` again.
+
+## Drift Detection During Implementation
+
+If any of these occur, pause and re-read `docs/live/current-focus.md`:
+
+- Implementation requires creating files not listed in Scope
+- You're editing files outside the touched-files history in `docs/live/progress.md`
+- A "small fix" has expanded to touch 3+ additional files
+- You're adding "helpful" features not requested in the objective
+
+State aloud: "This work [is|is not] in scope because [specific reason]."
+
 ## Update Rules After Meaningful Work
 
 - Update `docs/live/current-focus.md` when the active objective, scope, constraints, or success criteria change.
