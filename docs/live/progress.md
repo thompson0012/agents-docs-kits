@@ -4,11 +4,15 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-Task 38 is now complete. The prompt-skill surface now cleanly splits prompt architecture from prompt enrichment: `meta-prompting` focuses on designing and stress-testing prompt artifacts, while the new `prompt-augmentation` leaf handles sparse text, image, and video prompt expansion plus useful variants. The next likely step is to resume Task 35's methodology-overlay refinements unless prompt-skill eval coverage becomes the higher priority.
+Task 39 is complete. The repo now has a first-class `software-delivery` harness lane plus an independent `frontend-evaluator` lane, and the base template now ships `docs/live/runtime.md` and `docs/live/qa.md` for baton and evidence handoff. No unresolved validation blocker is currently recorded, so the default next move is back to Task 35.
 
 ## Latest Completed Work
 
-Rewrote `templates/base/.agents/skills/meta-prompting/SKILL.md` to keep it portable and architecture-focused, added `templates/base/.agents/skills/prompt-augmentation/SKILL.md` as a new leaf skill, and updated `templates/base/.agents/skills/using-agent-practices/{SKILL.md,references/category-map.md}` so prompt artifact routing distinguishes system-prompt architecture work from sparse prompt enrichment.
+Updated the main delivery-control surfaces:
+- `templates/base/.agents/skills/software-delivery/{SKILL.md,references/children.json,evals/*}` plus new `harness-design/` and `frontend-evaluator/` leaves
+- `templates/base/.agents/skills/website-building/{SKILL.md,references/children.json,shared/12-playwright-interactive.md}` so builder QA stays separate from independent evaluator signoff
+- `templates/base/.agents/skills/using-agent-practices/{SKILL.md,references/category-map.md,evals/*}` and `templates/base/AGENTS.md` so harness-control and strict frontend-acceptance requests discover `software-delivery` honestly
+- `templates/base/docs/live/{runtime.md,qa.md}` and `templates/base/docs/reference/{architecture.md,codemap.md}` so multi-session baton state and evaluator evidence have durable template homes
 
 ## In Progress
 
@@ -16,32 +20,25 @@ None.
 
 ## Blockers
 
-None.
+None recorded.
 
 ## Next Recommended Action
 
-Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. The prompt-skill split is in place; add dedicated prompt-skill eval coverage later only if discovery quality starts drifting.
+Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Only detour if a concrete validator failure or regression from Task 39 is observed.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/meta-prompting/SKILL.md`
-- `templates/base/.agents/skills/prompt-augmentation/SKILL.md`
-- `templates/base/.agents/skills/using-agent-practices/{SKILL.md,references/category-map.md}`
-- `docs/live/progress.md`
-- `docs/live/todo.md`
-- deleted stray `.DS_Store` artifacts at the repo root and under `templates/` / `templates/base/.agents/skills/`
+- `templates/base/.agents/skills/software-delivery/`
+- `templates/base/.agents/skills/website-building/`
+- `templates/base/.agents/skills/using-agent-practices/`
+- `templates/base/AGENTS.md`
+- `templates/base/docs/live/{runtime.md,qa.md}`
+- `templates/base/docs/reference/{architecture.md,codemap.md}`
 
 ## Verification Status
 
-Observed success for:
-
-- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/meta-prompting --strict`
-- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/prompt-augmentation --strict`
-- `python3 templates/base/.agents/skills/create-skill/scripts/validate.py templates/base/.agents/skills/using-agent-practices --strict`
-- `python3 scripts/audit_base_template_skills.py`
-- `git diff --check` returned no output
-- readback review confirmed that `meta-prompting` now owns prompt architecture, `prompt-augmentation` owns sparse generation-prompt enrichment, and the `using-agent-practices` router surfaces distinguish the two without overlapping triggers
+This continuity pass did not re-run validators. If verification details are needed, read the Task 39 implementation handoff and the touched template surfaces above.
 
 ## Hand-off Note
 
-Prompt-related work now has two honest leaf skills with non-overlapping boundaries. Use `meta-prompting` for prompt/system-prompt design and evaluation; use `prompt-augmentation` when the job is enriching or varying a sparse generation prompt. Unless more prompt-suite evaluation is requested, the repo's default next move is still Task 35.
+Task 39 closed the harness-control, frontend-evaluator, and live-doc additions. Use `software-delivery/harness-design` for cross-session orchestration, `software-delivery/frontend-evaluator` for independent browser signoff, and `website-building` for builder-side implementation plus QA. Unless a concrete blocker appears, resume from Task 35.

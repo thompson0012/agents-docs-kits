@@ -4,18 +4,34 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 
 ## System Boundaries
 
-- Inside scope:
-- Outside scope:
-- Boundary note:
+- Inside scope: portable skill routing, the `software-delivery` family, shared web QA guidance, and template live/reference docs that carry delivery state across sessions.
+- Outside scope: product-specific implementations, runtime-specific harness code, and mandatory evaluator overhead for trivial one-shot tasks.
+- Boundary note: `software-delivery` owns delivery-control routing and independent frontend acceptance selection; `website-building` owns web implementation and builder-side browser QA, then may recommend evaluator follow-on.
 
 ## Invariants
 
-- Invariant:
-- Why it must hold:
-- Failure signal:
+- Invariant: `software-delivery/harness-design` is only for cross-session control, compaction rules, baton passing, and planner/generator/evaluator structure.
+- Why it must hold: routing ordinary single-session execution into harness design would duplicate the base router and blur ownership.
+- Failure signal: routine build or plan-review work is described as harness design without any explicit session-control problem.
+
+- Invariant: independent browser signoff belongs to `software-delivery/frontend-evaluator`, while `website-building` remains the builder-facing implementation and QA family.
+- Why it must hold: the repo now distinguishes builder verification from a fresh evaluator's pass/fail gate.
+- Failure signal: `website-building` is treated as the final independent acceptance gate, or evaluator work starts fixing implementation.
+
+- Invariant: `templates/base/docs/live/runtime.md` and `templates/base/docs/live/qa.md` are the canonical live docs when explicit delivery control or evaluator evidence exists.
+- Why it must hold: baton state and acceptance evidence must survive session resets and role changes in one predictable place.
+- Failure signal: runtime mode, baton owner, evidence, or verdict only live in chat transcripts or ad hoc files.
 
 ## Major Components
 
-- Component:
-- Responsibility:
-- Key dependency:
+- Component: `templates/base/.agents/skills/software-delivery/`
+- Responsibility: routes non-trivial software work across discovery, harness control, plan review, implementation handoff, independent frontend evaluation, and readiness reflection.
+- Key dependency: `references/children.json` plus the nested `harness-design/` and `frontend-evaluator/` leaves.
+
+- Component: `templates/base/.agents/skills/website-building/`
+- Responsibility: handles builder-side web implementation and browser QA, then recommends `software-delivery/frontend-evaluator` when browser-facing work needs independent signoff.
+- Key dependency: `shared/12-playwright-interactive.md` and `references/children.json`.
+
+- Component: `templates/base/docs/live/{current-focus.md,progress.md,todo.md,runtime.md,qa.md}`
+- Responsibility: carries recovery state across normal continuation, explicit baton passes, and evaluator evidence collection.
+- Key dependency: truthful updates from the active role before handoff.

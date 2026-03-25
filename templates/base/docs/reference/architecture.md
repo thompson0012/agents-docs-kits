@@ -41,7 +41,7 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 - Key dependency: the working role updating continuity after meaningful work.
 
 - Component: `docs/live/qa.md`
-- Responsibility: stores browser QA evidence, defect severity, final verdict, and retry contract when an evaluator lane exists.
+- Responsibility: stores evaluator evidence, defect severity, final verdict, and retry contract when an independent acceptance lane exists.
 - Key dependency: an independent evaluator or explicit acceptance pass writing the record as it verifies.
 
 - Component: `.agents/skills/software-delivery/`

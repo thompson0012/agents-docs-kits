@@ -27,14 +27,14 @@ Read when an explicit acceptance pass or independent evaluator is in play. Skip 
 ### Minor
 - None.
 
-## Final Verdict
-
-- Verdict: `pass` | `fail` | `blocked`
-- Basis:
-
 ## Retry Contract
 
 - Next owner:
 - Retry only after:
 - Re-check scope:
 - Carry forward evidence:
+
+## Final Verdict
+
+- Verdict: `pass` | `fail` | `blocked`
+- Basis:

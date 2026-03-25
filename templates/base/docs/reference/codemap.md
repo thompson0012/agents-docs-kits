@@ -36,7 +36,7 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 - Entrypoint: `templates/base/docs/live/qa.md`
 - Consumer: independent evaluator or any role auditing acceptance evidence
-- Notes: canonical markdown artifact for browser QA evidence, verdict, and retry contract when evaluator signoff exists.
+- Notes: canonical markdown artifact for evaluator evidence, verdict, and retry contract when independent acceptance exists.
 
 ## High-Value Files
 

@@ -69,7 +69,7 @@ Write the evaluation to `docs/live/qa.md` in markdown.
 At minimum, include these sections:
 1. `## Evidence Matrix`
 2. `## Defects by Severity`
-3. `## Retry Instructions`
+3. `## Retry Contract`
 4. `## Final Verdict`
 
 Keep the artifact audit-friendly.
@@ -84,7 +84,7 @@ For each requirement, user-visible claim, or acceptance gate, record:
 ### Defects by Severity
 Group defects by severity so the next owner can triage accurately. Include the observable symptom, the reproduction path, and the evidence pointer.
 
-### Retry Instructions
+### Retry Contract
 State what the next owner must do before another evaluation is credible. Tie each retry instruction to the relevant defect or blocker. If the issue is environmental, say what external setup change is required.
 
 ### Final Verdict

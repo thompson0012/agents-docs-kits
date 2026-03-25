@@ -4,33 +4,28 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-Add a portable `software-delivery` router family that captures the strongest reusable lifecycle ideas from gstack without cloning its runtime-specific shape, while keeping the existing flat atomic skills discoverable and truthful.
+Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs now that Task 39's harness-control and frontend-evaluator rollout is complete.
 
 ## Scope
 
 In Scope:
-- Create a new top-level `templates/base/.agents/skills/software-delivery/` router with only the family-specific nested leaves it genuinely owns.
-- Reuse existing flat atomic skills such as `using-reasoning`, `feature-spec`, `coding-and-data`, `website-building`, and `self-cognitive` through honest router metadata rather than wrapper skills.
-- Update discovery surfaces and continuity docs so the new router is discoverable without introducing a generic `router-skills/` folder or moving existing top-level routers.
-- Keep `scripts/audit_base_template_skills.py` green after the new family lands.
+- Tighten the finance, research, and webapp docs so capability overlays stay honest, portable, and easy to route.
+- Preserve the Task 39 delivery-control boundaries already landed in `software-delivery`, `website-building`, and the template live-doc surface.
+- Use the Task 39 reference docs as baseline continuity, not as a signal to reopen that work.
 
 Explicitly Out of Scope:
-- No new atomic skills (reuse existing ones only)
-- No changes to existing top-level routers or skill names
-- No gstack-specific imports (telemetry, slash-commands, browser-daemon)
-- No generic `router-skills/` folder
-
-Scope Expansion Test: If this work requires creating files not listed above, pause and confirm.
+- Reworking the shipped `software-delivery` router or its new `harness-design` / `frontend-evaluator` leaves unless a concrete blocker appears.
+- Adding unrelated router families or new follow-on work outside the existing queue.
+- Reopening validation-only work without an observed blocker.
 
 ## Constraints
 
-- Keep shipped skill names and current top-level router layout stable; add the new family without relocating existing routers or atomic skills.
-- Do not import gstack telemetry, slash-command naming, browser-daemon assumptions, or vendor-specific preambles.
-- Do not reintroduce stale `skills/` paths, vendor branding, unsupported tool names, template placeholders, or a generic `router-skills/` grouping.
-- Prefer capability-based overlays to product- or vendor-specific instructions.
+- Treat Task 39 as complete; only revisit it if a concrete regression or unresolved validator failure appears.
+- Keep `website-building` as the builder-side browser QA lane, with `software-delivery/frontend-evaluator` as the independent follow-on gate for non-trivial browser-facing signoff.
+- Keep `templates/base/docs/live/runtime.md` and `templates/base/docs/live/qa.md` as optional live docs used only when explicit delivery control or independent evaluation is in play.
 
 ## Success Criteria
 
-- The new `software-delivery` router and its family-specific leaf skills are structurally valid, portable, and clearly bounded.
-- Discovery surfaces (`README.md`, `templates/base/AGENTS.md`, and the category map) describe the new router honestly without forcing it onto trivial work.
-- The portability audit and all relevant validators pass after the new family lands.
+- Task 35 docs clearly explain capability-based overlays for finance, research, and webapp work.
+- Task 39 boundaries remain coherent in the continuity and reference docs.
+- If no blocker surfaces, the next handoff still points to Task 35.

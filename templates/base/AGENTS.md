@@ -22,7 +22,9 @@ This repository uses a minimal agent documentation structure for recall, progres
 
 - Start here, then read only the smallest set of docs needed for the task.
 - Read `docs/live/current-focus.md` for the active objective, scope, and constraints.
+- Read `docs/live/runtime.md` when the work runs under explicit delivery control, crosses session boundaries, or depends on planner/generator/evaluator baton state.
 - Read `docs/live/progress.md` for session continuity, touched files, latest verification, and the next recommended action.
+- Read `docs/live/qa.md` when independent acceptance evidence or evaluator verdicts matter.
 - Use `docs/live/progress.md`'s `Next Recommended Action` as the default resume pointer unless user direction or `docs/live/current-focus.md` overrides it.
 - Use `docs/live/progress.md`'s `Verification Status` before claiming completion or resuming work in a previously touched area.
 - Read `docs/live/todo.md` only when selecting or sequencing among multiple plausible next actions, or when `docs/live/progress.md` does not already make the next step clear.
@@ -36,6 +38,7 @@ This repository uses a minimal agent documentation structure for recall, progres
 ## Read Order by Task Type
 
 - Start or resume work: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md`
+- Resume controlled multi-session work: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/runtime.md` → `docs/live/progress.md` → `docs/live/qa.md` when evaluator evidence exists
 - Pick the next task: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/live/todo.md` when prioritization is still needed
 - Find where to work: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/codemap.md`
 - Implement or change behavior: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/implementation.md`
@@ -48,7 +51,9 @@ This repository uses a minimal agent documentation structure for recall, progres
 ## Update Rules After Meaningful Work
 
 - Update `docs/live/current-focus.md` when the active objective, scope, constraints, or success criteria change.
+- Update `docs/live/runtime.md` when the active execution mode, baton owner, entry criteria, or reset-versus-compaction rule changes.
 - Update `docs/live/progress.md` after meaningful work with current state, completed work, blockers, touched files, verification, and next recommended action.
+- Update `docs/live/qa.md` when an evaluator or explicit acceptance pass records evidence, defects, verdicts, or retry conditions.
 - Update `docs/live/todo.md` when priorities or next actions change.
 - Update `docs/reference/architecture.md` when boundaries, invariants, or major component relationships change.
 - Update `docs/reference/codemap.md` when high-value paths, entrypoints, or subsystem locations change materially.

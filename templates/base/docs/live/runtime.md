@@ -41,4 +41,3 @@ Read when work uses explicit delivery control across sessions or roles. Keep thi
 - Stop and return `blocked` when:
 - Return to planner when:
 - Return to generator when:
-- Evaluator verdict, if used: `pass` | `fail` | `blocked`
