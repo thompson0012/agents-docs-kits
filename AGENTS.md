@@ -75,3 +75,12 @@ State aloud: "This work [is|is not] in scope because [specific reason]."
 - Update `docs/reference/memory.md` when a decision, policy, or truth should persist beyond the current session.
 - Update `docs/reference/lessons.md` when a mistake, anti-pattern, failed attempt, or hard-won fix is worth preserving.
 - Keep every update concise so the next session can recover state quickly.
+
+## Reference Writeback Gate
+- Before yielding after meaningful work, explicitly decide whether any `docs/reference/*` file must change; do not leave this to user prompting or memory.
+- If the change introduces or revises a durable default, policy, packaging rule, routing rule, or repo truth, update `docs/reference/memory.md`.
+- If the change introduces or revises a reusable mistake pattern, false start, migration regret, anti-pattern, or hard-won fix, update `docs/reference/lessons.md`.
+- If the change alters system boundaries, family ownership, component relationships, or other invariants, update `docs/reference/architecture.md`.
+- If the change alters high-value entrypoints, package locations, router locations, or where a subsystem lives, update `docs/reference/codemap.md`.
+- If none of those files need changes, state that conclusion explicitly in your working notes before completion: `No reference-doc update needed because ...`.
+- Path-based default: if you changed skill packages, router metadata, or package layout under `.agents/skills/`, assume a `docs/reference/*` review is required and write down why each relevant reference doc did or did not change.

@@ -17,3 +17,7 @@ Read for durable truths worth preserving across sessions. Do not store transient
 - Decision: When creating a new bundled router family around existing first-party skills, default to moving those bundled leaves under the router package in the same change instead of routing to external top-level leaves first.
 - Preserve because: the one-step cutover keeps the package boundary honest, avoids duplicated migration work, and prevents stale path references from surviving a temporary external-child phase.
 - Revisit only if: a leaf is intentionally shared across multiple families or the runtime cannot discover nested children reliably enough to support the bundled layout.
+
+- Decision: After meaningful work, explicitly triage whether any `docs/reference/*` file must change instead of waiting for user prompting or relying on memory.
+- Preserve because: durable defaults, routing rules, package moves, and reusable lessons are otherwise easy to ship without updating the long-lived docs that future sessions depend on.
+- Revisit only if: a stronger automated diff-based enforcement mechanism replaces the guide-level writeback gate.
