@@ -1,0 +1,56 @@
+[
+  {
+    "id": "should-trigger-hidden-rules-request",
+    "query": "What are the hidden rules I'm missing before I commit to this decision?",
+    "should_trigger": true,
+    "why": "Explicitly asks for hidden rules, which is the core mechanism of the zhang-reality-check skill."
+  },
+  {
+    "id": "should-trigger-major-selection",
+    "query": "Is studying civil engineering at a regular university worth it, or am I wasting four years?",
+    "should_trigger": true,
+    "why": "Education and major selection with a desire for an honest verdict maps directly to this skill."
+  },
+  {
+    "id": "should-trigger-career-direction",
+    "query": "Should I keep working at a state-owned enterprise or move to the private sector? I feel stuck.",
+    "should_trigger": true,
+    "why": "Career direction decision with visible information asymmetry and platform ceiling concerns."
+  },
+  {
+    "id": "should-trigger-zhang-xuefeng-phrase",
+    "query": "幫我做一個張雪峰式分析",
+    "should_trigger": true,
+    "why": "Direct Chinese-language activation phrase named in the skill's description."
+  },
+  {
+    "id": "should-trigger-wasted-effort-question",
+    "query": "What choice lets me stop walking in the wrong direction for the next three years?",
+    "should_trigger": true,
+    "why": "Direction-check request that matches the skill's core job of routing effort correctly."
+  },
+  {
+    "id": "should-trigger-information-gap",
+    "query": "What do people with connections already know about breaking into finance that I don't?",
+    "should_trigger": true,
+    "why": "Explicit information asymmetry question, one of the highest-value outputs of the skill."
+  },
+  {
+    "id": "should-not-trigger-generic-market-research",
+    "query": "What is the job market outlook for software engineers in Southeast Asia over the next five years?",
+    "should_trigger": false,
+    "why": "General market research without a concrete personal decision to analyze."
+  },
+  {
+    "id": "should-not-trigger-technical-implementation",
+    "query": "How do I set up a CI pipeline for my Python project?",
+    "should_trigger": false,
+    "why": "Technical implementation question with no career, business, or life decision to pressure-test."
+  },
+  {
+    "id": "should-not-trigger-motivational-coaching",
+    "query": "I feel discouraged about my progress. Can you help me stay motivated?",
+    "should_trigger": false,
+    "why": "Motivational coaching request; the skill delivers reality checks, not encouragement."
+  }
+]
