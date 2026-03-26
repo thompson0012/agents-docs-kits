@@ -4,6 +4,10 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 ## Key Paths
 
+- Path: `templates/base/.agents/skills/zhang-reality-check/`
+- Purpose: standalone skill for brutal-clarity reality checks on career, education, business, investment, and life decisions using the Zhang Xuefeng methodology.
+- Update when: the eight-lens model, six-step workflow, or domain template coverage changes.
+
 - Path: `templates/base/.agents/skills/software-delivery/`
 - Purpose: router family for non-trivial software delivery, including `harness-design` and `frontend-evaluator`.
 - Update when: the family boundary, child list, or eval coverage changes.

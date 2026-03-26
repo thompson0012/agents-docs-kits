@@ -1,0 +1,47 @@
+{
+  "skill_name": "zhang-reality-check",
+  "evals": [
+    {
+      "id": "major-selection-reality-check",
+      "prompt": "I want to study biochemistry at a provincial university in China. Is this a good choice? I want an honest analysis.",
+      "expected_output": "Loads zhang-reality-check, strips the romantic framing, surfaces the hidden rule that biology and chemistry graduates typically need a master's or PhD before viable employment, maps the real variable as postgrad placement rather than undergraduate passion, stress-tests the worst case of five-plus years in academia with uncertain exit, and compresses to a one-truth verdict about whether the path matches the user's actual resources and risk tolerance.",
+      "files": [],
+      "notes": "Classic education domain case that should trigger the degree-moat and postgrad-requirement hidden rules."
+    },
+    {
+      "id": "career-pivot-reality-check",
+      "prompt": "I'm thinking of leaving my stable government job to work at a startup in a new industry. What am I not seeing?",
+      "expected_output": "Loads zhang-reality-check, strips the idealized entrepreneurial framing, surfaces the hidden rules about platform ceiling and transferable skills versus golden handcuffs, identifies information asymmetry between the user's current government-job safety and the actual startup failure rates, stress-tests the worst case of startup collapse with no government-track re-entry path, and delivers one truth about whether effort alone is sufficient or whether network and capital are the real variables.",
+      "files": [],
+      "notes": "Should trigger Lens 2 (Direction > Speed) and Lens 7 (Platform Sets the Ceiling)."
+    },
+    {
+      "id": "business-hidden-rules-audit",
+      "prompt": "I want to open a tutoring center in a second-tier city in China. What are the hidden rules I'm missing before I invest?",
+      "expected_output": "Loads zhang-reality-check, strips the passion-for-education framing, surfaces the hidden rules around regulatory risk in private tutoring, capital requirements relative to the user's confirmed resources, network-based versus effort-based competition, and maps the worst case as regulatory shutdown or incumbent displacement. Delivers one truth about whether the moat is skill-based or capital-based.",
+      "files": [],
+      "notes": "Business domain case; should engage Lens 1 (real vs stated rules) and Lens 6 (resource-reality matching)."
+    },
+    {
+      "id": "investment-decision-stress-test",
+      "prompt": "My friend made money flipping apartments in a smaller city. Should I do the same with my savings?",
+      "expected_output": "Loads zhang-reality-check, strips the social proof framing, names the information asymmetry between the friend's entry timing and the user's, identifies who is on the other side of the trade now, maps the worst-case scenario of illiquidity during a down cycle, and delivers one truth about whether the real variable is timing, direction, or capital leverage.",
+      "files": [],
+      "notes": "Investment domain; should trigger Lens 3 (information asymmetry) and Lens 4 (anti-cyclicality first)."
+    },
+    {
+      "id": "life-decision-cost-preload",
+      "prompt": "I'm considering moving to a tier-1 city for my career. My parents are against it. Help me think through this decision.",
+      "expected_output": "Loads zhang-reality-check, strips the family-pressure framing, applies the three-generation accounting lens to surface who pays the long-term cost if the user stays versus leaves, identifies the reversibility profile of the decision, maps the worst case for each path, and compresses to one truth about whether the cost of staying is higher than the cost of leaving.",
+      "files": [],
+      "notes": "Life decision domain; should engage Lens 8 (three-generation accounting) and Lens 5 (pre-load the cost)."
+    },
+    {
+      "id": "full-six-step-workflow-activation",
+      "prompt": "幫我做一個張雪峰式分析。我想考研讀法律。",
+      "expected_output": "Loads zhang-reality-check on the Chinese-language activation phrase, runs the full six-step workflow: strips the narrative of simply wanting a law degree, surfaces the hidden rule that the legal profession is regulated and credential-gated with low employment rates outside top-tier schools, maps the real variable as school ranking and bar passage rather than effort, stress-tests the worst case of three years of postgrad with no job offer in a saturated market, identifies the information gap about actual legal employment statistics, and delivers one truth about whether the platform (school tier) determines the ceiling before any other factor.",
+      "files": [],
+      "notes": "Tests the Chinese-language activation phrase and end-to-end six-step workflow."
+    }
+  ]
+}
