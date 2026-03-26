@@ -91,6 +91,69 @@
       "expected_output": "Routes to website-building rather than using-design because this is still a website build request even though strong visual design is part of the outcome.",
       "files": [],
       "notes": "Negative control: design-heavy site requests should stay in the web-build family."
+    },
+    {
+      "id": "route-create-skill-directly",
+      "prompt": "Create a reusable skill package for auditing spreadsheet models, including a portable SKILL.md, eval scaffolding, and package validation guidance.",
+      "expected_output": "Routes to create-skill because the requested artifact is a reusable leaf skill package rather than a family router or a feature spec.",
+      "files": [],
+      "notes": "Direct leaf hit for skill-package authoring should not fall into feature-spec or coding-and-data."
+    },
+    {
+      "id": "route-create-router-skill-directly",
+      "prompt": "Create a top-level router skill for our sales family that chooses among child skills, records child metadata, and handles install-or-fallback behavior honestly.",
+      "expected_output": "Routes to create-router-skill because the package's main job is routing across a child family with explicit metadata and fallbacks.",
+      "files": [],
+      "notes": "Direct router-package authoring must not collapse into create-skill."
+    },
+    {
+      "id": "route-cx-ticket-triage-directly",
+      "prompt": "Triage these support tickets: categorize each issue, assign priority, merge duplicates, and route the next owner with internal notes.",
+      "expected_output": "Routes to cx-ticket-triage because the workflow is customer-support categorization, prioritization, dedupe, and ownership routing.",
+      "files": [],
+      "notes": "Direct support-operations request should not drift into generic reasoning or coding lanes."
+    },
+    {
+      "id": "route-data-exploration-directly",
+      "prompt": "Profile this unfamiliar warehouse table, infer its grain and likely joins, measure completeness, and tell me what analyses the data can honestly support.",
+      "expected_output": "Routes to data-exploration because the task is exploratory dataset profiling and data-quality assessment before downstream analysis.",
+      "files": [],
+      "notes": "Direct dataset-profiling request should take the dedicated data-exploration lane."
+    },
+    {
+      "id": "route-visualization-directly",
+      "prompt": "Choose the right chart types for these metrics and write Python code for publication-quality charts with accessible labels and legends.",
+      "expected_output": "Routes to visualization because the hard problem is chart selection plus Python plotting code and chart-specific accessibility guidance.",
+      "files": [],
+      "notes": "Direct visualization request should not be over-routed into design-foundations."
+    },
+    {
+      "id": "route-media-directly",
+      "prompt": "Use the harness media CLI to transcribe this customer interview, generate a narrated voiceover, and create a few concept images for the launch brief.",
+      "expected_output": "Routes to media because the requested workflow is media generation and transcription through the harness media commands.",
+      "files": [],
+      "notes": "Direct media-command work should not be mistaken for document processing."
+    },
+    {
+      "id": "keep-dataset-profiling-out-of-coding-and-data",
+      "prompt": "Before we build anything, profile this CSV's schema, missingness, key candidates, refresh window, and anomalies so we know what questions it can answer.",
+      "expected_output": "Routes to data-exploration rather than coding-and-data because the immediate job is dataset profiling and quality discovery, not generic repo-backed execution.",
+      "files": [],
+      "notes": "Boundary case protecting the narrow exploratory data skill from generic fallback."
+    },
+    {
+      "id": "keep-chart-style-only-work-in-design-foundations",
+      "prompt": "Pick a palette, typography pair, spacing rhythm, and chart styling defaults for this investor deck, but do not write plotting code.",
+      "expected_output": "Routes to using-design/design-foundations rather than visualization because this is style-system guidance for a visual artifact, not chart-type selection or plotting code work.",
+      "files": [],
+      "notes": "Boundary case separating broad visual direction from the dedicated visualization skill."
+    },
+    {
+      "id": "keep-document-work-out-of-media",
+      "prompt": "Extract the text and tables from this scanned PDF, OCR the pages, and render page images so I can QA the document output.",
+      "expected_output": "Routes to using-documents rather than media because the artifact is a fixed-layout document workflow even though images are part of the verification path.",
+      "files": [],
+      "notes": "Boundary case protecting document workflows from accidental routing into media."
     }
   ]
 }

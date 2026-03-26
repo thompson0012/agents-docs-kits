@@ -4,51 +4,41 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-Summarize the current repo or task state in 1-2 sentences.
-
-- State:
+The template skill surface now has a complete top-level discoverability pass: `using-agent-practices` and its category map cover every live top-level skill, including standalone specialist leaves that were previously omitted. No package moves or new router families were needed, so the default next move still returns to Task 35 unless a concrete routing regression appears.
 
 ## Latest Completed Work
 
-Record the latest finished work and why it matters.
-
-- Completed:
-- Why it matters:
+- completed a full scan of `templates/base/.agents/skills/` and found six live top-level skills missing from the canonical top-level router surface: `create-skill`, `create-router-skill`, `cx-ticket-triage`, `data-exploration`, `visualization`, and `media`
+- updated `templates/base/.agents/skills/using-agent-practices/{SKILL.md,references/category-map.md,evals/*}` so those skills are first-class direct routes with explicit boundary language against nearby skills
+- updated `templates/base/docs/reference/{codemap.md,memory.md}` to preserve the top-level discoverability rule and the category-map role
+- reviewed reference writeback: no `templates/base/docs/reference/{architecture.md,lessons.md}` update was needed because the change tightened top-level discoverability rules without moving package boundaries or adding a new failure-pattern worth preserving
 
 ## In Progress
 
-List active work items. Write `None.` when there is no active implementation in flight.
-
-- Work item:
+None.
 
 ## Blockers
 
-List anything currently preventing progress. Write `None.` when clear.
-
-- Blocker:
+None.
 
 ## Next Recommended Action
 
-State the single best next step.
-
-- Next step:
+- Next step: Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Treat the top-level skill audit as landed unless a concrete discoverability regression appears.
 
 ## Touched Files
 
-List only the files changed or intentionally reviewed for the latest work.
-
-- `path/to/file`
+- `templates/base/.agents/skills/using-agent-practices/`
+- `templates/base/docs/reference/{codemap.md,memory.md}`
+- `templates/base/docs/live/progress.md`
 
 ## Verification Status
 
-Record the latest relevant checks and their outcome.
-
-- Check:
-- Result:
+- Check: `python3 templates/base/.agents/skills/create-skill/scripts/validate.py --strict templates/base/.agents/skills/using-agent-practices`
+- Result: passed
+- Check: targeted Python assertions for top-level skill coverage, router outputs, category-map inventory completeness, and eval IDs
+- Result: passed
 
 ## Hand-off Note
 
-Leave the minimum context needed for the next session.
-
-- Resume from:
-- Watch for:
+- Resume from: `templates/base/.agents/skills/using-agent-practices/` if any top-level routing ambiguity resurfaces; otherwise return to Task 35 work.
+- Watch for: future standalone skills added under `templates/base/.agents/skills/` without matching updates to `using-agent-practices/SKILL.md`, `references/category-map.md`, and trigger/task eval coverage.

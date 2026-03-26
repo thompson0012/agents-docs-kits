@@ -4,14 +4,14 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-User-directed reasoning-family work is now landed: `using-reasoning` has a nested `reality-check` leaf for hidden-rule and survivability analysis, with router metadata and discoverability updated. Task 39 remains complete and no validation blocker is open, so the default next move still returns to Task 35.
+The user-directed skill audit is now landed: the template's top-level skill router and category inventory cover every live top-level skill under `templates/base/.agents/skills/`, including standalone specialist leaves that were previously undiscoverable from the canonical top-level surface. No router family move or package-layout cutover was needed, and no validation blocker is open, so the default next move still returns to Task 35.
 
 ## Latest Completed Work
 
-- added `templates/base/.agents/skills/using-reasoning/reality-check/SKILL.md` with evidence guardrails (`Observed pattern` / `Supported hypothesis` / `Uncertain`) and a blunt but non-theatrical output contract
-- updated `templates/base/.agents/skills/using-reasoning/{SKILL.md,references/children.json,evals/*}` so `reality-check` routes after `strategic-foresight` and before generic advisory and lens-analysis leaves
-- updated `templates/base/.agents/skills/using-agent-practices/references/category-map.md` and `templates/base/docs/reference/codemap.md` for reasoning-family discoverability
-- reviewed reference writeback: no `docs/reference/{architecture,memory,lessons}.md` update was needed because this change adds a leaf inside an existing family without changing repo-wide ownership, policy, or invariants
+- completed a full scan of `templates/base/.agents/skills/` and found six live top-level skills missing from `using-agent-practices` discoverability: `create-skill`, `create-router-skill`, `cx-ticket-triage`, `data-exploration`, `visualization`, and `media`
+- updated `templates/base/.agents/skills/using-agent-practices/{SKILL.md,references/category-map.md,evals/*}` so those skills are explicit direct routes with near-miss coverage against `coding-and-data`, `using-design/design-foundations`, and `using-documents`
+- updated `templates/base/docs/reference/{codemap.md,memory.md}` and `templates/base/docs/live/progress.md` to preserve the top-level discoverability rule and continuity state
+- reviewed reference writeback: no `docs/reference/{architecture,codemap,memory,lessons}.md` update was needed at the repo root because the durable routing rule is template-local rather than repo-wide
 
 ## In Progress
 
@@ -23,24 +23,22 @@ None recorded.
 
 ## Next Recommended Action
 
-Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Treat `using-reasoning/reality-check` as landed unless a concrete regression appears.
+Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Treat the top-level skill audit as landed unless a concrete discoverability regression appears.
 
 ## Touched Files
 
-- `templates/base/.agents/skills/using-reasoning/`
-- `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
-- `templates/base/docs/reference/codemap.md`
+- `templates/base/.agents/skills/using-agent-practices/`
+- `templates/base/docs/reference/{codemap.md,memory.md}`
+- `templates/base/docs/live/progress.md`
 - `docs/live/progress.md`
 
 ## Verification Status
 
-- Check: `python3 templates/base/.agents/skills/using-reasoning/scripts/validate_router.py --strict templates/base/.agents/skills/using-reasoning`
+- Check: `python3 templates/base/.agents/skills/create-skill/scripts/validate.py --strict templates/base/.agents/skills/using-agent-practices`
 - Result: passed
-- Check: `python3 templates/base/.agents/skills/create-skill/scripts/validate.py --strict templates/base/.agents/skills/using-reasoning/reality-check`
-- Result: passed
-- Check: targeted Python assertions for child order, evidence labels, and eval coverage
+- Check: targeted Python assertions for top-level skill coverage, router outputs, category-map inventory completeness, and eval IDs
 - Result: passed
 
 ## Hand-off Note
 
-`using-reasoning/reality-check` now owns blunt hidden-rule and survivability requests; `startup-pressure-test` still owns startup viability math, and research skills still own source-heavy evidence gathering. Unless a concrete blocker appears, resume from Task 35.
+`using-agent-practices` is now the honest top-level inventory for both family routers and standalone specialist skills. If a new top-level skill lands later, update the router body, category map, and trigger/task evals together; otherwise resume from Task 35.

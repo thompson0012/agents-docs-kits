@@ -1,6 +1,10 @@
 # Agent Practices Category Map
 
-This repository's first-party suite currently contains these live skills under `templates/base/.agents/skills/`.
+This repository's live first-party suite under `templates/base/.agents/skills/` currently contains these skills.
+
+## Suite Router
+
+- `using-agent-practices` — top-level discoverability router for first-party skills when the right leaf skill or family router is not obvious yet
 
 ## Orchestration and Continuity
 
@@ -12,6 +16,17 @@ This repository's first-party suite currently contains these live skills under `
 - `meta-prompting` — design or evaluate a prompt artifact such as a system prompt, prompt template, prompt architecture, rubric, or eval plan
 - `prompt-augmentation` — enrich a sparse prompt or generate prompt variants for text, image, or video generation while preserving the user's core subject
 - `feature-spec` — draft or review a PRD, feature spec, or requirements document before implementation
+
+## Skill Authoring
+
+- `create-skill` — create or upgrade a reusable leaf skill package, scaffold a portable skill directory, or rewrite skill guidance into a reusable package
+- `create-router-skill` — create or upgrade a discoverable router skill whose main job is selecting among child skills, carrying explicit child metadata, and handling install-or-fallback behavior honestly
+
+Use `create-skill` when the package's job is one repeatable workflow. Use `create-router-skill` only when the package's job is family routing.
+
+## Support Operations
+
+- `cx-ticket-triage` — categorize support tickets, assign priority/SLA, check duplicates, and route the next owner
 
 ## Software Delivery Routing
 
@@ -27,7 +42,11 @@ Route through `software-delivery` when the request is non-trivial software featu
 
 ## Code and Data Work
 
-- `coding-and-data` — route repo-backed coding or structured data work to a focused implementation subagent
+- `data-exploration` — profile unfamiliar datasets, assess quality, infer grain and joins, document schema, and surface anomalies or meaningful segments before downstream analysis
+- `visualization` — choose chart types, write Python visualization code, and apply chart-specific accessibility guidance
+- `coding-and-data` — route repo-backed coding, debugging, refactors, or other generic execution to a focused implementation subagent
+
+Keep dataset profiling and schema discovery in `data-exploration` instead of collapsing them into generic `coding-and-data`. Keep chart-type selection, plotting code, and chart-specific accessibility in `visualization`; use `using-design/design-foundations` when the request is only about palette, typography, spacing, or broad chart styling.
 
 ## Commercial Reality Testing
 
@@ -43,6 +62,12 @@ Route through `using-design` when the request is broadly about a visual system, 
 - `using-design/liquid-glass-design` — implement or evaluate experimental liquid-glass UI effects in the browser
 
 Normal site, app, or browser-game builds still route through `website-building` even when visual polish, art direction, or interaction taste are major concerns.
+
+## Media Generation and Transcription
+
+- `media` — use the harness media CLI for image or video generation, text-to-speech, and audio or video transcription
+
+Keep PDF, Word, PowerPoint, Excel, OCR, and other document-artifact workflows in `using-documents` even when pages are rendered to images or audio/video files are embedded in the source material.
 
 ## Web Project Routing
 
@@ -118,15 +143,21 @@ Ask first: what is the primary artifact or workflow needed?
 - audit or retro -> `self-cognitive`
 - system prompt, prompt template, prompt architecture, rubric, or eval plan -> `meta-prompting`
 - sparse prompt enrichment or prompt variants for text, image, or video generation -> `prompt-augmentation`
-- startup sanity check, business-model teardown, launch stress test, or startup simulation -> `startup-pressure-test`
-- non-trivial software feature work that still needs discovery, delivery-control routing, plan review, strict frontend acceptance, or stage-by-stage routing -> `software-delivery`
 - feature spec, PRD, or requirements document -> `feature-spec`
-- repo-backed coding, debugging, refactor, or structured data task -> `coding-and-data`
+- reusable leaf-skill creation or upgrade -> `create-skill`
+- family router skill creation or upgrade with child metadata -> `create-router-skill`
+- startup sanity check, business-model teardown, launch stress test, or startup simulation -> `startup-pressure-test`
+- support-ticket categorization, priority assignment, dedupe, or routing -> `cx-ticket-triage`
+- non-trivial software feature work that still needs discovery, delivery-control routing, plan review, strict frontend acceptance, or stage-by-stage routing -> `software-delivery`
+- profile unfamiliar data, assess schema quality, or find anomalies before analysis -> `data-exploration`
+- choose chart types, write plotting code, or apply chart-specific accessibility guidance -> `visualization`
+- repo-backed coding, debugging, refactor, or other generic execution -> `coding-and-data`
 - ambiguous design-family work across visual systems, design stacks, foundations, tokens, generative UI, or liquid-glass experimentation -> `using-design`
 - `using-design/design-foundations` — design foundations for colors, typography, spacing, or chart styling
 - `using-design/generating-design-tokens` — design token spec
 - `using-design/generative-ui` — generative browser UI, schema-driven component rendering, or streamed agent surfaces
 - `using-design/liquid-glass-design` — liquid-glass implementation note
+- harness image/video generation, text-to-speech, or transcription CLI work -> `media`
 - ambiguous website or browser-based build across site, app, or game -> `website-building`
 - ambiguous document work across Word, PDF, PowerPoint, or Excel artifacts -> `using-documents`
 - ambiguous legal help across contract redlines or privacy compliance -> `using-legal`

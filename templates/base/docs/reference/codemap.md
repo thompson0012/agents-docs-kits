@@ -21,7 +21,7 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Update when: a reasoning leaf is added, removed, renamed, or materially repurposed.
 
 - Path: `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
-- Purpose: top-level discoverability for first-party skill families, including reasoning-family and software-delivery leaves.
+- Purpose: top-level discoverability for first-party skill families and standalone specialist skills.
 - Update when: category routing or skill inventory changes.
 
 ## Entrypoints
@@ -29,6 +29,11 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Entrypoint: `templates/base/AGENTS.md`
 - Consumer: any agent starting or resuming work in the template
 - Notes: root read order; points into the live docs and reference docs.
+
+- Entrypoint: `templates/base/.agents/skills/using-agent-practices/SKILL.md`
+- Consumer: agents choosing the narrowest first-party skill when the right route is not obvious yet
+- Notes: top-level router across standalone specialist skills and family routers; keeps the category-map inventory honest.
+
 
 - Entrypoint: `templates/base/.agents/skills/software-delivery/SKILL.md`
 - Consumer: agents choosing the right software-delivery lane

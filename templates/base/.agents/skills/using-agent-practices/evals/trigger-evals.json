@@ -76,5 +76,59 @@
     "query": "Build a marketing website for our fintech startup with polished visuals, responsive pages, and a CMS-backed blog.",
     "should_trigger": true,
     "why": "Design-heavy wording is present, but the primary artifact is still a website build, so the top-level router should choose website-building rather than using-design."
+  },
+  {
+    "id": "should-route-create-skill-directly",
+    "query": "Create a reusable skill package for spreadsheet-model audits, including a portable SKILL.md, eval scaffolding, and packaging guidance.",
+    "should_trigger": true,
+    "why": "This is explicit leaf skill authoring, so using-agent-practices should trigger and route directly to create-skill."
+  },
+  {
+    "id": "should-route-create-router-skill-directly",
+    "query": "Create a top-level router skill for our support family that chooses among child skills, records child metadata, and handles install-or-fallback behavior honestly.",
+    "should_trigger": true,
+    "why": "This is explicit router-package authoring, so using-agent-practices should trigger and route directly to create-router-skill."
+  },
+  {
+    "id": "should-route-cx-ticket-triage-directly",
+    "query": "Triage these customer support tickets: categorize them, assign severity, merge duplicates, and route each one to the right team.",
+    "should_trigger": true,
+    "why": "This is a support-ticket triage workflow, so the top-level router should choose cx-ticket-triage."
+  },
+  {
+    "id": "should-route-data-exploration-directly",
+    "query": "Profile this unfamiliar dataset, infer the grain and likely joins, assess nulls and freshness, and tell me what analyses it can honestly support.",
+    "should_trigger": true,
+    "why": "This is explicit dataset profiling and quality discovery, so the top-level router should choose data-exploration."
+  },
+  {
+    "id": "should-route-visualization-directly",
+    "query": "Choose the right chart types for these metrics and write Python code for accessible publication-quality charts.",
+    "should_trigger": true,
+    "why": "This is chart selection plus plotting-code work, so the top-level router should choose visualization."
+  },
+  {
+    "id": "should-route-media-directly",
+    "query": "Use the harness media CLI to transcribe this interview, synthesize a voiceover, and generate launch concept images.",
+    "should_trigger": true,
+    "why": "This is explicit harness media generation and transcription work, so the top-level router should choose media."
+  },
+  {
+    "id": "should-keep-dataset-profiling-out-of-coding-and-data",
+    "query": "Before we build models, profile this CSV's schema, missingness, key candidates, refresh window, and anomalies.",
+    "should_trigger": true,
+    "why": "The immediate need is dataset profiling, so the top-level router should choose data-exploration rather than generic coding-and-data."
+  },
+  {
+    "id": "should-keep-chart-style-only-work-in-design-foundations",
+    "query": "Pick a palette, typography pair, spacing rhythm, and chart styling defaults for this deck, but do not write plotting code.",
+    "should_trigger": true,
+    "why": "This is style-system guidance for a visual artifact, so the top-level router should choose using-design/design-foundations rather than visualization."
+  },
+  {
+    "id": "should-keep-document-work-in-using-documents-not-media",
+    "query": "Extract the text and tables from this scanned PDF, OCR the pages, and render page images so I can QA the result.",
+    "should_trigger": true,
+    "why": "This is a document-artifact workflow with OCR and page rendering, so the top-level router should choose using-documents rather than media."
   }
 ]
