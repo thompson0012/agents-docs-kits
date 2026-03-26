@@ -16,8 +16,12 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Purpose: router family for feature discovery, harness control, plan reviews, and independent frontend evaluation.
 - Update when: a software-delivery leaf is added, removed, renamed, or materially repurposed.
 
+- Path: `templates/base/.agents/skills/using-reasoning/`
+- Purpose: router family for analytical requests across state calibration, problem framing, strategic foresight, hidden-rule reality checks, structured advisory, and multi-lens analysis.
+- Update when: a reasoning leaf is added, removed, renamed, or materially repurposed.
+
 - Path: `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
-- Purpose: top-level discoverability for first-party skill families, including the software-delivery leaves.
+- Purpose: top-level discoverability for first-party skill families, including reasoning-family and software-delivery leaves.
 - Update when: category routing or skill inventory changes.
 
 ## Entrypoints
@@ -29,6 +33,11 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Entrypoint: `templates/base/.agents/skills/software-delivery/SKILL.md`
 - Consumer: agents choosing the right software-delivery lane
 - Notes: routes to `feature-discovery`, `harness-design`, `plan-product-review`, `plan-engineering-review`, `plan-design-review`, or `frontend-evaluator`.
+
+- Entrypoint: `templates/base/.agents/skills/using-reasoning/SKILL.md`
+- Consumer: agents choosing the right reasoning lane for analytical, strategic, or diagnostic requests
+- Notes: routes to `thinking-ground`, `problem-definition`, `strategic-foresight`, `reality-check`, `domain-expert-consultation`, or `dynamic-problem-solving`.
+
 
 - Entrypoint: `templates/base/docs/live/runtime.md`
 - Consumer: planner, generator, or evaluator working under explicit delivery control
@@ -59,6 +68,11 @@ Read when you need to find where to work. Prefer only high-value paths.
 - File: `templates/base/docs/live/qa.md`
 - Why it matters: carries audit-friendly QA evidence plus `pass`, `fail`, or `blocked` when independent evaluation exists.
 - Read after: `templates/base/docs/live/runtime.md`
+
+- File: `templates/base/.agents/skills/using-reasoning/reality-check/SKILL.md`
+- Why it matters: defines the hidden-rule and survivability boundary for blunt “what am I missing?” requests.
+- Read after: `templates/base/.agents/skills/using-reasoning/SKILL.md`
+
 
 - File: `templates/base/.agents/skills/software-delivery/feature-discovery/SKILL.md`
 - Why it matters: starts the delivery family when the feature or change request is still fuzzy.

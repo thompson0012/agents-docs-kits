@@ -4,15 +4,14 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-Task 39 remains complete, the base template's design family now uses an honest nested router layout under `using-design`, and both the repo guide and the template guide now include a mandatory reference-writeback gate. Future meaningful changes must explicitly triage whether `docs/reference/*` needs updates instead of waiting for user prompting. No unresolved validation blocker is currently recorded, so the default next move still returns to Task 35 once this guide change is noted.
+User-directed reasoning-family work is now landed: `using-reasoning` has a nested `reality-check` leaf for hidden-rule and survivability analysis, with router metadata and discoverability updated. Task 39 remains complete and no validation blocker is open, so the default next move still returns to Task 35.
 
 ## Latest Completed Work
 
-Completed the bundled design-family cutover and tightened the writeback mechanism:
-- moved `design-foundations`, `generating-design-tokens`, `generative-ui`, and `liquid-glass-design` into `templates/base/.agents/skills/using-design/` as nested leaf skills
-- updated `templates/base/.agents/skills/using-design/{SKILL.md,references/children.json,evals/*}` and dependent references so direct and ambiguous routes use `using-design/<leaf>` consistently
-- added a `Reference Writeback Gate` to both `AGENTS.md` and `templates/base/AGENTS.md` so agents must explicitly decide whether `docs/reference/{memory.md,lessons.md,architecture.md,codemap.md}` need updates after meaningful work
-- preserved the new policy in `docs/reference/memory.md` and kept router-validator abstraction unchanged to avoid unrelated repo-wide churn
+- added `templates/base/.agents/skills/using-reasoning/reality-check/SKILL.md` with evidence guardrails (`Observed pattern` / `Supported hypothesis` / `Uncertain`) and a blunt but non-theatrical output contract
+- updated `templates/base/.agents/skills/using-reasoning/{SKILL.md,references/children.json,evals/*}` so `reality-check` routes after `strategic-foresight` and before generic advisory and lens-analysis leaves
+- updated `templates/base/.agents/skills/using-agent-practices/references/category-map.md` and `templates/base/docs/reference/codemap.md` for reasoning-family discoverability
+- reviewed reference writeback: no `docs/reference/{architecture,memory,lessons}.md` update was needed because this change adds a leaf inside an existing family without changing repo-wide ownership, policy, or invariants
 
 ## In Progress
 
@@ -24,26 +23,24 @@ None recorded.
 
 ## Next Recommended Action
 
-Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Treat the nested `using-design/<leaf>` layout and the new reference-writeback gate as landed unless a concrete regression appears.
+Resume Task 35: refine the capability-based methodology overlays in the finance, research, and webapp docs. Treat `using-reasoning/reality-check` as landed unless a concrete regression appears.
 
 ## Touched Files
 
-- `AGENTS.md`
-- `templates/base/AGENTS.md`
-- `templates/base/.agents/skills/using-design/`
-- `templates/base/.agents/skills/using-agent-practices/`
-- `templates/base/.agents/skills/using-documents/`
-- `templates/base/.agents/skills/software-delivery/plan-design-review/`
-- `templates/base/.agents/skills/visualization/`
-- `templates/base/.agents/skills/website-building/`
-- `docs/reference/{memory.md,lessons.md}`
-- `templates/base/docs/live/{runtime.md,qa.md}`
-- `templates/base/docs/reference/{architecture.md,codemap.md}`
+- `templates/base/.agents/skills/using-reasoning/`
+- `templates/base/.agents/skills/using-agent-practices/references/category-map.md`
+- `templates/base/docs/reference/codemap.md`
+- `docs/live/progress.md`
 
 ## Verification Status
 
-Validated `templates/base/.agents/skills/using-design/` with `python3 templates/base/.agents/skills/using-design/scripts/validate_router.py --strict templates/base/.agents/skills/using-design`, JSON-parsed the updated router/eval metadata, grep-checked that stale top-level design-leaf route/path references were removed from edited skill surfaces, and manually reviewed the new `Reference Writeback Gate` text in both agent guides.
+- Check: `python3 templates/base/.agents/skills/using-reasoning/scripts/validate_router.py --strict templates/base/.agents/skills/using-reasoning`
+- Result: passed
+- Check: `python3 templates/base/.agents/skills/create-skill/scripts/validate.py --strict templates/base/.agents/skills/using-reasoning/reality-check`
+- Result: passed
+- Check: targeted Python assertions for child order, evidence labels, and eval coverage
+- Result: passed
 
 ## Hand-off Note
 
-`using-design` is now both the family router and the physical package boundary for the bundled design leaves, and the repo now has an explicit guide-level gate requiring `docs/reference/*` writeback triage after meaningful work. Keep direct leaf routing on the nested `using-design/<leaf>` identifiers, keep normal site/app/game builds under `website-building`, and expect future sessions to justify or perform reference-doc updates explicitly. Unless a concrete regression appears, resume from Task 35.
+`using-reasoning/reality-check` now owns blunt hidden-rule and survivability requests; `startup-pressure-test` still owns startup viability math, and research skills still own source-heavy evidence gathering. Unless a concrete blocker appears, resume from Task 35.

@@ -1,10 +1,11 @@
 {
   "router_name": "using-reasoning",
-  "purpose": "Route structured reasoning requests to the narrowest reasoning child across state calibration, problem framing, advisory analysis, scenario planning, and multi-lens problem solving.",
+  "purpose": "Route structured reasoning requests to the narrowest reasoning child across state calibration, problem framing, scenario planning, hidden-rule survivability checks, advisory analysis, and multi-lens problem solving.",
   "selection_order": [
     "Distorted reasoning state beats every later reasoning step.",
     "A vague problem beats analytical depth because solving the wrong problem well is still failure.",
-    "Concrete external-signal scenario work beats generic advisory work.",
+    "Concrete external-signal scenario work beats hidden-rule survivability checks and generic advisory work.",
+    "Hidden-rule survivability checks beat generic advisory work when the user mainly needs to see what real-world incentives, gatekeepers, or ceilings they are missing.",
     "Structured advisory deliverables beat generic multi-lens analysis when the artifact is an expert recommendation or memo.",
     "Default to dynamic problem solving only when the problem is already clear and the user wants rigorous analysis."
   ],
@@ -25,7 +26,8 @@
       "requires": [],
       "recommends": [
         "using-reasoning/problem-definition",
-        "using-reasoning/dynamic-problem-solving"
+        "using-reasoning/dynamic-problem-solving",
+        "using-reasoning/reality-check"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
@@ -48,6 +50,7 @@
       ],
       "requires": [],
       "recommends": [
+        "using-reasoning/reality-check",
         "using-reasoning/dynamic-problem-solving",
         "using-reasoning/domain-expert-consultation",
         "using-reasoning/strategic-foresight"
@@ -82,6 +85,33 @@
       }
     },
     {
+      "name": "reality-check",
+      "target": "using-reasoning/reality-check",
+      "relationship": "routes_to",
+      "summary": "Surfaces hidden rules, information asymmetries, survivability limits, resource mismatches, and platform ceilings when the user wants to know what they are not seeing.",
+      "route_when": [
+        "The user asks for a blunt reality check or asks what hidden rules, asymmetries, or survivability risks they are missing in a career, education, business, investment, or life decision.",
+        "The main output should be an honest hidden-rule or downside check rather than a generic memo, sourced research packet, or multi-lens operating analysis."
+      ],
+      "avoid_when": [
+        "The real task is startup viability, GTM, CAC, churn, runway, pricing, or unit-economics pressure testing that belongs in startup-pressure-test.",
+        "The problem is still vague, emotionally defended, or solution-contaminated enough that problem-definition or thinking-ground should go first.",
+        "The user mainly needs sourced evidence, market mapping, or external fact gathering rather than a hidden-rule assessment.",
+        "The request is a clear operational diagnosis or structured advisory memo on a problem that is already framed."
+      ],
+      "requires": [],
+      "recommends": [
+        "using-reasoning/domain-expert-consultation",
+        "using-reasoning/dynamic-problem-solving",
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning/reality-check",
+        "notes": "Install this nested child path before routing when the runtime cannot discover reasoning children automatically."
+      }
+    },
+    {
       "name": "domain-expert-consultation",
       "target": "using-reasoning/domain-expert-consultation",
       "relationship": "routes_to",
@@ -92,7 +122,8 @@
       ],
       "avoid_when": [
         "The real issue is still that the problem is vague or solution-contaminated.",
-        "The request is primarily about external-signal scenarios rather than advisory judgment."
+        "The request is primarily about external-signal scenarios rather than advisory judgment.",
+        "The request mainly asks what hidden rules or survivability traps the user is missing rather than for a memo or recommendation."
       ],
       "requires": [],
       "recommends": [
@@ -115,7 +146,8 @@
       ],
       "avoid_when": [
         "The problem is still vague, emotionally defended, or solution-contaminated.",
-        "The situation is better treated as a simple best-practice task, chaotic emergency, or complex experiment-driven situation."
+        "The situation is better treated as a simple best-practice task, chaotic emergency, or complex experiment-driven situation.",
+        "The main value lies in surfacing hidden rules or survivability constraints rather than in lens analysis of an already-framed problem."
       ],
       "requires": [],
       "recommends": [

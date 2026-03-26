@@ -105,9 +105,10 @@ Route through `using-reasoning` when the request could plausibly fit more than o
 
 - `using-reasoning/thinking-ground` — calibrate reasoning state before analysis
 - `using-reasoning/problem-definition` — turn a messy situation into one clean problem statement
-- `using-reasoning/dynamic-problem-solving` — analyze a clearly defined complicated problem through multiple lenses
-- `using-reasoning/domain-expert-consultation` — produce a structured advisory memo or expert recommendation
 - `using-reasoning/strategic-foresight` — run scenarios around a concrete external signal or threshold
+- `using-reasoning/reality-check` — surface hidden rules, survivability traps, resource mismatch, or platform ceilings
+- `using-reasoning/domain-expert-consultation` — produce a structured advisory memo or expert recommendation
+- `using-reasoning/dynamic-problem-solving` — analyze a clearly defined complicated problem through multiple lenses
 
 ## Routing Rule of Thumb
 
