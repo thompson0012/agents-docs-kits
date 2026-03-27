@@ -16,6 +16,10 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Purpose: router family for feature discovery, harness control, plan reviews, and independent frontend evaluation.
 - Update when: a software-delivery leaf is added, removed, renamed, or materially repurposed.
 
+- Path: `templates/base/.agents/skills/software-delivery/multi-phase-control/`
+- Purpose: leaf skill for phase-gated persistence, drift tracking, and cross-session roadmap continuity.
+- Update when: the multi-phase workflow, templates, or router bindings change.
+
 - Path: `templates/base/.agents/skills/using-reasoning/`
 - Purpose: router family for analytical requests across state calibration, problem framing, strategic foresight, hidden-rule reality checks, structured advisory, and multi-lens analysis.
 - Update when: a reasoning leaf is added, removed, renamed, or materially repurposed.
@@ -37,7 +41,7 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 - Entrypoint: `templates/base/.agents/skills/software-delivery/SKILL.md`
 - Consumer: agents choosing the right software-delivery lane
-- Notes: routes to `feature-discovery`, `harness-design`, `plan-product-review`, `plan-engineering-review`, `plan-design-review`, or `frontend-evaluator`.
+- Notes: routes to `feature-discovery`, `multi-phase-control`, `harness-design`, `plan-product-review`, `plan-engineering-review`, `plan-design-review`, or `frontend-evaluator`.
 
 - Entrypoint: `templates/base/.agents/skills/using-reasoning/SKILL.md`
 - Consumer: agents choosing the right reasoning lane for analytical, strategic, or diagnostic requests

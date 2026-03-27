@@ -12,3 +12,7 @@ Read for durable truths worth preserving across sessions. Do not store transient
 - Decision: `using-agent-practices` is the canonical top-level discoverability router for the template skill suite, and its `references/category-map.md` inventory must stay in sync with every live top-level skill under `templates/base/.agents/skills/`.
 - Preserve because: missing standalone leaves in the top-level router create silent discovery holes even when the skills themselves are valid and present on disk.
 - Revisit only if: the template adopts a different top-level discovery mechanism or moves standalone specialist skills behind a new explicit family router.
+
+- Decision: `software-delivery/multi-phase-control` is the canonical leaf for phase-gated roadmap persistence and drift prevention, and `software-delivery` routes to it before `harness-design` when preserving original intent across phases is the primary need.
+- Preserve because: multi-phase work fails when original intent lives only in chat context instead of an explicit persistence workflow.
+- Revisit only if: phase preservation becomes part of another router or a new control model replaces the current multi-phase workflow.

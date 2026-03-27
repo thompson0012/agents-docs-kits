@@ -45,5 +45,9 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 - Key dependency: an independent evaluator or explicit acceptance pass writing the record as it verifies.
 
 - Component: `.agents/skills/software-delivery/`
-- Responsibility: routes non-trivial software work between feature discovery, harness control, plan reviews, and independent frontend evaluation.
+- Responsibility: routes non-trivial software work between feature discovery, multi-phase control, harness control, plan reviews, and independent frontend evaluation.
 - Key dependency: the request being classified by the dominant delivery need rather than by convenience.
+
+- Component: `.agents/skills/software-delivery/multi-phase-control/`
+- Responsibility: preserves roadmap intent across phases with explicit phase gates, drift tracking, compaction checkpoints, and live-doc persistence.
+- Key dependency: the control model and baton ownership rules staying aligned with `harness-design` and `context-compaction`.
