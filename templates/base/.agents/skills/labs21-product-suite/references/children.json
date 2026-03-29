@@ -1,0 +1,41 @@
+{
+  "router_name": "labs21-product-suite",
+  "children": [
+    {
+      "name": "labs21-chief-architect",
+      "summary": "Stage 1: Strategy, OKR, MVP, and Clean Architecture Blueprint.",
+      "route_when": [
+        "Starting a new product from a raw idea",
+        "Designing the architecture for a v1.0 system",
+        "Preparing a pitch or system spec from scratch"
+      ],
+      "target": "labs21-product-suite/labs21-chief-architect"
+    },
+    {
+      "name": "labs21-prd-writer",
+      "summary": "Stage 2: Translates blueprint into PRD, User Stories, and Acceptance Criteria.",
+      "route_when": [
+        "A strategic blueprint has been validated",
+        "Preparing user stories and acceptance criteria for engineering",
+        "Defining business logic rules and edge case behavior"
+      ],
+      "requires": [
+        "labs21-chief-architect"
+      ],
+      "target": "labs21-product-suite/labs21-prd-writer"
+    },
+    {
+      "name": "labs21-system-architect",
+      "summary": "Stage 3: Translates PRD into concrete Technical Architecture (Schema, API, ADRs).",
+      "route_when": [
+        "A validated PRD exists and engineering is about to begin",
+        "Defining data schemas, API contracts, or state flows",
+        "Making infrastructure decisions that will be costly to reverse"
+      ],
+      "requires": [
+        "labs21-prd-writer"
+      ],
+      "target": "labs21-product-suite/labs21-system-architect"
+    }
+  ]
+}
