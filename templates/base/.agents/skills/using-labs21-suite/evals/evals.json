@@ -44,11 +44,11 @@
       "notes": "Router-package authoring must not collapse into create-skill."
     },
     {
-      "id": "route-project-founding-family",
-      "prompt": "I need help turning this product idea into a staged blueprint, but I am not yet sure whether it belongs in the general founding lane or the AI-agent lane.",
-      "expected_output": "Routes to project-founding because the ambiguity is inside the founding family and the user needs the founding router to choose the right child.",
+      "id": "route-using-design-family",
+      "prompt": "I need help defining the visual-system direction for a new product, but I am not yet sure whether the right lane is foundations, tokens, generative UI, or liquid-glass experimentation.",
+      "expected_output": "Routes to using-design because the ambiguity is inside the design family and the user needs the design router to choose the right child.",
       "files": [],
-      "notes": "Top-level router should hand off to the founding family rather than guessing one nested child here."
+      "notes": "Top-level router should hand off to the design family rather than guessing one nested child here."
     },
     {
       "id": "route-software-delivery-family",
@@ -60,9 +60,23 @@
     {
       "id": "route-startup-pressure-test-directly",
       "prompt": "Pressure test this startup idea and tell me whether realistic CAC, churn, pricing, and runway assumptions kill it in the first year.",
-      "expected_output": "Routes to startup-pressure-test because the user wants a harsh commercial viability teardown rather than a staged blueprint or delivery plan.",
+      "expected_output": "Routes to startup-pressure-test because the user wants a harsh commercial viability teardown rather than design, delivery, or generic reasoning routing.",
       "files": [],
       "notes": "Direct startup-teardown request should take the dedicated commercial realism lane."
+    },
+    {
+      "id": "route-using-reasoning-family",
+      "prompt": "I need analytical help on this strategic problem, but I am not yet sure whether I need problem definition, scenario planning, a reality check, an advisory memo, or multi-lens analysis.",
+      "expected_output": "Routes to using-reasoning because the ambiguity is inside the reasoning family and the user needs the reasoning router to choose the right child.",
+      "files": [],
+      "notes": "Top-level router should hand off to the reasoning family rather than guessing one nested child here."
+    },
+    {
+      "id": "no-suite-route-for-project-blueprinting",
+      "prompt": "Turn this product idea into a staged blueprint with covered-now versus later scope and roadmap versions.",
+      "expected_output": "No Labs21 suite skill fits; answer directly because project-founding no longer belongs to the shipped Labs21 suite router after that family was removed.",
+      "files": [],
+      "notes": "Negative control protecting the router from pretending it still owns the deleted founding family."
     },
     {
       "id": "no-suite-route-for-repo-coding",

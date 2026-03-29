@@ -1,12 +1,13 @@
 {
   "router_name": "using-labs21-suite",
-  "purpose": "Route requests to the narrowest shipped top-level Labs21 template skill while refusing to claim moved or external families that no longer belong to the suite router.",
+  "purpose": "Route requests to the narrowest shipped top-level Labs21 template skill while refusing to claim moved or deleted families that no longer belong to the suite router.",
   "selection_order": [
     "Continuity and reflective control beat artifact creation because they decide whether work should continue, compact, or be challenged before more output is produced.",
-    "Prompt-artifact work beats skill and project routing when the deliverable itself is the prompt.",
-    "Skill-package authoring beats project and delivery routing when the requested artifact is a reusable skill package.",
-    "Project founding beats software delivery when the user still needs a staged blueprint rather than execution-stage lifecycle guidance.",
-    "Startup pressure testing comes after blueprinting because a teardown is only honest once there is a concrete commercial thesis to challenge.",
+    "Prompt-artifact work beats skill and family routing when the deliverable itself is the prompt.",
+    "Skill-package authoring beats domain-family routing when the requested artifact is a reusable skill package.",
+    "Design-family selection beats software-delivery and generic reasoning when the hard problem is the design boundary itself rather than implementation or analysis.",
+    "Software-delivery routing beats generic reasoning when the task is really about non-trivial feature lifecycle choices rather than broad analysis.",
+    "Direct startup viability teardown beats generic reasoning because harsh commercial survivability is a narrower job than analytical advice.",
     "If the request falls outside the shipped suite boundary, do not force a Labs21 route."
   ],
   "children": [
@@ -128,7 +129,7 @@
       ],
       "avoid_when": [
         "The package is a single leaf workflow and does not need family routing.",
-        "The request is ordinary prompt design or project planning rather than reusable router-package authoring."
+        "The request is ordinary prompt design or domain analysis rather than reusable router-package authoring."
       ],
       "requires": [],
       "recommends": [
@@ -141,26 +142,24 @@
       }
     },
     {
-      "name": "project-founding",
-      "target": "project-founding",
+      "name": "using-design",
+      "target": "using-design",
       "relationship": "routes_to",
-      "summary": "Routes staged product, project, or internal-system blueprinting into the right founding lane when the team still needs a plan for what to build and what to defer.",
+      "summary": "Routes design-oriented requests to the right design child when the hard problem is visual-system guidance, token generation, generative UI, or liquid-glass experimentation.",
       "route_when": [
-        "The user needs staged blueprinting, covered-now versus later scope, roadmap versions, wedge selection, or founding choices before implementation starts.",
-        "The request could plausibly fit more than one founding lane, including general versus AI-native or agentic founding."
+        "The request is primarily about design direction, design-family choice, or a design-specific browser UI boundary and more than one design child could fit.",
+        "The user needs broad design-family routing across foundations, tokens, generative UI, or liquid-glass work rather than ordinary implementation."
       ],
       "avoid_when": [
-        "The user mainly wants a harsh business viability teardown rather than a staged blueprint.",
-        "The request is about implementation-stage software delivery rather than founding what to build."
+        "The request is a normal hand-authored site, dashboard, or product implementation rather than a design-family problem.",
+        "The task is plain analysis, software delivery, or startup viability rather than design-boundary routing."
       ],
       "requires": [],
-      "recommends": [
-        "startup-pressure-test"
-      ],
+      "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "project-founding",
-        "notes": "Install this top-level family router before routing when the runtime does not already have the Labs21 founding family available."
+        "package": "using-design",
+        "notes": "Install this top-level family router before routing when the runtime does not already have the Labs21 design family available."
       }
     },
     {
@@ -173,8 +172,8 @@
         "The team needs discovery, harness design, plan review, or strict frontend-acceptance routing before implementation proceeds."
       ],
       "avoid_when": [
-        "The user is still deciding the founding blueprint rather than the delivery stage for an already-chosen product direction.",
-        "The request is a simple repo edit or debugging task that now falls outside the shipped Labs21 suite boundary."
+        "The request is a simple repo edit or debugging task that now falls outside the shipped Labs21 suite boundary.",
+        "The hard problem is design-family routing, startup survivability, or analytical reasoning rather than delivery-stage selection."
       ],
       "requires": [],
       "recommends": [
@@ -193,11 +192,11 @@
       "summary": "Runs a harsh startup viability teardown using realistic CAC, retention, monetization, burn, and runway pressure.",
       "route_when": [
         "The user wants an investor-style critique, launch stress test, or commercial survivability verdict for a startup or business model.",
-        "The main need is a cold-eyed economic teardown rather than a staged product blueprint or implementation plan."
+        "The main need is a cold-eyed economic teardown rather than software delivery, design routing, or generic reasoning."
       ],
       "avoid_when": [
-        "The user still needs help defining what the project or product should be before a teardown is honest.",
-        "The request is about prompt artifacts, skill packages, or software delivery rather than commercial viability."
+        "The request is about prompt artifacts, skill packages, design-family choice, or software delivery rather than commercial viability.",
+        "The user needs broad strategic reasoning without startup-survival math or pressure testing."
       ],
       "requires": [],
       "recommends": [],
@@ -205,6 +204,29 @@
       "install_if_missing": {
         "package": "startup-pressure-test",
         "notes": "Install this top-level skill before routing when the runtime does not already have the Labs21 startup-teardown helper available."
+      }
+    },
+    {
+      "name": "using-reasoning",
+      "target": "using-reasoning",
+      "relationship": "routes_to",
+      "summary": "Routes analytical, strategic, or diagnostic requests to the right reasoning child when more than one reasoning lane could fit.",
+      "route_when": [
+        "The request is mainly analytical, strategic, or diagnostic and the right reasoning lane is not obvious yet.",
+        "The user could plausibly need state calibration, problem framing, scenario implications, hidden-rule survivability checks, advisory analysis, or multi-lens problem solving."
+      ],
+      "avoid_when": [
+        "The request is really startup viability, software delivery, or design-family routing rather than general reasoning-family selection.",
+        "The user already knows the exact reasoning child they need and does not need the family router to narrow it."
+      ],
+      "requires": [],
+      "recommends": [
+        "self-cognitive"
+      ],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-reasoning",
+        "notes": "Install this top-level family router before routing when the runtime does not already have the Labs21 reasoning family available."
       }
     }
   ]

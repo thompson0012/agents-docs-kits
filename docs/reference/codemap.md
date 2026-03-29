@@ -4,47 +4,59 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 ## Key Paths
 
+- Path: `templates/base/.agents/skills/using-labs21-suite/`
+- Purpose: top-level router, child inventory, and category-map surface for the shipped Labs21 template suite, including `using-design`, `using-reasoning`, and `software-delivery` while excluding deleted or moved external families.
+- Update when: the shipped suite boundary, first-hop routing, or category descriptions change.
+
+- Path: `templates/base/.agents/skills/using-design/`
+- Purpose: design-family router for visual-system guidance, design-token generation, generative browser UI, and liquid-glass experimentation.
+- Update when: the design family boundary, child list, or install hints change.
+
+- Path: `templates/base/.agents/skills/using-reasoning/`
+- Purpose: reasoning-family router for analytical, strategic, and diagnostic requests across calibration, framing, foresight, reality checks, advisory analysis, and multi-lens problem solving.
+- Update when: the reasoning family boundary, child list, or handoff rules change.
+
 - Path: `templates/base/.agents/skills/software-delivery/`
 - Purpose: router family for non-trivial software delivery, including `harness-design` and `frontend-evaluator`.
 - Update when: the family boundary, child list, or eval coverage changes.
-
-- Path: `templates/base/.agents/skills/website-building/`
-- Purpose: builder-side web implementation and QA family that now points signoff-sensitive work to `software-delivery/frontend-evaluator`.
-- Update when: builder QA guidance or evaluator follow-on rules change.
 
 - Path: `templates/base/docs/live/`
 - Purpose: continuity surface for repo work; `runtime.md` tracks baton state and `qa.md` stores evaluator evidence and verdicts.
 - Update when: the live-doc contract or required handoff artifacts change.
 
-- Path: `templates/base/.agents/skills/using-labs21-suite/`
-- Purpose: top-level router, child inventory, and category-map surface for the shipped Labs21 template suite, including `project-founding` and `software-delivery` while excluding moved external families.
-- Update when: the shipped suite boundary, first-hop routing, or category descriptions change.
-
-- Path: `templates/base/.agents/skills/project-founding/`
-- Purpose: router family for staged project and product blueprinting, with separate general and AI/agentic founding leaves.
-- Update when: the family boundary, child list, or founding-vs-spec/teardown routing rules change.
-
 ## Entrypoints
+
+- Entrypoint: `templates/base/.agents/skills/using-labs21-suite/SKILL.md`
+- Consumer: agents choosing the right shipped top-level Labs21 skill or family router before any narrower handoff.
+- Notes: enter here when the right top-level entrypoint is unclear.
+
+- Entrypoint: `templates/base/.agents/skills/using-labs21-suite/references/children.json`
+- Consumer: router authors and reviewers checking the current top-level suite boundary.
+- Notes: source of truth for which shipped families and direct leaves belong to the suite router.
+
+- Entrypoint: `templates/base/.agents/skills/using-design/SKILL.md`
+- Consumer: agents deciding whether a design request belongs in foundations, token generation, generative UI, or liquid-glass work.
+- Notes: enter here when the hard problem is the design-family boundary itself.
+
+- Entrypoint: `templates/base/.agents/skills/using-design/references/children.json`
+- Consumer: router authors and reviewers checking durable design-family boundaries.
+- Notes: source of truth for shipped design children and install hints.
+
+- Entrypoint: `templates/base/.agents/skills/using-reasoning/SKILL.md`
+- Consumer: agents deciding whether an analytical request needs calibration, framing, foresight, reality checks, advisory analysis, or multi-lens reasoning.
+- Notes: enter here when the hard problem is reasoning-family selection rather than a specific known child.
+
+- Entrypoint: `templates/base/.agents/skills/using-reasoning/references/children.json`
+- Consumer: router authors and reviewers checking durable reasoning-family boundaries.
+- Notes: source of truth for shipped reasoning children and install hints.
 
 - Entrypoint: `templates/base/.agents/skills/software-delivery/SKILL.md`
 - Consumer: agents deciding whether work needs discovery, harness control, review, evaluator signoff, implementation, or readiness reflection.
 - Notes: enter here before direct leaf selection when non-trivial software delivery is ambiguous.
 
 - Entrypoint: `templates/base/.agents/skills/software-delivery/references/children.json`
-- Consumer: router authors and reviewers checking durable family boundaries.
-- Notes: source of truth for `harness-design`, `frontend-evaluator`, external targets, and the `website-building` follow-on relationship.
-
-- Entrypoint: `templates/base/.agents/skills/website-building/references/children.json`
-- Consumer: web-routing maintainers confirming which child paths recommend independent evaluator follow-on.
-- Notes: `webapp` and `game` currently recommend `software-delivery/frontend-evaluator`; informational work stays lighter-weight unless that changes.
-
-- Entrypoint: `templates/base/.agents/skills/project-founding/SKILL.md`
-- Consumer: agents deciding whether a new idea needs general founding or AI/agentic founding before a PRD or teardown exists.
-- Notes: enter here when the job is staged blueprinting rather than feature-spec writing or startup pressure testing.
-
-- Entrypoint: `templates/base/.agents/skills/project-founding/references/children.json`
-- Consumer: router authors and reviewers checking durable founding-family boundaries.
-- Notes: source of truth for the split between `project-foundation` and `ai-agent-foundation`.
+- Consumer: router authors and reviewers checking durable delivery-family boundaries.
+- Notes: source of truth for `harness-design`, `frontend-evaluator`, and the remaining software-delivery targets.
 
 - Entrypoint: `templates/base/docs/live/runtime.md`
 - Consumer: planner, generator, evaluator, or same-role continuation across resets.
@@ -64,9 +76,13 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Why it matters: defines independent browser QA output, evidence standards, and pass/fail/blocked semantics.
 - Read after: `templates/base/.agents/skills/software-delivery/SKILL.md`
 
-- File: `templates/base/.agents/skills/website-building/shared/12-playwright-interactive.md`
-- Why it matters: shared builder QA workflow and evaluator dependency reference for browser-facing work.
-- Read after: `templates/base/.agents/skills/website-building/SKILL.md`
+- File: `templates/base/.agents/skills/using-design/references/children.json`
+- Why it matters: quickest way to see which shipped design children the top-level suite can honestly hand off to.
+- Read after: `templates/base/.agents/skills/using-design/SKILL.md`
+
+- File: `templates/base/.agents/skills/using-reasoning/references/children.json`
+- Why it matters: quickest way to see which shipped reasoning children the top-level suite can honestly hand off to.
+- Read after: `templates/base/.agents/skills/using-reasoning/SKILL.md`
 
 - File: `templates/base/docs/live/runtime.md`
 - Why it matters: quickest place to recover baton ownership and execution mode during multi-session work.

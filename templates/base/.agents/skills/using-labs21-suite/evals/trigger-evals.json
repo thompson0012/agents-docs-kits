@@ -36,10 +36,10 @@
     "why": "This is explicit router-package authoring, so using-labs21-suite should trigger and route to create-router-skill."
   },
   {
-    "id": "should-trigger-project-founding",
-    "query": "Help me blueprint this new product, but first choose whether it belongs in the general founding lane or the AI-agent founding lane.",
+    "id": "should-trigger-using-design",
+    "query": "Help me decide whether this design problem belongs in design foundations, design tokens, generative UI, or liquid glass.",
     "should_trigger": true,
-    "why": "This is founding-family ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to project-founding."
+    "why": "This is design-family ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to using-design."
   },
   {
     "id": "should-trigger-software-delivery",
@@ -52,6 +52,18 @@
     "query": "Tear apart this startup idea and tell me whether the unit economics survive realistic CAC, churn, and burn assumptions.",
     "should_trigger": true,
     "why": "This is direct startup viability pressure testing, so using-labs21-suite should trigger and route to startup-pressure-test."
+  },
+  {
+    "id": "should-trigger-using-reasoning",
+    "query": "I need analytical help, but first choose whether this problem needs framing, scenario planning, a reality check, an advisory memo, or multi-lens analysis.",
+    "should_trigger": true,
+    "why": "This is reasoning-family ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to using-reasoning."
+  },
+  {
+    "id": "should-not-trigger-project-blueprint",
+    "query": "Turn this product idea into a staged blueprint with covered-now versus later scope and roadmap versions.",
+    "should_trigger": false,
+    "why": "Project-founding no longer belongs to the shipped Labs21 suite router, so using-labs21-suite should not pretend the deleted family is still available."
   },
   {
     "id": "should-not-trigger-repo-coding",
