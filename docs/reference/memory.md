@@ -21,3 +21,7 @@ Read for durable truths worth preserving across sessions. Do not store transient
 - Decision: After meaningful work, explicitly triage whether any `docs/reference/*` file must change instead of waiting for user prompting or relying on memory.
 - Preserve because: durable defaults, routing rules, package moves, and reusable lessons are otherwise easy to ship without updating the long-lived docs that future sessions depend on.
 - Revisit only if: a stronger automated diff-based enforcement mechanism replaces the guide-level writeback gate.
+
+- Decision: Route early-stage project or product blueprinting to `project-founding` before `feature-spec`, and keep `startup-pressure-test` as the separate harsh-teardown follow-on once the blueprint exists.
+- Preserve because: this boundary keeps founding, scoped requirements, and commercial skepticism as distinct jobs, which prevents one oversized skill from blurring the user's real need.
+- Revisit only if: the suite replaces both founding and spec workflows with a different staged artifact family that keeps those boundaries equally explicit.

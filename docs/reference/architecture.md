@@ -4,8 +4,9 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 
 ## System Boundaries
 
-- Inside scope: portable skill routing, the `software-delivery` family, shared web QA guidance, and template live/reference docs that carry delivery state across sessions.
+- Inside scope: portable skill routing, including the `project-founding` and `software-delivery` families, shared web QA guidance, and template live/reference docs that carry delivery state across sessions.
 - Outside scope: product-specific implementations, runtime-specific harness code, and mandatory evaluator overhead for trivial one-shot tasks.
+- Boundary note: `project-founding` owns staged blueprinting before a PRD exists, `feature-spec` owns scoped requirements artifacts after the blueprint is stable, and `startup-pressure-test` owns harsh commercial teardown once the blueprint can be challenged honestly.
 - Boundary note: `software-delivery` owns delivery-control routing and independent frontend acceptance selection; `website-building` owns web implementation and builder-side browser QA, then may recommend evaluator follow-on.
 
 ## Invariants
@@ -22,6 +23,10 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 - Why it must hold: baton state and acceptance evidence must survive session resets and role changes in one predictable place.
 - Failure signal: runtime mode, baton owner, evidence, or verdict only live in chat transcripts or ad hoc files.
 
+- Invariant: `project-founding` owns founding blueprints, while `feature-spec` and `startup-pressure-test` remain distinct follow-on surfaces instead of partial substitutes.
+- Why it must hold: collapsing blueprinting, PRD writing, and viability teardown into one family would hide whether the user needs product definition, a detailed spec, or commercial skepticism.
+- Failure signal: staged project-definition requests route straight to `feature-spec`, or harsh viability teardowns route into `project-founding` as if they were the same job.
+
 ## Major Components
 
 - Component: `templates/base/.agents/skills/software-delivery/`
@@ -31,6 +36,10 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 - Component: `templates/base/.agents/skills/website-building/`
 - Responsibility: handles builder-side web implementation and browser QA, then recommends `software-delivery/frontend-evaluator` when browser-facing work needs independent signoff.
 - Key dependency: `shared/12-playwright-interactive.md` and `references/children.json`.
+
+- Component: `templates/base/.agents/skills/project-founding/`
+- Responsibility: routes new project and product ideas into either general staged blueprinting or AI/agentic founding with explicit governance, cost, and control design.
+- Key dependency: `references/children.json` plus the nested `project-foundation/` and `ai-agent-foundation/` leaves.
 
 - Component: `templates/base/docs/live/{current-focus.md,progress.md,todo.md,runtime.md,qa.md}`
 - Responsibility: carries recovery state across normal continuation, explicit baton passes, and evaluator evidence collection.

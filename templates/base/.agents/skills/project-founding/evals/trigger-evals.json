@@ -1,0 +1,32 @@
+[
+  {
+    "id": "should-trigger-general-founding",
+    "query": "Turn this product idea into a staged blueprint with v1 scope, covered vs uncovered situations, feature priorities, and a roadmap.",
+    "should_trigger": true,
+    "why": "This is a direct founding and blueprinting request within the family boundary."
+  },
+  {
+    "id": "should-trigger-ai-native-founding",
+    "query": "Help found an agent workflow product and define human override, latency budgets, failure logging, and model portability from day one.",
+    "should_trigger": true,
+    "why": "The request is clearly about AI-native or agentic founding with explicit control and governance constraints."
+  },
+  {
+    "id": "should-trigger-ambiguous-ai-option",
+    "query": "We may add AI later, but right now I need to decide what this operations product should actually be, what to build first, and what to defer.",
+    "should_trigger": true,
+    "why": "The request still belongs in the founding family even though AI is only a future possibility."
+  },
+  {
+    "id": "should-not-trigger-startup-pressure-test",
+    "query": "Pressure-test this startup idea with pessimistic CAC, churn, runway, and pricing assumptions.",
+    "should_trigger": false,
+    "why": "This is a viability teardown request for startup-pressure-test, not a project blueprinting route choice."
+  },
+  {
+    "id": "should-not-trigger-feature-spec",
+    "query": "Write a PRD for the next release of our existing workflow product.",
+    "should_trigger": false,
+    "why": "This is a spec-writing request for an existing product, not founding a new project family blueprint."
+  }
+]

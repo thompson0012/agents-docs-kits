@@ -17,8 +17,12 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Update when: the live-doc contract or required handoff artifacts change.
 
 - Path: `templates/base/.agents/skills/using-agent-practices/`
-- Purpose: top-level router and category-map surface that makes the software-delivery harness lanes discoverable.
+- Purpose: top-level router and category-map surface that makes first-hop family routing discoverable, including `project-founding` and `software-delivery`.
 - Update when: first-hop routing or category descriptions change.
+
+- Path: `templates/base/.agents/skills/project-founding/`
+- Purpose: router family for staged project and product blueprinting, with separate general and AI/agentic founding leaves.
+- Update when: the family boundary, child list, or founding-vs-spec/teardown routing rules change.
 
 ## Entrypoints
 
@@ -33,6 +37,14 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Entrypoint: `templates/base/.agents/skills/website-building/references/children.json`
 - Consumer: web-routing maintainers confirming which child paths recommend independent evaluator follow-on.
 - Notes: `webapp` and `game` currently recommend `software-delivery/frontend-evaluator`; informational work stays lighter-weight unless that changes.
+
+- Entrypoint: `templates/base/.agents/skills/project-founding/SKILL.md`
+- Consumer: agents deciding whether a new idea needs general founding or AI/agentic founding before a PRD or teardown exists.
+- Notes: enter here when the job is staged blueprinting rather than feature-spec writing or startup pressure testing.
+
+- Entrypoint: `templates/base/.agents/skills/project-founding/references/children.json`
+- Consumer: router authors and reviewers checking durable founding-family boundaries.
+- Notes: source of truth for the split between `project-foundation` and `ai-agent-foundation`.
 
 - Entrypoint: `templates/base/docs/live/runtime.md`
 - Consumer: planner, generator, evaluator, or same-role continuation across resets.

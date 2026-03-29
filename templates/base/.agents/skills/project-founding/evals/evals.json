@@ -1,0 +1,35 @@
+{
+  "skill_name": "project-founding",
+  "evals": [
+    {
+      "id": "direct-general-product-foundation",
+      "prompt": "We have an idea for a contractor scheduling product for regional HVAC companies. I need help turning it into a staged blueprint: what problem to solve first, what v1 should include, what situations are covered or deferred, and what the roadmap should look like over the next few versions.",
+      "expected_output": "Routes to project-foundation because the task is general staged product blueprinting with scope boundaries, covered vs uncovered situations, and roadmap design, not AI-specific control design.",
+      "files": []
+    },
+    {
+      "id": "direct-ai-agent-foundation",
+      "prompt": "Found an idea for an underwriting copilot that reads submissions, queries tools, drafts recommendations, and asks a human approver only when confidence or policy thresholds fail. I need the founding plan to cover hallucination risk, latency, override rules, logging, retry budgets, model portability, and when one agent is enough versus multiple agents.",
+      "expected_output": "Routes to ai-agent-foundation because the founding problem is explicitly about model behavior, approval control, agent responsibility, budget enforcement, and AI-specific governance.",
+      "files": []
+    },
+    {
+      "id": "ambiguous-ai-mentioned-but-not-core",
+      "prompt": "Help me found a field-service operations platform for property managers. We might add an AI assistant later for note summarization, but the urgent work is defining the wedge, feature priorities, non-goals, and a roadmap that does not overbuild the system.",
+      "expected_output": "Routes to project-foundation because AI is only a future option and the current founding job is ordinary wedge, scope, and roadmap design.",
+      "files": []
+    },
+    {
+      "id": "ambiguous-single-agent-suffices",
+      "prompt": "I want to build an internal research assistant for our investment team. It may only need one controlled assistant that retrieves filings, drafts summaries, and escalates uncertain claims to a human. I need a founding blueprint that decides whether non-agent automation, one agent, or multiple agents is justified and how to keep the system governable.",
+      "expected_output": "Routes to ai-agent-foundation because the user needs the founding plan to justify the AI operating model itself and define governance, escalation, and responsibility boundaries.",
+      "files": []
+    },
+    {
+      "id": "near-miss-startup-teardown",
+      "prompt": "Do a brutal teardown of my B2B SaaS startup idea. I want to know whether CAC, churn, runway, and procurement timelines kill it before I write any code.",
+      "expected_output": "No project-founding child fits because the request is a viability pressure test rather than a staged founding blueprint; it should route outside this family to startup-pressure-test.",
+      "files": []
+    }
+  ]
+}
