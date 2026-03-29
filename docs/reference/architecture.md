@@ -33,9 +33,9 @@ Read when system shape, boundaries, or invariants matter. Keep this focused on s
 - Responsibility: routes non-trivial software work across discovery, harness control, plan review, implementation handoff, independent frontend evaluation, and readiness reflection.
 - Key dependency: `references/children.json` plus the nested `harness-design/` and `frontend-evaluator/` leaves.
 
-- Component: `templates/base/.agents/skills/website-building/`
-- Responsibility: handles builder-side web implementation and browser QA, then recommends `software-delivery/frontend-evaluator` when browser-facing work needs independent signoff.
-- Key dependency: `shared/12-playwright-interactive.md` and `references/children.json`.
+- Component: `templates/base/.agents/skills/using-labs21-suite/`
+- Responsibility: top-level discoverability router for the shipped Labs21 template suite; it routes only across the owned top-level skills and refuses to claim moved external families as part of the suite.
+- Key dependency: `references/children.json` plus `references/category-map.md` for the current top-level suite inventory.
 
 - Component: `templates/base/.agents/skills/project-founding/`
 - Responsibility: routes new project and product ideas into either general staged blueprinting or AI/agentic founding with explicit governance, cost, and control design.

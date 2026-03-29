@@ -61,7 +61,7 @@ Pick the stage that matches your situation. Stop as soon as it gives you what yo
 - **Building a web project** — use `website-building` to route to the right child skill for informational sites, full-stack apps, or browser games.
 - **Risky or irreversible step ahead** — use `self-cognitive` for a preflight confidence check, repeatable-workflow extraction, or postmortem.
 
-Not sure which applies? Use `using-agent-practices` — it routes to the narrowest skill that matches your request.
+Not sure which applies? Use `using-labs21-suite` — it routes across the shipped Labs21 template skills and falls back cleanly when a request is outside the suite.
 
 ## Initialize a project from the template
 

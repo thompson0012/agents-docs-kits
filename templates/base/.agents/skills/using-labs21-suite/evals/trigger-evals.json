@@ -1,0 +1,74 @@
+[
+  {
+    "id": "should-trigger-context-compaction",
+    "query": "Compact this conversation into a handoff I can resume tomorrow.",
+    "should_trigger": true,
+    "why": "This is a direct Labs21 suite continuity request, so using-labs21-suite should trigger and route to context-compaction."
+  },
+  {
+    "id": "should-trigger-self-cognitive",
+    "query": "Give me a confidence check and the main disconfirming evidence before I approve this plan.",
+    "should_trigger": true,
+    "why": "This is a direct Labs21 suite verification request, so using-labs21-suite should trigger and route to self-cognitive."
+  },
+  {
+    "id": "should-trigger-meta-prompting",
+    "query": "Design a system prompt and rubric for a contract-review agent.",
+    "should_trigger": true,
+    "why": "This is prompt-artifact design, so using-labs21-suite should trigger and route to meta-prompting."
+  },
+  {
+    "id": "should-trigger-prompt-augmentation",
+    "query": "Expand this thin text-to-image prompt into stronger variants without changing the subject.",
+    "should_trigger": true,
+    "why": "This is direct generation-prompt enrichment, so using-labs21-suite should trigger and route to prompt-augmentation."
+  },
+  {
+    "id": "should-trigger-create-skill",
+    "query": "Create a reusable skill package for board-meeting note synthesis.",
+    "should_trigger": true,
+    "why": "This is explicit leaf-skill authoring, so using-labs21-suite should trigger and route to create-skill."
+  },
+  {
+    "id": "should-trigger-create-router-skill",
+    "query": "Create a router skill for our diligence family with child metadata and fallbacks.",
+    "should_trigger": true,
+    "why": "This is explicit router-package authoring, so using-labs21-suite should trigger and route to create-router-skill."
+  },
+  {
+    "id": "should-trigger-project-founding",
+    "query": "Help me blueprint this new product, but first choose whether it belongs in the general founding lane or the AI-agent founding lane.",
+    "should_trigger": true,
+    "why": "This is founding-family ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to project-founding."
+  },
+  {
+    "id": "should-trigger-software-delivery",
+    "query": "For this non-trivial feature, tell me whether the next honest step is discovery, harness design, plan review, or evaluator signoff.",
+    "should_trigger": true,
+    "why": "This is delivery-stage ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to software-delivery."
+  },
+  {
+    "id": "should-trigger-startup-pressure-test",
+    "query": "Tear apart this startup idea and tell me whether the unit economics survive realistic CAC, churn, and burn assumptions.",
+    "should_trigger": true,
+    "why": "This is direct startup viability pressure testing, so using-labs21-suite should trigger and route to startup-pressure-test."
+  },
+  {
+    "id": "should-not-trigger-repo-coding",
+    "query": "Fix the bug in src/auth.ts and add regression tests.",
+    "should_trigger": false,
+    "why": "Plain repo-backed coding no longer belongs to the shipped Labs21 suite router after those execution paths moved out."
+  },
+  {
+    "id": "should-not-trigger-website-build",
+    "query": "Build a marketing website with a CMS-backed blog and responsive pages.",
+    "should_trigger": false,
+    "why": "Website-building is no longer a shipped Labs21 suite route, so using-labs21-suite should not pretend this template router still owns it."
+  },
+  {
+    "id": "should-not-trigger-document-work",
+    "query": "Extract text and tables from this scanned PDF and OCR the pages.",
+    "should_trigger": false,
+    "why": "Document workflows no longer belong to the shipped Labs21 suite router, so using-labs21-suite should stay out of the way."
+  }
+]

@@ -1,0 +1,82 @@
+{
+  "skill_name": "using-labs21-suite",
+  "evals": [
+    {
+      "id": "route-context-compaction-directly",
+      "prompt": "Compact this session into a durable handoff so the next agent can resume with the right files, decisions, and open tasks.",
+      "expected_output": "Routes to context-compaction because the requested artifact is a continuation snapshot rather than new implementation or analysis work.",
+      "files": [],
+      "notes": "Direct continuity artifact should take the dedicated compaction lane."
+    },
+    {
+      "id": "route-self-cognitive-directly",
+      "prompt": "Before we commit to this migration, give me a confidence check, the main failure modes, and the smallest set of checks that could disconfirm the plan.",
+      "expected_output": "Routes to self-cognitive because the main need is explicit verification and calibrated judgment before a risky decision.",
+      "files": [],
+      "notes": "Risk review should not be mistaken for plan creation or implementation."
+    },
+    {
+      "id": "route-meta-prompting-directly",
+      "prompt": "Design a system prompt and scoring rubric for a customer-support triage agent that must be reliable across noisy tickets.",
+      "expected_output": "Routes to meta-prompting because the deliverable is a prompt artifact and rubric, not an enriched generation prompt.",
+      "files": [],
+      "notes": "Prompt-architecture work must stay separate from prompt augmentation."
+    },
+    {
+      "id": "route-prompt-augmentation-directly",
+      "prompt": "Take this thin image prompt and turn it into three stronger variants without changing the core subject: 'red bicycle in the rain'.",
+      "expected_output": "Routes to prompt-augmentation because the user wants a sparse generation prompt enriched without redesigning a prompt system.",
+      "files": [],
+      "notes": "Direct generation-prompt enrichment is the narrow leaf."
+    },
+    {
+      "id": "route-create-skill-directly",
+      "prompt": "Create a reusable skill package for spreadsheet-model audits, including a portable SKILL.md and validation guidance.",
+      "expected_output": "Routes to create-skill because the requested artifact is a reusable leaf skill package rather than a family router.",
+      "files": [],
+      "notes": "Leaf skill authoring must not collapse into router-package work."
+    },
+    {
+      "id": "route-create-router-skill-directly",
+      "prompt": "Create a top-level router skill for our research family that chooses among child skills, records child metadata, and handles install-or-fallback behavior honestly.",
+      "expected_output": "Routes to create-router-skill because the package's main job is family routing with explicit child metadata and honest fallbacks.",
+      "files": [],
+      "notes": "Router-package authoring must not collapse into create-skill."
+    },
+    {
+      "id": "route-project-founding-family",
+      "prompt": "I need help turning this product idea into a staged blueprint, but I am not yet sure whether it belongs in the general founding lane or the AI-agent lane.",
+      "expected_output": "Routes to project-founding because the ambiguity is inside the founding family and the user needs the founding router to choose the right child.",
+      "files": [],
+      "notes": "Top-level router should hand off to the founding family rather than guessing one nested child here."
+    },
+    {
+      "id": "route-software-delivery-family",
+      "prompt": "We know what feature we want, but I need help deciding whether this next step is discovery cleanup, harness design, plan review, or evaluator signoff before implementation continues.",
+      "expected_output": "Routes to software-delivery because the ambiguity is inside the software-delivery lifecycle family rather than at the top-level suite boundary.",
+      "files": [],
+      "notes": "Non-trivial software stage selection belongs in the delivery router."
+    },
+    {
+      "id": "route-startup-pressure-test-directly",
+      "prompt": "Pressure test this startup idea and tell me whether realistic CAC, churn, pricing, and runway assumptions kill it in the first year.",
+      "expected_output": "Routes to startup-pressure-test because the user wants a harsh commercial viability teardown rather than a staged blueprint or delivery plan.",
+      "files": [],
+      "notes": "Direct startup-teardown request should take the dedicated commercial realism lane."
+    },
+    {
+      "id": "no-suite-route-for-repo-coding",
+      "prompt": "Fix the failing TypeScript parser in this repo, update the call sites, and add the missing tests.",
+      "expected_output": "No Labs21 suite skill fits; answer directly because plain repo-backed coding and debugging no longer belong to the shipped Labs21 suite router after those paths moved out.",
+      "files": [],
+      "notes": "Negative control protecting the router from pretending it still owns coding-and-data."
+    },
+    {
+      "id": "no-suite-route-for-document-work",
+      "prompt": "Extract the text and tables from this scanned PDF and OCR the pages so I can review the result.",
+      "expected_output": "No Labs21 suite skill fits; answer directly because document workflows no longer belong to the shipped Labs21 suite router after those paths moved out.",
+      "files": [],
+      "notes": "Negative control protecting the router from pretending it still owns using-documents."
+    }
+  ]
+}

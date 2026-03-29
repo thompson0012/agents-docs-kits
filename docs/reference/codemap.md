@@ -16,9 +16,9 @@ Read when you need to find where to work. Prefer only high-value paths.
 - Purpose: continuity surface for repo work; `runtime.md` tracks baton state and `qa.md` stores evaluator evidence and verdicts.
 - Update when: the live-doc contract or required handoff artifacts change.
 
-- Path: `templates/base/.agents/skills/using-agent-practices/`
-- Purpose: top-level router and category-map surface that makes first-hop family routing discoverable, including `project-founding` and `software-delivery`.
-- Update when: first-hop routing or category descriptions change.
+- Path: `templates/base/.agents/skills/using-labs21-suite/`
+- Purpose: top-level router, child inventory, and category-map surface for the shipped Labs21 template suite, including `project-founding` and `software-delivery` while excluding moved external families.
+- Update when: the shipped suite boundary, first-hop routing, or category descriptions change.
 
 - Path: `templates/base/.agents/skills/project-founding/`
 - Purpose: router family for staged project and product blueprinting, with separate general and AI/agentic founding leaves.

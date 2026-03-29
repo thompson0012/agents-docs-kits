@@ -25,3 +25,7 @@ Read for durable truths worth preserving across sessions. Do not store transient
 - Decision: Route early-stage project or product blueprinting to `project-founding` before `feature-spec`, and keep `startup-pressure-test` as the separate harsh-teardown follow-on once the blueprint exists.
 - Preserve because: this boundary keeps founding, scoped requirements, and commercial skepticism as distinct jobs, which prevents one oversized skill from blurring the user's real need.
 - Revisit only if: the suite replaces both founding and spec workflows with a different staged artifact family that keeps those boundaries equally explicit.
+
+- Decision: Keep the template's top-level suite router scoped to the shipped Labs21 skill surface under `templates/base/.agents/skills/`, with `using-labs21-suite` as the entrypoint and moved families treated as out of scope.
+- Preserve because: renaming the router without cutting stale family claims would leave discovery lying about what the template actually ships, which causes bad routing and broken path references.
+- Revisit only if: the template intentionally re-bundles those moved families back under the top-level suite or replaces the top-level router boundary entirely.
