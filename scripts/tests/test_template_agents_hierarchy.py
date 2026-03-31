@@ -39,7 +39,22 @@ REFERENCE_DOC_TRUTHS = {
     ),
 }
 
-
+ROOT_CONSTITUTION_SNIPPETS = (
+    "## Mandatory First Reads",
+    "Read this file first for any work touching `templates/base`.",
+    "## Skill Invocation Precedence",
+    "Check project-local shipped skills under `.agents/skills/` before relying on generic knowledge.",
+    "## Injected Context Contract",
+    "This root `AGENTS.md` is the only always-in-context index for the template hierarchy.",
+    "## Hierarchical Discovery",
+    "Every must-read local `AGENTS.md` must appear in the discovery index in the same change that adds or removes it.",
+    "## Live-Doc Writeback Obligation",
+    "If work changes the template live-doc contract or localization expectations, update the governing docs in the same change.",
+    "## Reference Writeback Gate",
+    "Before yielding after meaningful work, decide whether any `docs/reference/*` file must change to keep durable truth aligned.",
+    "## Cross-System Precedence",
+    "Root constitutional rules win over subtree guides.",
+)
 
 def read(path: str) -> str:
     return (REPO_ROOT / path).read_text(encoding="utf-8")
@@ -77,6 +92,11 @@ class TemplateAgentsHierarchyTests(unittest.TestCase):
         self.assertIn(".agents/skills/AGENTS.md", root_content)
         self.assertIn(".agents/skills-optional/AGENTS.md", root_content)
 
+    def test_root_guide_contains_constitutional_contract(self) -> None:
+        root_content = read("templates/base/AGENTS.md")
+
+        for snippet in ROOT_CONSTITUTION_SNIPPETS:
+            self.assertIn(snippet, root_content)
 
     def test_reference_guide_describes_all_current_reference_docs(self) -> None:
         reference_guide = read("templates/base/docs/reference/AGENTS.md")
