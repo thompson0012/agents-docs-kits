@@ -10,6 +10,8 @@ These files store durable truth, not transient or live session state.
 
 - `architecture.md` records system boundaries and invariants.
 - `codemap.md` records high-value paths and entrypoints.
+- `implementation.md` records technical execution details and operator-facing procedures.
+- `design.md` records product intent, UX behavior, and other design rules.
 - `memory.md` records durable decisions and policies.
 - `lessons.md` records reusable mistakes and anti-patterns.
 - Do not write transient task state into reference docs.
