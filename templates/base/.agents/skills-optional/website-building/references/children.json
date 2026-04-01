@@ -22,7 +22,7 @@
       ],
       "requires": [],
       "recommends": [
-        "software-delivery/frontend-evaluator"
+        "delivery-control/frontend-evaluator"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
@@ -45,7 +45,7 @@
       ],
       "requires": [],
       "recommends": [
-        "software-delivery/frontend-evaluator"
+        "delivery-control/frontend-evaluator"
       ],
       "fallbacks_to": [],
       "install_if_missing": {

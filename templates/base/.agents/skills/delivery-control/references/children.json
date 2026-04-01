@@ -1,9 +1,10 @@
 {
   "router_name": "delivery-control",
-  "purpose": "Route non-trivial software feature delivery requests to harness-design (for orchestration) or frontend-evaluator (for independent QA).",
+  "purpose": "Route non-trivial software feature delivery requests to harness-design (for orchestration), frontend-evaluator (for independent QA), or compound (for structured knowledge extraction).",
   "selection_order": [
     "Cross-session delivery-control design beats implementation when the real question is how work should be orchestrated across sessions, handoffs, and QA loops.",
-    "Independent frontend acceptance beats builder-side web work when the browser-facing deliverable already exists and needs skeptical signoff rather than implementation."
+    "Independent frontend acceptance beats builder-side web work when the browser-facing deliverable already exists and needs skeptical signoff rather than implementation.",
+    "Structured knowledge extraction beats ad-hoc notes when a feature or phase has completed and durable lessons or truths should be captured into docs/reference/ before context is lost."
   ],
   "children": [
     {
@@ -20,7 +21,8 @@
       ],
       "requires": [],
       "recommends": [
-        "delivery-control/frontend-evaluator"
+        "delivery-control/frontend-evaluator",
+        "delivery-control/compound"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
@@ -49,6 +51,31 @@
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "delivery-control/frontend-evaluator",
+        "notes": "Install this nested child path before routing when the runtime cannot discover delivery-control children automatically."
+      }
+    },
+    {
+      "name": "compound",
+      "target": "delivery-control/compound",
+      "relationship": "routes_to",
+      "summary": "Extracts reusable lessons and durable truths from completed work into docs/reference/lessons.md and docs/reference/memory.md. Rehydrates from live docs, session history, and existing archives before writing.",
+      "route_when": [
+        "A feature, phase, or delivery cycle has completed and the team wants to capture lessons, decisions, or durable truths before context is lost.",
+        "A harness-design postflight hands off to compound extraction after orchestrated work finishes.",
+        "The user explicitly asks to update durable memory or extract lessons from recent work."
+      ],
+      "avoid_when": [
+        "Work is still in progress and the need is implementation, orchestration, or browser QA.",
+        "The request is generic note-taking, status reporting, or progress journaling rather than structured knowledge extraction.",
+        "The user wants a PRD, design spec, or architecture doc rather than extracted historical knowledge."
+      ],
+      "requires": [
+        "Completed work with observable outcomes in live docs, session history, or conversation context."
+      ],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "delivery-control/compound",
         "notes": "Install this nested child path before routing when the runtime cannot discover delivery-control children automatically."
       }
     }

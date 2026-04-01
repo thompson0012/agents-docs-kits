@@ -11,6 +11,7 @@
 | Route a design request | `templates/base/.agents/skills/using-design/SKILL.md` |
 | Route an analytical request | `templates/base/.agents/skills/using-reasoning/SKILL.md` |
 | Route software delivery work | `templates/base/.agents/skills/delivery-control/SKILL.md` |
+| Extract durable lessons or memory after delivery | `templates/base/.agents/skills/delivery-control/compound/SKILL.md` (when shipped) → writes to `docs/reference/memory.md` and `docs/reference/lessons.md` |
 | Start a product from idea to architecture | `templates/base/.agents/skills/labs21-product-suite/SKILL.md` |
 | Create or upgrade a leaf skill | `templates/base/.agents/skills/create-skill/SKILL.md` |
 | Create or upgrade a router package | `templates/base/.agents/skills/create-router-skill/SKILL.md` |
@@ -22,7 +23,7 @@
 - `templates/base/.agents/skills/using-labs21-suite/` — top-level suite router. Owns the shipped boundary: `using-design`, `using-reasoning`, `delivery-control`, plus direct leaves (`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`).
 - `templates/base/.agents/skills/using-design/` — design-family router. Children cover foundations, tokens, generative UI, liquid-glass.
 - `templates/base/.agents/skills/using-reasoning/` — reasoning-family router. Children cover calibration, framing, foresight, reality checks, advisory, multi-lens.
-- `templates/base/.agents/skills/delivery-control/` — delivery-family router. Children: `harness-design`, `frontend-evaluator`.
+- `templates/base/.agents/skills/delivery-control/` — delivery-family router. Children: `harness-design` (orchestration), `frontend-evaluator` (QA), `compound` (durable knowledge extraction). The three lanes form a control plane: orchestrate → verify → learn.
 - `templates/base/.agents/skills/labs21-product-suite/` — stage-gated product router. Children: `labs21-chief-architect`, `labs21-prd-writer`, `labs21-system-architect`.
 
 ### Direct leaves (no children)

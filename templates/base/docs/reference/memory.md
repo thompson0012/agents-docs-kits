@@ -2,6 +2,8 @@
 
 Durable truths that survive beyond a single session. Each entry carries freshness metadata so readers can assess staleness.
 
+This file is one of two durable archives maintained by the compound extraction lane (`delivery-control/compound`). Memory records **what is true** — decisions, policies, conventions, and invariants. For reusable failure-mode / fix patterns learned from mistakes and surprises, see `docs/reference/lessons.md`.
+
 ## Routing Decisions
 
 <!--

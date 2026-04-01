@@ -1,11 +1,11 @@
 ---
 name: delivery-control
-description: Use when a software feature request needs delivery-control orchestration, multi-session loop design, or independent frontend QA. For greenfield product definition (strategy, PRDs, v1 architecture), use labs21-product-suite instead.
+description: Use when a software feature request needs delivery-control orchestration, multi-session loop design, independent frontend QA, or structured knowledge extraction from completed work. For greenfield product definition (strategy, PRDs, v1 architecture), use labs21-product-suite instead.
 ---
 
 # Delivery Control
 
-Use this router to enforce delivery governance and execution honesty on feature work that is already defined.
+Use this router to enforce delivery governance, execution honesty, and durable knowledge capture on feature work that is already defined.
 
 For net-new product creation, raw ideas, comprehensive PRDs, or system architecture from scratch, use `labs21-product-suite` instead.
 
@@ -25,16 +25,21 @@ Apply these checks in order.
 Route to `labs21-product-suite` if the user is starting from a raw idea, needs a strategic blueprint, a comprehensive PRD, or a baseline system architecture.
 
 ### 1. Is the main need cross-session delivery control or harness design?
-Route to `delivery-control/harness-design` when the work needs explicit control over single-session vs compacted continuation vs planner/generator/evaluator loops, plus the handoff artifacts and pass/fail boundaries that keep multi-session execution honest.
+Route to `delivery-control/harness-design` when the work needs explicit control over single-session vs compacted continuation vs planner/generator/evaluator loops, plus the handoff artifacts, pass/fail boundaries, and postflight extraction handoff that keep multi-session execution honest.
 
-Use this lane for orchestration and control. Do not use it for ordinary single-session work.
+Use this lane for orchestration and control. Do not use it for ordinary single-session work or for the extraction itself.
 
 ### 2. Is the main need independent browser-facing acceptance?
 Route to `delivery-control/frontend-evaluator` when browser-facing work already exists and the user wants a skeptical pass/fail QA gate with evidence, defects, and retry guidance.
 
 This lane verifies; it does not implement or fix.
 
-### 3. No delivery-control route
+### 3. Is the main need structured knowledge extraction from completed work?
+Route to `delivery-control/compound` when a feature, phase, or delivery cycle has completed and the team wants to extract reusable lessons and durable truths into `docs/reference/lessons.md` and `docs/reference/memory.md`.
+
+This lane extracts; it does not implement, orchestrate, or evaluate.
+
+### 4. No delivery-control route
 If none of the above fits cleanly, do not force this family. Answer directly or let the agent fall back to generic repo implementation skills.
 
 ## Router Output
@@ -44,6 +49,7 @@ Return one of these forms and then invoke the selected skill if needed:
 - `Route to labs21-product-suite.`
 - `Route to delivery-control/harness-design.`
 - `Route to delivery-control/frontend-evaluator.`
+- `Route to delivery-control/compound.`
 - `No delivery-control route fits; answer directly.`
 
 Add one sentence explaining why the selected route is the narrowest correct fit.
@@ -56,3 +62,5 @@ Add one sentence explaining why the selected route is the narrowest correct fit.
 
 - routing to `delivery-control` for greenfield product definition, v1.0 PRDs, or baseline system architecture instead of `labs21-product-suite`
 - routing `delivery-control/harness-design` for ordinary single-session stage selection instead of true cross-session delivery control
+- routing `delivery-control/compound` during active implementation instead of after work completes
+- routing `delivery-control/compound` for generic note-taking or progress journaling instead of structured knowledge extraction

@@ -1,13 +1,13 @@
 ---
 name: harness-design
-description: Use when the real problem is cross-session delivery control: deciding whether work should stay in one session, resume through `context-compaction`, or run through a planner/generator/evaluator loop with explicit handoffs, artifacts, and return paths.
+description: Use when the real problem is cross-session delivery control: deciding whether work should stay in one session, resume through `context-compaction`, or run through a planner/generator/evaluator loop with explicit handoffs, artifacts, return paths, and a postflight compound-extraction gate.
 ---
 
 # Harness Design
 
 Use this skill to define the control model for work that will span resets, handoffs, or independent verification.
 
-This skill does not implement the product work itself. It defines how the work will be controlled so the next skills can execute honestly.
+This skill owns orchestration and control. It does not implement the product work, run browser QA, or extract durable knowledge — those belong to the generator, `frontend-evaluator`, and `compound` respectively. When orchestrated work finishes, this skill defines the postflight handoff to `compound` for knowledge extraction.
 
 ## Boundary
 
@@ -16,11 +16,13 @@ Use this skill when:
 - work will cross session boundaries and needs explicit baton passing instead of implicit memory
 - independent evaluation must be separated from generation so pass/fail decisions stay credible
 - the main uncertainty is orchestration, handoff truthfulness, or retry ownership rather than product scope or implementation details
+- completed work needs a structured postflight that routes to `compound` for lesson extraction before the session ends
 
 Do not use this skill when:
 - the router can already choose the next ordinary stage without more control design
 - the main need is a PRD, plan review, implementation, or browser QA rather than the control model around that work
 - the request only says "be more organized" or "track status better" without a concrete cross-session or role-separation problem
+- the main need is extracting lessons or updating durable memory after work is done — use `delivery-control/compound` directly
 
 ## Core Contract
 
@@ -33,6 +35,7 @@ Do not use this skill when:
 - Preserve goal lineage: the source goal, plan goal, and current phase goal must remain linked until the user explicitly retires or replaces the work.
 - Rehydrate from stored truth before phase 1 and after every compaction; do not continue from chat memory alone.
 - Stay portable. Do not assume a vendor-specific runtime, daemon, background supervisor, or always-on agent framework.
+- **Postflight rule:** every non-trivial control model must name whether a compound-extraction handoff is required at completion. If the work produced lessons, decisions, or durable truths, the postflight routes to `delivery-control/compound`. If not, state that no extraction is needed and why.
 
 ## Mode Selection
 
@@ -110,6 +113,14 @@ For any non-trivial control model, define these artifacts explicitly:
 - `docs/live/qa.md` — evaluation record when an evaluator exists
 - next-owner instruction stating who acts next and why (written into `docs/live/current-focus.md`)
 
+### Postflight Compound Handoff
+
+At the end of orchestrated work, the control model must produce a handoff decision:
+- **Extract:** route to `delivery-control/compound` with a note naming what to extract (failed approaches, policy decisions, debugging insights, convention locks).
+- **Skip:** state that no compound extraction is needed because the work produced no durable knowledge worth archiving.
+
+The postflight decision is part of the control artifact, not an afterthought. Write it before the final baton pass so the receiving role — or the user — can act on it immediately.
+
 When live docs are in use, update them before handoff with the current truth. At minimum, the receiving role must be able to recover:
 - what mode is active
 - what was changed
@@ -139,7 +150,8 @@ Return a compact control artifact with these sections:
 3. **Role ownership** — planner, generator, evaluator boundaries
 4. **Handoff artifacts** — what must exist before baton passing
 5. **Return paths** — implementation defect, scope/contract/orchestration defect, environment blocker
-6. **Next route** — the next skill or work lane that should execute under this control model
+6. **Postflight** — whether compound extraction is required and what to extract, or why extraction is skipped
+7. **Next route** — the next skill or work lane that should execute under this control model
 
 ## Failure Modes to Avoid
 
@@ -150,3 +162,5 @@ Return a compact control artifact with these sections:
 - Writing handoffs that say what was intended instead of what is currently true.
 - Hiding environment blockers inside implementation retries.
 - Describing a runtime-specific agent service, daemon, or orchestrator as if it were required by this skill.
+- Skipping the postflight compound decision — every control artifact must state extract or skip.
+- Routing to `compound` during active implementation instead of at completion.

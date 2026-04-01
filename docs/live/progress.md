@@ -4,28 +4,37 @@ Read after `current-focus.md` to recover the latest state and hand-off details. 
 
 ## Current State
 
-Template cutover batch is in progress. Root live docs have been recast to describe the new objective.
-
-See `roadmap.md` for the full phase ledger and goal lineage.
+- Delivery-control upgrade is complete in the working tree; verification passed.
+- See `roadmap.md` for the phase lineage and goal history.
 
 ## Latest Completed Work
 
-- Recast root live docs (`current-focus.md`, `progress.md`, `todo.md`, `roadmap.md`) to describe the template-cutover objective.
-- Prior batch (complete): root docs control-plane cutover — split README/AGENTS, aligned live docs, replaced reference placeholders, deduplicated router prose.
+- Upgraded `templates/base/.agents/skills/delivery-control/` with a compound leaf and clarified orchestration, QA, and postflight extraction responsibilities.
+- Updated the root and template reference archives/scaffolds to separate durable truths from reusable lessons and to reflect the compound lane.
+- Retargeted the root live docs from the earlier template-cutover batch to the delivery-control upgrade objective.
+- Fixed the suite router index/category map and website-building follow-on guidance so delivery lifecycle work and browser QA both route through the new delivery-control lanes.
 
 ## Blockers
 
-None.
+- None.
 
 ## Touched Files
 
 - `docs/live/{current-focus,progress,todo,roadmap}.md`
+- `docs/reference/{architecture,codemap,memory,lessons}.md`
+- `templates/base/.agents/skills/delivery-control/{SKILL.md,references/children.json,harness-design/SKILL.md,compound/SKILL.md}`
+- `templates/base/.agents/skills/using-labs21-suite/{SKILL.md,references/category-map.md}`
+- `templates/base/.agents/skills-optional/website-building/{SKILL.md,references/children.json,shared/12-playwright-interactive.md}`
+- `templates/base/docs/live/{runtime,qa}.md`
+- `templates/base/docs/reference/{architecture,codemap,memory,lessons}.md`
 
 ## Verification
 
-- Confirmed root live docs describe the template-cutover objective, not the finished root cutover.
-- Confirmed `todo.md` and `progress.md` are coherent with `current-focus.md`.
+- `git diff --check` passed.
+- Focused stale-reference scans on active delivery-control and website-building surfaces found no `software-delivery` matches.
+- Structural read-back confirmed the compound lane and archive split are present.
+- Remaining `software-delivery` references are confined to historical/archive context, not active surfaces.
 
 ## Next Recommended Action
 
-- Begin Phase 1: align `templates/base/docs/live/` scaffolds to match the root standard.
+- Ready for handoff.

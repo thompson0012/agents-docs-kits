@@ -4,28 +4,30 @@ Canonical carrier for phased-work goal lineage. Read after `current-focus.md` to
 
 ## Source Goal
 
-- Source goal: Every generated repo should ship the same docs-control-plane standard that the root repo uses — live docs, reference scaffolds, and agent/router contracts — so agents resuming in any generated project find the same surfaces, same conventions, same progressive-disclosure contract.
-- Origin: the root cutover established the standard (five surfaces, one job each, no overlap), but `templates/base/` still carries the old shape: different scaffold fields, missing conventions, and `AGENTS.md` prose referencing the obsolete `software-delivery` name.
+- Source goal: The delivery-control family in `templates/base/` should carry the strongest portable lifecycle patterns from gstack (browser QA, evidence-gated acceptance), Superpowers (session orchestration, plan execution, verification-before-completion), and Compound Engineering (durable archives, goal lineage, session compaction) so every generated repo ships a delivery-control surface that enforces honest multi-session execution.
+- Origin: The template-cutover batch aligned scaffolds and naming, but the delivery-control family itself still needed the deeper portable patterns those source systems proved.
 
 ## Plan Goal
 
-- Plan goal: Single-batch cutover that aligns template scaffolds (live, reference), updates template and root `AGENTS.md` to remove `software-delivery`, and verifies cross-surface coherence — without filling scaffolds with real content.
+- Plan goal: Absorb the strongest portable patterns from gstack, Superpowers, and Compound Engineering into the `templates/base/` delivery-control family — upgrading its router, children, live/reference scaffolds, suite-index guidance, and website-building follow-on guidance — without adding product-specific content, compatibility shims, or duplicate authorities.
 
 ## Phase Ledger
 
 | Phase | Description | Status |
 | --- | --- | --- |
-| 0 | Recast root live docs to describe the template-cutover objective | Completed |
-| 1 | Align `templates/base/docs/live/` scaffolds to the root standard | Not started |
-| 2 | Align `templates/base/docs/reference/` scaffolds to the root standard | Not started |
-| 3 | Update `templates/base/AGENTS.md` and root `AGENTS.md` — remove `software-delivery`, align contract | Not started |
-| 4 | Cross-surface verification: no overlap, stale references, or contradictions | Not started |
+| 0 | Recast root live docs to describe the delivery-control upgrade objective | Completed |
+| 1 | Audit gstack, Superpowers, and Compound Engineering for portable delivery-control patterns | Completed |
+| 2 | Integrate selected patterns into `delivery-control` router and children | Completed |
+| 3 | Update live-doc and reference scaffolds if delivery-control changes require it | Completed |
+| 4 | Update suite router / category map and website-building follow-on guidance so delivery-control's new lanes are discoverable | Completed |
+| 5 | Cross-surface verification: no overlap, stale references, or contradictions | Completed |
 
 ## Goal Changes
 
 | Date | Change | Reason |
 | --- | --- | --- |
-| 2026-04-01 | New batch: template cutover replaces completed root cutover as the active objective | Root cutover is done; templates still carry the old shape |
+| 2026-04-01 | New batch: delivery-control upgrade replaces completed template-cutover as active objective | Template cutover is done; delivery-control family needs deeper portable patterns from gstack, Superpowers, and Compound Engineering. |
+| 2026-04-01 | Prior: template-cutover batch replaced root cutover as the active objective | Root cutover was done; templates still carried the old shape. |
 
 ## Resume Rules
 

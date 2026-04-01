@@ -20,6 +20,22 @@ Durable truths that survive beyond a single session. Each entry carries freshnes
 - **Source:** architecture invariant; `using-labs21-suite/references/children.json`
 - **Revisit if:** the template intentionally reintroduces a distinct founding or research-family router.
 
+### Delivery-control is a three-lane control plane
+- **Truth:** `delivery-control` routes across three lanes — `harness-design` (orchestration), `frontend-evaluator` (QA), and `compound` (durable knowledge extraction). Orchestration designs session boundaries and pass/fail gates. QA provides independent browser signoff. Compound distills postflight signals into `docs/reference/memory.md` (durable truths) and `docs/reference/lessons.md` (reusable failure-mode / fix patterns). No other lane writes to those archives.
+- **Status:** active
+- **Recorded at:** 2026-04-01
+- **Last verified at:** 2026-04-01
+- **Source:** architecture invariants; `delivery-control/references/children.json`
+- **Revisit if:** the compound lane is removed, merged into another lane, or the archive targets change.
+
+### Memory and lessons are separate archives
+- **Truth:** `docs/reference/memory.md` holds durable truths (routing decisions, packaging decisions, process invariants) that survive sessions. `docs/reference/lessons.md` holds reusable failure-mode / fix patterns learned from mistakes and surprises. A truth is not a lesson; a lesson is not a truth. The compound lane enforces this separation.
+- **Status:** active
+- **Recorded at:** 2026-04-01
+- **Last verified at:** 2026-04-01
+- **Source:** architecture invariants; compound lane design.
+- **Revisit if:** memory and lessons are intentionally merged or a different archive structure replaces them.
+
 ### Product-suite router hands off to stage child
 - **Truth:** `labs21-product-suite` hands off to the selected stage child and continues with that child's workflow after emitting the route line.
 - **Status:** active

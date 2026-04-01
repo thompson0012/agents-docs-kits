@@ -9,7 +9,7 @@
 | `using-labs21-suite` | Top-level suite boundary | Routes to `using-design`, `using-reasoning`, `delivery-control`, and direct leaves |
 | `using-design` | Design-family selection | Foundations, tokens, generative UI, liquid-glass |
 | `using-reasoning` | Reasoning-family selection | Calibration, framing, foresight, reality checks, advisory, multi-lens |
-| `delivery-control` | Software delivery lifecycle | `harness-design`, `frontend-evaluator` |
+| `delivery-control` | Software delivery lifecycle | `harness-design`, `frontend-evaluator`, `compound` |
 | `labs21-product-suite` | Stage-gated product development | `labs21-chief-architect`, `labs21-prd-writer`, `labs21-system-architect` |
 
 ### Direct leaves (`templates/base/.agents/skills/`)
@@ -23,6 +23,7 @@
 | Agent contract | `AGENTS.md` | Always-injected index; read/update rules |
 | Repo live state | `docs/live/` | Mutable execution state: focus, progress, todo, roadmap |
 | Template delivery-control live state | `templates/base/docs/live/` | Baton state and evaluator evidence (`runtime`, `qa`) when explicit delivery control exists |
+| Durable reference (compound archive) | `docs/reference/memory.md`, `docs/reference/lessons.md` | Compound lane writes here; truths that survive sessions and reusable failure-mode / fix patterns |
 | Durable reference | `docs/reference/` | Architecture, codemap, memory, lessons, implementation, design |
 | Generated scaffold | `templates/base/` | Inert starter files for new projects |
 
@@ -44,6 +45,8 @@ These names appeared in earlier iterations and no longer exist in the shipped sk
 - **Harness scope.** `delivery-control/harness-design` is only for cross-session control, compaction rules, baton passing, and planner/generator/evaluator structure. Routine single-session work does not enter harness design.
 - **Evaluator ownership.** Independent browser signoff belongs to `delivery-control/frontend-evaluator`. No separate shipped builder-QA family exists unless one actually ships under `templates/base/.agents/skills/`.
 - **Live-doc split.** Repo-level live docs are `docs/live/current-focus.md`, `docs/live/progress.md`, `docs/live/todo.md`, and `docs/live/roadmap.md`. Template delivery-control baton and evaluator state live separately under `templates/base/docs/live/runtime.md` and `templates/base/docs/live/qa.md`.
+- **Compound lane owns postflight knowledge.** `delivery-control/compound` is the sole authority for extracting durable truths into `docs/reference/memory.md` and reusable failure-mode / fix patterns into `docs/reference/lessons.md`. Orchestration (`harness-design`) and QA (`frontend-evaluator`) do not write to these archives; they surface raw signals that compound distills.
+- **Memory ≠ lessons.** `memory.md` records durable truths (routing decisions, packaging decisions, process invariants) that survive sessions. `lessons.md` records reusable failure-mode / fix patterns learned from mistakes and surprises. A truth is not a lesson; a lesson is not a truth. The compound lane enforces the boundary.
 - **Template inertness.** Generated scaffolds under `templates/base/docs/` must contain no prefilled content. They are structural placeholders only.
 - **Router metadata as source of truth.** `references/children.json` in each router package is the authority for child inventory. Prose in `SKILL.md` must not duplicate or contradict the metadata.
 
@@ -52,7 +55,7 @@ These names appeared in earlier iterations and no longer exist in the shipped sk
 | Component | Responsibility | Key dependency |
 |-----------|----------------|----------------|
 | `using-labs21-suite/` | Top-level discoverability router | `references/children.json`, `references/category-map.md` |
-| `delivery-control/` | Software delivery routing | `references/children.json`, nested `harness-design/`, `frontend-evaluator/` |
+| `delivery-control/` | Software delivery routing | `references/children.json`, nested `harness-design/`, `frontend-evaluator/`, `compound/` |
 | `labs21-product-suite/` | Stage-gated product development | `references/children.json`, `references/router-metadata.md`, `references/relationship-types.md`, nested stage children |
 | `using-design/` | Design-family routing | `references/children.json`, shipped design children |
 | `using-reasoning/` | Reasoning-family routing | `references/children.json`, shipped reasoning children |

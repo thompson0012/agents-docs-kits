@@ -35,3 +35,8 @@ Read after mistakes, rework, or surprises. Capture only reusable lessons.
 - Pattern: Adding a new router over existing top-level leaves first, then doing a second pass to move those leaves under the router package.
 - Detection: The router metadata points at external leaf targets even though the leaves are bundled with the repo and clearly belong inside the same family boundary.
 - Better default: When a new bundled router family is justified, default to nesting the bundled leaves under that router in the same change and cut all routes/references over once.
+
+### Postflight Learning Stuffed into QA or Orchestration
+- Pattern: After a delivery cycle, durable takeaways (truths, failure patterns) get appended to QA evidence files or orchestration baton docs instead of being distilled into the compound archive (`memory.md`, `lessons.md`).
+- Detection: `templates/base/docs/live/qa.md` or `templates/base/docs/live/runtime.md` accumulate retrospective commentary, or memory/lessons files stay stale while session-level docs grow.
+- Better default: Route postflight extraction through the `compound` lane of `delivery-control`. Compound reads the raw signals from QA and orchestration, distills them, and writes only to `docs/reference/memory.md` (truths) and `docs/reference/lessons.md` (failure-mode / fix patterns). QA and orchestration surfaces stay focused on their one job.

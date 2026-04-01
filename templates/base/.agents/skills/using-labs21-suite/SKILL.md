@@ -23,6 +23,6 @@ For a human-readable category overview, see [category map](references/category-m
 - Forcing a Labs21 suite route onto work that left this boundary (repo coding, websites, documents, legal, sales, marketing, research, finance, media, data-profiling).
 - Routing prompt-architecture work to `prompt-augmentation` when the user needs `meta-prompting`.
 - Routing router-package work to `create-skill` when the package's job is family routing.
-- Routing delivery lifecycle work to `self-cognitive` when the need is stage selection inside `delivery-control`.
+- Routing delivery lifecycle work to `delivery-control` when the need is orchestration, independent QA, or structured knowledge extraction inside `delivery-control`.
 - Routing startup viability into `using-reasoning` because it sounds analytical.
 - Routing ordinary implementation into `using-design` when the hard problem is not the design boundary.

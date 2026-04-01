@@ -27,7 +27,7 @@
 
 ## Software Delivery Routing
 
-- `delivery-control` — family router for non-trivial feature lifecycle (discovery, harness design, plan review, evaluator selection)
+- `delivery-control` — family router for non-trivial feature lifecycle (discovery, harness design, browser QA, compound extraction)
 
 ## Commercial Reality Testing
 
