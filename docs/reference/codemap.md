@@ -4,6 +4,26 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 ## Key Paths
 
+- Path: `.agents/router-manifest.json`
+- Purpose: machine-readable root router inventory for repo-vs-template startup paths, route ordering, and governance-surface ownership.
+- Update when: a root discovery pointer, startup path, or governed surface ownership changes.
+
+- Path: `.agents/AGENTS.md`
+- Purpose: local boundary contract for repo-local skills and root routing metadata.
+- Update when: repo-local skill ownership or routing metadata changes.
+
+- Path: `docs/AGENTS.md`
+- Purpose: local boundary contract for the root docs subtree, including the split between active live docs and durable reference docs.
+- Update when: root docs ownership or child-guide routing changes.
+
+- Path: `scripts/validate_agents_router.py`
+- Purpose: executable validator for the root router contract, manifest schema, and leaf-guide shape.
+- Update when: root router sections, manifest schema, or local-guide contract headings change.
+
+- Entrypoint: `AGENTS.md`
+- Consumer: every session starting in the root repository before it descends into repo-local guides or template-package work.
+- Notes: lean router/index for startup minimum, scope fences, decision order, escalation, and verification commands.
+
 - Path: `.agents/skills/using-agents-md/`
 - Purpose: repo-local procedural guidance for when to add, update, localize, or leave alone `AGENTS.md` files and adjacent documentation-governance surfaces.
 - Update when: the AGENTS-maintenance decision workflow, doc-surface split, or paired discovery-update rules change.
@@ -57,7 +77,7 @@ Read when you need to find where to work. Prefer only high-value paths.
 
 - Entrypoint: `.agents/skills/using-agents-md/SKILL.md`
 - Consumer: agents deciding whether repo-guidance changes belong in `AGENTS.md`, `docs/reference/*`, `docs/live/*`, or a skill package.
-- Notes: enter here before adding a local `AGENTS.md`, changing a discovery pointer, or concluding that no AGENTS/reference update is needed.
+- Notes: use this before adding a local `AGENTS.md`, changing a discovery pointer, moving repo-local skill paths, or concluding that no AGENTS/reference update is needed.
 
 - Entrypoint: `templates/base/.agents/skills/using-labs21-suite/SKILL.md`
 - Consumer: agents choosing the right shipped top-level Labs21 skill or family router before any narrower handoff.

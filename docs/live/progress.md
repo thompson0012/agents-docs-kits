@@ -4,16 +4,18 @@ Read after `docs/live/current-focus.md` to recover the latest state, continuity,
 
 ## Current State
 
-The repo now has a repo-local AGENTS-governance skill at `.agents/skills/using-agents-md/SKILL.md`, and the root discovery pointer now truthfully routes AGENTS/doc-governance decisions to it.
+The root repository now has a lean AGENTS router, machine-readable routing metadata, executable router validation, and boundary-contract local guides for both the root repo and the template package hierarchy.
 
 ## Latest Completed Work
 
-- ran a read-only baseline pressure test that confirmed the repo lacked an explicit AGENTS-maintenance decision procedure and still pointed root startup guidance at a missing repo-local skill surface
-- created `.agents/skills/using-agents-md/SKILL.md` as the narrow procedural guide for when to change `AGENTS.md`, `docs/reference/*`, `docs/live/*`, or a skill package
-- updated root `AGENTS.md` so the project-local skills section points to `.agents/skills/using-agents-md/SKILL.md` instead of a stale missing path
-- updated `docs/reference/{architecture,codemap,memory,lessons}.md` so the new skill path, durable policy split, and stale-root-pointer anti-pattern are preserved
-- ran a post-skill verification task, fixed the only remaining ambiguity in the skill workflow (nearest-parent vs root discovery updates, plus rule-vs-procedure dual updates), and rechecked that the clarification passed
-- verified whitespace cleanliness with `git diff --check`
+- rewrote root `AGENTS.md` into a lean router/index with startup minimums for repo work vs template work, scope fences, ordered decision flow, escalation rules, failure-mode fencing, and explicit router verification commands
+- created root local guides at `.agents/AGENTS.md`, `.agents/skills/AGENTS.md`, `docs/AGENTS.md`, `docs/live/AGENTS.md`, and `docs/reference/AGENTS.md` so the repo now has real leaf boundary contracts instead of only a root guide
+- added `.agents/router-manifest.json` as the machine-readable source of truth for root governance-surface routing and startup paths
+- sharpened `.agents/skills/using-agents-md/SKILL.md` into a concrete governance-change triage skill with expected-output format, common scenarios, manifest lookup, and stronger negative controls
+- standardized the template local guides under `templates/base/.agents/` and `templates/base/docs/` to the same boundary-contract shape: Local Scope, Owns, Does Not Own, Required Reads, Local Update Rules, and Failure Modes to Avoid
+- added `scripts/tests/test_agents_router.py` first and watched it fail red before implementation
+- implemented `scripts/validate_agents_router.py` to validate the root router sections, root and template leaf-guide contract headings, manifest schema, manifest paths, and repo-local skill inventory
+- updated `docs/reference/{architecture,codemap,memory,lessons,implementation}.md` so the new root router, manifest, validator, and repo-vs-template scope fence are preserved as durable truth
 
 ## In Progress
 
@@ -25,25 +27,41 @@ None.
 
 ## Next Recommended Action
 
-Use `.agents/skills/using-agents-md/SKILL.md` for future repo AGENTS-hierarchy or doc-governance changes; no additional follow-up is required for this task.
+Use the new root router and validator as the default governance path. A later follow-up can add negative eval fixtures and interrupted-work recovery checks, but no further action is required for this fix itself.
 
 ## Touched Files
 
-- `.agents/skills/using-agents-md/SKILL.md`
 - `AGENTS.md`
+- `.agents/AGENTS.md`
+- `.agents/skills/AGENTS.md`
+- `.agents/skills/using-agents-md/SKILL.md`
+- `.agents/router-manifest.json`
+- `docs/AGENTS.md`
+- `docs/live/AGENTS.md`
+- `docs/reference/AGENTS.md`
+- `templates/base/.agents/AGENTS.md`
+- `templates/base/.agents/skills/AGENTS.md`
+- `templates/base/.agents/skills-optional/AGENTS.md`
+- `templates/base/docs/AGENTS.md`
+- `templates/base/docs/live/AGENTS.md`
+- `templates/base/docs/reference/AGENTS.md`
+- `scripts/tests/test_agents_router.py`
+- `scripts/validate_agents_router.py`
 - `docs/reference/architecture.md`
 - `docs/reference/codemap.md`
 - `docs/reference/memory.md`
 - `docs/reference/lessons.md`
+- `docs/reference/implementation.md`
 - `docs/live/progress.md`
 
 ## Verification Status
 
-- baseline read-only pressure test (`task` subagent) found the missing AGENTS-governance procedure and stale root skill pointer before implementation
-- post-skill verification (`task` subagent) confirmed the new discovery pointer and AGENTS/reference/live-doc split, then identified one workflow ambiguity that was fixed
-- follow-up recheck (`quick_task` subagent) returned `pass` after the skill clarification
-- `git diff --check`
+- RED first: `python3 -m unittest scripts.tests.test_agents_router` failed before implementation with four failures covering missing root local guides, missing validator, missing router sections, and non-standardized template leaf guides
+- GREEN: `python3 -m unittest scripts.tests.test_agents_router`
+- GREEN: `python3 scripts/validate_agents_router.py`
+- GREEN: `python3 -m unittest scripts.tests.test_template_agents_hierarchy`
+- GREEN: `git diff --check`
 
 ## Hand-off Note
 
-The repo-local AGENTS-governance surface is now in place and documented. No `docs/live/current-focus.md` update was needed because the active objective and scope did not change. No further reference-doc update is pending for this task.
+The repo and template now both expose explicit boundary contracts, but only the root repo guide acts as the active router. No `docs/live/current-focus.md` update was needed because the active objective and scope did not change. Reference docs were updated because this change introduced durable router structure, entrypoints, validator behavior, and reusable lessons.

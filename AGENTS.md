@@ -2,132 +2,96 @@
 
 ## Repo Purpose
 
-This repository uses a minimal agent documentation structure for recall, progressive disclosure, and reliable hand-off in a single worktree.
+This repository uses a layered guidance system for recall, progressive disclosure, and reliable hand-off across active repo work and template-package work.
 
-## Task Execution Priority
+## Startup Minimum
 
-**SKILLS TAKE PRECEDENCE OVER MODEL KNOWLEDGE.**
+### repo work
 
-Before ANY response or action, answer this question aloud:
+Read these in order before acting on repo-runtime or repo-governance work:
+1. `AGENTS.md`
+2. `docs/live/current-focus.md`
+3. `docs/live/progress.md`
 
-> **What skill should I activate for this task?**
+Then read the smallest local guide for the subtree you will touch.
 
-Execution order:
-1. **SKILLS FIRST** — If a skill exists for the task type, invoke it before doing anything else
-2. **Project-Local Skills** — Check `.agents/skills/` for repository-specific guidance
-3. **User Skills** — Check `~/.agents/skills/` for user-installed capabilities
-4. **Model Knowledge** — Use as fallback only when no skill applies
+### template work
 
-### Skill Check Protocol
+Read these in order before acting under `templates/base/`:
+1. `AGENTS.md`
+2. `docs/live/current-focus.md`
+3. `docs/live/progress.md`
+4. `templates/base/AGENTS.md`
 
-| Before | After |
-|--------|-------|
-| "I'll just implement this..." | STOP → "Which skill applies? What does it say?" |
-| "This is straightforward..." | STOP → "Is there a skill that could improve the approach?" |
-| "I know how to do this..." | STOP → "Does a skill mandate a specific workflow?" |
-| "Let me read files first..." | STOP → "Does a skill tell me HOW to explore?" |
+Then read the indexed template-local guide for the subtree you will touch.
 
-### Mandatory Skill Invocation
+## Scope Fences
 
-If you think there is even a **1% chance** a skill might apply, you **MUST** invoke it to check.
+- Repo work uses root `docs/live/*` as active state and root `docs/reference/*` as durable truth.
+- Template work uses `templates/base/**` guidance; template live docs remain inert scaffolds until a copied repo localizes them.
+- Do not treat `templates/base/docs/live/*` as active repo state.
 
-When a skill is invoked:
-1. Announce: `"Using [skill-name] for [purpose]..."`
-2. Read the skill content via the `skill` tool
-3. Follow the skill's workflow exactly
-4. Proceed with the skill's guidance as your primary method
+## Decision Order
 
-### Red Flags
+Apply these checks in order.
 
-These thoughts indicate you are rationalizing away skill usage:
+1. If the task changes `AGENTS.md`, local-guide boundaries, routing metadata, or doc-governance ownership, route to `.agents/skills/using-agents-md/SKILL.md`.
+2. If the task touches root docs, read `docs/AGENTS.md` first, then `docs/live/AGENTS.md` or `docs/reference/AGENTS.md` as needed.
+3. If the task touches repo-local skills or router metadata under `.agents/`, read `.agents/AGENTS.md` first, then `.agents/skills/AGENTS.md` when working inside `.agents/skills/`.
+4. If the task touches `templates/base/`, read `templates/base/AGENTS.md` first, then follow its discovery index.
+5. If no repo-local surface fits, use the narrowest user/global skill that matches the task.
 
-| Rationalization | Reality |
-|-----------------|---------|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
-| "I need more context first" | Skill check comes BEFORE gathering information. |
-| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
-| "I can check git/files quickly" | Skills provide structure. Use them. |
-| "This doesn't need a formal skill" | If a skill exists for it, use it. |
-| "I remember this skill" | Skills evolve. Read the current version. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
+## Escalation Rules
 
-## Injected Context Contract
+- Ambiguous route: choose the smaller owning surface first, then record the cross-boundary decision in `docs/live/progress.md` if the work expands.
+- Missing repo-local skill or guide path: do not silently improvise. Repair the pointer if you are changing governance, or fall back to the nearest owning guide and record the gap in `docs/live/progress.md`.
+- Conflicting guidance: root `AGENTS.md` wins over deeper repo guides; `templates/base/AGENTS.md` wins only inside the template subtree.
+- Interrupted governed work: rerun the relevant startup minimum and the reference writeback gate before yielding.
 
-- Inject `AGENTS.md` at session start.
-- Treat `AGENTS.md` as the only always-in-context index.
-- Retrieve additional docs on demand from `docs/live/` and `docs/reference/`; do not preload the full docs set.
+## Failure Modes to Avoid
 
-## Project-Local Skills
+- skipping the startup minimum because the task feels routine
+- treating template live-doc scaffolds as if they were active repo truth
+- editing a governed subtree without reading its nearest local guide
+- changing skill paths, router metadata, or high-value entrypoints without reviewing `docs/reference/*`
+- adding a leaf `AGENTS.md` for a transient folder or single-file rule
+- silently falling back to generic behavior when a repo-local pointer is stale or missing
 
-- **ALWAYS** check `.agents/skills/` FIRST when a task type might have repository-specific guidance.
-- Read `.agents/skills/using-agents-md/SKILL.md` when deciding how to add, update, or localize `AGENTS.md` files or adjacent doc-governance boundaries.
-- Use the most specific relevant skill available; do not fall back to model knowledge when a skill exists.
-- Read only the smallest relevant skill or subdirectory needed for the task; do not preload the entire project skill tree.
+## Verification for Router Changes
 
-## Progressive Disclosure Rules
-
-- Start here, then read only the smallest set of docs needed for the task.
-- Read `docs/live/current-focus.md` for the active objective, scope, and constraints.
-- Read `docs/live/progress.md` for session continuity, touched files, latest verification, and the next recommended action.
-- Use `docs/live/progress.md`'s `Next Recommended Action` as the default resume pointer unless user direction or `docs/live/current-focus.md` overrides it.
-- Use `docs/live/progress.md`'s `Verification Status` before claiming completion or resuming work in a previously touched area.
-- Read `docs/live/todo.md` only when selecting or sequencing among multiple plausible next actions, or when `docs/live/progress.md` does not already make the next step clear.
-- Read `docs/reference/codemap.md` when you need to find where to work, identify likely entrypoints, or map a subsystem.
-- Read `docs/reference/architecture.md` when system boundaries, invariants, or component relationships matter.
-- Read `docs/reference/implementation.md` only for technical execution details.
-- Read `docs/reference/design.md` only for product intent, UX, or behavior rules.
-- Read `docs/reference/memory.md` for durable decisions, policies, or truths that should survive beyond the current task.
-- Read `docs/reference/lessons.md` after mistakes, failed attempts, or surprising outcomes worth reusing.
-
-## Read Order by Task Type
-
-- Start or resume work: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md`
-- Pick the next task: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/live/todo.md` when prioritization is still needed
-- Find where to work: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/codemap.md`
-- Implement or change behavior: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/implementation.md`
-- Adjust product or UX behavior: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/design.md`
-- Understand system boundaries before changing behavior: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/architecture.md`
-- Recover durable decisions or repo truths: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/memory.md`
-- Learn from prior mistakes or failed attempts: `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` → `docs/reference/lessons.md`
-- Cross-cutting work: read `docs/reference/architecture.md` first, then `docs/reference/implementation.md` and `docs/reference/design.md` as needed after the live docs.
-
-## Pre-Implementation Alignment Check
-
-Before writing code or creating files, answer these questions aloud:
-
-1. **Objective Match**: Which line in `docs/live/current-focus.md` Objective defines this work?
-2. **Scope Boundary**: Which "Explicitly Out of Scope" item prevents something I might otherwise do?
-3. **Minimal Change**: What's the smallest change that achieves the objective?
-
-If you cannot answer all three with specific references, read `docs/live/current-focus.md` again.
-
-## Drift Detection During Implementation
-
-If any of these occur, pause and re-read `docs/live/current-focus.md`:
-
-- Implementation requires creating files not listed in Scope
-- You're editing files outside the touched-files history in `docs/live/progress.md`
-- A "small fix" has expanded to touch 3+ additional files
-- You're adding "helpful" features not requested in the objective
-
-State aloud: "This work [is|is not] in scope because [specific reason]."
+For root AGENTS/router-governance changes, run:
+- `python3 -m unittest scripts.tests.test_agents_router`
+- `python3 scripts/validate_agents_router.py`
+- `git diff --check`
 
 ## Update Rules After Meaningful Work
 
 - Update `docs/live/current-focus.md` when the active objective, scope, constraints, or success criteria change.
 - Update `docs/live/progress.md` after meaningful work with current state, completed work, blockers, touched files, verification, and next recommended action.
-- Update `docs/live/todo.md` when priorities or next actions change.
-- Update `docs/reference/architecture.md` when boundaries, invariants, or major component relationships change.
-- Update `docs/reference/codemap.md` when high-value paths, entrypoints, or subsystem locations change materially.
-- Update `docs/reference/memory.md` when a decision, policy, or truth should persist beyond the current session.
-- Update `docs/reference/lessons.md` when a mistake, anti-pattern, failed attempt, or hard-won fix is worth preserving.
-- Keep every update concise so the next session can recover state quickly.
+- Update `docs/live/todo.md` when priorities or next actions change materially.
+- Update `docs/reference/architecture.md` when system boundaries, invariants, or component relationships change.
+- Update `docs/reference/codemap.md` when high-value entrypoints, package locations, or subsystem paths change.
+- Update `docs/reference/memory.md` when a durable decision, policy, or repo truth should persist beyond the current session.
+- Update `docs/reference/lessons.md` when a reusable mistake pattern, anti-pattern, or hard-won fix is worth preserving.
 
 ## Reference Writeback Gate
-- Before yielding after meaningful work, explicitly decide whether any `docs/reference/*` file must change; do not leave this to user prompting or memory.
+
+- Before yielding after meaningful work, explicitly decide whether any `docs/reference/*` file must change.
 - If the change introduces or revises a durable default, policy, packaging rule, routing rule, or repo truth, update `docs/reference/memory.md`.
-- If the change introduces or revises a reusable mistake pattern, false start, migration regret, anti-pattern, or hard-won fix, update `docs/reference/lessons.md`.
-- If the change alters system boundaries, family ownership, component relationships, or other invariants, update `docs/reference/architecture.md`.
-- If the change alters high-value entrypoints, package locations, router locations, or where a subsystem lives, update `docs/reference/codemap.md`.
-- If none of those files need changes, state that conclusion explicitly in your working notes before completion: `No reference-doc update needed because ...`.
-- Path-based default: if you changed skill packages, router metadata, or package layout under `.agents/skills/`, assume a `docs/reference/*` review is required and write down why each relevant reference doc did or did not change.
+- If the change introduces or revises a reusable mistake pattern or anti-pattern, update `docs/reference/lessons.md`.
+- If the change alters boundaries, family ownership, or component relationships, update `docs/reference/architecture.md`.
+- If the change alters high-value entrypoints, package locations, router metadata, or where a subsystem lives, update `docs/reference/codemap.md`.
+- If none of those files need changes, state: `No reference-doc update needed because ...`.
+- Path-based default: if you changed skill packages or router metadata under `.agents/`, assume a `docs/reference/*` review is required and record why each relevant file did or did not change.
+
+## Discovery Index
+
+| Topic | Location |
+| --- | --- |
+| Repo agent subtree | `.agents/AGENTS.md` |
+| Repo skill inventory | `.agents/skills/AGENTS.md` |
+| Repo router manifest | `.agents/router-manifest.json` |
+| Repo docs subtree | `docs/AGENTS.md` |
+| Repo live-doc rules | `docs/live/AGENTS.md` |
+| Repo reference-doc rules | `docs/reference/AGENTS.md` |
+| Template constitutional root | `templates/base/AGENTS.md` |
