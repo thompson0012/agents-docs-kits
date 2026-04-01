@@ -25,4 +25,4 @@ For a human-readable category overview, see [category map](references/category-m
 - Routing router-package work to `create-skill` when the package's job is family routing.
 - Routing delivery lifecycle work to `delivery-control` when the need is orchestration, independent QA, or structured knowledge extraction inside `delivery-control`.
 - Routing startup viability into `using-reasoning` because it sounds analytical.
-- Routing ordinary implementation into `using-design` when the hard problem is not the design boundary.
+- Routing design-token work to the optional `using-design` family instead of the shipped `generating-design-tokens` skill.

@@ -5,7 +5,7 @@
     "Continuity and reflective control beat artifact creation because they decide whether work should continue, compact, or be challenged before more output is produced.",
     "Prompt-artifact work beats skill and family routing when the deliverable itself is the prompt.",
     "Skill-package authoring beats domain-family routing when the requested artifact is a reusable skill package.",
-    "Design-family selection beats delivery-control and generic reasoning when the hard problem is the design boundary itself rather than implementation or analysis.",
+    "Design-token specification beats delivery-control and generic reasoning when the deliverable is a design-token spec rather than implementation or analysis.",
     "Software-delivery routing beats generic reasoning when the task is really about non-trivial feature lifecycle choices rather than broad analysis.",
     "Direct startup viability teardown beats generic reasoning because harsh commercial survivability is a narrower job than analytical advice.",
     "If the request falls outside the shipped suite boundary, do not force a Labs21 route."
@@ -142,24 +142,24 @@
       }
     },
     {
-      "name": "using-design",
-      "target": "using-design",
+      "name": "generating-design-tokens",
+      "target": "generating-design-tokens",
       "relationship": "routes_to",
-      "summary": "Routes design-oriented requests to the right design child when the hard problem is visual-system guidance, token generation, generative UI, or liquid-glass experimentation.",
+      "summary": "Generates design-token specifications from brand guidelines, mockups, or design-system requirements.",
       "route_when": [
-        "The request is primarily about design direction, design-family choice, or a design-specific browser UI boundary and more than one design child could fit.",
-        "The user needs broad design-family routing across foundations, tokens, generative UI, or liquid-glass work rather than ordinary implementation."
+        "The user wants a design-token specification, token JSON, or token-layer artifact derived from brand or design-system input.",
+        "The main deliverable is the token spec itself rather than broader design-family routing or ordinary implementation."
       ],
       "avoid_when": [
-        "The request is a normal hand-authored site, dashboard, or product implementation rather than a design-family problem.",
-        "The task is plain analysis, software delivery, or startup viability rather than design-boundary routing."
+        "The request is about broad design-family routing across foundations, generative UI, or liquid-glass experimentation rather than a token spec.",
+        "The task is plain analysis, software delivery, or startup viability rather than design-token generation."
       ],
       "requires": [],
       "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
-        "package": "using-design",
-        "notes": "Install this top-level family router before routing when the runtime does not already have the Labs21 design family available."
+        "package": "generating-design-tokens",
+        "notes": "Install this top-level skill before routing when the runtime does not already have the Labs21 design-token generation helper available."
       }
     },
     {

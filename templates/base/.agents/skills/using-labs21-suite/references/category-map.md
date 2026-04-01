@@ -21,10 +21,9 @@
 - `create-skill` — create or upgrade a reusable leaf skill package
 - `create-router-skill` — create or upgrade a router package with child metadata and honest fallbacks
 
-## Design Workflow Routing
+## Design Token Generation
 
-- `using-design` — family router for design-specific work (foundations, tokens, generative UI, liquid-glass)
-
+- `generating-design-tokens` — generate design-token specifications from brand guidelines, mockups, or design-system requirements
 ## Software Delivery Routing
 
 - `delivery-control` — family router for non-trivial feature lifecycle (discovery, harness design, browser QA, compound extraction)

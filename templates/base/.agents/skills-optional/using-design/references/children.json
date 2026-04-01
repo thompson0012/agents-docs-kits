@@ -1,11 +1,11 @@
 {
   "router_name": "using-design",
-  "purpose": "Route design-oriented requests to the narrowest design child across broad visual-system guidance, reusable token-spec generation, model-generated browser UI, and experimental liquid-glass effects.",
+  "purpose": "Route design-oriented requests to the narrowest design child across broad visual-system guidance, model-generated browser UI, and experimental liquid-glass effects. Token-spec and brand-system work belongs to the top-level generating-design-tokens skill.",
   "selection_order": [
     "Explicit liquid-glass, refraction, or displacement-map work beats every other design route because it is a narrow experimental browser technique rather than general visual polish.",
-    "Model-generated browser UI beats token work when the hard problem is schema-driven, streamed, sandboxed, or agent-rendered interface generation.",
-    "Reusable token-spec or brand-system deliverables beat broad visual guidance when the main output is a portable design token spec, brand system, or design architecture artifact.",
-    "Default to design foundations when the request is broad guidance for color, typography, spacing, charts, or general art direction and no project-specific token system already governs the work."
+    "Model-generated browser UI beats broad visual guidance when the hard problem is schema-driven, streamed, sandboxed, or agent-rendered interface generation.",
+    "Default to design foundations when the request is broad guidance for color, typography, spacing, charts, or general art direction and no project-specific token system already governs the work.",
+    "Token-spec or brand-system deliverables are not handled here; route to the top-level generating-design-tokens skill."
   ],
   "children": [
     {
@@ -46,32 +46,11 @@
       ],
       "requires": [],
       "recommends": [
-        "using-design/generating-design-tokens"
+        "generating-design-tokens"
       ],
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "using-design/generative-ui",
-        "notes": "Install this nested child path before routing when the runtime cannot discover shared design leaves automatically."
-      }
-    },
-    {
-      "name": "generating-design-tokens",
-      "target": "using-design/generating-design-tokens",
-      "relationship": "routes_to",
-      "summary": "Handles reusable design-token specs, brand systems, and design-spec artifacts synthesized from brand inputs or existing product documentation.",
-      "route_when": [
-        "The main deliverable is a portable design token spec, brand system, or design architecture document rather than one-off visual guidance.",
-        "The task is to reconcile brand inputs, product docs, or visual references into explicit token definitions with traceable rationale."
-      ],
-      "avoid_when": [
-        "The request only needs broad visual guidance for colors, typography, spacing, or charts without producing a reusable token artifact.",
-        "The hard problem is model-generated browser UI or an explicit glass-effect prototype rather than token-spec generation."
-      ],
-      "requires": [],
-      "recommends": [],
-      "fallbacks_to": [],
-      "install_if_missing": {
-        "package": "using-design/generating-design-tokens",
         "notes": "Install this nested child path before routing when the runtime cannot discover shared design leaves automatically."
       }
     },

@@ -44,11 +44,11 @@
       "notes": "Router-package authoring must not collapse into create-skill."
     },
     {
-      "id": "route-using-design-family",
-      "prompt": "I need help defining the visual-system direction for a new product, but I am not yet sure whether the right lane is foundations, tokens, generative UI, or liquid-glass experimentation.",
-      "expected_output": "Routes to using-design because the ambiguity is inside the design family and the user needs the design router to choose the right child.",
+      "id": "route-generating-design-tokens-directly",
+      "prompt": "Generate a full design-token specification from these brand guidelines — spacing scale, color palette, typography tokens, and elevation.",
+      "expected_output": "Routes to generating-design-tokens because the deliverable is a design-token spec rather than broad design-family routing or implementation.",
       "files": [],
-      "notes": "Top-level router should hand off to the design family rather than guessing one nested child here."
+      "notes": "Direct token-spec request should take the dedicated design-token generation lane."
     },
     {
       "id": "route-delivery-control-family",

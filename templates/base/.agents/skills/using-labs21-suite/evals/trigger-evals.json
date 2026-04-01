@@ -36,10 +36,16 @@
     "why": "This is explicit router-package authoring, so using-labs21-suite should trigger and route to create-router-skill."
   },
   {
-    "id": "should-trigger-using-design",
-    "query": "Help me decide whether this design problem belongs in design foundations, design tokens, generative UI, or liquid glass.",
+    "id": "should-trigger-generating-design-tokens",
+    "query": "Generate a design-token spec from these brand guidelines covering spacing, color, type, and elevation.",
     "should_trigger": true,
-    "why": "This is design-family ambiguity inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to using-design."
+    "why": "This is a direct design-token generation request inside the shipped Labs21 suite, so using-labs21-suite should trigger and route to generating-design-tokens."
+  },
+  {
+    "id": "should-not-trigger-design-family-ambiguity",
+    "query": "Help me decide whether this design problem belongs in design foundations, generative UI, or liquid glass.",
+    "should_trigger": false,
+    "why": "Broad design-family routing is now optional and outside the shipped suite boundary; using-labs21-suite should not pretend it still owns the using-design family router."
   },
   {
     "id": "should-trigger-delivery-control",

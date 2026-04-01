@@ -6,15 +6,14 @@
 
 | Router | Owns | Children |
 |--------|------|----------|
-| `using-labs21-suite` | Top-level suite boundary | Routes to `using-design`, `using-reasoning`, `delivery-control`, and direct leaves |
-| `using-design` | Design-family selection | Foundations, tokens, generative UI, liquid-glass |
+| `using-labs21-suite` | Top-level suite boundary | Routes to `using-reasoning`, `delivery-control`, `generating-design-tokens`, and direct leaves |
 | `using-reasoning` | Reasoning-family selection | Calibration, framing, foresight, reality checks, advisory, multi-lens |
 | `delivery-control` | Software delivery lifecycle | `harness-design`, `frontend-evaluator`, `compound` |
 | `labs21-product-suite` | Stage-gated product development | `labs21-chief-architect`, `labs21-prd-writer`, `labs21-system-architect` |
 
 ### Direct leaves (`templates/base/.agents/skills/`)
 
-`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`.
+`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`, `generating-design-tokens`.
 
 ### Doc surfaces
 
@@ -34,6 +33,7 @@ These names appeared in earlier iterations and no longer exist in the shipped sk
 | Removed name | What replaced it |
 |-------------|-----------------|
 | `coding-and-data` | Moved to `skills-optional/`; no shipped replacement. Implementation tasks route through `delivery-control` or direct leaves. |
+| `using-design` | Moved to `skills-optional/using-design/`; broader design-family routing is optional. The shipped design surface is the direct leaf `generating-design-tokens`. |
 | `website-building` | Moved to `skills-optional/`; browser QA now lives in `delivery-control/frontend-evaluator`. |
 | `project-founding` | Deleted. Startup viability lives in `startup-pressure-test`; product ideation in `labs21-product-suite`. |
 | `using-sales`, `using-marketing`, `using-legal`, `using-finance`, `using-research`, `using-documents` | Removed from shipped suite. If re-added, they need their own shipped router under `templates/base/.agents/skills/`. |
@@ -57,7 +57,7 @@ These names appeared in earlier iterations and no longer exist in the shipped sk
 | `using-labs21-suite/` | Top-level discoverability router | `references/children.json`, `references/category-map.md` |
 | `delivery-control/` | Software delivery routing | `references/children.json`, nested `harness-design/`, `frontend-evaluator/`, `compound/` |
 | `labs21-product-suite/` | Stage-gated product development | `references/children.json`, `references/router-metadata.md`, `references/relationship-types.md`, nested stage children |
-| `using-design/` | Design-family routing | `references/children.json`, shipped design children |
+| `generating-design-tokens/` | Design-token specification | Direct leaf; no children |
 | `using-reasoning/` | Reasoning-family routing | `references/children.json`, shipped reasoning children |
 | `docs/live/` | Repo-level execution state | Truthful updates from the active role before handoff |
 | `templates/base/docs/live/` | Template delivery-control state | Baton state and evaluator evidence for explicit delivery-control flows |

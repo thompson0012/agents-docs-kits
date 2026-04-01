@@ -8,7 +8,8 @@
 | See what the suite router owns | `templates/base/.agents/skills/using-labs21-suite/references/children.json` |
 | Track phased work | `docs/live/roadmap.md` |
 | Understand the live-doc contract | `AGENTS.md` → `docs/live/current-focus.md` → `docs/live/progress.md` |
-| Route a design request | `templates/base/.agents/skills/using-design/SKILL.md` |
+| Generate a design-token spec | `templates/base/.agents/skills/generating-design-tokens/SKILL.md` |
+| Route broader design requests (optional) | `templates/base/.agents/skills-optional/using-design/SKILL.md` |
 | Route an analytical request | `templates/base/.agents/skills/using-reasoning/SKILL.md` |
 | Route software delivery work | `templates/base/.agents/skills/delivery-control/SKILL.md` |
 | Extract durable lessons or memory after delivery | `templates/base/.agents/skills/delivery-control/compound/SKILL.md` (when shipped) → writes to `docs/reference/memory.md` and `docs/reference/lessons.md` |
@@ -20,8 +21,7 @@
 
 ### Skill routers (route to children)
 
-- `templates/base/.agents/skills/using-labs21-suite/` — top-level suite router. Owns the shipped boundary: `using-design`, `using-reasoning`, `delivery-control`, plus direct leaves (`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`).
-- `templates/base/.agents/skills/using-design/` — design-family router. Children cover foundations, tokens, generative UI, liquid-glass.
+- `templates/base/.agents/skills/using-labs21-suite/` — top-level suite router. Owns the shipped boundary: `using-reasoning`, `delivery-control`, plus direct leaves (`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`, `generating-design-tokens`).
 - `templates/base/.agents/skills/using-reasoning/` — reasoning-family router. Children cover calibration, framing, foresight, reality checks, advisory, multi-lens.
 - `templates/base/.agents/skills/delivery-control/` — delivery-family router. Children: `harness-design` (orchestration), `frontend-evaluator` (QA), `compound` (durable knowledge extraction). The three lanes form a control plane: orchestrate → verify → learn.
 - `templates/base/.agents/skills/labs21-product-suite/` — stage-gated product router. Children: `labs21-chief-architect`, `labs21-prd-writer`, `labs21-system-architect`.
@@ -35,6 +35,7 @@
 - `templates/base/.agents/skills/create-skill/` — leaf skill authoring.
 - `templates/base/.agents/skills/create-router-skill/` — router package authoring.
 - `templates/base/.agents/skills/startup-pressure-test/` — harsh startup viability teardown.
+- `templates/base/.agents/skills/generating-design-tokens/` — design-token specification from brand guidelines or design-system input.
 
 ### Docs
 

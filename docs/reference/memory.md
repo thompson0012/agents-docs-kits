@@ -5,12 +5,20 @@ Durable truths that survive beyond a single session. Each entry carries freshnes
 ## Routing Decisions
 
 ### Suite router scoped to shipped skills only
-- **Truth:** The top-level suite router (`using-labs21-suite`) is scoped to the shipped Labs21 skill surface under `templates/base/.agents/skills/`. It routes across `using-design`, `using-reasoning`, and `delivery-control` plus direct leaves. Deleted families must not reappear.
+- **Truth:** The top-level suite router (`using-labs21-suite`) is scoped to the shipped Labs21 skill surface under `templates/base/.agents/skills/`. It routes across `using-reasoning` and `delivery-control` as family routers, plus direct leaves including `generating-design-tokens`. The broader `using-design` family router has moved to `templates/base/.agents/skills-optional/` and is not part of the shipped suite. Deleted or moved families must not reappear.
 - **Status:** active
 - **Recorded at:** 2026-03-27
 - **Last verified at:** 2026-04-01
 - **Source:** `templates/base/.agents/skills/using-labs21-suite/references/children.json`
 - **Revisit if:** the template intentionally re-bundles other families or replaces the top-level router boundary.
+
+### Design-token leaf replaces using-design in shipped boundary
+- **Truth:** `generating-design-tokens` is a shipped direct leaf under the suite router. The broader design-family router `using-design` (foundations, generative UI, liquid-glass) is optional and lives at `templates/base/.agents/skills-optional/using-design/`. Design-token specification work routes to the shipped leaf; broader design-family routing requires the optional package.
+- **Status:** active
+- **Recorded at:** 2026-04-01
+- **Last verified at:** 2026-04-01
+- **Source:** `using-labs21-suite/references/children.json`; filesystem layout.
+- **Revisit if:** `using-design` is re-shipped under `templates/base/.agents/skills/` or `generating-design-tokens` is absorbed into a new design family router.
 
 ### Startup survivability separated from reasoning
 - **Truth:** Harsh startup survivability work lives in `startup-pressure-test`. Broad analytical-family ambiguity routes through `using-reasoning`. Deleted founding or research-family claims must not re-enter the suite router.
