@@ -2,10 +2,10 @@
   "router_name": "labs21-product-suite",
   "purpose": "Route product-development requests through strategy, PRD, and system-design stages without skipping prerequisites.",
   "selection_order": [
-    "Stage 1 owns raw ideas, strategy, MVP framing, and blueprints from scratch.",
-    "Stage 2 owns PRDs, user stories, acceptance criteria, and edge cases once a blueprint is validated.",
-    "Stage 3 owns schema, API, state-flow, and infrastructure design once a PRD is validated.",
-    "If the request would skip a prerequisite stage, route to the prerequisite child first and surface the risk."
+    "Stage 1: strategy, MVP framing, blueprints from scratch.",
+    "Stage 2: PRDs, user stories, acceptance criteria (requires validated blueprint).",
+    "Stage 3: schemas, APIs, state flows, infrastructure (requires validated PRD).",
+    "If the request would skip a prerequisite stage, route to the prerequisite child first."
   ],
   "children": [
     {
@@ -14,20 +14,18 @@
       "relationship": "routes_to",
       "summary": "Handles raw ideas, strategy, MVP definition, and from-scratch blueprints.",
       "route_when": [
-        "The user is starting from a raw idea and needs the first strategic blueprint.",
-        "The work is still Stage 1 strategy, MVP framing, or architecture from scratch.",
-        "There is no validated blueprint yet and the product direction is still being shaped."
+        "The user is starting from a raw idea or needs the first strategic blueprint.",
+        "No validated blueprint exists yet."
       ],
       "avoid_when": [
-        "A validated blueprint already exists and the remaining job is PRD writing.",
-        "A validated PRD already exists and the remaining job is schema, API, or infrastructure design."
+        "A validated blueprint already exists and the work is PRD writing or system design."
       ],
       "requires": [],
       "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "labs21-product-suite/labs21-chief-architect",
-        "notes": "Install this nested child path before routing when the runtime cannot discover nested skills automatically."
+        "notes": "Install before routing if the runtime cannot discover nested skills automatically."
       }
     },
     {
@@ -36,20 +34,19 @@
       "relationship": "routes_to",
       "summary": "Turns a validated blueprint into PRDs, user stories, acceptance criteria, and edge cases.",
       "route_when": [
-        "A validated blueprint already exists and the work is turning it into a PRD.",
-        "The user needs user stories, acceptance criteria, or edge-case coverage for an already-approved direction.",
-        "The task is Stage 2 product definition rather than strategy or architecture from scratch."
+        "A validated blueprint exists and the work is turning it into a PRD.",
+        "The user needs user stories, acceptance criteria, or edge-case coverage for an approved direction."
       ],
       "avoid_when": [
-        "The product direction is still raw and needs strategy or MVP framing first.",
-        "A validated PRD already exists and the work is system design, schema, or API contracts."
+        "No validated blueprint exists yet.",
+        "A validated PRD already exists and the work is system design."
       ],
       "requires": ["labs21-chief-architect"],
       "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "labs21-product-suite/labs21-prd-writer",
-        "notes": "Install this nested child path before routing when the runtime cannot discover nested skills automatically."
+        "notes": "Install before routing if the runtime cannot discover nested skills automatically."
       }
     },
     {
@@ -58,20 +55,19 @@
       "relationship": "routes_to",
       "summary": "Turns a validated PRD into concrete schemas, APIs, state flows, and infrastructure decisions.",
       "route_when": [
-        "A validated PRD already exists and the work is system design for v1.",
-        "The user needs schema, API contract, state-flow, or infrastructure decisions.",
-        "The task is Stage 3 engineering architecture rather than product definition."
+        "A validated PRD exists and the work is system design for v1.",
+        "The user needs schema, API contract, state-flow, or infrastructure decisions."
       ],
       "avoid_when": [
-        "The product direction is still being shaped and needs strategy or MVP framing first.",
-        "There is no validated PRD yet and the work should stay in PRD definition."
+        "No validated PRD exists yet.",
+        "The product direction is still being shaped at strategy or PRD level."
       ],
       "requires": ["labs21-prd-writer"],
       "recommends": [],
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "labs21-product-suite/labs21-system-architect",
-        "notes": "Install this nested child path before routing when the runtime cannot discover nested skills automatically."
+        "notes": "Install before routing if the runtime cannot discover nested skills automatically."
       }
     }
   ]

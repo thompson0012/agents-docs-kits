@@ -1,83 +1,45 @@
 # agents-docs-kits
 
-Minimal agent docs kit for context injection, progressive disclosure, and reliable hand-off in a single worktree.
+Minimal agent docs kit for context injection, progressive disclosure, and reliable hand-off.
 
-## What this repo is
-
-This repository is a template-first docs kit for projects that want a small, durable agent memory structure.
-
-- `AGENTS.md` is the only always-injected index.
-- `docs/live/` stores the current execution state.
-- `docs/reference/` stores durable project context.
-- `templates/base/` contains the generic starter files used to initialize a new project.
-
-## Generated project files
-
-The base template generates this structure:
-
-```text
-.
-├── AGENTS.md
-└── docs/
-    ├── live/
-    │   ├── current-focus.md
-    │   ├── todo.md
-    │   └── progress.md
-    └── reference/
-        ├── implementation.md
-        ├── design.md
-        ├── architecture.md
-        ├── codemap.md
-        ├── memory.md
-        └── lessons.md
-```
-
-This repository also includes:
-
-- `README.md` to explain the kit itself
-- `templates/base/` to hold the reusable scaffold
-- `degit.json` for a narrow repo-level cleanup case when scaffolding from the repository root
-
-## How progressive disclosure works
-
-Read only the smallest set of docs needed for the task:
-
-1. Start with `AGENTS.md`.
-2. Read `docs/live/current-focus.md` for the active objective.
-3. Read `docs/live/progress.md` for continuity and latest verification.
-4. Read `docs/live/todo.md` only when choosing the next action.
-5. Read `docs/reference/implementation.md` or `docs/reference/design.md` only when the work needs them.
-
-The goal is to keep the default context small while still making deeper project knowledge retrievable on demand.
-
-## First useful run
-
-Pick the stage that matches your situation. Stop as soon as it gives you what you need — you do not have to run every stage.
-
-- **Problem or goal is unclear** — use `using-reasoning` to frame the problem, map assumptions, and stress-test an approach before committing to a direction.
-- **Non-trivial software feature work needs lifecycle guidance** — use `delivery-control` to route across discovery, harness control, plan review, implementation handoff, independent frontend evaluation, and ship-readiness checks.
-- **Need requirements before building** — use `feature-spec` to draft scope, acceptance criteria, and open questions for any feature or project.
-- **Coding or data work in an existing repo** — use `coding-and-data` to hand off structured implementation or analysis tasks to a focused subagent.
-- **Building a web project** — use `website-building` to route to the right child skill for informational sites, full-stack apps, or browser games.
-- **Risky or irreversible step ahead** — use `self-cognitive` for a preflight confidence check, repeatable-workflow extraction, or postmortem.
-
-Not sure which applies? Use `using-labs21-suite` — it routes across the shipped Labs21 template skills and falls back cleanly when a request is outside the suite.
-
-## Initialize a project from the template
-
-Primary and recommended path: scaffold from `templates/base` so the new project gets only the starter docs.
+## Quick start
 
 ```bash
 npx degit <owner>/<repo>/templates/base my-project
 ```
 
-Then fill in:
+Then fill in the generated files:
 
-- `AGENTS.md` with your project-specific retrieval contract
-- `docs/live/*` with current execution state
-- `docs/reference/*` with durable implementation and product context
+- `AGENTS.md` — your project's retrieval contract (the only always-injected file)
+- `docs/live/*` — current execution state (`current-focus`, `progress`, `todo`; add `roadmap` when the work is phased)
+- `docs/reference/*` — durable project context (`architecture`, `codemap`, `memory`, `lessons`)
 
-## Secondary root-scaffold cleanup note
+## If you want to…
 
-- The root `README.md` is repository documentation for this kit, not part of the recommended generated project.
-- If someone scaffolds from the repository root instead of `templates/base`, `degit.json` keeps that narrower flow from carrying the repo-level `README.md` into the generated project.
+| Goal | Start here |
+|------|-----------|
+| Use the shipped skill suite | Read `.agents/skills/using-labs21-suite/SKILL.md` — it routes across the current top-level families and direct leaves |
+| Route design work | `using-design` — design foundations, tokens, generative UI, liquid-glass |
+| Route analytical work | `using-reasoning` — calibration, framing, foresight, reality checks, advisory, multi-lens |
+| Route software delivery | `delivery-control` — discovery, harness design, plan review, frontend evaluation, readiness |
+| Track phased work | `docs/live/roadmap.md` |
+| Start a new product from idea to architecture | `labs21-product-suite` — strategy → PRD → system architecture |
+| Run a startup viability teardown | `startup-pressure-test` |
+| Design or repair a prompt artifact | `meta-prompting` / `prompt-augmentation` |
+| Author a reusable skill package | `create-skill` (leaf) / `create-router-skill` (router) |
+| Compact context for handoff | `context-compaction` |
+| Run a confidence or preflight check | `self-cognitive` |
+
+## How progressive disclosure works
+
+Read only what the current task needs:
+
+1. Start with `AGENTS.md`.
+2. Read `docs/live/current-focus.md` for the active objective.
+3. Read `docs/live/progress.md` for continuity.
+4. If the work spans phases, read `docs/live/roadmap.md`.
+5. Read deeper docs only when the work requires them.
+
+## Root-scaffold note
+
+This `README.md` is documentation for the kit repository, not part of generated projects. If someone scaffolds from the repository root instead of `templates/base`, `degit.json` excludes this file.

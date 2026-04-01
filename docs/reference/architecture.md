@@ -1,55 +1,60 @@
 # Architecture Reference
 
-Read when system shape, boundaries, or invariants matter. Keep this focused on stable structure.
+## Current Shipped Surfaces
 
-## System Boundaries
+### Skill routers (`templates/base/.agents/skills/`)
 
-- Inside scope: portable skill routing, including the `using-design`, `using-reasoning`, and `delivery-control` families, plus template live/reference docs that carry delivery state across sessions.
-- Outside scope: product-specific implementations, runtime-specific harness code, and mandatory evaluator overhead for trivial one-shot tasks.
-- Boundary note: `using-design` owns design-family selection when the design boundary itself is the hard problem, while ordinary hand-authored web implementation stays outside this template suite.
-- Boundary note: `using-reasoning` owns reasoning-family selection for analytical requests, while `startup-pressure-test` stays separate for harsh commercial survivability work.
-- Boundary note: `delivery-control` owns delivery-control routing and independent frontend acceptance selection for non-trivial software feature work.
+| Router | Owns | Children |
+|--------|------|----------|
+| `using-labs21-suite` | Top-level suite boundary | Routes to `using-design`, `using-reasoning`, `delivery-control`, and direct leaves |
+| `using-design` | Design-family selection | Foundations, tokens, generative UI, liquid-glass |
+| `using-reasoning` | Reasoning-family selection | Calibration, framing, foresight, reality checks, advisory, multi-lens |
+| `delivery-control` | Software delivery lifecycle | `harness-design`, `frontend-evaluator` |
+| `labs21-product-suite` | Stage-gated product development | `labs21-chief-architect`, `labs21-prd-writer`, `labs21-system-architect` |
+
+### Direct leaves (`templates/base/.agents/skills/`)
+
+`context-compaction`, `self-cognitive`, `meta-prompting`, `prompt-augmentation`, `create-skill`, `create-router-skill`, `startup-pressure-test`.
+
+### Doc surfaces
+
+| Surface | Location | Job |
+|---------|----------|-----|
+| Agent contract | `AGENTS.md` | Always-injected index; read/update rules |
+| Repo live state | `docs/live/` | Mutable execution state: focus, progress, todo, roadmap |
+| Template delivery-control live state | `templates/base/docs/live/` | Baton state and evaluator evidence (`runtime`, `qa`) when explicit delivery control exists |
+| Durable reference | `docs/reference/` | Architecture, codemap, memory, lessons, implementation, design |
+| Generated scaffold | `templates/base/` | Inert starter files for new projects |
+
+## Historical / Removed Names
+
+These names appeared in earlier iterations and no longer exist in the shipped skill tree. They must not be referenced as current:
+
+| Removed name | What replaced it |
+|-------------|-----------------|
+| `coding-and-data` | Moved to `skills-optional/`; no shipped replacement. Implementation tasks route through `delivery-control` or direct leaves. |
+| `website-building` | Moved to `skills-optional/`; browser QA now lives in `delivery-control/frontend-evaluator`. |
+| `project-founding` | Deleted. Startup viability lives in `startup-pressure-test`; product ideation in `labs21-product-suite`. |
+| `using-sales`, `using-marketing`, `using-legal`, `using-finance`, `using-research`, `using-documents` | Removed from shipped suite. If re-added, they need their own shipped router under `templates/base/.agents/skills/`. |
+| `software-delivery` | Renamed to `delivery-control`. |
 
 ## Invariants
 
-- Invariant: `delivery-control/harness-design` is only for cross-session control, compaction rules, baton passing, and planner/generator/evaluator structure.
-- Why it must hold: routing ordinary single-session execution into harness design would duplicate the base router and blur ownership.
-- Failure signal: routine build or plan-review work is described as harness design without any explicit session-control problem.
-
-- Invariant: independent browser signoff belongs to `delivery-control/frontend-evaluator`, and the template suite must not imply a separate shipped builder-QA family unless that family actually exists in `templates/base/.agents/skills/`.
-- Why it must hold: deleted or external web-builder families cannot remain as ghost defaults without lying about what the template currently ships.
-- Failure signal: `website-building` or another removed family is still described as an active shipped QA surface inside the template docs or router metadata.
-
-- Invariant: `templates/base/docs/live/runtime.md` and `templates/base/docs/live/qa.md` are the canonical live docs when explicit delivery control or evaluator evidence exists.
-- Why it must hold: baton state and acceptance evidence must survive session resets and role changes in one predictable place.
-- Failure signal: runtime mode, baton owner, evidence, or verdict only live in chat transcripts or ad hoc files.
-
-- Invariant: `using-labs21-suite` may claim only the currently shipped top-level families and direct leaves; deleted or moved families must disappear from the router in the same change.
-- Why it must hold: a top-level suite router that advertises deleted or external families lies about what the template actually ships and produces bad first-hop routing.
-- Failure signal: the category map, child inventory, or evals still mention removed families such as `project-founding`, or omit newly shipped families such as `using-design` or `using-reasoning`.
+- **Suite boundary honesty.** `using-labs21-suite` may claim only the currently shipped top-level families and direct leaves. Deleted or moved families must disappear from the router in the same change.
+- **Harness scope.** `delivery-control/harness-design` is only for cross-session control, compaction rules, baton passing, and planner/generator/evaluator structure. Routine single-session work does not enter harness design.
+- **Evaluator ownership.** Independent browser signoff belongs to `delivery-control/frontend-evaluator`. No separate shipped builder-QA family exists unless one actually ships under `templates/base/.agents/skills/`.
+- **Live-doc split.** Repo-level live docs are `docs/live/current-focus.md`, `docs/live/progress.md`, `docs/live/todo.md`, and `docs/live/roadmap.md`. Template delivery-control baton and evaluator state live separately under `templates/base/docs/live/runtime.md` and `templates/base/docs/live/qa.md`.
+- **Template inertness.** Generated scaffolds under `templates/base/docs/` must contain no prefilled content. They are structural placeholders only.
+- **Router metadata as source of truth.** `references/children.json` in each router package is the authority for child inventory. Prose in `SKILL.md` must not duplicate or contradict the metadata.
 
 ## Major Components
 
-- Component: `templates/base/.agents/skills/delivery-control/`
-- Responsibility: routes non-trivial software work across discovery, harness control, plan review, implementation handoff, independent frontend evaluation, and readiness reflection.
-- Key dependency: `references/children.json` plus the nested `harness-design/` and `frontend-evaluator/` leaves.
-
-- Component: `templates/base/.agents/skills/using-labs21-suite/`
-- Responsibility: top-level discoverability router for the shipped Labs21 template suite; it routes only across the owned top-level skills and refuses to claim moved external families as part of the suite.
-- Key dependency: `references/children.json` plus `references/category-map.md` for the current top-level suite inventory.
-
-- Component: `templates/base/.agents/skills/labs21-product-suite/`
-- Responsibility: stage-gated product-development router for raw ideas, validated blueprints, PRDs, and v1 architecture; it hands off to exactly one child skill and continues from that child's workflow.
-- Key dependency: `references/children.json`, `references/router-metadata.md`, `references/relationship-types.md`, `assets/router-skill-template.md`, `assets/children-template.json`, and the nested `labs21-chief-architect`, `labs21-prd-writer`, and `labs21-system-architect` leaves.
-
-- Component: `templates/base/.agents/skills/using-design/`
-- Responsibility: routes design-family requests across design foundations, design-token generation, generative UI, and liquid-glass experimentation.
-- Key dependency: `references/children.json` plus the shipped design child packages.
-
-- Component: `templates/base/.agents/skills/using-reasoning/`
-- Responsibility: routes analytical, strategic, and diagnostic requests across state calibration, problem framing, foresight, reality checks, advisory analysis, and multi-lens problem solving.
-- Key dependency: `references/children.json` plus the shipped reasoning child packages.
-
-- Component: `templates/base/docs/live/{current-focus.md,progress.md,todo.md,runtime.md,qa.md}`
-- Responsibility: carries recovery state across normal continuation, explicit baton passes, and evaluator evidence collection.
-- Key dependency: truthful updates from the active role before handoff.
+| Component | Responsibility | Key dependency |
+|-----------|----------------|----------------|
+| `using-labs21-suite/` | Top-level discoverability router | `references/children.json`, `references/category-map.md` |
+| `delivery-control/` | Software delivery routing | `references/children.json`, nested `harness-design/`, `frontend-evaluator/` |
+| `labs21-product-suite/` | Stage-gated product development | `references/children.json`, `references/router-metadata.md`, `references/relationship-types.md`, nested stage children |
+| `using-design/` | Design-family routing | `references/children.json`, shipped design children |
+| `using-reasoning/` | Reasoning-family routing | `references/children.json`, shipped reasoning children |
+| `docs/live/` | Repo-level execution state | Truthful updates from the active role before handoff |
+| `templates/base/docs/live/` | Template delivery-control state | Baton state and evaluator evidence for explicit delivery-control flows |

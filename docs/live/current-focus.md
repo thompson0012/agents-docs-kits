@@ -4,26 +4,43 @@ Read after `AGENTS.md` when starting or resuming work. Keep this file limited to
 
 ## Objective
 
-- Objective: Harden the harness and template live-doc surfaces so `template/` stays inert and phased work keeps its original goal through roadmap execution and compaction.
-- Why it matters now: the current workflow can drift after phase 1 implementation and lose the source objective on resume.
+Apply the repo-doc control-plane cutover so each documentation surface owns exactly one job:
+
+| Surface | Single responsibility |
+| --- | --- |
+| `README.md` | Human onboarding — what the repo is, how to get started |
+| `AGENTS.md` | Agent operating contract — rules, procedures, verification |
+| `docs/live/` | Live state — focus, progress, todo, roadmap |
+| `docs/reference/` | Durable truth — architecture, memory, codemap |
+| `templates/base/.agents/skills/` | Routing truth — single-sourced in metadata, not prose |
+
+Why now: README and AGENTS currently overlap on onboarding content, active surfaces still reference removed family names, live docs drift from each other, reference docs contain placeholder scaffold, and router skills duplicate policy in both SKILL.md prose and metadata files.
 
 ## Scope
 
-- In scope: template live-doc inertness, a roadmap artifact for source/plan/phase goals, and harness guidance that rehydrates from stored truth instead of chat memory.
-- Expected outcome: phased work can resume without losing the original goal, and template scaffolds contain no prefilled content.
+In scope:
+- Split README (human) from AGENTS (agent) with no overlapping authority.
+- Remove obsolete family references from active onboarding and router surfaces.
+- Add `roadmap.md` as the canonical phased-work lineage artifact.
+- Align `progress.md` and `todo.md` so they do not contradict each other or `current-focus.md`.
+- Replace `docs/reference/memory.md` placeholder with real durable truths and freshness metadata.
+- Deduplicate router SKILL.md prose that restates metadata already in `router-metadata.md` or `children.json`.
 
-Explicitly Out of Scope:
-- Reopening the Task 35 capability-overlay work unless this change exposes a concrete regression.
-- Adding unrelated router families or product-specific implementation work.
+Out of scope:
+- Reopening capability-overlay work unless this change exposes a regression.
+- Modifying product code, template generation logic, or validator scripts.
+- Adding new router families or product-specific implementation work.
 
 ## Constraints
 
-- Template live docs must remain neutral scaffolds with no seeded prose.
-- The roadmap is the authoritative carrier for source goal, plan goal, phase goal, and goal retirement history.
-- After compaction, the agent must rehydrate from live docs before continuing phased work.
+- One concept, one representation — no compatibility shims, no duplicate authorities.
+- Live docs must be self-contained: an agent resumes from these files, not chat memory.
+- Template live docs remain neutral scaffolds with no seeded prose.
 
 ## Success Criteria
 
-- `template/` live docs contain no prefilled content.
-- The roadmap artifact preserves the original objective across phase execution and resume.
-- The next handoff can recover the source goal without relying on chat memory.
+- Each of the five surfaces listed above owns one job with no overlap.
+- No obsolete family references remain in active onboarding or router surfaces.
+- `todo.md` and `progress.md` are coherent with this focus and with each other.
+- `roadmap.md` preserves goal lineage across phase execution and resume.
+- `docs/reference/memory.md` contains real content, not placeholder scaffold.
