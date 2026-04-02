@@ -1,8 +1,16 @@
 {
   "sprint_id": "FEAT-001",
-  "phase": "contracted",
+  "feature_title": "Dark mode toggle polish",
+  "phase": "review_failed",
   "owner_role": "generator",
-  "last_updated_at": 1712030400,
-  "resume_from": "contract.md",
-  "active_pids": []
+  "last_updated_at": 1775116800,
+  "resume_from": "review.md",
+  "resume_phase": "generator_execution",
+  "last_verified_step": "Failed adversarial review recorded in review.md and qa.md; next execution pass must start from those directives.",
+  "local_url": "http://localhost:3000",
+  "next_checkpoint": "Read review.md and rework the same sprint in src/theme/ThemeProvider.tsx and src/App.tsx; preserve the failed review evidence, then refresh handoff.md before the next adversarial-live-review pass.",
+  "review_status": "fail",
+  "active_pids": [],
+  "blocked_on": null,
+  "notes": "The implementation stayed active after a failed review so the next generator can resume from the corrective directives without losing evidence."
 }

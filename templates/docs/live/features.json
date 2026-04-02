@@ -1,12 +1,34 @@
 {
-  "project": "Generative UI Dashboard",
+  "project": "Agents Stack Starter",
+  "updated_at": "2026-04-02",
+  "single_active_sprint": true,
+  "active_sprint_id": "FEAT-001",
   "backlog": [
     {
+      "id": "FEAT-000",
+      "title": "Bootstrap harness starter",
+      "status": "archived",
+      "priority": 0,
+      "archive_path": "docs/archive/FEAT-000_timestamp/",
+      "completed_at": "2026-04-02",
+      "summary": "Established the starter topology, durable state files, and archive pattern used by later work.",
+      "next_dependency": "FEAT-001"
+    },
+    {
       "id": "FEAT-001",
-      "title": "Implement Dark Mode Context Provider",
-      "status": "pending",
+      "title": "Dark mode context provider and polished toggle",
+      "status": "in_progress",
       "priority": 1,
-      "dependencies": []
+      "dependencies": [
+        "FEAT-000"
+      ],
+      "local_state_path": ".harness/FEAT-001/",
+      "phase": "review_failed",
+      "owner_role": "generator",
+      "resume_from": "review.md",
+      "review_status": "fail",
+      "summary": "The sprint remains active after a failed adversarial review; the next pass should preserve review evidence and rework the same implementation.",
+      "next_action": "Resume generator-execution from .harness/FEAT-001/review.md, fix the dark-mode contrast and toggle polish issues, then return to adversarial-live-review."
     }
   ]
 }

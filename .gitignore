@@ -1,6 +1,3 @@
-/.claude
-/.sisyphus
-/docs/plans
 /.worktrees
 .DS_Store
 *.pyc

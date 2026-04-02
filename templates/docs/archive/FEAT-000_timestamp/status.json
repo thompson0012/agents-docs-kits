@@ -1,8 +1,11 @@
 {
-  "sprint_id": "FEAT-001",
-  "phase": "contracted",
-  "owner_role": "generator",
-  "last_updated_at": 1712030400,
-  "resume_from": "contract.md",
-  "active_pids": []
+  "sprint_id": "FEAT-000",
+  "phase": "archived_pass",
+  "owner_role": "none",
+  "last_updated_at": 1775121300,
+  "resume_from": "review.md",
+  "active_pids": [],
+  "review_status": "PASS",
+  "archive_path": "docs/archive/FEAT-000_timestamp",
+  "next_recommended_feature": "FEAT-001"
 }

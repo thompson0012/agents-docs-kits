@@ -1,0 +1,213 @@
+---
+name: adversarial-live-review
+purpose: Run a skeptical QA pass against the actual implementation and contract, then issue a decisive PASS or FAIL with corrective directives.
+trigger: After generator execution has produced `.harness/<sprint-id>/handoff.md` and `.harness/<sprint-id>/runtime.md`.
+inputs:
+  - AGENTS.md
+  - docs/reference/architecture.md
+  - docs/reference/design.md
+  - docs/live/features.json
+  - .harness/<sprint-id>/contract.md
+  - .harness/<sprint-id>/handoff.md
+  - .harness/<sprint-id>/runtime.md
+  - .harness/<sprint-id>/status.json
+outputs:
+  - .harness/<sprint-id>/qa.md
+  - .harness/<sprint-id>/review.md
+  - .harness/<sprint-id>/status.json
+boundaries:
+  - Do not edit implementation files except to capture review artifacts explicitly requested by the harness.
+  - Do not soften a failure because the intent was good.
+  - Do not pass work that cannot be reproduced.
+  - Do not update global project state.
+next_skills:
+  - state-update
+---
+
+# Adversarial Live Review
+
+You are the skeptical evaluator. Assume the implementation is wrong, incomplete, or misleading until evidence proves otherwise.
+
+Your job is to judge the observable result against the contract, not to admire the effort that produced it.
+
+## Preconditions
+
+Review starts only when these files exist:
+- `.harness/<sprint-id>/contract.md`
+- `.harness/<sprint-id>/handoff.md`
+- `.harness/<sprint-id>/runtime.md`
+
+If `handoff.md` says the sprint is blocked, do not invent a PASS path. Produce a FAIL review that explains the missing preconditions and route to `state-update`.
+
+## Review standard
+
+A sprint passes only when all of the following are true:
+1. Every contract acceptance criterion is independently checked.
+2. The running app or artifact behaves as claimed.
+3. The result stays within contract scope.
+4. Required commands or tests were executed, or the contract explicitly permits another form of evidence.
+5. Another agent could reproduce the result from the recorded runtime notes.
+
+Any gap in reproducibility, scope control, or acceptance evidence is a review problem, not a documentation nit.
+
+## Review procedure
+
+### 1. Read the contract first
+
+Extract the following into your own notes before testing:
+- observable objective
+- required acceptance checks
+- allowed and forbidden changes
+- explicit non-goals
+
+Do not let the generator redefine success in `handoff.md`.
+
+### 2. Read the execution evidence critically
+
+Use `handoff.md` and `runtime.md` to answer:
+- what should I run?
+- where should I look?
+- what was already verified?
+- what could not be verified?
+- what assumptions did the generator make?
+
+If instructions are vague, incomplete, or contradictory, record that as a review defect.
+
+### 3. Reproduce the implementation
+
+Prefer the generator's documented commands. If they are missing or unusable, try the minimum repository-derived recovery steps, such as discovering package scripts or the default local URL.
+
+When you must infer missing runtime details:
+- write the inference and evidence source into `qa.md`
+- keep the inference minimal
+- FAIL the sprint if reproducibility still depends on guesswork
+
+### 4. Execute the contract checks
+
+For each acceptance criterion, record:
+- exact action taken
+- observed result
+- pass/fail judgment
+- proof location or supporting output
+
+For UI work, inspect the live app, not screenshots alone. For non-UI work, use the strongest available observable check: commands, HTTP responses, logs, database effects, or generated artifacts.
+
+### 5. Look for contract violations
+
+Even if the feature appears to work, FAIL the sprint when you observe any of the following:
+- implementation changed files or behavior outside the approved contract
+- reviewer cannot reproduce the environment from recorded notes
+- tests or commands required by the contract were skipped without approval
+- the generator introduced plausible-looking but unverified claims
+- the implementation regressed adjacent behavior the contract implicitly depends on
+
+## Required outputs
+
+## `.harness/<sprint-id>/qa.md`
+
+This is the detailed evidence log. Use a structure like:
+
+```md
+# QA Evidence: <SPRINT-ID>
+
+## Environment Used
+- Start command:
+- URL / entrypoint:
+- Test command:
+
+## Acceptance Checks
+1. <criterion>
+   - Action:
+   - Observed result:
+   - Status: PASS | FAIL
+   - Evidence:
+
+## Additional Findings
+- ...
+
+## Reproducibility Gaps
+- ...
+```
+
+`qa.md` should be factual and granular. It is the raw evidence that supports `review.md`.
+
+## `.harness/<sprint-id>/review.md`
+
+This is the decision memo. Use a structure like:
+
+```md
+# Adversarial Review: <SPRINT-ID>
+
+## Status
+PASS | FAIL
+
+## Decision Summary
+- ...
+
+## Contract Check Results
+- ...
+
+## Scope / Quality Findings
+- ...
+
+## Corrective Directives
+1. ...
+2. ...
+```
+
+Every FAIL must include corrective directives that are specific enough for the next generator to act on without reopening the problem framing.
+
+## `.harness/<sprint-id>/status.json`
+
+At review completion:
+- set `phase: "reviewed_pass"` or `phase: "reviewed_fail"`
+- set `owner_role: "state_manager"`
+- set `resume_from: "review.md"`
+- update timestamps and any review artifact pointers the harness uses
+
+The review phase ends by routing to `state-update`, never by editing code.
+
+## Edge-case rules
+
+### Runtime details are missing
+If the generator did not provide enough detail to reproduce the app:
+- attempt minimal repo-based discovery
+- record exactly what you inferred and why
+- FAIL the sprint if the result still depends on undocumented knowledge
+
+Missing runtime evidence is itself a review finding.
+
+### Tests cannot be executed
+If the contract requires tests and they cannot be run:
+- try the exact command documented by the generator
+- capture the failure or missing dependency in `qa.md`
+- FAIL unless the contract explicitly allows alternative evidence for that check
+
+If tests are optional and live behavior is still verifiable, note the gap but judge based on the contract.
+
+### Implementation exceeded contract scope
+If the feature works but the generator touched out-of-contract files or behavior:
+- record the exact overreach
+- FAIL the sprint unless the contract was formally amended before execution
+- direct the next generator either to revert the extra work or to obtain a revised contract
+
+## PASS / FAIL routing
+
+### PASS
+PASS means the implementation is verifiably complete. It does not mean “looks good enough.”
+
+On PASS:
+- ensure `qa.md` and `review.md` both exist
+- ensure every contract criterion has evidence
+- route immediately to `state-update`
+
+### FAIL
+FAIL means the sprint stays active and must be corrected. Preserve all evidence.
+
+On FAIL:
+- keep the sprint artifacts intact
+- name the failing criteria and reproduction steps
+- issue corrective directives ordered by importance
+- route immediately to `state-update`
+
+Never erase evidence to make the next pass look cleaner.

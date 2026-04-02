@@ -1,0 +1,148 @@
+{
+  "router_name": "using-agents-stack",
+  "purpose": "Route agents-stack harness requests to the correct workflow phase without hiding the leaf-skill boundary.",
+  "selection_order": [
+    "Initialize missing or unusable live state before any sprint routing.",
+    "If a single active sprint exists, resume it from the strongest durable artifact before proposing new work.",
+    "When review or contradictory state is not yet reconciled, prefer state-update over new execution.",
+    "Choose the narrowest phase child that matches the current artifact gate."
+  ],
+  "children": [
+    {
+      "name": "project-initializer",
+      "target": "using-agents-stack/project-initializer",
+      "relationship": "routes_to",
+      "summary": "Bootstraps durable live and reference state when the repository cannot yet support honest sprint routing.",
+      "route_when": [
+        "`docs/live/features.json` is missing, empty, unparsable, or lacks durable backlog truth.",
+        "The repository follows the agents-stack layout but has no trustworthy live state for selecting or resuming work."
+      ],
+      "avoid_when": [
+        "A single active sprint already exists and should be resumed instead.",
+        "Durable live state already names pending or active work."
+      ],
+      "requires": [],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/project-initializer",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    },
+    {
+      "name": "generator-proposal",
+      "target": "using-agents-stack/generator-proposal",
+      "relationship": "routes_to",
+      "summary": "Turns one backlog item into the next bounded sprint proposal when no approved contract exists yet.",
+      "route_when": [
+        "Exactly one pending backlog item should become the next active sprint and no approved contract exists yet.",
+        "Live state is trustworthy, but the active feature has no local sprint proposal or the proposal was explicitly reset."
+      ],
+      "avoid_when": [
+        "`sprint_proposal.md` already exists and still needs contract review.",
+        "`contract.md`, `handoff.md`, or `review.md` already exists for the active sprint."
+      ],
+      "requires": [],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/generator-proposal",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    },
+    {
+      "name": "evaluator-contract-review",
+      "target": "using-agents-stack/evaluator-contract-review",
+      "relationship": "routes_to",
+      "summary": "Independently approves or rejects a sprint proposal before any implementation begins.",
+      "route_when": [
+        "`.harness/<feature>/sprint_proposal.md` exists without an approved `contract.md`.",
+        "`status.json.resume_from` points to `sprint_proposal.md` after an interrupted proposal-review pass."
+      ],
+      "avoid_when": [
+        "No proposal exists yet.",
+        "`contract.md`, `handoff.md`, or `review.md` already represents a later phase."
+      ],
+      "requires": [
+        "generator-proposal"
+      ],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/evaluator-contract-review",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    },
+    {
+      "name": "generator-execution",
+      "target": "using-agents-stack/generator-execution",
+      "relationship": "routes_to",
+      "summary": "Implements the approved contract or retries the same sprint after a reconciled failed review.",
+      "route_when": [
+        "`.harness/<feature>/contract.md` exists and no later handoff/review gate is waiting.",
+        "Local and live state already reconcile a failed review into `review_failed`, so the same sprint must be retried from `review.md`.",
+        "`status.json` shows `contracted`, `in_progress`, or `review_failed` and the local files agree."
+      ],
+      "avoid_when": [
+        "The proposal is not approved yet.",
+        "`handoff.md` exists and independent review has not happened yet.",
+        "`review.md` exists but local and live state do not yet agree on the outcome."
+      ],
+      "requires": [
+        "evaluator-contract-review"
+      ],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/generator-execution",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    },
+    {
+      "name": "adversarial-live-review",
+      "target": "using-agents-stack/adversarial-live-review",
+      "relationship": "routes_to",
+      "summary": "Runs the independent PASS/FAIL/BLOCKED review once execution leaves a reproducible handoff.",
+      "route_when": [
+        "`handoff.md` and `runtime.md` exist and the work is ready for independent review.",
+        "`status.json` points to `handoff.md` or indicates `in_review`."
+      ],
+      "avoid_when": [
+        "The contract is missing.",
+        "Implementation is still blocked or has not produced a truthful handoff.",
+        "`review.md` already exists and has not been reconciled."
+      ],
+      "requires": [
+        "generator-execution"
+      ],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/adversarial-live-review",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    },
+    {
+      "name": "state-update",
+      "target": "using-agents-stack/state-update",
+      "relationship": "routes_to",
+      "summary": "Reconciles review outcomes or contradictory state into durable live truth and archive history.",
+      "route_when": [
+        "`review.md` exists and the outcome has not yet been reconciled into live state.",
+        "`status.json` is `blocked` or active/live state contradict each other.",
+        "A passed sprint must be archived or a failed sprint must be reopened truthfully."
+      ],
+      "avoid_when": [
+        "No review or contradiction exists and an earlier phase still owns the sprint.",
+        "The repository is merely uninitialized and needs bootstrap, not reconciliation."
+      ],
+      "requires": [],
+      "recommends": [],
+      "fallbacks_to": [],
+      "install_if_missing": {
+        "package": "using-agents-stack/state-update",
+        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically."
+      }
+    }
+  ]
+}

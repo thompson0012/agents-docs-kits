@@ -1,43 +1,257 @@
+#!/usr/bin/env python3
+"""Reference harness watchdog for starter repositories.
+
+The script scans `.harness/*/status.json`, enforces the single-active-sprint
+rule, and records timeout recovery state for stale active sprints.
+"""
+
+from __future__ import annotations
+
+import argparse
 import json
 import time
-import os
-import subprocess
+from pathlib import Path
+from typing import Any
 
-TIMEOUT_SECONDS = 900 # 15 minutes
+DEFAULT_TIMEOUT_SECONDS = 15 * 60
+TERMINAL_PHASES = {"archived", "completed", "cancelled"}
+STALE_PHASES = {"in_progress", "in_review"}
+ARTIFACT_FILES = (
+    "sprint_proposal.md",
+    "contract.md",
+    "handoff.md",
+    "review.md",
+    "runtime.md",
+    "qa.md",
+)
 
-def check_for_stale_sprints():
-    current_time = int(time.time())
-    
-    # Check all local sprint folders
-    harness_dir = ".harness/"
-    if not os.path.exists(harness_dir):
-        return
-        
-    for sprint in os.listdir(harness_dir):
-        status_path = os.path.join(harness_dir, sprint, "status.json")
-        if not os.path.exists(status_path):
-            continue
-            
-        with open(status_path, "r") as f:
-            status = json.load(f)
-            
-        # If the state claims to be active but the heartbeat is old
-        if status["phase"] in ["in_progress", "in_review"]:
-            last_heartbeat = status.get("last_updated_at", 0)
-            
-            if (current_time - last_heartbeat) > TIMEOUT_SECONDS:
-                print(f"⚠️ Stale sprint detected: {sprint}. Initiating recovery...")
-                recover_sprint(sprint, status)
 
-def recover_sprint(sprint, status):
-    # 1. Kill zombie processes
-    kill_zombie_servers(sprint)
-    
-    # 2. Update the status file to trigger a clean resume
-    status["phase"] = "paused_by_timeout"
-    status["resume_from"] = determine_last_checkpoint(sprint)
-    
-    with open(f".harness/{sprint}/status.json", "w") as f:
-        json.dump(status, f, indent=2)
-        
-    print(f"✅ {sprint} reset and ready for next agent to resume from {status['resume_from']}.")
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Inspect harness sprint status files and recover stale work."
+    )
+    parser.add_argument(
+        "--root",
+        default=".",
+        help="Repository root that contains the .harness directory.",
+    )
+    parser.add_argument(
+        "--timeout-seconds",
+        type=int,
+        default=DEFAULT_TIMEOUT_SECONDS,
+        help="Maximum age for an active heartbeat before recovery triggers.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Report what would change without rewriting status files.",
+    )
+    return parser.parse_args()
+
+
+def load_statuses(harness_root: Path) -> list[dict[str, Any]]:
+    statuses: list[dict[str, Any]] = []
+    for status_path in sorted(harness_root.glob("*/status.json")):
+        with status_path.open("r", encoding="utf-8") as handle:
+            status = json.load(handle)
+        statuses.append(
+            {
+                "path": status_path,
+                "sprint_dir": status_path.parent,
+                "status": status,
+            }
+        )
+    return statuses
+
+
+def is_active(status: dict[str, Any]) -> bool:
+    phase = str(status.get("phase", "unknown"))
+    return phase not in TERMINAL_PHASES
+
+
+def find_active_sprints(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [entry for entry in entries if is_active(entry["status"])]
+
+
+def describe_sprint(entry: dict[str, Any]) -> str:
+    status = entry["status"]
+    sprint_id = status.get("sprint_id", entry["sprint_dir"].name)
+    phase = status.get("phase", "unknown")
+    return f"{sprint_id} ({phase}) at {entry['path']}"
+
+
+def artifact_snapshot(sprint_dir: Path) -> dict[str, bool]:
+    return {name: (sprint_dir / name).exists() for name in ARTIFACT_FILES}
+
+
+def infer_resume_target(
+    previous_phase: str,
+    status: dict[str, Any],
+    sprint_dir: Path,
+) -> tuple[str, str, str]:
+    review_path = sprint_dir / "review.md"
+    handoff_path = sprint_dir / "handoff.md"
+    contract_path = sprint_dir / "contract.md"
+    proposal_path = sprint_dir / "sprint_proposal.md"
+
+    if previous_phase == "in_review":
+        resume_from = "handoff.md" if handoff_path.exists() else "contract.md"
+        return (
+            resume_from,
+            "adversarial_live_review",
+            "Read the generator handoff, verify the workspace matches it, then rerun the adversarial review.",
+        )
+
+    if review_path.exists() and status.get("review_status") == "fail":
+        return (
+            "review.md",
+            "generator_execution",
+            "Read review.md, apply the failing directives within the contract boundary, then refresh handoff.md for another review pass.",
+        )
+
+    if handoff_path.exists():
+        return (
+            "handoff.md",
+            "adversarial_live_review",
+            "Read handoff.md, confirm the checkpoint against the repo, then continue the pending review.",
+        )
+
+    if contract_path.exists():
+        return (
+            "contract.md",
+            "generator_execution",
+            "Read contract.md, confirm the allowed files, and resume implementation from the last verified checkpoint.",
+        )
+
+    if proposal_path.exists():
+        return (
+            "sprint_proposal.md",
+            "evaluator_contract_review",
+            "Read sprint_proposal.md and decide whether the sprint should be approved, revised, or cancelled.",
+        )
+
+    fallback = status.get("resume_from") or "status.json"
+    return (
+        str(fallback),
+        "generator_proposal",
+        "Reconstruct the sprint intent from the remaining state files before resuming work.",
+    )
+
+
+def recover_stale_sprint(
+    entry: dict[str, Any],
+    now: int,
+    timeout_seconds: int,
+    dry_run: bool,
+) -> dict[str, Any]:
+    status = dict(entry["status"])
+    previous_phase = str(status.get("phase", "unknown"))
+    last_updated_at = int(status.get("last_updated_at", 0) or 0)
+    stale_for_seconds = max(0, now - last_updated_at)
+    resume_from, resume_phase, next_checkpoint = infer_resume_target(
+        previous_phase, status, entry["sprint_dir"]
+    )
+    previous_active_pids = list(status.get("active_pids", []))
+
+    recovered_status = dict(status)
+    recovered_status.update(
+        {
+            "phase": "paused_by_timeout",
+            "owner_role": "state_manager",
+            "last_updated_at": now,
+            "resume_from": resume_from,
+            "resume_phase": resume_phase,
+            "next_checkpoint": next_checkpoint,
+            "active_pids": [],
+            "timeout_recovery": {
+                "recovered_at": now,
+                "timeout_seconds": timeout_seconds,
+                "stale_for_seconds": stale_for_seconds,
+                "previous_phase": previous_phase,
+                "previous_owner_role": status.get("owner_role"),
+                "previous_resume_from": status.get("resume_from"),
+                "previous_resume_phase": status.get("resume_phase"),
+                "previous_next_checkpoint": status.get("next_checkpoint"),
+                "previous_active_pids": previous_active_pids,
+                "artifact_snapshot": artifact_snapshot(entry["sprint_dir"]),
+            },
+        }
+    )
+
+    if not dry_run:
+        with entry["path"].open("w", encoding="utf-8") as handle:
+            json.dump(recovered_status, handle, indent=2)
+            handle.write("\n")
+
+    return {
+        "sprint_id": recovered_status.get("sprint_id", entry["sprint_dir"].name),
+        "path": str(entry["path"]),
+        "stale_for_seconds": stale_for_seconds,
+        "resume_from": resume_from,
+        "resume_phase": resume_phase,
+        "next_checkpoint": next_checkpoint,
+        "dry_run": dry_run,
+    }
+
+
+def main() -> int:
+    args = parse_args()
+    repo_root = Path(args.root).resolve()
+    harness_root = repo_root / ".harness"
+
+    if not harness_root.exists():
+        print(f"No harness directory found at {harness_root}.")
+        return 0
+
+    entries = load_statuses(harness_root)
+    if not entries:
+        print(f"No sprint status files found under {harness_root}.")
+        return 0
+
+    active_entries = find_active_sprints(entries)
+    if len(active_entries) > 1:
+        print("ERROR: expected at most one active sprint, but found:")
+        for entry in active_entries:
+            print(f"- {describe_sprint(entry)}")
+        return 2
+
+    if not active_entries:
+        print("No active sprint found.")
+        return 0
+
+    active_entry = active_entries[0]
+    status = active_entry["status"]
+    sprint_id = status.get("sprint_id", active_entry["sprint_dir"].name)
+    phase = str(status.get("phase", "unknown"))
+    last_updated_at = int(status.get("last_updated_at", 0) or 0)
+    age_seconds = max(0, int(time.time()) - last_updated_at)
+
+    print(f"Active sprint: {sprint_id} ({phase})")
+    print(f"Status file: {active_entry['path']}")
+    print(f"Heartbeat age: {age_seconds} seconds")
+
+    if phase not in STALE_PHASES:
+        print("Sprint is not in a stale-detectable execution phase. No recovery needed.")
+        return 0
+
+    if age_seconds <= args.timeout_seconds:
+        print("Sprint heartbeat is within the timeout window. No recovery needed.")
+        return 0
+
+    recovery = recover_stale_sprint(
+        active_entry,
+        int(time.time()),
+        args.timeout_seconds,
+        args.dry_run,
+    )
+
+    action = "Would recover" if args.dry_run else "Recovered"
+    print(f"{action} stale sprint {recovery['sprint_id']}.")
+    print(f"Resume from: {recovery['resume_from']}")
+    print(f"Resume phase: {recovery['resume_phase']}")
+    print(f"Next checkpoint: {recovery['next_checkpoint']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

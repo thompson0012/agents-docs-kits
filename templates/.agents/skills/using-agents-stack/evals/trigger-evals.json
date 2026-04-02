@@ -1,0 +1,32 @@
+[
+  {
+    "id": "should-trigger-family-routing",
+    "query": "This repo uses the agents-stack starter. Figure out which harness phase should own the next step before anyone writes code.",
+    "should_trigger": true,
+    "why": "The request is explicitly about routing across the agents-stack workflow family."
+  },
+  {
+    "id": "should-trigger-resume-decision",
+    "query": "Resume the active agents-stack sprint after a timeout and decide whether execution, review, or state reconciliation owns the next move.",
+    "should_trigger": true,
+    "why": "The request is resume-first and needs family routing based on durable state."
+  },
+  {
+    "id": "should-trigger-bootstrap",
+    "query": "Set up the agents-stack live state, reference docs, and sprint workflow files for a fresh repo.",
+    "should_trigger": true,
+    "why": "This is explicit first-run harness bootstrap work inside the agents-stack family."
+  },
+  {
+    "id": "should-not-trigger-ordinary-implementation",
+    "query": "Fix the dark mode contrast bug in App.tsx and ThemeProvider.tsx and make the UI look better.",
+    "should_trigger": false,
+    "why": "This is ordinary implementation work, not a request to choose among harness workflow phases."
+  },
+  {
+    "id": "should-not-trigger-generic-product-planning",
+    "query": "Plan a new analytics dashboard feature and write the acceptance criteria.",
+    "should_trigger": false,
+    "why": "Without explicit agents-stack workflow routing or repo-state ambiguity, this is general planning work rather than family routing."
+  }
+]
