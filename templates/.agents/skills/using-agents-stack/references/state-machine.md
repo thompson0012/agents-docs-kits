@@ -4,9 +4,11 @@ This reference defines the durable phase model for the starter-pack harness. The
 
 ## Core invariants
 
-- Exactly one sprint may be active at a time.
-- Global state in `docs/live/*` tracks project-level priority and history.
-- Local state in `.harness/<feature-id>/*` tracks one in-flight sprint.
+- Exactly one sprint may be runnable at a time.
+- Additional non-terminal sprint folders may remain in `.harness/` only when they are explicitly parked in `awaiting_human` or `escalated_to_human`.
+- Parked sprints stay visible in durable state, but they do not count as the runnable active sprint.
+- Global state in `docs/live/*` tracks project-level priority, dependencies, parked visibility, and history.
+- Local state in `.harness/<feature-id>/*` tracks one sprint's current checkpoint, retry budget, and human handoff boundary.
 - Archived state in `docs/archive/<feature-id>_<timestamp>/` preserves completed sprint artifacts.
 - A sprint is not complete when code exists. It is complete only after review passes and state is updated.
 - If state files disagree, later-phase artifact evidence wins over stale status declarations.
@@ -22,6 +24,16 @@ Evidence precedence for routing:
 5. `status.json`
 6. `docs/live/features.json`
 
+## Scheduling rule when no runnable sprint exists
+
+If no runnable active sprint exists, the orchestrator may select the next backlog item only when:
+
+- its dependencies in `docs/live/features.json` are satisfied
+- no stronger local evidence says that same feature is already in a later phase
+- any parked sprints are explicitly marked `awaiting_human` or `escalated_to_human`
+
+This lets the backlog advance around parked work without pretending the parked sprint is complete.
+
 ## Orchestrator-worker execution model
 
 - The lead orchestrator chooses the next phase from durable state and starts a fresh worker through the host runtime's delegation primitive.
@@ -35,16 +47,18 @@ Evidence precedence for routing:
 | Phase | Durable evidence | Owner skill | Meaning | Normal next step |
 | --- | --- | --- | --- | --- |
 | `uninitialized` | `docs/live/features.json` missing, empty, or unusable | `project-initializer` worker | Repo is not ready for sprint routing yet. | Seed durable live state. |
-| `proposal_needed` | No active sprint and at least one pending feature | `generator-proposal` worker | A ready backlog item exists but no local sprint has been proposed. | Create `.harness/<feature>/sprint_proposal.md`. |
+| `proposal_needed` | No runnable active sprint and at least one dependency-ready pending feature | `generator-proposal` worker | A ready backlog item exists but no local sprint has been proposed. | Create `.harness/<feature>/sprint_proposal.md`. |
 | `proposal_ready` | `sprint_proposal.md` exists | `evaluator-contract-review` worker | Proposed scope exists and needs adversarial contract review. | Approve into `contract.md` or reject with revisions. |
 | `contracted` | `contract.md` exists and no later artifact exists | `generator-execution` worker | Boundaries and QA criteria are approved; implementation can begin. | Execute or resume work. |
-| `executing` | `status.json` shows active execution, no later artifact exists | `generator-execution` worker | Work is underway. | Finish implementation and emit handoff. |
-| `paused_by_timeout` | `status.json.phase = paused_by_timeout` | Route by `resume_from`, usually a fresh `generator-execution` worker | Prior session stopped without a clean finish. | Resume from the last trustworthy checkpoint. |
-| `blocked` | `status.json.phase = blocked` with blocker notes | `state-update` worker | The sprint cannot safely continue without escalation or reprioritization. | Publish blocker into live state. |
-| `awaiting_review` | `handoff.md` exists and `review.md` does not | `adversarial-live-review` worker | Execution claims completion and is waiting for independent review. | Review observable behavior. |
-| `review_recorded` | `review.md` exists | `state-update` worker | Review outcome exists and must be synchronized into durable state. | Archive on PASS or reopen on FAIL. |
-| `review_failed` | `review.md` remains on disk; `status.json.phase = review_failed` after `state-update` reconciles a FAIL review | `generator-execution` worker | The failure is durable, the evidence stays attached, and the next execution loop owns the sprint. | Implement fixes and produce a new handoff. |
-| `archived` | Artifacts moved or copied to `docs/archive/...` and live state updated | `generator-proposal` worker for the next item | Sprint is complete and no longer active. | Select the next pending feature. |
+| `executing` | `status.json` shows active execution, no later artifact exists | `generator-execution` worker | Work is underway. | Finish implementation, or record an execution-time failure honestly. |
+| `build_failed` | `status.json.phase = build_failed` plus execution notes in `runtime.md` or `handoff.md` | `generator-execution` worker after reconciliation | Build, startup, or smoke-triage failed during execution, so the sprint must retry without paying for live review. | Clean-restore and retry, park for human input, or escalate. |
+| `paused_by_timeout` | `status.json.phase = paused_by_timeout` | Route by `resume_from`, usually a fresh phase worker | Prior session stopped without a clean finish. | Resume from the last trustworthy checkpoint. |
+| `awaiting_review` | `handoff.md` exists and `review.md` does not | `adversarial-live-review` worker | Execution claims completion and is waiting for independent review. | Review observable behavior and state transitions. |
+| `review_recorded` | `review.md` exists | `state-update` worker | Review outcome exists and must be synchronized into durable state. | Archive on PASS, reopen on FAIL, or park/escalate on BLOCKED. |
+| `review_failed` | `review.md` remains on disk; `status.json.phase = review_failed` after `state-update` reconciles a FAIL review | `generator-execution` worker after reconciliation | The failure is durable, the evidence stays attached, and the next execution loop owns the sprint if attempts remain. | Clean-restore and retry, park for human input, or escalate. |
+| `awaiting_human` | `status.json.phase = awaiting_human` plus explicit human action fields | no automatic child until human input changes files | Automation is paused at a durable file boundary for human edits, approvals, or environment intervention. | Wait for human edits, then resume from `resume_from`. |
+| `escalated_to_human` | `status.json.phase = escalated_to_human` plus escalation reason | no automatic child until human decision changes files | Automatic retry must stop because attempt budget is exhausted or recovery is unsafe. | Human decides whether to reset, cancel, or re-scope. |
+| `archived` | Artifacts moved or copied to `docs/archive/...` and live state updated | `generator-proposal` worker for the next item | Sprint is complete and no longer active. | Select the next dependency-ready pending feature. |
 
 ## Transition rules
 
@@ -54,6 +68,8 @@ Evidence precedence for routing:
   - Trigger: `project-initializer` worker seeds `docs/live/features.json`, `progress.md`, and related live files.
 - `proposal_needed` -> `proposal_ready`
   - Trigger: `generator-proposal` worker creates `.harness/<feature-id>/sprint_proposal.md` and marks the sprint as proposed.
+- `proposal_needed` -> `proposal_needed`
+  - Trigger: the highest-priority pending feature is not dependency-ready, so backlog traversal continues until a ready item is found or the queue is exhausted.
 
 ### Contract review
 
@@ -69,9 +85,11 @@ Evidence precedence for routing:
 - `contracted` -> `executing`
   - Trigger: `generator-execution` worker starts work and updates `status.json`.
 - `executing` -> `awaiting_review`
-  - Trigger: execution completes the contracted scope and writes `handoff.md`.
-- `executing` -> `blocked`
-  - Trigger: execution finds a real dependency, environment failure, or human decision blocker that cannot be solved safely inside the contract.
+  - Trigger: execution completes the contracted scope, passes build/startup triage, and writes `handoff.md`.
+- `executing` -> `build_failed`
+  - Trigger: build, startup, or basic smoke verification fails before the sprint is ready for independent review.
+- `executing` -> `awaiting_human`
+  - Trigger: execution reaches a deliberate human pause/edit/resume boundary and records the required file-level action.
 - `executing` -> `paused_by_timeout`
   - Trigger: watchdog or orchestrator detects an expired heartbeat or abandoned runtime.
 
@@ -93,11 +111,30 @@ Evidence precedence for routing:
 - `review_recorded` -> `archived`
   - Trigger: `state-update` worker processes a PASS review, updates `docs/live/*`, and archives the sprint.
 - `review_recorded` -> `review_failed`
-  - Trigger: `state-update` worker processes a FAIL review, keeps the sprint active, records the failure in durable state, and leaves `review.md` in place as evidence.
-- `review_recorded` -> `blocked`
-  - Trigger: `state-update` worker processes a BLOCKED review, keeps the sprint active, records the blocker in durable state, and waits for blocker resolution before another phase is dispatched.
+  - Trigger: `state-update` worker processes a FAIL review, increments retry metadata, preserves the evidence, and records the retry checkpoint.
+- `review_recorded` -> `awaiting_human`
+  - Trigger: `state-update` worker processes a BLOCKED review that requires human edits, approvals, credentials, or other intervention at a file-described pause boundary.
+- `review_recorded` -> `escalated_to_human`
+  - Trigger: `state-update` worker processes a BLOCKED review that cannot be retried safely or honestly by automation.
+
+### Retry, pause, and escalation
+
+- `build_failed` -> `executing`
+  - Trigger: retry metadata is fully recorded, `attempt_count < max_attempts`, and `clean_restore_ref` names a safe restore boundary for a fresh execution worker.
 - `review_failed` -> `executing`
-  - Trigger: a fresh `generator-execution` worker resumes with directives from `review.md` after the failure has been reconciled in live state, producing a new `handoff.md` for another review cycle.
+  - Trigger: local and live state agree that the failure is reconciled, `attempt_count < max_attempts`, and `clean_restore_ref` names a safe restore boundary for a fresh execution worker.
+- `build_failed` -> `awaiting_human`
+  - Trigger: retry is not yet safe because a human must edit files, repair the environment, or confirm the restore boundary, but escalation is not yet required.
+- `review_failed` -> `awaiting_human`
+  - Trigger: fixing the review failure requires explicit human edits or approvals before another clean retry.
+- `build_failed` -> `escalated_to_human`
+  - Trigger: `attempt_count` reaches `max_attempts` or no safe clean restore boundary exists.
+- `review_failed` -> `escalated_to_human`
+  - Trigger: `attempt_count` reaches `max_attempts` or no safe clean restore boundary exists.
+- `awaiting_human` -> route by `resume_from`
+  - Trigger: a human changes the named files, updates the pause metadata, or otherwise records that the durable gate is cleared.
+- `escalated_to_human` -> route by explicit human decision
+  - Trigger: a human records a reset, cancellation, rescope, or new restore boundary in the files.
 
 ## PASS / FAIL / BLOCKED routing
 
@@ -110,20 +147,22 @@ Evidence precedence for routing:
    - appends outcome to `docs/live/progress.md`
    - preserves learnings in `docs/live/memory.md` if needed
    - archives the sprint to `docs/archive/<feature-id>_<timestamp>/`
-   - clears active-sprint status
-4. The next router pass selects `generator-proposal` for the next pending feature, or `project-initializer` only if the repo was never properly initialized.
+   - clears runnable active-sprint status
+4. The next router pass selects `generator-proposal` for the next dependency-ready pending feature, or `project-initializer` only if the repo was never properly initialized.
 
 ### FAIL path
 
 1. `adversarial-live-review` worker writes `review.md` with FAIL and concrete directives.
 2. The orchestrator selects `state-update` and dispatches a fresh worker.
 3. `state-update` worker:
-   - keeps the sprint active
+   - keeps the sprint active or parks it honestly
    - records `review_failed` in durable state
+   - increments `attempt_count` and confirms `max_attempts`
    - preserves directives and evidence
+   - records or validates `clean_restore_ref` before any automatic retry
    - leaves `review.md` on disk as evidence for the retry
    - updates global progress so the failure is visible outside the sprint folder
-4. The next router pass selects `generator-execution` and dispatches a new execution worker.
+4. The next router pass selects `generator-execution` only if the retry is reconciled, attempts remain, and the restore boundary is safe. Otherwise the sprint moves to `awaiting_human` or `escalated_to_human`.
 
 FAIL is not terminal. It is a new execution loop with stricter evidence, and the retry is driven by durable state instead of deleting review evidence.
 
@@ -132,11 +171,26 @@ FAIL is not terminal. It is a new execution loop with stricter evidence, and the
 1. `adversarial-live-review` worker writes `review.md` with BLOCKED and concrete recovery steps.
 2. The orchestrator selects `state-update` and dispatches a fresh worker.
 3. `state-update` worker:
-   - keeps the sprint active
+   - keeps the sprint visible in `.harness/`
    - records the blocker in durable state
+   - decides between `awaiting_human` and `escalated_to_human`
    - leaves `review.md` on disk as evidence for the stalled checkpoint
    - updates global progress so the blocker is visible outside the sprint folder
-4. The orchestrator does not dispatch another phase worker until the blocker is resolved or a human changes the sprint decision.
+4. The orchestrator does not dispatch another automatic phase worker until human edits change the checkpoint or the escalation is explicitly resolved.
+
+## Build/startup triage rule
+
+Execution must do a minimal truthful build/startup check before asking for live review. If build, startup, or the first reproducible smoke step fails, the sprint enters `build_failed` instead of `awaiting_review`. Review workers do not spend time rediscovering failures that execution already observed.
+
+## State-transition verification rule
+
+Interactive acceptance criteria and adversarial reviews must verify before/action/after state transitions, not only a final static state. Reject hardcoded "looks passed now" conditions that do not prove the contractually required transition occurred.
+
+Examples:
+
+- Verify the precondition or prior state first.
+- Perform the user-visible action or reproduction step.
+- Verify the postcondition and the absence of contradictory side effects.
 
 ## Contradictory state handling
 
@@ -144,15 +198,16 @@ Contradiction examples:
 
 - `review.md` exists but `status.json.phase = contracted`
 - `handoff.md` exists but the feature still shows `pending` in `docs/live/features.json`
-- two features are marked active at once
-- `.harness/FEAT-001/` exists with active artifacts, but live state says there is no active sprint
+- two runnable features are marked active at once
+- `.harness/FEAT-001/` is parked in `awaiting_human`, but live state still treats it as the runnable active sprint
+- `.harness/FEAT-002/` is `review_failed` with `attempt_count >= max_attempts`, but routing still points to execution
 
 Handling rules:
 
 1. Route from strongest artifact evidence, not the optimistic status field.
 2. Treat contradiction as a state integrity problem, not silent success.
 3. Send contradictions that require reconciliation to `state-update`.
-4. If contradiction prevents choosing a single active sprint, `state-update` must preserve evidence and surface the conflict for human resolution rather than inventing a winner.
+4. If contradiction prevents choosing a single runnable sprint, `state-update` must preserve evidence and surface the conflict for human resolution rather than inventing a winner.
 
 ## Terminal state definition
 
@@ -161,6 +216,6 @@ A sprint is terminal only when all of the following are true:
 - review passed
 - global live state reflects the outcome
 - the sprint is archived under `docs/archive/<feature-id>_<timestamp>/`
-- no active status remains for that sprint in `.harness/`
+- no runnable active status remains for that sprint in `.harness/`
 
-Anything short of that is resumable work, not completion.
+Anything short of that is resumable or parked work, not completion.

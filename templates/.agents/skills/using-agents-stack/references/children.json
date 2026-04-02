@@ -3,8 +3,11 @@
   "purpose": "Route agents-stack harness requests to the correct workflow phase, then dispatch that child as a fresh worker instead of doing the phase inline in the orchestrator.",
   "selection_order": [
     "Initialize missing or unusable live state before any sprint routing.",
-    "If a single active sprint exists, resume it from the strongest durable artifact before proposing new work.",
+    "If one runnable active sprint exists, resume it from the strongest durable artifact before proposing new work.",
+    "Parked `awaiting_human` and `escalated_to_human` sprints remain visible but do not count as the runnable active sprint.",
+    "When no runnable active sprint exists, pick the highest-priority pending backlog item whose dependencies are already satisfied.",
     "When review or contradictory state is not yet reconciled, prefer state-update over new execution.",
+    "Route `build_failed` and reconciled `review_failed` retries to generator-execution only when attempts remain and `clean_restore_ref` names a safe restore boundary.",
     "Choose the narrowest phase child that matches the current artifact gate.",
     "After selecting a child, dispatch a fresh worker, sub-agent, Task agent, or equivalent runtime delegate with phase-scoped tools and explicit artifact targets.",
     "Do not load the child prompt into the orchestrator context and continue inline."
@@ -20,8 +23,8 @@
         "The repository follows the agents-stack layout but has no trustworthy live state for selecting or resuming work."
       ],
       "avoid_when": [
-        "A single active sprint already exists and should be resumed instead.",
-        "Durable live state already names pending or active work."
+        "A runnable active sprint already exists and should be resumed instead.",
+        "Durable live state already names pending, parked, or active work truthfully."
       ],
       "requires": [],
       "recommends": [],
@@ -35,14 +38,17 @@
       "name": "generator-proposal",
       "target": "using-agents-stack/generator-proposal",
       "relationship": "routes_to",
-      "summary": "Dispatches a fresh proposal worker to turn one backlog item into the next bounded sprint proposal when no approved contract exists yet.",
+      "summary": "Dispatches a fresh proposal worker to turn the highest-priority dependency-ready backlog item into the next bounded sprint proposal when no approved contract exists yet.",
       "route_when": [
-        "Exactly one pending backlog item should become the next active sprint and no approved contract exists yet.",
-        "Live state is trustworthy, but the active feature has no local sprint proposal or the proposal was explicitly reset."
+        "No runnable active sprint exists and the next highest-priority pending backlog item has all declared dependencies satisfied.",
+        "Only parked `awaiting_human` or `escalated_to_human` sprint folders remain in `.harness/`, so the backlog may advance on a different ready feature.",
+        "Live state is trustworthy, but the selected feature has no local sprint proposal or the proposal was explicitly reset."
       ],
       "avoid_when": [
+        "A runnable active sprint already exists.",
+        "The candidate backlog item still has unsatisfied dependencies.",
         "`sprint_proposal.md` already exists and still needs contract review.",
-        "`contract.md`, `handoff.md`, or `review.md` already exists for the active sprint."
+        "`contract.md`, `handoff.md`, or `review.md` already exists for the runnable active sprint."
       ],
       "requires": [],
       "recommends": [],
@@ -79,16 +85,19 @@
       "name": "generator-execution",
       "target": "using-agents-stack/generator-execution",
       "relationship": "routes_to",
-      "summary": "Dispatches a fresh execution worker to implement the approved contract or retry the same sprint after a reconciled failed review.",
+      "summary": "Dispatches a fresh execution worker to implement the approved contract, retry a reconciled `build_failed` sprint, or retry a reconciled `review_failed` sprint when attempts remain.",
       "route_when": [
-        "`.harness/<feature>/contract.md` exists and no later handoff/review gate is waiting.",
-        "Local and live state already reconcile a failed review into `review_failed`, so the same sprint must be retried from `review.md`.",
-        "`status.json` shows `contracted`, `in_progress`, or `review_failed` and the local files agree."
+        "`.harness/<feature>/contract.md` exists and no later handoff or review gate is waiting.",
+        "`status.json.phase` is `contracted`, `executing`, `build_failed`, or `review_failed` and the stronger local files agree.",
+        "A prior `review_failed` has already been reconciled into local and live state, or a prior `build_failed` has already recorded truthful retry metadata, `attempt_count` is still below `max_attempts`, and `clean_restore_ref` names a safe restore boundary for a fresh worker.",
+        "Build or startup triage failed inside execution, so the same execution lane owns the next attempt without paying for live review."
       ],
       "avoid_when": [
         "The proposal is not approved yet.",
         "`handoff.md` exists and independent review has not happened yet.",
-        "`review.md` exists but local and live state do not yet agree on the outcome."
+        "`review.md` exists but local and live state do not yet agree on the outcome.",
+        "`attempt_count` has reached `max_attempts`, `clean_restore_ref` is missing or unsafe, or recovery requires a human decision before another retry.",
+        "The sprint is explicitly parked in `awaiting_human` or `escalated_to_human`."
       ],
       "requires": [
         "evaluator-contract-review"
@@ -104,14 +113,15 @@
       "name": "adversarial-live-review",
       "target": "using-agents-stack/adversarial-live-review",
       "relationship": "routes_to",
-      "summary": "Dispatches a fresh review worker to run the independent PASS/FAIL/BLOCKED review once execution leaves a reproducible handoff.",
+      "summary": "Dispatches a fresh review worker to run the independent PASS/FAIL/BLOCKED review only after execution produced a truthful handoff and passed build/startup triage.",
       "route_when": [
         "`handoff.md` and `runtime.md` exist and the work is ready for independent review.",
-        "`status.json` points to `handoff.md` or indicates `in_review`."
+        "`status.json` points to `handoff.md` or indicates `awaiting_review`."
       ],
       "avoid_when": [
         "The contract is missing.",
         "Implementation is still blocked or has not produced a truthful handoff.",
+        "`status.json.phase` is `build_failed`, `awaiting_human`, or `escalated_to_human`.",
         "`review.md` already exists and has not been reconciled."
       ],
       "requires": [
@@ -128,16 +138,17 @@
       "name": "state-update",
       "target": "using-agents-stack/state-update",
       "relationship": "routes_to",
-      "summary": "Dispatches a fresh state-update worker to reconcile review outcomes or contradictory state into durable live truth and archive history.",
+      "summary": "Dispatches a fresh state-update worker to reconcile review outcomes, blocker publication, retry eligibility, parked human gates, and archive history into durable live truth.",
       "route_when": [
-        "`review.md` exists and the outcome has not yet been reconciled into live state.",
-        "`status.json` is `blocked` and the blocker has not yet been published or reconciled in live state, or active/live state contradict each other.",
-        "A passed sprint must be archived or a failed sprint must be reopened truthfully."
+        "`review.md` exists and the outcome has not yet been reconciled into local and live state.",
+        "A PASS must be archived, a FAIL must be reopened truthfully, or a BLOCKED verdict must be published into `awaiting_human` or `escalated_to_human`.",
+        "`status.json.phase` is `build_failed` or `review_failed` but automatic retry cannot proceed yet because reconciliation, attempt budgeting, or clean-restore decisions are still missing.",
+        "Local and live state contradict each other, or active and parked sprint semantics are not yet reflected truthfully."
       ],
       "avoid_when": [
-        "No review or contradiction exists and an earlier phase still owns the sprint.",
+        "No review, retry-gating issue, or contradiction exists and an earlier phase still owns the sprint.",
         "The repository is merely uninitialized and needs bootstrap, not reconciliation.",
-        "The sprint is already blocked and the blocker is fully reflected in local and live state; surface the blocked state instead of dispatching another state-update worker."
+        "The sprint is already parked in `awaiting_human` or `escalated_to_human`, that parked state is fully reflected in local and live files, and no new human edits have changed the checkpoint."
       ],
       "requires": [],
       "recommends": [],

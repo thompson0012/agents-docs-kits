@@ -45,7 +45,7 @@ Review starts only when these files exist:
 - `.harness/<sprint-id>/handoff.md`
 - `.harness/<sprint-id>/runtime.md`
 
-If `handoff.md` says the sprint is blocked, do not invent a PASS path. Produce a BLOCKED review that explains the missing preconditions and route to `state-update`.
+If `handoff.md` says the sprint is blocked, build-failed, awaiting human input, or escalated, do not invent a PASS path. Produce a BLOCKED review only when review truly cannot proceed and route to `state-update`; otherwise the sprint should have bypassed review already.
 
 ## Review standard
 
@@ -55,6 +55,7 @@ A sprint passes only when all of the following are true:
 3. The result stays within contract scope.
 4. Required commands or tests were executed, or the contract explicitly permits another form of evidence.
 5. Another agent could reproduce the result from the recorded runtime notes.
+6. Interactive criteria prove a real state transition, not just a plausible final screenshot or static DOM.
 
 Any gap in reproducibility, scope control, or acceptance evidence is a review problem, not a documentation nit.
 
@@ -93,25 +94,28 @@ When you must infer missing runtime details:
 ### 4. Execute the contract checks
 
 For each acceptance criterion, record:
+- exact before-state when applicable
 - exact action taken
-- observed result
+- exact after-state observed
+- reverse or repeat action when the behavior should be reversible
 - pass/fail judgment
 - proof location or supporting output
 
 For UI work, inspect the live app, not screenshots alone. For non-UI work, use the strongest available observable check: commands, HTTP responses, logs, database effects, or generated artifacts.
 
-### 5. Look for contract violations
+### 5. Look for reward hacking and contract violations
 
-Even if the feature appears to work, FAIL the sprint when you observe any of the following:
+FAIL the sprint when you observe any of the following, even if the final screen or output looks correct:
 - implementation changed files or behavior outside the approved contract
 - reviewer cannot reproduce the environment from recorded notes
 - tests or commands required by the contract were skipped without approval
 - the generator introduced plausible-looking but unverified claims
 - the implementation regressed adjacent behavior the contract implicitly depends on
+- an interactive criterion passes only because of a hardcoded final state, static mock, canned response, or other shortcut that does not exercise the real transition
+- a toggle, undo, or reversible behavior reaches the final state once but cannot reverse cleanly when the contract implies reversibility
 
 ## Required outputs
 If the host keeps reviewer workers read-only, return exact file payloads for these artifacts and let the orchestrator persist them without altering their substance.
-
 
 ## `.harness/<sprint-id>/qa.md`
 
@@ -127,8 +131,10 @@ This is the detailed evidence log. Use a structure like:
 
 ## Acceptance Checks
 1. <criterion>
+   - Before state:
    - Action:
-   - Observed result:
+   - After state:
+   - Reverse / repeat check:
    - Status: PASS | FAIL
    - Evidence:
 
@@ -157,7 +163,7 @@ PASS | FAIL | BLOCKED
 ## Contract Check Results
 - ...
 
-## Scope / Quality Findings
+## Reward-Hacking / Scope Findings
 - ...
 
 ## Corrective Directives
@@ -209,6 +215,7 @@ PASS means the implementation is verifiably complete. It does not mean “looks 
 On PASS:
 - ensure `qa.md` and `review.md` both exist
 - ensure every contract criterion has evidence
+- ensure interactive criteria include before/action/after proof and reversibility proof when applicable
 - route immediately to `state-update`
 
 ### FAIL

@@ -1,7 +1,7 @@
 ---
 name: generator-execution
 purpose: Implement one approved sprint strictly from the contract, capture reproducible runtime evidence, and hand off only verifiable work.
-trigger: After `evaluator-contract-review` has approved `.harness/<sprint-id>/contract.md`, or after `state-update` has reconciled a failed review into `review_failed` for the same sprint.
+trigger: After `evaluator-contract-review` has approved `.harness/<sprint-id>/contract.md`, or after `state-update` has reconciled a failed review or build/startup triage failure for the same sprint.
 inputs:
   - AGENTS.md
   - docs/reference/architecture.md
@@ -23,6 +23,7 @@ boundaries:
   - Do not send work to review without concrete reproduction details.
 next_skills:
   - adversarial-live-review
+  - state-update
   - generator-proposal
 ---
 
@@ -42,13 +43,14 @@ You are the implementation phase of the harness. Your job is to turn an approved
 
 Before changing code, verify all of the following:
 
-1. `docs/live/features.json` marks exactly one feature as active for this sprint.
+1. `docs/live/features.json` marks this sprint as the single runnable active sprint, or explicitly marks it as the current retry target.
 2. `.harness/<sprint-id>/contract.md` exists and is the latest approved scope.
-3. If `.harness/<sprint-id>/review.md` exists, it must represent a reconciled `review_failed` retry for this same sprint; otherwise execution is not the correct next owner.
+3. If `.harness/<sprint-id>/review.md` exists, it must represent a reconciled `review_failed` retry for this same sprint; if the phase is `build_failed`, the last failed build/startup evidence must already be preserved.
 4. `status.json` points back to `contract.md`, `review.md`, or another valid execution resume checkpoint.
 5. The contract names the allowed files, forbidden areas, and acceptance criteria.
+6. `status.json` carries durable retry metadata: `attempt_count`, `max_attempts`, and `clean_restore_ref` whenever this is a retry after `review_failed` or `build_failed`.
 
-If any of these are missing, stop. Record the mismatch in `runtime.md`, update `status.json` to a blocked or paused phase, and hand back control instead of guessing.
+If any of these are missing, stop. Record the mismatch in `runtime.md`, update `status.json` to `awaiting_human` or `escalated_to_human`, and hand back control instead of guessing.
 
 ## Source of truth
 
@@ -63,6 +65,19 @@ Treat these sections as binding:
 
 `docs/reference/*` and `docs/live/*` provide environment and project context, but they do not override the sprint contract. If they conflict with the contract, preserve the conflict in `runtime.md` and stop for correction.
 
+## Retry discipline
+
+When resuming after `review_failed` or `build_failed`:
+- restore the workspace from `clean_restore_ref` before making the next attempt
+- acceptable restore boundaries include a disposable worktree, a VCS snapshot, or an equivalent durable restore reference
+- automatic destructive reset is only acceptable when the sprint explicitly runs in a disposable workspace; it is not the default template behavior
+- if you cannot prove a safe clean restore boundary, do not retry optimistically; route to `awaiting_human` or `escalated_to_human`
+
+Attempt budgeting is mandatory:
+- increment `attempt_count` when a fresh execution attempt actually begins
+- if `attempt_count` would exceed `max_attempts`, stop automatic retry and set `phase: "escalated_to_human"`
+- include an `escalation_reason` that explains why automation stopped and what evidence the human should inspect
+
 ## Execution procedure
 
 ### 1. Restate the contract in implementation terms
@@ -73,7 +88,7 @@ Before editing, extract:
 - any dependencies or setup requirements already documented in the repo
 - the evidence the reviewer will need to reproduce the result
 
-If the contract is too vague to produce a safe implementation, do not fill in product decisions yourself. Mark the sprint blocked and route back for contract repair.
+If the contract is too vague to produce a safe implementation, do not fill in product decisions yourself. Mark the sprint `awaiting_human` and route back for contract repair.
 
 ### 2. Discover runtime details from the repo
 
@@ -110,15 +125,32 @@ Keep it current with:
 
 If you start long-running processes, record how they were started, whether they are still needed, and how the next agent should attach to or restart them.
 
-### 5. Produce a real handoff
+### 5. Run build/startup triage before handoff
 
-When implementation is done, write `handoff.md` that answers:
+Before you claim review readiness, run the minimum build and startup checks needed to prove the reviewer can reach the feature.
+
+At minimum:
+- run the relevant build, typecheck, or startup command named by the contract or discovered from the repo
+- confirm the app, service, or artifact actually starts far enough for review to begin
+- record the command, result, and any failure output in `runtime.md`
+
+If build or startup triage fails:
+- do not dispatch `adversarial-live-review`
+- write `handoff.md` with status `BUILD_FAILED`
+- set `status.json` to `phase: "build_failed"`, `owner_role: "orchestrator"`, and `resume_from: "runtime.md"`
+- preserve the failed command, output summary, `attempt_count`, `max_attempts`, and `clean_restore_ref`
+- if another clean retry remains inside budget, route next to `state-update` so live state can publish the failed attempt and queue a clean retry
+- if the budget is exhausted or recovery is unsafe, set `phase: "escalated_to_human"` instead
+
+### 6. Produce a real handoff
+
+When implementation and build/startup triage are done, write `handoff.md` that answers:
 1. What contract objective was implemented?
 2. Which files changed?
 3. What exact commands or steps should the reviewer run?
 4. What evidence already exists in `runtime.md`?
 5. What remains risky, unverified, or intentionally deferred?
-6. Is the sprint ready for review, or blocked?
+6. Is the sprint ready for review, build-failed, awaiting human input, or escalated?
 
 A handoff that says only “done” is invalid.
 
@@ -130,6 +162,11 @@ Use a structure like:
 
 ```md
 # Runtime Notes: <SPRINT-ID>
+
+## Attempt State
+- Attempt count:
+- Max attempts:
+- Clean restore ref:
 
 ## Environment
 - App root:
@@ -156,7 +193,12 @@ Use a structure like:
 # Generator Handoff: <SPRINT-ID>
 
 ## Status
-READY_FOR_REVIEW | BLOCKED
+READY_FOR_REVIEW | BUILD_FAILED | AWAITING_HUMAN | ESCALATED_TO_HUMAN
+
+## Attempt State
+- Attempt count:
+- Max attempts:
+- Clean restore ref:
 
 ## Completed Work
 - ...
@@ -168,6 +210,9 @@ READY_FOR_REVIEW | BLOCKED
 1. ...
 2. ...
 
+## Human Pause / Escalation Notes
+- ...
+
 ## Unverified or Risky Areas
 - ...
 ```
@@ -177,12 +222,13 @@ READY_FOR_REVIEW | BLOCKED
 Keep the machine-readable checkpoint aligned with reality.
 
 Typical transitions:
-- start or resume execution -> `phase: "executing"`, `owner_role: "orchestrator"`, `resume_from: "contract.md"` on a first pass or `resume_from: "review.md"` on a reconciled retry
+- start or resume execution -> `phase: "executing"`, `owner_role: "orchestrator"`, `resume_from: "contract.md"` on a first pass or `resume_from: "review.md"` / `"runtime.md"` on a reconciled retry; increment `attempt_count`
 - ready for review -> `phase: "awaiting_review"`, `owner_role: "orchestrator"`, `resume_from: "handoff.md"`
-- blocked during execution -> `phase: "blocked"`, `owner_role: "orchestrator"`, `resume_from: "runtime.md"`
-- paused by interruption -> `phase: "paused_by_timeout"`, `owner_role: "orchestrator"`, `resume_from: "runtime.md"`
+- build/startup triage failed -> `phase: "build_failed"`, `owner_role: "orchestrator"`, `resume_from: "runtime.md"`
+- paused for manual file edits, approvals, or other durable human action -> `phase: "awaiting_human"`, `owner_role: "human"`, `resume_from: "handoff.md"`
+- automatic retry budget exhausted or clean recovery unsafe -> `phase: "escalated_to_human"`, `owner_role: "human"`, `resume_from: "handoff.md"`
 
-Use the smallest truthful state. Never claim `awaiting_review` unless the handoff and runtime evidence are present.
+Use the smallest truthful state. Never claim `awaiting_review` unless the handoff and runtime evidence are present and build/startup triage succeeded.
 
 ## Edge-case rules
 
@@ -190,7 +236,7 @@ Use the smallest truthful state. Never claim `awaiting_review` unless the handof
 If the app cannot be launched or exercised because the contract omitted required runtime details:
 - inspect the repo for authoritative commands
 - document what you found
-- if still ambiguous, stop and mark blocked
+- if still ambiguous, stop and mark `awaiting_human`
 - do not fabricate a start command just to keep moving
 
 ### Tests cannot be executed
@@ -198,21 +244,31 @@ If required checks cannot run because of missing dependencies, broken setup, cre
 - record the exact failed command and error in `runtime.md`
 - note the impact in `handoff.md`
 - do not hide the gap from review
-- only route to review if the remaining observable behavior can still be independently checked
+- only route to review if the remaining observable behavior can still be independently checked and the contract permits that proof path
+- otherwise prefer `build_failed` or `awaiting_human`
 
 ### Implementation exceeded contract scope
 If you already changed something outside scope:
 - decide whether it can be safely reverted before handoff
 - if not, disclose the exact out-of-contract change in `handoff.md`
-- mark the sprint blocked or expect review failure
+- mark the sprint `awaiting_human` or expect review failure
 - do not silently normalize the overreach as acceptable
+
+### Human pause / edit / resume
+The file system is the human interface at a pause boundary.
+If a human must inspect, edit, approve, or repair something before automation can continue:
+- set `phase: "awaiting_human"`
+- record the exact files or artifacts the human must touch
+- state what condition must be true before the orchestrator resumes
+- preserve `clean_restore_ref` so the next execution attempt can restart from a known boundary
 
 ## Stop conditions
 
 Route to `adversarial-live-review` only when all of the following are true:
 - contracted implementation work is complete
 - `runtime.md` contains reproducible run instructions and evidence
+- build/startup triage succeeded
 - `handoff.md` clearly says `READY_FOR_REVIEW`
 - `status.json` says `awaiting_review`
 
-Otherwise stop cleanly, preserve evidence, and leave the sprint in a blocked or paused state that a future agent can resume without chat history.
+Otherwise stop cleanly, preserve evidence, and leave the sprint in `build_failed`, `awaiting_human`, or `escalated_to_human` so a future agent can resume without chat history.

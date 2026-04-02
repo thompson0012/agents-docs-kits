@@ -1,8 +1,9 @@
 {
   "project": "Agents Stack Starter",
   "updated_at": "2026-04-02",
-  "single_active_sprint": true,
-  "active_sprint_id": "FEAT-001",
+  "single_runnable_active_sprint": true,
+  "runnable_active_sprint_id": "FEAT-001",
+  "parked_sprint_ids": [],
   "backlog": [
     {
       "id": "FEAT-000",
@@ -24,11 +25,16 @@
       ],
       "local_state_path": ".harness/FEAT-001/",
       "phase": "review_failed",
-      "owner_role": "generator",
+      "owner_role": "orchestrator",
       "resume_from": "review.md",
       "review_status": "fail",
-      "summary": "The sprint remains active after a failed adversarial review; the next pass should preserve review evidence and rework the same implementation.",
-      "next_action": "Resume generator-execution from .harness/FEAT-001/review.md, fix the dark-mode contrast and toggle polish issues, then return to adversarial-live-review."
+      "attempt_count": 1,
+      "max_attempts": 3,
+      "clean_restore_ref": "disposable-worktree:feat-001-attempt-02-baseline",
+      "summary": "The sprint remains the single runnable active sprint after a failed adversarial review. The next pass must restore a clean retry boundary, stay inside the original contract, and pass build/startup triage before another live review is dispatched.",
+      "next_action": "Restore FEAT-001 from clean_restore_ref, dispatch generator-execution attempt 02, fix the dark-mode contrast and toggle polish issues, rerun build/startup triage, then return to adversarial-live-review if the retry remains within budget.",
+      "evidence_path": ".harness/FEAT-001/",
+      "parked_state": null
     }
   ]
 }

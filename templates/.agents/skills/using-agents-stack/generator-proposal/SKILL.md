@@ -76,16 +76,18 @@ It should make the proposal state obvious, for example:
 - `resume_from`
 - timestamps and active process state if relevant
 
+If the sprint already has retry metadata such as `attempt_count`, `max_attempts`, or `clean_restore_ref`, preserve it unless the proposal explicitly changes that policy. Proposal revision must not silently erase retry history.
+
 ### Optional `docs/live/features.json` update
-If the repo tracks reservation in backlog state, mark the selected feature as the single active sprint.
-Do this only if no other item is already `in_progress`.
+If the repo tracks reservation in backlog state, mark the selected feature as the single runnable active sprint.
+Do this only if no other runnable item is already `in_progress`.
 
 ## Workflow
 
 ### 1. Select or confirm exactly one feature
 - Use the explicit human-selected feature when provided.
 - Otherwise use the highest-priority pending item from `features.json`.
-- Refuse to proceed if another sprint is already active.
+- Refuse to proceed if another runnable sprint is already active.
 
 ### 2. Bound the sprint by reading the real implementation surface
 - Inspect the code paths likely to change.
@@ -94,15 +96,24 @@ Do this only if no other item is already `in_progress`.
 
 ### 3. Define observable success
 Every acceptance outcome must be externally checkable.
+
+For interactive behavior, prefer state-transition checks over static end states. A good interactive criterion names:
+- the starting condition
+- the exact action the reviewer performs
+- the expected after-state
+- the reverse or repeated action when the behavior should be reversible
+
 Good examples:
 - a page renders a new control with a stable selector
+- before clicking the theme toggle the page is in light mode, after one click it is in dark mode, and a second click returns it to light mode
 - a command prints a specific state transition
-- an API returns a documented field shape under known input
+- an API returns a documented field shape under known input and changes that shape after a specific mutation
 
 Bad examples:
 - “clean architecture”
 - “better UX” without observable checks
 - “support future extensibility”
+- “screen shows dark mode” when the proposal never requires the reviewer to trigger the toggle
 
 ### 4. Draw hard file and subsystem boundaries
 - List the exact files expected to change when possible.
@@ -116,6 +127,7 @@ The proposal must let an evaluator answer:
 - What will not change?
 - How will we know it worked?
 - What evidence will the generator need to provide?
+- For interactive behavior, what before/action/after checks prevent a hardcoded fake pass?
 - What must be deferred to later sprints?
 
 ### 6. Set durable state for resume
@@ -127,15 +139,16 @@ The proposal must let an evaluator answer:
 - Do not create `contract.md` in this phase.
 - Do not touch `docs/archive/*`.
 - Do not edit product code, tests, or app assets.
-- Only update `docs/live/features.json` if needed to represent the single active sprint truthfully.
+- Only update `docs/live/features.json` if needed to represent the single runnable active sprint truthfully.
 
 ## Refusal and Stop Conditions
 Reject the proposal phase and leave a truthful blocker when:
 - the requested work is too large for one bounded sprint
 - acceptance criteria cannot be made observable from the current repo and tooling
+- an interactive criterion can be satisfied by a static final screenshot or hardcoded final value instead of a state transition
 - file boundaries cannot be identified because the feature is still conceptually vague
 - the change implies hidden architecture work not acknowledged in scope
-- another sprint is already active
+- another runnable sprint is already active
 - the repo state and backlog state disagree about what feature is active
 
 When blocked, write the blocking reason explicitly. Do not compensate with a mushy proposal.
@@ -146,7 +159,7 @@ A good proposal:
 - is narrow enough to finish and review in one sprint
 - names concrete files or tightly bounded directories
 - exposes architecture changes instead of smuggling them in
-- defines outcomes that a reviewer can verify from behavior
+- defines outcomes that a reviewer can verify from behavior and state transitions
 - leaves obvious future work out of scope instead of pretending to solve everything now
 
 ## Done Definition

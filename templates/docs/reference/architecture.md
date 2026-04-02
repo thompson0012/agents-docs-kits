@@ -5,13 +5,13 @@ This starter uses a file-backed orchestrator-worker harness. Repository files ar
 ## Canonical topology
 
 - `AGENTS.md`: operating contract for the whole repo.
-- `docs/reference/architecture.md`: stable technical boundaries and state precedence.
+- `docs/reference/architecture.md`: stable technical boundaries and orchestration rules.
 - `docs/reference/design.md`: stable UI quality bar and review expectations.
-- `docs/live/features.json`: machine-readable backlog and active sprint pointer.
-- `docs/live/progress.md`: append-only ledger of shipped or archived outcomes.
+- `docs/live/features.json`: machine-readable backlog, dependency graph, runnable active sprint pointer, and parked sprint context.
+- `docs/live/progress.md`: append-only ledger of shipped, failed, paused, and escalated outcomes.
 - `docs/live/memory.md`: durable learnings, environment quirks, and conventions.
-- `.harness/<feature-id>/`: the only place for active sprint-local execution state.
-- `docs/archive/<feature-id>_timestamp/`: immutable historical sprint artifacts after closure.
+- `.harness/<feature-id>/`: the only place for sprint-local execution state while the sprint is runnable or human-gated.
+- `docs/archive/<feature-id>_timestamp/`: immutable historical sprint artifacts after PASS and state publication.
 - `docs/scripts/*`: optional helpers; never the source of truth for state.
 
 ## Orchestrator-worker model
@@ -45,24 +45,63 @@ Parallel workers are allowed only when the work is independent and non-overlappi
 ## State locations and precedence
 
 1. Human edits and explicit user instructions.
-2. Active sprint-local state in `.harness/<active-feature>/`, especially `contract.md`, `handoff.md`, `review.md`, and `status.json`.
+2. Active sprint-local state in `.harness/<active-feature>/`, especially `contract.md`, `runtime.md`, `handoff.md`, `review.md`, and `status.json`.
 3. Global live state in `docs/live/features.json`, `docs/live/progress.md`, and `docs/live/memory.md`.
 4. Stable reference intent in `docs/reference/*`.
 5. Derived outputs from `docs/scripts/*` or ad hoc tooling.
 
-Use local state to decide how to continue the active sprint. Use global state to decide what the project should work on next. If they disagree, resolve the conflict explicitly; do not silently invent a merge.
+Use local state to decide how to continue the runnable sprint. Use global state to decide what the project should work on next. If they disagree, resolve the conflict explicitly; do not silently invent a merge.
 
-## Single-active-sprint rule
+## Runnable versus parked sprint semantics
 
-Exactly one feature may be active in `.harness/` at a time. New work stays pending in `docs/live/features.json` until the active sprint is reviewed and either:
+Exactly one sprint may be runnable at a time.
 
-- passed, published to `docs/live/*`, then archived under `docs/archive/`, or
-- failed/cancelled, preserved in place for resume with an updated next action.
+- Runnable phases are the phases automation may continue immediately, such as `proposed`, `contracted`, `in_progress`, `build_failed`, `in_review`, or `review_failed` once the retry preconditions are met.
+- Parked phases are `awaiting_human` and `escalated_to_human`. These sprints remain in `.harness/`, but they do not count as the runnable active sprint.
+- A parked sprint must include durable pause or escalation metadata explaining what changed, what the human must do, and which phase resumes next.
+- When no sprint is runnable, the orchestrator may select the next dependency-ready pending feature from `docs/live/features.json` even if parked sprint folders still exist.
 
-## Resume and archive procedure
+## Retry safety and clean restore boundaries
 
-- Resume by reading `docs/live/features.json`, then `.harness/<feature-id>/status.json`, then the file named by `resume_from`.
+Retries after `review_failed` or `build_failed` must start from a named clean restore boundary.
+
+- Store that boundary in durable state such as `clean_restore_ref`.
+- The boundary may be a disposable worktree, VCS snapshot, or another truthful restore reference.
+- Do not rely on an unconditional `git reset --hard` as default starter behavior. Destructive reset is only appropriate in disposable workspaces where the restore boundary is explicit.
+- Retry metadata must also include `attempt_count` and `max_attempts` so the orchestrator can stop before looping indefinitely.
+- If the clean restore boundary is missing or the attempt budget is exhausted, automation must halt and the sprint moves to `awaiting_human` or `escalated_to_human`.
+
+## Build triage before live review
+
+Execution is responsible for proving the sprint is reviewable before the review worker is dispatched.
+
+- If the implementation cannot build, boot, or reach the declared startup checkpoint, record `build_failed` in sprint-local state.
+- A `build_failed` sprint goes back to execution after the clean restore preconditions are satisfied.
+- Do not pay for an adversarial live review worker when the product never reached a reviewable state.
+
+## Resume, pause, and archive procedure
+
+- Resume by reading `docs/live/features.json`, then `.harness/<feature-id>/status.json`, then the strongest local artifact named by `resume_from`.
 - Treat `status.json` as dispatch metadata for the next fresh worker, not as permission for the orchestrator to do that worker's phase inline.
-- Keep implementation notes, handoff context, worker trace metadata, and review findings inside the active sprint folder while work is live.
-- After a sprint is complete and state is updated, copy or move the final local artifacts to `docs/archive/<feature-id>_timestamp/`.
+- Keep implementation notes, build triage, handoff context, worker trace metadata, and review findings inside the active sprint folder while work is live.
+- Human pause/edit/resume happens through durable artifacts. `awaiting_human` means the file system is the handoff boundary: a human edits or approves the named artifact, then the next worker resumes from the updated checkpoint.
+- `escalated_to_human` means automation must stop until a human changes the plan, replaces the restore boundary, resets the attempt budget, or closes the sprint.
+- After a sprint passes review and state is updated, copy or move the final local artifacts to `docs/archive/<feature-id>_timestamp/`.
 - Never mix archived artifacts back into `.harness/`; active and historical state must stay separate.
+
+## Dependency-aware backlog selection
+
+When there is no runnable active sprint, the orchestrator chooses the next pending feature from `docs/live/features.json` by dependency readiness, not by naive list order.
+
+- Consider only backlog items whose status is `pending`.
+- A pending item is runnable only when every declared dependency is already complete, archived, or otherwise marked satisfied in durable backlog state.
+- Among dependency-ready items, choose the highest-priority candidate according to the backlog's durable ordering fields.
+- If dependency data is missing, malformed, or contradictory, surface that clearly and stop. The helper must not invent a feature choice.
+
+## Review truthfulness requirements
+
+Reviewers verify state transitions, not static screenshots of the end state.
+
+- Acceptance checks must capture before/action/after evidence.
+- Reviews must reject hardcoded pass conditions, mock-only success signals, or assertions that can pass without exercising the real behavior.
+- `BLOCKED` is a review verdict. State-update must translate it into `awaiting_human` or `escalated_to_human` so later agents know whether the sprint is resumable or halted.

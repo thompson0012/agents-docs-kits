@@ -55,7 +55,6 @@ Do not review only the prose. Verify that the claimed file boundaries and accept
 ## Expected Outputs
 If the host keeps reviewer workers read-only, return exact file payloads for these artifacts and let the orchestrator persist them without altering their substance.
 
-
 ### Approval path: `.harness/<feature-id>/contract.md`
 Write an approved contract only when the proposal is execution-ready.
 The contract must include:
@@ -67,6 +66,8 @@ The contract must include:
 - open assumptions that execution may rely on
 - clear non-goals and deferred work
 
+For interactive or stateful behavior, the contract must also require before/action/after evidence. If the behavior is reversible or toggleable, the contract must require the reversal check too.
+
 Also update `status.json` so the sprint resumes from `contract.md` and the next owner is the orchestrator, which can dispatch a fresh `generator-execution` worker.
 
 ### Rejection path: revision feedback
@@ -77,11 +78,12 @@ Feedback must be actionable, for example:
 - acceptance criterion 3 is not observable because no selector or command is specified
 - proposal claims `src/app/**` is allowed, which is too broad for a one-sprint change
 - architecture introduces a new persistence layer but the scope hides migration work
+- the toggle requirement can be reward-hacked by rendering a hardcoded final state because the proposal never requires a before/action/after check
 
 ## Review Workflow
 
 ### 1. Verify the active sprint truth
-- Confirm there is only one active sprint.
+- Confirm there is only one runnable sprint.
 - Confirm the proposal matches the selected backlog item.
 - Confirm the proposal reflects the current repo, not an imagined future structure.
 
@@ -99,6 +101,8 @@ Common failures:
 - internal implementation claims substituted for user-visible outcomes
 - no concrete command, page, selector, endpoint, fixture, or data shape to inspect
 - missing negative cases where failure modes matter
+- interactive behavior defined only as a final static state instead of a before/action/after transition
+- a criterion that could pass via hardcoded mocks, static DOM, or canned output without exercising the real behavior
 
 ### 4. Attack the boundary honesty
 Reject if the proposal:
@@ -107,9 +111,11 @@ Reject if the proposal:
 - hides architecture, dependency, schema, or routing changes inside general wording
 - relies on touching generated, vendor, or unrelated files without justification
 
-### 5. Attack resumability
+### 5. Attack resumability and retry honesty
 Reject if a future agent would be unable to continue from sprint-local files alone.
 The contract or revision feedback must make the next action obvious without chat history.
+
+If the proposal discusses retries, ensure it names a clean restore boundary such as a disposable worktree, VCS snapshot, or equivalent restore reference. Do not require unconditional destructive reset as the default recovery path.
 
 ### 6. Write the outcome decisively
 - If approved, write `contract.md` as the canonical sprint boundary and update `status.json` to `phase: "contracted"` with `resume_from: "contract.md"`.
@@ -124,6 +130,7 @@ The contract or revision feedback must make the next action obvious without chat
 ## Mandatory Rejection Conditions
 You must reject the proposal when any of the following is true:
 - acceptance criteria are unverifiable
+- acceptance criteria can be reward-hacked by hardcoded static outcomes rather than real state transitions
 - file boundaries are missing, too broad, or dishonest
 - the sprint hides architecture changes, migrations, or dependency churn
 - scope exceeds one bounded sprint

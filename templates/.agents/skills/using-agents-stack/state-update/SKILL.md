@@ -1,7 +1,7 @@
 ---
 name: state-update
-purpose: Synchronize reviewed sprint outcomes back into durable project state, preserving evidence and routing the next correct action.
-trigger: After `adversarial-live-review` has written `.harness/<sprint-id>/review.md` and updated the sprint status.
+purpose: Synchronize decisive sprint outcomes back into durable project state, preserving evidence and routing the next correct action.
+trigger: After `adversarial-live-review` has written a decisive review outcome, or after execution has written a decisive non-review state such as `build_failed`, `awaiting_human`, or `escalated_to_human`.
 inputs:
   - AGENTS.md
   - docs/live/features.json
@@ -20,7 +20,7 @@ outputs:
   - updated .harness/<sprint-id>/status.json or preserved sprint folder
   - docs/archive/<sprint-id>_<timestamp>/... on PASS
 boundaries:
-  - Do not mark completion without review evidence.
+  - Do not mark completion without evidence.
   - Do not erase failed sprint artifacts.
   - Do not rewrite review findings to make them pass.
   - Do not start the next sprint's implementation yourself.
@@ -31,67 +31,98 @@ next_skills:
 
 # State Update
 
-You are the state manager. Your job is to make the repository tell the truth after review.
+You are the state manager. Your job is to make the repository tell the truth after a decisive sprint-local outcome.
 
 That means:
-- global state reflects the latest reviewed outcome
+- global state reflects the latest reviewed or execution-triage outcome
 - local sprint state remains resumable
 - archived artifacts remain auditable
 - routing to the next phase is explicit
+- parked human-owned sprints are visible without pretending they are still runnable
 
 ## Worker Dispatch Contract
 
-- Run state reconciliation in a fresh worker context. The orchestrator dispatches this worker after review; it does not perform state-update inline.
+- Run state reconciliation in a fresh worker context. The orchestrator dispatches this worker after review or execution triage; it does not perform state-update inline.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: durable state and archive operations only: `docs/live/*`, `.harness/<sprint-id>/*`, and `docs/archive/*` as required by the review outcome. No product-code edits, no proposal rewriting, no new implementation work.
+- Tool lane: durable state and archive operations only: `docs/live/*`, `.harness/<sprint-id>/*`, and `docs/archive/*` as required by the outcome. No product-code edits, no proposal rewriting, no new implementation work.
 - Not parallel-safe. This worker owns the single active sprint's global reconciliation and archive decision; do not split or race writes across multiple workers.
 - Durable return contract: updated `docs/live/features.json`, `docs/live/progress.md`, `docs/live/memory.md`, `.harness/<sprint-id>/status.json`, and PASS-path archive contents. Include `worker_id` / `orchestrator_run_id` in the updated status or ledger entry when the host provides them.
 
 ## Mandatory verification before any update
 
-Before touching global state, confirm all of the following:
+Before touching global state, identify which decisive phase actually happened.
+
+### Review-driven outcomes
+If `status.json` or `review.md` says the sprint was reviewed, confirm all of the following:
 1. `.harness/<sprint-id>/review.md` exists.
 2. `.harness/<sprint-id>/qa.md` exists or `review.md` explicitly embeds equivalent evidence.
 3. The review decision is unambiguous: `PASS`, `FAIL`, or `BLOCKED`.
 4. `status.json` points to the review checkpoint.
-5. The reviewed sprint matches the active feature recorded in `docs/live/features.json`.
+5. The reviewed sprint matches the backlog item recorded in `docs/live/features.json`.
 
-If any of these fail, stop. Do not mark the sprint complete, do not archive it, and do not advance the backlog. Missing review evidence is a blocking data-integrity problem.
+### Execution-triage outcomes
+If `status.json` says `build_failed`, `awaiting_human`, or `escalated_to_human`, confirm all of the following:
+1. `.harness/<sprint-id>/runtime.md` exists.
+2. `.harness/<sprint-id>/handoff.md` exists.
+3. The failure, pause, or escalation reason is explicit.
+4. `status.json` includes any relevant `attempt_count`, `max_attempts`, and `clean_restore_ref` fields.
+5. The sprint matches the backlog item recorded in `docs/live/features.json`.
+
+If the required evidence for the claimed phase is missing, stop. Do not mark the sprint complete, do not archive it, and do not advance the backlog. Missing evidence is a data-integrity problem.
 
 ## Sources of truth by decision type
 
 - `review.md` decides PASS vs FAIL vs BLOCKED.
-- `qa.md` proves what was actually checked.
+- `qa.md` proves what was actually checked during review.
 - `contract.md` defines the scope that was supposed to be delivered.
-- `runtime.md` and `handoff.md` explain how the result was produced and how it can be resumed.
+- `runtime.md` and `handoff.md` explain how the result was produced, where triage failed, or how a human can resume.
+- `status.json` carries the current local routing truth, including attempt budgeting and clean restore metadata.
 - `docs/live/*` is the durable global ledger that must now be synchronized.
 
 ## Update procedure
 
-### 1. Validate the reviewed outcome
+### 1. Validate the decisive outcome
 
-Read `review.md` and extract:
-- final status
+Read the strongest local artifact for the current phase and extract:
+- final status or parked phase
 - satisfied or failed contract criteria
-- corrective directives
+- corrective directives or human actions
 - any explicit scope violations
 - any unexecuted checks or unverifiable claims
+- retry state: `attempt_count`, `max_attempts`, and `clean_restore_ref`
 
-If review evidence and review status disagree, preserve the sprint as active and record the discrepancy in `progress.md` rather than pretending the outcome is settled.
+If local evidence and `status.json` disagree, preserve the sprint as active or parked and record the discrepancy in `progress.md` rather than pretending the outcome is settled.
 
 ### 2. Update `docs/live/features.json`
 
 This file is the project-wide backlog state.
+It must distinguish runnable active work from parked non-terminal work.
+
+At minimum, publish truthfully:
+- which sprint, if any, is the single runnable active sprint
+- which sprint ids are parked in `awaiting_human` or `escalated_to_human`
+- each feature's phase, owner, attempt count, max attempts, clean restore reference, and next action when those fields exist locally
 
 #### On PASS
 - mark the sprint feature as completed using the repository's chosen terminal status
-- remove or clear any `in_progress` marker so there is no active sprint left behind
+- remove it from the runnable active slot and from any parked list
 - preserve identifiers, priority, dependencies, and any useful completion metadata already used by the template
 
-#### On FAIL
-- keep the same feature active or explicitly mark it as failed-but-open according to the file's schema
-- do not move to the next feature
-- add any machine-readable review pointers or retry counts if the schema already supports them
+#### On `review_failed` or `build_failed`
+- keep the same feature as the runnable active sprint only if an automatic retry is still safe
+- copy `attempt_count`, `max_attempts`, `clean_restore_ref`, and the failure phase into the backlog entry
+- set `next_action` to a clean retry through `generator-execution`, never to live review directly
+- if `attempt_count >= max_attempts` or no safe clean restore boundary exists, convert the live feature state to `escalated_to_human` instead of advertising an automatic retry
+
+#### On `awaiting_human`
+- keep the sprint in the backlog and `.harness/`, but do not count it as the runnable active sprint
+- publish the required human action, affected artifacts, and resume condition
+- add the sprint id to the parked list
+
+#### On `escalated_to_human`
+- keep the sprint in the backlog and `.harness/`, but do not count it as the runnable active sprint
+- publish the escalation reason, exhausted attempt budget or unsafe recovery condition, and the evidence path the human should inspect
+- add the sprint id to the parked list
 
 Do not invent a new schema casually. Extend only when necessary and keep it consistent.
 
@@ -99,21 +130,25 @@ Do not invent a new schema casually. Extend only when necessary and keep it cons
 
 Append a dated ledger entry that includes:
 - sprint id and title
-- PASS, FAIL, or BLOCKED status
+- PASS, FAIL, BLOCKED, BUILD_FAILED, AWAITING_HUMAN, or ESCALATED_TO_HUMAN status
 - concise summary of what changed, what failed, or what blocked progress
-- path to the evidence (`.harness/...` while active, `docs/archive/...` after archive)
+- path to the evidence (`.harness/...` while active or parked, `docs/archive/...` after archive)
+- attempt count and max attempts when retry budgeting matters
+- clean restore expectation when another execution pass is possible
 - next recommended action
 
-For FAIL, the next action should point back to the active sprint and the corrective directives.
-For PASS, the next action should point to backlog selection or the next pending feature.
-For BLOCKED, the next action should point to the blocker owner, prerequisite, or human decision needed before another worker is dispatched.
+For `review_failed` or `build_failed`, the next action should point back to the same sprint, the corrective directives, and the required clean restore boundary.
+For `awaiting_human`, the next action should point to the exact file edits, approval, or manual recovery the human must complete.
+For `escalated_to_human`, the next action should halt automatic retry and name the evidence bundle the human should inspect before resuming.
+For PASS, the next action should point to backlog selection or the next dependency-ready pending feature.
 
 ### 4. Update `docs/live/memory.md`
 
 Write only durable knowledge worth carrying forward, such as:
 - runtime quirks the next sprint must remember
-- architecture or environment lessons confirmed during review
+- architecture or environment lessons confirmed during review or build/startup triage
 - recurring failure patterns that should influence future contracts
+- confirmed reward-hacking patterns that future reviewers should test for
 
 Do not dump transient logs into memory. Memory is for durable project-level truths.
 
@@ -121,32 +156,64 @@ Do not dump transient logs into memory. Memory is for durable project-level trut
 
 ## FAIL path: preserve, do not archive as completed
 
-On FAIL:
+On `review_failed`:
 - keep `.harness/<sprint-id>/` intact
 - keep `contract.md`, `runtime.md`, `handoff.md`, `qa.md`, `review.md`, and `status.json`
 - update `status.json` to reflect that the sprint remains active, for example:
   - `phase: "review_failed"`
   - `owner_role: "orchestrator"`
   - `resume_from: "review.md"`
-- synchronize `docs/live/features.json` and `docs/live/progress.md` so the active sprint stays open, the failure is visible, and the next action points to `generator-execution`
-- leave `review.md` untouched; the retry is driven by durable state, not by deleting evidence
-- ensure the next generator can resume from the evidence without reconstructing context from chat
+- preserve `attempt_count`, `max_attempts`, and `clean_restore_ref`
+- synchronize `docs/live/features.json` and `docs/live/progress.md` so the sprint stays open, the failure is visible, and the next action points to a clean retry through `generator-execution`
+- if retry budget is exhausted or recovery is unsafe, change the routed phase to `escalated_to_human` instead
 
 A failed sprint is not dead history. It is active work with evidence attached.
 
-## BLOCKED path: preserve and publish the blocker
+## BUILD_FAILED path: preserve and retry only from a clean boundary
 
-On BLOCKED:
+On `build_failed`:
+- keep `.harness/<sprint-id>/` intact
+- keep `contract.md`, `runtime.md`, `handoff.md`, and `status.json`
+- preserve the failed build/startup command evidence
+- keep or update `phase: "build_failed"`, `owner_role: "orchestrator"`, and `resume_from: "runtime.md"`
+- preserve `attempt_count`, `max_attempts`, and `clean_restore_ref`
+- route back to `generator-execution` only after live state records the clean restore requirement
+- if retry budget is exhausted or recovery is unsafe, change the routed phase to `escalated_to_human`
+
+Build/startup failure is execution evidence, not review work. Do not pay for `adversarial-live-review` when the reviewer cannot even start from the handoff.
+
+## BLOCKED review path: preserve and publish the blocker
+
+On review `BLOCKED`:
 - keep `.harness/<sprint-id>/` intact
 - keep `contract.md`, `runtime.md`, `handoff.md`, `qa.md` when it exists, `review.md`, and `status.json`
-- update `status.json` to reflect that the sprint remains active but cannot safely proceed yet, for example:
-  - `phase: "blocked"`
-  - `owner_role: "orchestrator"`
-  - `resume_from: "review.md"`
-- synchronize `docs/live/features.json` and `docs/live/progress.md` so the active sprint stays open and the blocker is visible
-- leave `review.md` untouched; the blocker and recovery steps are durable evidence, not scratch notes
+- publish the blocker truthfully in live state
+- if the blocker requires a human action, prefer `awaiting_human`
+- if the blocker is purely environmental but a safe automated retry is still possible, route back through `generator-execution` with a clean restore requirement
 
-A blocked sprint is active work waiting on a prerequisite, not a hidden failure and not a completed sprint.
+A blocked sprint is not completed work.
+
+## Human-parked paths
+
+On `awaiting_human`:
+- keep `.harness/<sprint-id>/` intact
+- keep all evidence and checkpoint files needed for a human to edit or approve work from disk alone
+- update live state so the sprint is clearly parked and not counted as the runnable active sprint
+- route the project either to wait for the named human action or, if dependencies allow, to the highest-priority pending feature through `generator-proposal`
+
+On `escalated_to_human`:
+- keep `.harness/<sprint-id>/` intact
+- keep the exhausted-attempt or unsafe-recovery evidence intact
+- update live state so the sprint is clearly parked and not counted as the runnable active sprint
+- do not advertise another automatic retry
+- if another dependency-ready pending feature exists, route toward backlog selection for that feature; otherwise wait for human intervention
+
+### Dependency-aware backlog traversal
+When there is no runnable active sprint because the current non-terminal sprint is parked in `awaiting_human` or `escalated_to_human`:
+- do not pretend the parked sprint is still runnable
+- inspect backlog dependencies before selecting new work
+- only route to `generator-proposal` for the highest-priority pending feature whose dependencies are already satisfied
+- if every pending feature depends on the parked sprint or another unresolved prerequisite, publish that no runnable work exists and wait for human resolution
 
 ## PASS path: archive after global state is updated
 
@@ -166,34 +233,31 @@ On PASS:
    - `phase: "archived_pass"`
    - `owner_role: "none"`
    - `resume_from: "docs/archive/<sprint-id>_<timestamp>/review.md"`
-6. Remove or clear the active sprint workspace only after the archive copy is confirmed and the harness's single-active-sprint rule is preserved.
+6. Remove or clear the active sprint workspace only after the archive copy is confirmed and the harness's single-runnable-sprint rule is preserved.
 
-Never archive a sprint as complete if review failed or evidence is missing.
+Never archive a sprint as complete if review failed, build/startup triage failed, or evidence is missing.
 
 ## Routing rules
 
 ### After PASS
 Route toward the next backlog decision:
-- if another pending feature exists, next skill is usually `generator-proposal`
+- if another dependency-ready pending feature exists, next skill is usually `generator-proposal`
 - if the harness requires re-initialization or backlog refresh, route accordingly from global state
 
 The completed sprint should no longer be the active work packet.
 
-### After FAIL
-Route back to `generator-execution` on the same sprint once `status.json` and `docs/live/*` reflect `review_failed`.
+### After `review_failed` or `build_failed`
+Route back to `generator-execution` on the same sprint only when:
+- `attempt_count < max_attempts`
+- `clean_restore_ref` is present and credible
+- live state makes the clean retry requirement explicit
 
-The next generator should be able to open:
-- `contract.md` for scope
-- `runtime.md` for environment
-- `qa.md` for raw evidence
-- `review.md` for corrective directives
+Otherwise route to `escalated_to_human`.
 
-Do not wipe or rewrite these files to create a cleaner retry.
+### After `awaiting_human` or `escalated_to_human`
+Keep the sprint parked, preserve the blocker or escalation evidence, and stop automatic phase advancement on that sprint until the required human action is completed.
 
-### After BLOCKED
-Keep the sprint active, preserve the blocker evidence, and stop automatic phase advancement until the blocker is resolved.
-
-The orchestrator should surface the blocker and wait for the named prerequisite or human decision. Do not silently dispatch a new execution or review worker while the blocker still stands.
+The orchestrator should surface the parked state from files, then either wait or select a dependency-ready pending feature. Do not silently dispatch a new execution or review worker against the parked sprint.
 
 ## Edge-case rules
 
@@ -204,27 +268,35 @@ If `review.md` exists but no evidence supports it:
 - record the inconsistency in `progress.md`
 - route back for a proper review, not for fresh implementation
 
+### Build/startup evidence is missing
+If `status.json` says `build_failed` but `runtime.md` or `handoff.md` does not prove the failed attempt:
+- do not publish an automatic retry as safe
+- park the sprint in `awaiting_human` or `escalated_to_human`
+- record the inconsistency in `progress.md`
+
 ### Tests could not be executed
 If the reviewer recorded that required tests could not run:
 - treat the sprint as FAIL unless the contract explicitly allowed an alternate proof path
 - preserve the failure evidence
-- keep the sprint open
+- keep the sprint open or parked according to the real blocker
 
 ### Implementation exceeded contract scope
 If review flags scope overreach:
 - do not complete the sprint even if the feature appears functional
 - record the overreach in `progress.md` and `memory.md` only if it affects future work
-- route back to `generator-execution` with the review directives intact
+- route back to `generator-execution` with the review directives intact, or to `awaiting_human` / `escalated_to_human` when automatic correction is unsafe
 
 ## Minimum truthful outcomes
 
 Use this table when updating state:
 
-| Review result | Live feature status | Local sprint | Archive | Next route |
+| Local outcome | Live feature status | Local sprint | Archive | Next route |
 | --- | --- | --- | --- | --- |
 | PASS with evidence | completed / done | cleared after archive verification | create `docs/archive/<id>_<timestamp>/` | `generator-proposal` |
-| FAIL with evidence | still active / failed-open | preserve `.harness/<id>/` | none | `generator-execution` |
-| BLOCKED with evidence | still active / blocked | preserve `.harness/<id>/` | none | orchestrator decision after blocker resolution |
-| Missing evidence | still active | preserve `.harness/<id>/` | none | proper review |
+| `review_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` | none | `generator-execution` after clean restore |
+| `build_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` | none | `generator-execution` after clean restore |
+| `awaiting_human` | parked, non-runnable | preserve `.harness/<id>/` | none | human action or dependency-ready proposal |
+| `escalated_to_human` | parked, non-runnable | preserve `.harness/<id>/` | none | human intervention or dependency-ready proposal |
+| Missing evidence | active or parked, but unresolved | preserve `.harness/<id>/` | none | reconcile evidence first |
 
 If you cannot make the repository tell a coherent story from the files on disk, stop and preserve the sprint rather than lying with state.
