@@ -1,0 +1,12 @@
+{
+  "project": "Generative UI Dashboard",
+  "backlog": [
+    {
+      "id": "FEAT-001",
+      "title": "Implement Dark Mode Context Provider",
+      "status": "pending",
+      "priority": 1,
+      "dependencies": []
+    }
+  ]
+}
