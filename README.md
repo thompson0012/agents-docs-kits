@@ -13,6 +13,12 @@ cd my-project
 ./docs/scripts/init.sh
 ```
 
+If you want to clone the starter from GitHub instead of copying locally:
+
+```sh
+npx degit thompson0012/agents-stack/templates new-project && cd new-project && ./docs/scripts/init.sh
+```
+
 After that, the repo is ready for the first sprint.
 
 ## What to edit first
