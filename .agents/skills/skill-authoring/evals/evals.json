@@ -1,0 +1,17 @@
+{
+  "skill_name": "skill-authoring",
+  "evals": [
+    {
+      "id": "leaf-skill-creation",
+      "prompt": "I need a reusable leaf skill for augmenting prompts without changing prompt architecture. Which skill should I use?",
+      "expected_output": "Routes to skill-authoring/create-skill because the task is a leaf skill with one repeatable job.",
+      "files": []
+    },
+    {
+      "id": "router-skill-creation",
+      "prompt": "I need to package a skill family with discoverable children, install hints, and fallback behavior. Which skill should I use?",
+      "expected_output": "Routes to skill-authoring/create-router-skill because the task is to build a router family, not a leaf skill.",
+      "files": []
+    }
+  ]
+}
