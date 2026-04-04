@@ -1,11 +1,11 @@
 {
   "router_name": "using-design",
-  "purpose": "Route design-oriented requests to the narrowest design child across broad visual-system guidance, model-generated browser UI, and experimental liquid-glass effects. Token-spec and brand-system work belongs to the top-level generating-design-tokens skill.",
+  "purpose": "Route design-oriented requests to the narrowest design child across broad visual-system guidance, model-generated browser UI, and experimental liquid-glass effects. Token-spec and brand-system work belongs to the top-level design-token-spec skill.",
   "selection_order": [
     "Explicit liquid-glass, refraction, or displacement-map work beats every other design route because it is a narrow experimental browser technique rather than general visual polish.",
     "Model-generated browser UI beats broad visual guidance when the hard problem is schema-driven, streamed, sandboxed, or agent-rendered interface generation.",
     "Default to design foundations when the request is broad guidance for color, typography, spacing, charts, or general art direction and no project-specific token system already governs the work.",
-    "Token-spec or brand-system deliverables are not handled here; route to the top-level generating-design-tokens skill."
+    "Token-spec or brand-system deliverables are not handled here; route to the top-level design-token-spec skill."
   ],
   "children": [
     {
@@ -46,7 +46,7 @@
       ],
       "requires": [],
       "recommends": [
-        "generating-design-tokens"
+        "design-token-spec"
       ],
       "fallbacks_to": [],
       "install_if_missing": {

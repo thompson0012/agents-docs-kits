@@ -1,0 +1,31 @@
+---
+name: greenfield-product
+description: Use when starting a new product from a raw idea, pressure-testing startup viability, or moving through blueprint, requirements, and system-design stages that produce durable reference docs.
+---
+
+# Greenfield Product
+
+This router owns the optional greenfield product family. It chooses exactly one child skill, hands off cleanly, and does not perform the child workflow inline.
+
+Read [child inventory](references/children.json) for the authoritative stage order, per-child route conditions, prerequisites, and install hints.
+
+## Stage Order
+
+1. **Startup pressure test** — `startup-pressure-test` (raw idea, GTM realism, CAC/churn/runway, whether the thesis survives contact with the market)
+2. **Strategy / blueprint** — `product-blueprint` (raw ideas, MVP framing, blueprint -> `docs/reference/design.md`)
+3. **Requirements** — `requirements-writer` (validated blueprint -> `docs/reference/requirements.md`)
+4. **System design** — `system-architect` (validated requirements -> `docs/reference/implementation.md`)
+
+If the request would skip a prerequisite stage, route to the prerequisite child first and surface the gap.
+
+## Boundary
+
+- This router does not answer the product question itself; it selects the narrowest child that can.
+- This family stops at durable product-definition outputs. Once `docs/reference/design.md`, `docs/reference/requirements.md`, and `docs/reference/implementation.md` exist, defined-feature delivery hands off to `harness-engineering` or `delivery-control`.
+- If the best child is missing at runtime, say to install it. Do not silently substitute.
+- If no child fits, say so and answer directly.
+
+## References
+
+- [child inventory](references/children.json)
+- [router metadata](references/router-metadata.md)

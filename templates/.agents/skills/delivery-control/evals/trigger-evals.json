@@ -1,0 +1,29 @@
+{
+  "test_cases": [
+    {
+      "input": "The repo already uses agents-stack, and this task will span multiple sessions. Set up the planner/evaluator loop with explicit handoffs.",
+      "should_trigger": true,
+      "rationale": "Agents-stack work that needs a control overlay should trigger delivery-control."
+    },
+    {
+      "input": "Please verify this UI in the browser and give me a strict pass/fail.",
+      "should_trigger": true,
+      "rationale": "Independent frontend QA requires delivery-control."
+    },
+    {
+      "input": "Write a PRD for the new dashboard.",
+      "should_trigger": false,
+      "rationale": "Product definition belongs in greenfield-product, not delivery-control."
+    },
+    {
+      "input": "Can you fix the layout bug on the home page?",
+      "should_trigger": false,
+      "rationale": "Standard implementation and fixes do not require delivery-control."
+    },
+    {
+      "input": "The feature is done; extract the durable lessons and policy decisions.",
+      "should_trigger": true,
+      "rationale": "Postflight extraction belongs in delivery-control/compound."
+    }
+  ]
+}

@@ -10,7 +10,7 @@
     {
       "id": "direct-token-spec",
       "prompt": "Turn our brand brief, product notes, and reference sites into a reusable design-token spec in docs/reference/design.md, and document any conflicts you resolve.",
-      "expected_output": "Routes to generating-design-tokens because the main output is a reusable token spec with traceable design decisions.",
+      "expected_output": "Routes to design-token-spec because the main output is a reusable token spec with traceable design decisions.",
       "files": []
     },
     {
