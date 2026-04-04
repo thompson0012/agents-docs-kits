@@ -9,6 +9,10 @@ This repository uses the agents-stack harness. The harness is stateful, resumabl
 ├── AGENTS.md
 ├── .agents/
 │   └── skills/
+│       ├── skill-authoring/
+│       │   ├── SKILL.md                     # maintainer router
+│       │   ├── create-skill/
+│       │   └── create-router-skill/
 │       └── using-agents-stack/
 │           ├── SKILL.md                     # root router
 │           ├── project-initializer/
@@ -96,10 +100,17 @@ Repository-local harness utilities.
 - `init.sh`: safe bootstrap that creates missing baseline directories and files without overwriting user work.
 - `orchestrator.py`: optional helper that inspects durable state and prepares or records worker dispatch and resume decisions. It is not the source of truth and it must not turn the orchestrator into an inline executor.
 
+### `.agents/skills/skill-authoring/*`
+
+Maintainer-only router family for creating or upgrading reusable skill packages. It ships with the template so maintainers can author skills and router families without inventing a separate packaging convention.
+
+- `skill-authoring/create-skill`
+- `skill-authoring/create-router-skill`
+
 ### `.agents/skills/using-agents-stack/*`
 Router-style skill package for the harness.
 
-The root skill is the orchestrator. It dispatches exactly one fresh child worker/sub-agent/Task agent based on durable state and the host runtime's delegation primitive. The canonical children are worker prompts with phase-scoped tool access:
+The `using-agents-stack` root skill is the orchestrator. It dispatches exactly one fresh child worker/sub-agent/Task agent based on durable state and the host runtime's delegation primitive. The canonical children are worker prompts with phase-scoped tool access:
 - `project-initializer`
 - `generator-brainstorm`
 - `generator-proposal`
