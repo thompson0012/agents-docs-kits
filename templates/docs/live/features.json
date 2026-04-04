@@ -1,7 +1,9 @@
 {
   "project": "Agents Stack Starter",
-  "updated_at": "2026-04-02",
+  "updated_at": "2026-04-04",
   "idea_backlog_path": "docs/live/ideas.md",
+  "current_focus_path": "docs/live/current-focus.md",
+  "roadmap_path": "docs/live/roadmap.md",
   "single_runnable_active_sprint": true,
   "runnable_active_sprint_id": "FEAT-001",
   "parked_sprint_ids": [],

@@ -34,6 +34,8 @@ ensure_dir "docs/scripts"
 write_file_if_missing "docs/live/features.json" '{
   "project": "Replace with project name",
   "idea_backlog_path": "docs/live/ideas.md",
+  "current_focus_path": "docs/live/current-focus.md",
+  "roadmap_path": "docs/live/roadmap.md",
   "single_runnable_active_sprint": true,
   "runnable_active_sprint_id": null,
   "parked_sprint_ids": [],
@@ -80,6 +82,32 @@ This file is durable state. Update it in place so future agents can see what was
 - Rejected or risky directions:
 - Open questions:
 - Promotion signal:
+'
+
+write_file_if_missing "docs/live/current-focus.md" '# Current Focus
+
+This file is a live resume anchor. It is not a second contract.
+
+- Current objective: Establish the first truthful source goal, roadmap, and backlog state for this repo.
+- Source-goal lineage: No durable source goal is recorded yet.
+- Current roadmap phase: Unset. Record the real source goal in `docs/live/roadmap.md` before proposing sprint work.
+- Next owner: `project-initializer`, or the next human or agent establishing durable state.
+- Next file to open: `docs/live/roadmap.md`
+- Contract truth: If a sprint is later opened, `.harness/<feature-id>/contract.md` becomes the only runnable sprint contract.
+'
+
+write_file_if_missing "docs/live/roadmap.md" '# Initiative Roadmap
+
+This file is the non-runnable roadmap for broader goals. It does not select the runnable sprint; `docs/live/features.json` still does that.
+
+- Source goal: Not recorded yet. Replace this line with the real user or repo objective.
+- Current slice: None selected yet.
+- Ordered remaining slices/phases:
+  1. Record the source goal and any real constraints.
+  2. Add the first bounded backlog item to `docs/live/features.json` when one is justified.
+  3. Open proposal work only after one dependency-ready item is honestly `pending`.
+- Stop or re-authorization condition: Stop when no bounded next slice is justified from repo facts or user direction. Re-authorize before inventing more roadmap.
+- Visible remaining-work summary: No runnable sprint is selected, no parked sprint is recorded, and the backlog is empty until real tracked work exists.
 '
 
 write_file_if_missing "docs/live/progress.md" '# Project Progress Ledger

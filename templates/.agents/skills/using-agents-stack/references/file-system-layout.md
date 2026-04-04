@@ -67,6 +67,7 @@ Rules:
 - parked `awaiting_human` and `escalated_to_human` features may remain listed, but they must not also be marked as the runnable active sprint
 - a feature marked runnable-active should have a matching `.harness/<feature-id>/` folder unless the proposal has not been created yet
 - when no runnable active sprint exists, routing chooses the highest-priority dependency-ready `needs_brainstorm` item before ordinary `pending` proposal work
+- `docs/live/roadmap.md` may explain initiative continuation, but `features.json` still selects runnable truth and backlog order
 
 ### `docs/live/ideas.md`
 
@@ -91,9 +92,23 @@ Purpose:
 
 Rules:
 
-- it complements `docs/live/features.json`, `docs/live/progress.md`, and `docs/live/memory.md`; it does not replace any of them
+- it complements `docs/live/features.json`, `docs/live/roadmap.md`, `docs/live/progress.md`, and `docs/live/memory.md`; it does not replace any of them
 - when an active or parked sprint exists, it must point back to `.harness/<feature-id>/contract.md` for slice truth instead of becoming a second contract
 - keep it concise and refresh it when decisive state changes so resume routing does not depend on chat memory
+
+
+### `docs/live/roadmap.md`
+
+Purpose:
+
+- durable initiative ledger for source goals, remaining slices, and re-authorization boundaries
+- explains what work remains beyond the current runnable sprint and when automation may continue versus when a human must explicitly re-scope or re-authorize
+
+Rules:
+
+- it complements `docs/live/features.json` and `docs/live/current-focus.md`; it does not replace runnable selection or sprint-local execution truth
+- it must not claim `runnable_active_sprint_id` or overrule `.harness/<feature-id>/contract.md` for an active sprint
+- refresh it whenever planning or state reconciliation changes which slice comes next, what still remains, or where the next human authorization boundary lives
 
 
 ### `docs/live/progress.md`
@@ -233,7 +248,8 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 | `AGENTS.md` | repository-wide | human maintainers | every worker |
 | `docs/live/features.json` | global | initializer, brainstorm, state-update, and compound-capture workers | router, brainstorm, proposal, state-update, and compound-capture workers |
 | `docs/live/ideas.md` | global | generator-brainstorm worker | router, brainstorm, and proposal workers |
-| `docs/live/current-focus.md` | global | state-update worker | router, humans, and any worker resuming from durable state |
+| `docs/live/current-focus.md` | global | initializer, proposal, and state-update workers | router, humans, and any worker resuming from durable state |
+| `docs/live/roadmap.md` | global | initializer, proposal, and state-update workers | router, proposal, state-update, and human planners |
 | `docs/live/progress.md` | global | state-update worker | router, proposal workers, humans |
 | `docs/live/memory.md` | global | initializer and compound-capture workers | router, proposal, execution, and review workers |
 | `.harness/<feature-id>/sprint_proposal.md` | sprint-local | generator-proposal worker | contract-review worker |
@@ -246,7 +262,7 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 
 ## Routing implications
 
-- `docs/live/current-focus.md` is the live resume anchor for goal lineage and next owner, but `docs/live/features.json` plus the strongest local artifact still decide runnable truth.
+- `docs/live/features.json` is the runnable/backlog selector, `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for what remains and where re-authorization is required.
 
 - Missing or empty live state means initialize.
 - Non-empty `compound_pending_feature_ids` means compound before any runnable sprint resume or new backlog selection.

@@ -9,6 +9,8 @@ This starter uses a file-backed orchestrator-worker harness. Repository files ar
 - `docs/reference/design.md`: stable UI quality bar and review expectations.
 - `docs/live/features.json`: machine-readable backlog, dependency graph, idea backlog pointer, compound queue, and runnable active sprint pointer.
 - `docs/live/ideas.md`: pre-sprint ideation backlog. It stores exploration detail, candidate framing, and brainstorm notes, but it is not the authoritative runnable schedule.
+- `docs/live/roadmap.md`: initiative-level non-runnable control plane for source goal, roadmap status, and remaining work across multiple sprints.
+- `docs/live/current-focus.md`: live resume anchor for the current objective and next owner. It helps cold-start routing, but it does not replace the roadmap, backlog selector, or sprint-local contract.
 - `docs/live/progress.md`: append-only ledger of shipped, failed, paused, escalated, and compounded outcomes.
 - `docs/live/memory.md`: durable learnings captured after publication by the compound phase.
 - `.harness/<feature-id>/`: the only place for sprint-local execution state while the sprint is runnable or human-gated.
@@ -17,15 +19,15 @@ This starter uses a file-backed orchestrator-worker harness. Repository files ar
 
 ## Phase chain
 
-The harness lifecycle is explicit:
+The harness lifecycle is explicit. `docs/live/roadmap.md` carries the initiative-level source goal, roadmap status, and remaining work across the whole chain, while `docs/live/current-focus.md` stays a concise next-owner resume note that points back to the real durable evidence.
 
 `Brainstorm -> Plan -> Work -> Review -> State Update -> Compound -> Repeat`
 
-- **Brainstorm** is pre-sprint and non-runnable. It deepens `needs_brainstorm` backlog items in `docs/live/ideas.md` and may promote a candidate into proposal-ready backlog state, but it must not claim `runnable_active_sprint_id`.
+- **Brainstorm** is pre-sprint and non-runnable. It deepens `needs_brainstorm` backlog items in `docs/live/ideas.md`, may refine `docs/live/roadmap.md`, and may promote a candidate into proposal-ready backlog state, but it must not claim `runnable_active_sprint_id`.
 - **Plan** is `generator-proposal` plus `evaluator-contract-review`.
 - **Work** is contract-bound execution with build/startup triage before review.
 - **Review** is independent adversarial verification.
-- **State Update** reconciles review truth into `docs/live/features.json` and `docs/live/progress.md`, archives PASS results, and queues compounding in `compound_pending_feature_ids`.
+- **State Update** reconciles review truth into `docs/live/features.json` and `docs/live/progress.md`, refreshes `docs/live/current-focus.md`, updates `docs/live/roadmap.md` when initiative-level status changed, archives PASS results, and queues compounding in `compound_pending_feature_ids`.
 - **Compound** is post-publication and non-runnable. `compound-capture` records durable learnings in `docs/live/memory.md`, updates reference docs when warranted, and clears the queue.
 
 ## Orchestrator-worker model
@@ -60,11 +62,14 @@ Parallel workers are allowed only when the work is independent and non-overlappi
 
 1. Human edits and explicit user instructions.
 2. Active sprint-local state in `.harness/<active-feature>/`, especially `contract.md`, `runtime.md`, `handoff.md`, `review.md`, and `status.json`.
-3. Global live state in `docs/live/features.json`, `docs/live/ideas.md`, `docs/live/progress.md`, and `docs/live/memory.md`.
-4. Stable reference intent in `docs/reference/*`.
-5. Derived outputs from `docs/scripts/*` or ad hoc tooling.
+3. `docs/live/features.json` for runnable/backlog selection.
+4. `docs/live/roadmap.md` for initiative-level source-goal lineage, roadmap status, and remaining work.
+5. `docs/live/current-focus.md` for the live resume anchor and next-owner hint.
+6. `docs/live/progress.md` and `docs/live/memory.md` for published outcomes and compounded learning.
+7. Stable reference intent in `docs/reference/*`.
+8. Derived outputs from `docs/scripts/*` or ad hoc tooling.
 
-Use local state to decide how to continue the runnable sprint. Use global state to decide what the project should work on next and whether non-runnable brainstorm or compound work is queued. If they disagree, resolve the conflict explicitly; do not silently invent a merge.
+Use local state to decide how to continue the runnable sprint. Use `docs/live/features.json` to decide what may be runnable next. Use `docs/live/roadmap.md` to understand the broader initiative status and remaining work. Use `docs/live/current-focus.md` as the concise resume anchor for the current baton only. If they disagree, resolve the conflict explicitly; do not silently invent a merge.
 
 ## Runnable versus non-runnable semantics
 

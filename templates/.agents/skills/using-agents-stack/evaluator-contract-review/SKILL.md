@@ -5,6 +5,8 @@ trigger: Use when `.harness/<feature-id>/sprint_proposal.md` exists and no trust
 inputs:
   - AGENTS.md
   - docs/live/features.json
+  - docs/live/current-focus.md
+  - docs/live/roadmap.md
   - docs/live/progress.md
   - docs/live/memory.md
   - docs/reference/*
@@ -44,11 +46,12 @@ Read all of the following before deciding:
 
 1. `AGENTS.md`
 2. `docs/live/features.json`
-3. `docs/live/progress.md` and `docs/live/memory.md`
-4. Relevant `docs/reference/*`
-5. `.harness/<feature-id>/sprint_proposal.md`
-6. `.harness/<feature-id>/status.json`
-7. The real code and tests in the areas the proposal claims it will touch
+3. `docs/live/current-focus.md` and `docs/live/roadmap.md`
+4. `docs/live/progress.md` and `docs/live/memory.md`
+5. Relevant `docs/reference/*`
+6. `.harness/<feature-id>/sprint_proposal.md`
+7. `.harness/<feature-id>/status.json`
+8. The real code and tests in the areas the proposal claims it will touch
 
 Do not review only the prose. Verify that the claimed file boundaries and acceptance steps match the actual repo.
 
@@ -86,11 +89,14 @@ Feedback must be actionable, for example:
 - Confirm there is only one runnable sprint.
 - Confirm the proposal matches the selected backlog item.
 - Confirm the proposal reflects the current repo, not an imagined future structure.
+- Confirm the proposal aligns with the durable source-goal and authorized initiative slice in `docs/live/roadmap.md` and `docs/live/current-focus.md`.
+- If the roadmap files and proposal disagree about what this sprint is for, reject and send the work back for proposal repair before any contract is approved.
 
 ### 2. Attack the scope
 Reject if any of these are true:
 - more than one meaningful product increment is bundled together
 - the change spans unrelated subsystems without justification
+- the change finishes only by silently chaining additional sprints that were never made explicit in the roadmap
 - the proposal requires follow-on work before its own acceptance can be tested
 - “nice to have” items are mixed into required scope
 
@@ -108,8 +114,9 @@ Common failures:
 Reject if the proposal:
 - omits allowed-file boundaries
 - omits forbidden-file boundaries
-- hides architecture, dependency, schema, or routing changes inside general wording
+- hides architecture, dependency, schema, routing, or new roadmap-authorization work inside general wording
 - relies on touching generated, vendor, or unrelated files without justification
+- discovers late scope that belongs to a different roadmap slice but still tries to keep the current sprint runnable instead of pausing for re-authorization
 
 ### 5. Attack resumability and retry honesty
 Reject if a future agent would be unable to continue from sprint-local files alone.
@@ -134,8 +141,9 @@ You must reject the proposal when any of the following is true:
 - file boundaries are missing, too broad, or dishonest
 - the sprint hides architecture changes, migrations, or dependency churn
 - scope exceeds one bounded sprint
+- the proposal hides multi-sprint initiative scope or a required roadmap re-authorization boundary
 - required repo context is missing and the proposal papers over the gap
-- the proposal conflicts with `AGENTS.md`, global state, or reference docs
+- the proposal conflicts with `AGENTS.md`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, global state, or reference docs
 
 ## Quality Bar
 A good contract review:

@@ -37,6 +37,7 @@ This repository uses the agents-stack harness. The harness is stateful, resumabl
     ├── live/
     │   ├── features.json
     │   ├── ideas.md
+    │   ├── roadmap.md
     │   ├── current-focus.md
     │   ├── progress.md
     │   └── memory.md
@@ -65,7 +66,8 @@ Global durable state for the whole repo.
 
 - `features.json`: the authoritative tracked-work ledger, dependency graph, idea backlog pointer, compound queue, and runnable active sprint pointer.
 - `ideas.md`: durable pre-proposal exploration. It stores brainstorm detail and rejected directions, but it does not choose the runnable sprint.
-- `current-focus.md`: the live current-objective, goal-lineage, and next-owner resume anchor. It points a cold-start agent at the active or parked lane and the strongest artifact to read next, but it does not replace the backlog ledger, outcome ledger, or cross-sprint memory.
+- `roadmap.md`: the initiative-level source-goal and remaining-work control artifact. It captures source-goal lineage, roadmap status, and non-runnable initiative sequencing, but it must not become a second runnable selector or sprint contract.
+- `current-focus.md`: the live current-objective and next-owner resume anchor. It points a cold-start agent at the active or parked lane and the strongest artifact to read next, but it is only a resume aid and does not replace the roadmap, backlog ledger, outcome ledger, or cross-sprint memory.
 - `progress.md`: append-only ledger of reviewed outcomes, failures, pauses, escalations, compound publication, and next actions.
 - `memory.md`: durable cross-sprint learning written by the explicit Compound phase, not a dump of routine state reconciliation.
 
@@ -81,7 +83,8 @@ Reference docs guide decisions, but they do not override an approved sprint cont
 For an active sprint, the only canonical execution contract is `.harness/<FEAT-ID>/contract.md`. `docs/live/features.json` may point to the active feature, local sprint folder, phase, and resume checkpoint, but it must not become a second contract.
 
 Generators and reviewers build from the approved local contract on disk, not from remembered proposal text or paraphrased scope in chat. If the live state points at a sprint whose local contract is missing, execution must stop until the checkpoint is re-established.
-`docs/live/current-focus.md` may summarize why the sprint matters and who should act next, but it must point back to `.harness/<FEAT-ID>/contract.md` for slice truth and must never become a second execution contract.
+`docs/live/roadmap.md` may explain the source goal, initiative status, and remaining work, but it is a non-runnable control artifact and must never override `features.json` as the runnable selector or `.harness/<FEAT-ID>/contract.md` as slice truth.
+`docs/live/current-focus.md` may summarize why the sprint matters and who should act next, but it must point back to `docs/live/roadmap.md` and `.harness/<FEAT-ID>/contract.md` for durable truth and must never become a second execution contract.
 
 
 ### `docs/archive/*`
@@ -150,15 +153,17 @@ Use this precedence when files disagree:
    - `sprint_proposal.md`
 3. `.harness/<FEAT-ID>/status.json`
 4. `docs/live/features.json`
-5. `docs/live/current-focus.md`
-6. `docs/live/progress.md` and `docs/live/memory.md`
-7. `docs/reference/*`
-8. `docs/archive/*` as historical evidence only
+5. `docs/live/roadmap.md`
+6. `docs/live/current-focus.md`
+7. `docs/live/progress.md` and `docs/live/memory.md`
+8. `docs/reference/*`
+9. `docs/archive/*` as historical evidence only
 
 Interpretation rules:
 - For an active or parked sprint, the strongest local artifact defines the real phase even if `status.json` is stale.
 - `docs/live/features.json` is the project-wide selector for whether any sprint should be runnable and for which pending work is dependency-ready next.
-- `docs/live/current-focus.md` is a live resume aid. If it drifts from stronger local artifacts or `features.json`, refresh it; do not treat it as an alternate contract.
+- `docs/live/roadmap.md` is the initiative-level non-runnable control plane. It should explain source-goal lineage, roadmap status, and remaining work, but it must not overrule sprint-local evidence or claim the runnable slot.
+- `docs/live/current-focus.md` is a live resume aid. If it drifts from stronger local artifacts, `features.json`, or `roadmap.md`, refresh it; do not treat it as an alternate contract.
 - Archive files never override active live or local state.
 
 ## What To Do When State Disagrees
@@ -186,15 +191,15 @@ Trust `review.md` over `status.json`. The next owner is `state-update`.
 
 ## Failure ownership taxonomy
 
-Use the strongest sprint artifact plus `docs/live/current-focus.md` to classify failures before routing the next owner.
+Use the strongest sprint artifact plus `docs/live/roadmap.md` and `docs/live/current-focus.md` to classify failures before routing the next owner.
 
 | Failure class | What it means | Next owner / lane |
 | --- | --- | --- |
 | Implementation defect | The approved slice still stands, but the code, integration, or verification inside that slice failed. | `state-update` publishes the truth, `compound-capture` drains, then `generator-execution` retries from a named clean restore boundary. |
 | Slice-contract defect | Proposal, contract, or review evidence shows the slice, file bounds, or acceptance criteria are wrong or incomplete. | `state-update` freezes the evidence, then route to `evaluator-contract-review` for contract repair or `generator-proposal` when the slice itself must be re-cut. |
-| Orchestration/state defect | Local artifacts, `status.json`, `features.json`, or archive/live state disagree, or the resume checkpoint is missing. | `state-update` reconciles it; if live state itself is untrustworthy, route `project-initializer`. |
+| Orchestration/state defect | Local artifacts, `status.json`, `features.json`, `roadmap.md`, or archive/live state disagree, or the resume checkpoint is missing. | `state-update` reconciles it; if live state itself is untrustworthy, route `project-initializer`. |
 | Environment blocker | External dependency, credential, runtime, or operator condition prevented an honest PASS/FAIL. | `state-update` parks or escalates; resume only through human action or a named clean execution retry when recovery is explicitly owned. |
-| Goal-lineage drift | `current-focus.md` or stronger evidence shows the sprint no longer matches the active objective or dependency order. | `state-update` refreshes the focus anchor and freezes the evidence, then route to `generator-brainstorm` or `generator-proposal`; execution must not patch around drift. |
+| Goal-lineage drift | `roadmap.md`, `current-focus.md`, or stronger evidence shows the sprint no longer matches the active objective or dependency order. | `state-update` refreshes the roadmap/focus split and freezes the evidence, then route to `generator-brainstorm` or `generator-proposal`; execution must not patch around drift. |
 
 
 ## Deterministic startup routing rules
@@ -291,8 +296,8 @@ The lifecycle is explicit. Typical state flow:
 When a sprint is interrupted by timeout, crash, human pause, failed build triage, or failed review retry:
 
 1. Read `AGENTS.md`.
-2. Read `docs/live/features.json`, `docs/live/current-focus.md`, `docs/live/ideas.md`, `docs/live/progress.md`, and `docs/live/memory.md`.
-3. Capture any queued `compound_pending_feature_ids`, identify the one runnable active feature if any, list any parked `awaiting_human` or `escalated_to_human` sprint folders separately, and note the current objective, goal lineage, and next-owner hint from `docs/live/current-focus.md`.
+2. Read `docs/live/features.json`, `docs/live/roadmap.md`, `docs/live/current-focus.md`, `docs/live/ideas.md`, `docs/live/progress.md`, and `docs/live/memory.md`.
+3. Capture any queued `compound_pending_feature_ids`, identify the one runnable active feature if any, list any parked `awaiting_human` or `escalated_to_human` sprint folders separately, and note the source goal, roadmap status, current objective, and next-owner hint from `docs/live/roadmap.md` plus `docs/live/current-focus.md`.
 4. If no runnable sprint exists, note any dependency-ready `needs_brainstorm` candidates before ordinary `pending` backlog items.
 5. Read `.harness/<FEAT-ID>/status.json` and capture the claimed `phase`, `owner_role`, `resume_from`, `last_verified_step`, `local_url`, `active_pids`, `blocked_on`, `worker_id`, `worker_subject`, `tool_scope_profile`, `spawn_depth`, `parent_worker_id`, `attempt_count`, `max_attempts`, and `clean_restore_ref` fields.
 6. When the phase is `awaiting_human` or `escalated_to_human`, also capture the pause or escalation metadata that explains what changed, what the human must do, and which phase resumes next.

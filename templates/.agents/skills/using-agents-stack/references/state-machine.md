@@ -7,7 +7,7 @@ This reference defines the durable phase model for the starter-pack harness. The
 - Exactly one sprint may be runnable at a time.
 - Additional non-terminal sprint folders may remain in `.harness/` only when they are explicitly parked in `awaiting_human` or `escalated_to_human`.
 - Parked sprints stay visible in durable state, but they do not count as the runnable active sprint.
-- Global state in `docs/live/*` tracks project-level priority, dependencies, parked visibility, and history.
+- Global state in `docs/live/*` tracks project-level priority, dependencies, parked visibility, history, the live resume anchor, and the durable initiative roadmap.
 - Local state in `.harness/<feature-id>/*` tracks one sprint's current checkpoint, retry budget, and human handoff boundary.
 - Archived state in `docs/archive/<feature-id>_<timestamp>/` preserves completed sprint artifacts.
 - A sprint is not complete when code exists. It is complete only after review passes and state is updated.
@@ -23,6 +23,7 @@ Evidence precedence for routing:
 4. `sprint_proposal.md`
 5. `status.json`
 6. `docs/live/features.json`
+7. `docs/live/current-focus.md` and `docs/live/roadmap.md`
 
 ## Scheduling order when no runnable sprint exists
 
@@ -43,13 +44,20 @@ This lets explicit compounding run before new work and lets the backlog advance 
 - Retries do not reuse old context windows. They start a new worker and keep prior evidence on disk.
 - Structured worker returns should name the worker ID, phase, artifact paths, blockers, and next owner when useful.
 
+## Roadmap publication and revision
+
+- `docs/live/features.json` still decides runnable and backlog truth. `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for source goals, remaining slices, and re-authorization boundaries.
+- Publish or revise `docs/live/roadmap.md` whenever initialization, planning, or state reconciliation turns a broad user goal into durable tracked work or changes which slices remain.
+- Refresh `docs/live/current-focus.md` whenever the next owner, active lane, or strongest artifact changes.
+- Neither live file becomes a second runnable contract. If a sprint is active, `.harness/<feature-id>/contract.md` remains the slice truth.
+
 ## Phase model
 
 | Phase | Durable evidence | Owner skill | Meaning | Normal next step |
 | --- | --- | --- | --- | --- |
-| `uninitialized` | `docs/live/features.json` missing, empty, or unusable | `project-initializer` worker | Repo is not ready for sprint routing yet. | Seed durable live state. |
-| `needs_brainstorm` | `docs/live/features.json` tracks a dependency-ready item as `needs_brainstorm`, optionally with supporting notes in `docs/live/ideas.md` | `generator-brainstorm` worker | The candidate is real enough to track, but still too vague for honest proposal work. | Refine or promote it to `pending`. |
-| `proposal_needed` | No runnable active sprint and at least one dependency-ready pending feature | `generator-proposal` worker | A ready backlog item exists but no local sprint has been proposed. | Create `.harness/<feature>/sprint_proposal.md`. |
+| `uninitialized` | `docs/live/features.json` missing, empty, or unusable | `project-initializer` worker | Repo is not ready for sprint routing yet. | Seed durable live state, including initial focus and roadmap truth. |
+| `needs_brainstorm` | `docs/live/features.json` tracks a dependency-ready item as `needs_brainstorm`, optionally with supporting notes in `docs/live/ideas.md` and initiative context in `docs/live/roadmap.md` | `generator-brainstorm` worker | The candidate is real enough to track, but still too vague for honest proposal work. | Refine or promote it to `pending`. |
+| `proposal_needed` | No runnable active sprint and at least one dependency-ready pending feature | `generator-proposal` worker | A ready backlog item exists but no local sprint has been proposed. | Cut one runnable slice from the roadmap into `.harness/<feature>/sprint_proposal.md`. |
 | `proposal_ready` | `sprint_proposal.md` exists | `evaluator-contract-review` worker | Proposed scope exists and needs adversarial contract review. | Approve into `contract.md` or reject with revisions. |
 | `contracted` | `contract.md` exists and no later artifact exists | `generator-execution` worker | Boundaries and QA criteria are approved; implementation can begin. | Execute or resume work. |
 | `executing` | `status.json` shows active execution, no later artifact exists | `generator-execution` worker | Work is underway. | Finish implementation, or record an execution-time failure honestly. |
@@ -68,17 +76,23 @@ This lets explicit compounding run before new work and lets the backlog advance 
 ### Initialization, brainstorm, and proposal
 
 - `uninitialized` -> `needs_brainstorm` or `proposal_needed`
-  - Trigger: `project-initializer` worker seeds `docs/live/features.json`, `docs/live/ideas.md`, `progress.md`, and related live files truthfully.
+  - Trigger: `project-initializer` worker seeds `docs/live/features.json`, `docs/live/ideas.md`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, `progress.md`, and related live files truthfully.
 - `needs_brainstorm` -> `proposal_needed`
-  - Trigger: `generator-brainstorm` worker clarifies the candidate enough to promote it into `pending` backlog state.
+  - Trigger: `generator-brainstorm` worker clarifies the candidate enough to promote it into `pending` backlog state and, when needed, sharpens the roadmap slice it belongs to.
 - `needs_brainstorm` -> `needs_brainstorm`
   - Trigger: the idea is still too vague for honest proposal work, so brainstorming leaves it tracked but non-runnable.
 - `proposal_needed` -> `proposal_ready`
-  - Trigger: `generator-proposal` worker creates `.harness/<feature-id>/sprint_proposal.md` and marks the sprint as proposed.
+  - Trigger: `generator-proposal` worker creates `.harness/<feature-id>/sprint_proposal.md` from the current durable roadmap slice and marks the sprint as proposed.
 - `proposal_needed` -> `needs_brainstorm`
   - Trigger: proposal discovery proves the candidate is still too vague or forked, so it is explicitly returned to brainstorming instead of getting a mushy proposal.
 - `proposal_needed` -> `proposal_needed`
   - Trigger: the highest-priority pending feature is not dependency-ready, so backlog traversal continues until a ready item is found or the queue is exhausted.
+
+### Roadmap, focus, and drift control
+
+- If a broad user goal or decisive outcome is not yet reflected in `docs/live/current-focus.md` plus `docs/live/roadmap.md`, publish or refresh those files before continuing serial sprint chaining.
+- If `docs/live/current-focus.md`, `docs/live/roadmap.md`, or stronger evidence shows goal-lineage drift, preserve the current sprint evidence, refresh the focus anchor, revise the roadmap, and route back to `generator-brainstorm` or `generator-proposal` instead of stretching the current sprint.
+- This does not create a second runnable contract or a second runnable sprint. `docs/live/features.json` still selects runnable truth, and `.harness/<feature-id>/contract.md` remains the active slice contract.
 
 ### Execution loop
 
@@ -150,6 +164,7 @@ This lets explicit compounding run before new work and lets the backlog advance 
 2. The orchestrator selects `state-update` and dispatches a fresh worker.
 3. `state-update` worker:
    - updates `docs/live/features.json`
+   - refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` for the next authorized slice or pause boundary
    - appends outcome to `docs/live/progress.md`
    - archives the sprint to `docs/archive/<feature-id>_<timestamp>/`
    - clears runnable active-sprint status
@@ -166,6 +181,7 @@ This lets explicit compounding run before new work and lets the backlog advance 
    - increments `attempt_count` and confirms `max_attempts`
    - preserves directives and evidence
    - records or validates `clean_restore_ref` before any automatic retry
+   - refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` when the remaining plan or re-authorization boundary changes
    - queues the feature id in `compound_pending_feature_ids`
    - leaves `review.md` on disk as evidence for the retry
    - updates global progress so the failure is visible outside the sprint folder
@@ -181,6 +197,7 @@ FAIL is not terminal. It is a new execution loop with stricter evidence, and the
    - keeps the sprint visible in `.harness/`
    - records the blocker in durable state
    - decides between `awaiting_human` and `escalated_to_human`
+   - refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` when the blocker changes the next authorized slice or handoff boundary
    - queues the feature id in `compound_pending_feature_ids` so durable lessons can be captured before future routing
    - leaves `review.md` on disk as evidence for the stalled checkpoint
    - updates global progress so the blocker is visible outside the sprint folder

@@ -19,7 +19,9 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 - Retries after `build_failed` or reconciled `review_failed` require a recorded clean restore boundary such as a disposable worktree, VCS snapshot, or equivalent `clean_restore_ref`. Automatic destructive reset is valid only in disposable workspaces and is not the default expectation.
 - Respect attempt budgets. When `attempt_count` reaches `max_attempts`, or no safe clean restore boundary exists, automatic retry stops and the sprint must park for human action or escalation.
 - Parked sprints in `.harness/` with `awaiting_human` or `escalated_to_human` remain visible durable state, but they do not count as the single runnable active sprint.
-- `docs/live/features.json` remains the authoritative tracked-work ledger. `docs/live/ideas.md` is exploration detail, not the runnable schedule.
+- `docs/live/features.json` remains the authoritative tracked-work ledger and runnable/backlog selector.
+- `docs/live/current-focus.md` is the live resume anchor; `docs/live/roadmap.md` is the durable initiative ledger for source goals, remaining slices, and re-authorization boundaries.
+- When a user introduces or changes a broad goal, normalize it into `docs/live/current-focus.md` plus `docs/live/roadmap.md` before continuing sprint chaining. Do not let cross-sprint intent live only in chat memory.
 - Brainstorm and Compound are explicit non-runnable phases. They may be the next router action, but they must not claim `runnable_active_sprint_id`.
 - When no runnable active sprint exists, drain `compound_pending_feature_ids` first, then choose the highest-priority dependency-ready `needs_brainstorm` backlog item, then the highest-priority dependency-ready `pending` item.
 - Protect the orchestrator context: it selects, merges worker evidence, dispatches, and waits for structured outputs; it does not implement, review, or rewrite state inline.
@@ -29,16 +31,18 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 
 1. Check whether the repository belongs to this family at all: `AGENTS.md`, `docs/live/*`, `.harness/<FEAT-ID>/`, and the agents-stack role/lifecycle model.
 2. Read `docs/live/features.json` to determine whether the repo is uninitialized, has queued compound work, has one runnable active sprint, has only parked sprints, or needs new backlog work.
-3. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
-4. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
-5. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
-6. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when attempts remain and `clean_restore_ref` defines a safe restore boundary.
-7. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
-8. If no runnable active sprint exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
-9. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
-10. Pick the narrowest child that matches the strongest durable evidence.
-11. If the selected child is missing, install it when possible or disclose the fallback.
-12. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have returned and been merged.
+3. Read `docs/live/current-focus.md` and `docs/live/roadmap.md` together to confirm the resume anchor, source-goal lineage, remaining slices, and any re-authorization boundary.
+4. If the user's high-level goal is broader than the live files currently capture, route first to the phase that will publish or refresh that durable source-goal truth before continuing sprint chaining.
+5. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
+6. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
+7. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
+8. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when attempts remain and `clean_restore_ref` defines a safe restore boundary.
+9. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
+10. If no runnable active sprint exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
+11. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
+12. Pick the narrowest child that matches the strongest durable evidence.
+13. If the selected child is missing, install it when possible or disclose the fallback.
+14. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have returned and been merged.
 
 ## Family Workflow Boundary
 

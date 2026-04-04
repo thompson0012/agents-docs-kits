@@ -5,6 +5,8 @@ trigger: Use when exactly one feature is ready to be scoped for proposal, includ
 inputs:
   - AGENTS.md
   - docs/live/features.json
+  - docs/live/current-focus.md
+  - docs/live/roadmap.md
   - docs/live/ideas.md when the selected item was shaped by brainstorming or still carries idea-context worth preserving
   - docs/live/progress.md
   - docs/live/memory.md
@@ -14,6 +16,7 @@ inputs:
 outputs:
   - .harness/<feature-id>/sprint_proposal.md
   - .harness/<feature-id>/status.json
+  - optional precise updates to docs/live/roadmap.md and docs/live/current-focus.md when broad-goal truth must be made durable before sprint reservation
   - optional precise update to docs/live/features.json to reserve the active sprint
 boundaries:
   - Scope exactly one bounded sprint.
@@ -21,6 +24,7 @@ boundaries:
   - Do not hide architecture changes inside an implementation plan.
   - Do not claim a file boundary you have not checked against the repo.
   - Do not translate unresolved brainstorm notes into fake proposal certainty.
+  - Do not invent source-goal intent or roadmap structure that the files and prompt cannot support.
 next_skills:
   - evaluator-contract-review
 ---
@@ -38,20 +42,21 @@ When the feature came from `docs/live/ideas.md`, carry forward only the parts th
 
 - Run proposal drafting in a fresh worker context. The orchestrator dispatches this worker; it does not swap into proposal mode inline.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: repo discovery, sprint-local planning writes under `.harness/<feature-id>/`, and the narrow `docs/live/features.json` reservation update when needed. No product-code edits.
+- Tool lane: repo discovery, sprint-local planning writes under `.harness/<feature-id>/`, and the narrow live-state updates needed to make source-goal truth durable in `docs/live/roadmap.md`, `docs/live/current-focus.md`, and `docs/live/features.json`. No product-code edits.
 - Parallel-safe only for read-only research across clearly disjoint code areas. One worker owns `.harness/<feature-id>/sprint_proposal.md` and `status.json`; parallel helpers must not write those same files or overlap target areas.
-- Durable return contract: `.harness/<feature-id>/sprint_proposal.md`, `.harness/<feature-id>/status.json`, and optional `docs/live/features.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
+- Durable return contract: `.harness/<feature-id>/sprint_proposal.md`, `.harness/<feature-id>/status.json`, and any required `docs/live/roadmap.md` / `docs/live/current-focus.md` refresh before reservation, plus optional `docs/live/features.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
 
 ## Required Reads
 Read these before drafting:
 
 1. `AGENTS.md`
 2. `docs/live/features.json`
-3. `docs/live/progress.md` and `docs/live/memory.md`
-4. `docs/live/ideas.md` when the selected backlog item came from brainstorming, references idea exploration, or still has open ideation context worth narrowing
-5. Relevant `docs/reference/*`
-6. The current code in every area you expect to touch
-7. Existing `.harness/<feature-id>/` files if this is a revision
+3. `docs/live/current-focus.md` and `docs/live/roadmap.md`
+4. `docs/live/progress.md` and `docs/live/memory.md`
+5. `docs/live/ideas.md` when the selected backlog item came from brainstorming, references idea exploration, or still has open ideation context worth narrowing
+6. Relevant `docs/reference/*`
+7. The current code in every area you expect to touch
+8. Existing `.harness/<feature-id>/` files if this is a revision
 
 Do not propose from backlog text alone. You must inspect the real code so the file boundaries and acceptance checks are believable.
 
@@ -83,10 +88,10 @@ It should make the proposal state obvious, for example:
 
 If the sprint already has retry metadata such as `attempt_count`, `max_attempts`, or `clean_restore_ref`, preserve it unless the proposal explicitly changes that policy. Proposal revision must not silently erase retry history.
 
-### Optional `docs/live/features.json` update
-If the repo tracks reservation in backlog state, mark the selected feature as the single runnable active sprint.
-Do this only if no other runnable item is already `in_progress`.
-Do not use proposal work to pull a feature forward when the backlog still says `needs_brainstorm`; resolve that truth first.
+### Optional live-state updates
+If the selected work came from a broad user goal, first make the source-goal lineage explicit in `docs/live/roadmap.md` and `docs/live/current-focus.md`.
+Reserve the feature in `docs/live/features.json` only after that lineage is durable and only if no other runnable item is already `in_progress`.
+Do not use proposal work to pull a feature forward when the backlog still says `needs_brainstorm`; resolve that truth first. `features.json` remains the runnable/backlog selector, not the place to hide multi-sprint initiative intent.
 
 ## Workflow
 
@@ -101,12 +106,17 @@ Do not use proposal work to pull a feature forward when the backlog still says `
 - Convert that context into proposal boundaries. Do not copy open-ended exploration into the sprint as if it were approved scope.
 - If the idea notes still contain competing directions that cannot fit one bounded sprint, split or return the item to brainstorming.
 
-### 3. Bound the sprint by reading the real implementation surface
+### 3. Distill the source goal into durable roadmap truth before reserving a sprint
+- When the user prompt or brainstorm describes a broad initiative, write the durable source-goal, current authorized initiative, and explicit deferred lanes into `docs/live/roadmap.md`.
+- Refresh `docs/live/current-focus.md` so a cold-start agent can see which roadmap slice is being turned into this sprint proposal and what artifact to open next.
+- If the files do not support a clear single-sprint cut, stop and send the work back to brainstorming or human clarification rather than reserving a runnable sprint.
+
+### 4. Bound the sprint by reading the real implementation surface
 - Inspect the code paths likely to change.
 - Identify the smallest meaningful increment that can be implemented and reviewed in one sprint.
 - Split large or cross-cutting ideas before proposing anything.
 
-### 4. Define observable success
+### 5. Define observable success
 Every acceptance outcome must be externally checkable.
 
 For interactive behavior, prefer state-transition checks over static end states. A good interactive criterion names:
@@ -127,13 +137,14 @@ Bad examples:
 - “support future extensibility”
 - “screen shows dark mode” when the proposal never requires the reviewer to trigger the toggle
 
-### 5. Draw hard file and subsystem boundaries
+### 6. Draw hard file and subsystem boundaries
 - List the exact files expected to change when possible.
 - If exact files are not yet knowable, name the narrowest allowed directory and justify why.
 - List forbidden files or subsystems so review can catch scope creep.
 - Call out any architecture or dependency change explicitly; never bury it in prose.
+- If finishing the stated source goal would require later sprints, name those as roadmap items or deferred work instead of smuggling them into this sprint.
 
-### 6. Write the proposal as a review target
+### 7. Write the proposal as a review target
 The proposal must let an evaluator answer:
 - What will change?
 - What will not change?
@@ -141,17 +152,20 @@ The proposal must let an evaluator answer:
 - What evidence will the generator need to provide?
 - For interactive behavior, what before/action/after checks prevent a hardcoded fake pass?
 - What must be deferred to later sprints?
+- Does the proposal stay inside the currently authorized roadmap slice, or does it require re-authorization first?
 
-### 7. Set durable state for resume
+### 8. Set durable state for resume
 - Write or update `status.json` so the next agent can resume from `sprint_proposal.md`.
 - If this is a revision, replace stale proposal content rather than accumulating contradictory plans.
+- Do not reserve or chain the sprint forward until `docs/live/roadmap.md` and `docs/live/current-focus.md` tell the same source-goal story as the proposal.
 
 ## File Write Expectations
 - Write inside `.harness/<feature-id>/` only for sprint-local state.
 - Do not create `contract.md` in this phase.
 - Do not touch `docs/archive/*`.
 - Do not edit product code, tests, or app assets.
-- Only update `docs/live/features.json` if needed to represent the single runnable active sprint truthfully.
+- Update `docs/live/roadmap.md` and `docs/live/current-focus.md` only when needed to make source-goal lineage and current authorization durable.
+- Only update `docs/live/features.json` after that lineage is durable and only if needed to represent the single runnable active sprint truthfully.
 - Read `docs/live/ideas.md` only when it materially narrows the selected feature; do not bloat the proposal with generic brainstorm notes.
 
 ## Refusal and Stop Conditions
@@ -162,9 +176,10 @@ Reject the proposal phase and leave a truthful blocker when:
 - file boundaries cannot be identified because the feature is still conceptually vague
 - the selected item still needs brainstorming before proposal
 - the change implies hidden architecture work not acknowledged in scope
+- the source goal or roadmap slice is still implicit, contradictory, or unsupported by the files
+- late scope discovery shows that additional roadmap authorization is required before another sprint can be reserved or chained forward
 - another runnable sprint is already active
 - the repo state and backlog state disagree about what feature is active
-
 When blocked, write the blocking reason explicitly. Do not compensate with a mushy proposal.
 
 ## Quality Bar
@@ -178,4 +193,4 @@ A good proposal:
 - leaves obvious future work out of scope instead of pretending to solve everything now
 
 ## Done Definition
-This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm context has been distilled into explicit scope truth, and the repo state makes the next step unambiguous: adversarial contract review.
+This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm context has been distilled into explicit source-goal and roadmap truth, and the repo state makes the next step unambiguous: adversarial contract review.

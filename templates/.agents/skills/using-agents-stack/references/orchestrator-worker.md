@@ -14,7 +14,8 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 - Drain `compound_pending_feature_ids` before runnable sprint resume or new backlog selection. Compounding is explicit work, not background magic.
 - Distinguish runnable active work from non-runnable brainstorm and parked work. `needs_brainstorm`, `awaiting_human`, and `escalated_to_human` stay visible, but they must not be mistaken for the one runnable active sprint.
 - When no runnable active sprint exists and the compound queue is empty, choose the highest-priority dependency-ready `needs_brainstorm` item before ordinary `pending` proposal work.
-- Treat `docs/live/current-focus.md` as the live goal-lineage and next-owner resume anchor. It helps the orchestrator re-enter cold, but it must always point back to `.harness/<feature-id>/contract.md` or stronger local evidence instead of becoming a second contract.
+- Treat `docs/live/current-focus.md` as the live resume anchor and `docs/live/roadmap.md` as the initiative ledger for source goals, remaining slices, and re-authorization boundaries. Neither file replaces `.harness/<feature-id>/contract.md` for an active sprint.
+- If a user's broad goal or direction change is not yet reflected durably, pause sprint chaining long enough to publish or refresh that source-goal truth in `current-focus.md` plus `roadmap.md` before selecting the next owner.
 
 
 ## Lane walls and tool scope
@@ -22,10 +23,10 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 Workers get only the tools their phase needs.
 
 - Brainstorm workers may read `docs/live/*` and `docs/reference/*`, and write only `docs/live/ideas.md` plus the narrow `docs/live/features.json` update needed to track or promote the candidate.
-- Proposal workers may inspect backlog and reference files, but they are not execution workers.
+- Proposal workers may inspect backlog, `docs/live/current-focus.md`, and `docs/live/roadmap.md` to cut one runnable sprint from a broader initiative, and may refresh those live planning files when proposal work legitimately re-slices what comes next, but they are not execution workers.
 - Contract-review and live-review workers must stay independent and must not receive write access to implementation files.
 - Execution workers may change only the approved contract scope, must perform build/startup triage before requesting review, and must not mark their own work approved.
-- State-update workers reconcile state and archive history, but they do not silently redo proposal, execution, review, or durable learning capture.
+- State-update workers reconcile state and archive history, refresh `docs/live/current-focus.md` plus `docs/live/roadmap.md` when decisive outcomes change the remaining initiative path or re-authorization boundary, and do not silently redo proposal, execution, review, or durable learning capture.
 - Compound workers may write `docs/live/memory.md`, optional stable reference docs, and the queue-clearing update in `docs/live/features.json`. They do not reopen sprint state or claim the runnable slot.
 
 Treat tool scope as part of the contract. If the runtime supports per-worker tool restrictions, use them. If it does not, the orchestrator must still instruct the worker to stay inside its lane and reject mixed-phase work.
@@ -78,7 +79,7 @@ Use these classifications when choosing the next lane after a decisive outcome:
 - Slice-contract defect: the slice, file bounds, or acceptance criteria were wrong or incomplete. Freeze the evidence, then route to `evaluator-contract-review` or `generator-proposal` instead of patching in execution.
 - Orchestration/state defect: live state, local artifacts, or resume metadata disagree. Route to `state-update`; use `project-initializer` only when the live state model itself is untrustworthy.
 - Environment blocker: external runtime, credential, dependency, or operator conditions prevented honest judgment. Park or escalate until a human or a named recovery path owns it.
-- Goal-lineage drift: `docs/live/current-focus.md` or stronger evidence shows the sprint is no longer the right slice for the active objective. Refresh the focus anchor and route back to brainstorm or proposal rather than forcing execution to absorb the drift.
+- Goal-lineage drift: `docs/live/current-focus.md`, `docs/live/roadmap.md`, or stronger evidence shows the sprint is no longer the right slice for the active objective. Refresh the focus anchor, revise the roadmap, and route back to brainstorm or proposal rather than forcing execution to absorb the drift.
 
 
 ## Build/startup triage before live review
@@ -130,10 +131,10 @@ A worker that only proves a final static condition has not proved the contract.
 
 Fresh-worker orchestration does not change the file contracts.
 
-- Resume from the strongest durable artifact, using `docs/live/current-focus.md` only as a goal-lineage and next-owner pointer.
+- Resume from the strongest durable artifact, using `docs/live/current-focus.md` as the resume pointer and `docs/live/roadmap.md` as the initiative ledger for what remains. Neither file replaces `.harness/<feature-id>/contract.md` for active-sprint truth.
 - Retries keep the same sprint folder and preserve evidence already on disk.
-- PASS still archives the full sprint record, then queues explicit compounding before the next work-selection pass.
-- FAIL or BLOCKED still preserves local evidence, reconciles state first, and may queue compounding before the next retry or parked-state decision.
+- PASS still archives the full sprint record, refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` as needed, then queues explicit compounding before the next work-selection pass.
+- FAIL or BLOCKED still preserves local evidence, reconciles state first, refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` when the remaining path changes, and may queue compounding before the next retry or parked-state decision.
 - Parked `awaiting_human` and `escalated_to_human` sprints remain non-terminal evidence until a human decision changes them.
 - Clearing `compound_pending_feature_ids` is the durable signal that the Compound phase is finished. That may mean durable learning was extracted or that extraction was deliberately skipped because no durable lesson survived.
 

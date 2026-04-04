@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import time
 from pathlib import Path
 from typing import Any
@@ -63,6 +64,159 @@ def parse_args() -> argparse.Namespace:
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+def load_optional_text(path: Path) -> str | None:
+    if not path.exists():
+        return None
+    return path.read_text(encoding="utf-8")
+
+
+def normalize_markdown_label(value: str) -> str:
+    cleaned = re.sub(r"[*_`#]", "", value)
+    cleaned = cleaned.strip().strip(":")
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    return cleaned.lower()
+
+
+def extract_markdown_field(text: str, labels: tuple[str, ...]) -> str | None:
+    wanted = {normalize_markdown_label(label) for label in labels}
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        candidate = line.lstrip("-* ").strip()
+        if ":" not in candidate:
+            continue
+        raw_label, raw_value = candidate.split(":", 1)
+        value = raw_value.strip()
+        if normalize_markdown_label(raw_label) in wanted and value:
+            return value
+    return None
+
+
+def extract_markdown_section(text: str, headings: tuple[str, ...]) -> str | None:
+    wanted = {normalize_markdown_label(heading) for heading in headings}
+    active_heading: str | None = None
+    collected: list[str] = []
+    for raw_line in text.splitlines():
+        stripped = raw_line.strip()
+        if stripped.startswith("#"):
+            heading = normalize_markdown_label(stripped.lstrip("#").strip())
+            if active_heading is not None:
+                break
+            if heading in wanted:
+                active_heading = heading
+            continue
+        if active_heading is None or not stripped:
+            continue
+        collected.append(stripped)
+    if not collected:
+        return None
+    return "\n".join(collected)
+
+
+def first_present(*values: str | None) -> str | None:
+    for value in values:
+        if value:
+            return value
+    return None
+
+
+def control_doc_field(
+    text: str | None,
+    *,
+    labels: tuple[str, ...],
+    headings: tuple[str, ...] = (),
+) -> str | None:
+    if not text:
+        return None
+    return first_present(
+        extract_markdown_field(text, labels),
+        extract_markdown_section(text, headings),
+    )
+
+
+def load_live_control(repo_root: Path) -> dict[str, Any]:
+    live_root = repo_root / "docs" / "live"
+    roadmap_path = live_root / "roadmap.md"
+    focus_path = live_root / "current-focus.md"
+    roadmap_text = load_optional_text(roadmap_path)
+    focus_text = load_optional_text(focus_path)
+
+    return {
+        "roadmap_path": roadmap_path,
+        "roadmap_exists": roadmap_text is not None,
+        "focus_path": focus_path,
+        "focus_exists": focus_text is not None,
+        "source_goal": control_doc_field(
+            roadmap_text,
+            labels=("source goal", "source objective", "initiative goal"),
+            headings=("source goal",),
+        ),
+        "roadmap_status": first_present(
+            control_doc_field(
+                roadmap_text,
+                labels=(
+                    "roadmap status",
+                    "initiative status",
+                    "status",
+                    "current roadmap phase",
+                ),
+                headings=(
+                    "roadmap status",
+                    "initiative status",
+                    "status",
+                    "current roadmap phase",
+                ),
+            ),
+            control_doc_field(
+                focus_text,
+                labels=("current roadmap phase", "roadmap phase"),
+                headings=("current roadmap phase", "roadmap phase"),
+            ),
+        ),
+        "remaining_work": control_doc_field(
+            roadmap_text,
+            labels=(
+                "remaining work",
+                "visible remaining-work summary",
+                "ordered remaining slices/phases",
+                "open work",
+                "next steps",
+            ),
+            headings=(
+                "remaining work",
+                "visible remaining-work summary",
+                "ordered remaining slices/phases",
+                "open work",
+                "next steps",
+            ),
+        ),
+        "current_objective": first_present(
+            control_doc_field(
+                focus_text,
+                labels=("current objective", "objective", "phase goal"),
+                headings=("current objective", "objective", "phase goal"),
+            ),
+            control_doc_field(
+                roadmap_text,
+                labels=("current objective", "plan goal", "phase goal"),
+                headings=("current objective", "plan goal", "phase goal"),
+            ),
+        ),
+        "next_owner": first_present(
+            control_doc_field(
+                focus_text,
+                labels=("next owner", "owner", "resume owner"),
+                headings=("next owner", "owner"),
+            ),
+            control_doc_field(
+                roadmap_text,
+                labels=("next owner", "owner"),
+                headings=("next owner", "owner"),
+            ),
+        ),
+    }
 
 
 def load_statuses(harness_root: Path) -> list[dict[str, Any]]:
@@ -415,6 +569,66 @@ def select_next_feature(
     return ready[0][1], [], blocked_reasons
 
 
+def print_control_value(label: str, value: str) -> None:
+    lines = [line.strip() for line in value.splitlines() if line.strip()]
+    if not lines:
+        return
+    if len(lines) == 1:
+        print(f"{label}: {lines[0]}")
+        return
+    print(f"{label}:")
+    for line in lines:
+        print(f"  {line}")
+
+
+def report_live_control(control: dict[str, Any]) -> None:
+    print("Live control plane:")
+    roadmap_note = " (missing)" if not control["roadmap_exists"] else ""
+    focus_note = " (missing)" if not control["focus_exists"] else ""
+    print(f"- roadmap file: {control['roadmap_path']}{roadmap_note}")
+    print(f"- current focus file: {control['focus_path']}{focus_note}")
+
+    source_goal = control.get("source_goal")
+    if source_goal:
+        print_control_value("Source goal", str(source_goal))
+    elif control["roadmap_exists"]:
+        print("Source goal: unspecified in docs/live/roadmap.md")
+
+    current_objective = control.get("current_objective")
+    if current_objective:
+        print_control_value("Current objective", str(current_objective))
+    elif control["focus_exists"]:
+        print("Current objective: unspecified in docs/live/current-focus.md")
+    else:
+        print(f"Current objective: unavailable (missing {control['focus_path']})")
+
+    next_owner = control.get("next_owner")
+    if next_owner:
+        print_control_value("Next owner", str(next_owner))
+    elif control["focus_exists"]:
+        print("Next owner: unspecified in docs/live/current-focus.md")
+    else:
+        print(f"Next owner: unavailable (missing {control['focus_path']})")
+
+    roadmap_status = control.get("roadmap_status")
+    remaining_work = control.get("remaining_work")
+    if control["roadmap_exists"]:
+        if roadmap_status:
+            print_control_value("Roadmap status", str(roadmap_status))
+        else:
+            print("Roadmap status: unspecified in docs/live/roadmap.md")
+        if remaining_work:
+            print_control_value("Remaining work", str(remaining_work))
+        else:
+            print("Remaining work: unspecified in docs/live/roadmap.md")
+    else:
+        print(f"Roadmap status: unavailable (missing {control['roadmap_path']})")
+        print(
+            "Remaining work: unavailable until docs/live/roadmap.md exists; routing falls back to docs/live/features.json backlog selection and sprint-local evidence."
+        )
+    print()
+
+
 def report_parked_sprints(parked_entries: list[dict[str, Any]]) -> None:
     if not parked_entries:
         return
@@ -658,6 +872,7 @@ def main() -> int:
     repo_root = Path(args.root).resolve()
     harness_root = repo_root / ".harness"
     features, features_error, features_path = load_features(repo_root)
+    live_control = load_live_control(repo_root)
 
     entries: list[dict[str, Any]] = []
     if harness_root.exists():
@@ -669,7 +884,7 @@ def main() -> int:
     elif features_error:
         print(f"ERROR: {features_error}")
         return 2
-
+    report_live_control(live_control)
     if not entries:
         compound_result = report_compound_queue(features, features_error, features_path)
         if compound_result is not None:
