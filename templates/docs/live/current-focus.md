@@ -2,9 +2,9 @@
 
 This file is a live resume anchor. It is not a second contract.
 
-- Current objective: Recover `FEAT-001` so the starter keeps one truthful runnable sprint while finishing the dark-mode foundation work.
-- Source-goal lineage: Prove the starter harness on a visible UI slice -> establish accessible theme infrastructure -> close the dark-mode toggle sprint tracked as `FEAT-001`.
-- Current roadmap phase: Phase 2 of 3 in `docs/live/roadmap.md` - repair and close the dark-mode foundation slice.
-- Next owner: `compound-capture`, then `generator-execution` once the compound queue is clear.
-- Next file to open: `.harness/FEAT-001/review.md`
-- Contract truth: `.harness/FEAT-001/contract.md` remains the only sprint contract for this active slice.
+- Current objective: Establish the first truthful source goal, roadmap, and backlog state for this repo.
+- Source-goal lineage: No durable source goal is recorded yet.
+- Current roadmap phase: Unset. Record the real source goal in `docs/live/roadmap.md` before proposing sprint work.
+- Next owner: `project-initializer`, or the next human or agent establishing durable state.
+- Next file to open: `docs/live/roadmap.md`
+- Contract truth: If a sprint is later opened, `.harness/<feature-id>/contract.md` becomes the only runnable sprint contract.

@@ -19,13 +19,15 @@ If you want to clone the starter from GitHub instead of copying locally:
 npx degit thompson0012/agents-stack/templates new-project && cd new-project && ./docs/scripts/init.sh
 ```
 
-After that, the repo is ready for the first sprint.
+After that, the repo is ready for truthful initialization work.
+
+The copied scaffold starts blank: no active sprint, no archive history, and no seeded feature backlog.
 
 ## What to edit first
 
 1. Set the project name in `docs/live/features.json`.
-2. Replace the starter backlog with your real first feature.
-3. Use `docs/live/ideas.md` for rough ideas that are not ready for proposal.
+2. Record the real source goal in `docs/live/roadmap.md` and `docs/live/current-focus.md`.
+3. Add the first backlog item only when it is real, bounded, and ready to track.
 4. Fill in `docs/reference/architecture.md` and `docs/reference/design.md` with the truth of the new project.
 
 ## What lives where

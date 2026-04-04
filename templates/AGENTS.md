@@ -72,10 +72,10 @@ Global durable state for the whole repo.
 - `memory.md`: durable cross-sprint learning written by the explicit Compound phase, not a dump of routine state reconciliation.
 
 ### `docs/reference/*`
-Stable reference context.
+Stable project reference context for the system and product being built in this repository.
 
-- `architecture.md`: current runtime, entrypoints, major subsystems, integration boundaries, and orchestration rules.
-- `design.md`: current UI/product intent, interaction model, and notable UX constraints.
+- `architecture.md`: project-specific runtime, entrypoints, major subsystems, integration boundaries, and orchestration rules.
+- `design.md`: project-specific product intent, interaction model, visual system, and notable constraints.
 
 Reference docs guide decisions, but they do not override an approved sprint contract.
 
@@ -230,7 +230,7 @@ Do not open a second runnable sprint while another runnable sprint is still live
 
 ## Orchestrator-worker execution model
 
-The `using-agents-stack` root skill is the only orchestrator in this starter. It reads durable state, merges returned worker evidence, makes the routing decision, and dispatches the next fresh worker for that phase.
+The `using-agents-stack` root skill is the only orchestrator in this repository. It reads durable state, merges returned worker evidence, makes the routing decision, and dispatches the next fresh worker for that phase.
 
 Execution rules:
 - Use the host runtime's delegation primitive when available (`sub-agent`, `Task agent`, parallel worker, or equivalent). Do not require a literal `spawn_subagent` API.

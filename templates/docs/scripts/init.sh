@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 set -eu
 
+# Fresh scaffold invariants:
+# - new projects start with no active or parked sprint and no archive history
+# - `.harness/` and `docs/archive/` stay empty until real work creates artifacts
+# - the files written below are the canonical blank defaults for copied scaffolds
+# - keep `templates/docs/live/*` and `templates/docs/reference/*` aligned with these defaults
+
 ensure_dir() {
   dir="$1"
   if [ ! -d "$dir" ]; then
@@ -74,7 +80,7 @@ This file is durable state. Update it in place so future agents can see what was
 
 ## Idea entry template
 ### IDEA-TEMPLATE: Working title
-- Related feature id: none yet | FEAT-000
+- Related feature id: none yet | FEAT-###
 - Current state: exploring | needs_brainstorm | ready_to_promote | parked | rejected
 - Problem statement:
 - Why now:
@@ -122,10 +128,10 @@ Capture stable repo truths, environment quirks, and lessons future agents should
 
 write_file_if_missing "docs/reference/architecture.md" '# Architecture Reference
 
-Describe the current runtime, entrypoints, and major subsystem boundaries.
+Describe the project-specific runtime, entrypoints, major subsystem boundaries, integration boundaries, and orchestration rules.
 '
 
 write_file_if_missing "docs/reference/design.md" '# Design Reference
 
-Describe the current UX intent, visual system, and product constraints.
+Describe the project-specific product intent, interaction model, visual system, and notable constraints.
 '

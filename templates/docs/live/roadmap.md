@@ -1,12 +1,12 @@
 # Initiative Roadmap
 
-This file is the non-runnable roadmap for the broader initiative. It does not select the runnable sprint; `docs/live/features.json` still does that.
+This file is the non-runnable roadmap for broader goals. It does not select the runnable sprint; `docs/live/features.json` still does that.
 
-- Source goal: Prove the starter harness end to end with durable live state, one runnable sprint at a time, and a visible UI slice that survives review and resume.
-- Current slice: `FEAT-001` - dark mode context provider and polished toggle retry after review feedback.
+- Source goal: Not recorded yet. Replace this line with the real user or repo objective.
+- Current slice: None selected yet.
 - Ordered remaining slices/phases:
-  1. Drain explicit compounding for `FEAT-001`, then repair the failed review findings and rerun execution plus review for the same slice.
-  2. Close or honestly park `FEAT-001` before any new runnable sprint is selected.
-  3. After the queue is clear and the current slice is resolved, choose the next dependency-ready backlog item from `docs/live/features.json` if one exists.
-- Stop or re-authorization condition: Stop when `FEAT-001` exhausts retries, requires a new scope decision, or when no later bounded slice is ready. A human must re-authorize before inventing another initiative slice.
-- Visible remaining-work summary: One active slice still needs review-driven repair, `compound_pending_feature_ids` still contains `FEAT-001`, and no later runnable slice has been selected yet.
+  1. Record the source goal and any real constraints.
+  2. Add the first bounded backlog item to `docs/live/features.json` when one is justified.
+  3. Open proposal work only after one dependency-ready item is honestly `pending`.
+- Stop or re-authorization condition: Stop when no bounded next slice is justified from repo facts or user direction. Re-authorize before inventing more roadmap.
+- Visible remaining-work summary: No runnable sprint is selected, no parked sprint is recorded, and the backlog is empty until real tracked work exists.

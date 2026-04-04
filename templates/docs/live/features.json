@@ -1,46 +1,11 @@
 {
-  "project": "Agents Stack Starter",
-  "updated_at": "2026-04-04",
+  "project": "Replace with project name",
   "idea_backlog_path": "docs/live/ideas.md",
   "current_focus_path": "docs/live/current-focus.md",
   "roadmap_path": "docs/live/roadmap.md",
   "single_runnable_active_sprint": true,
-  "runnable_active_sprint_id": "FEAT-001",
+  "runnable_active_sprint_id": null,
   "parked_sprint_ids": [],
-  "compound_pending_feature_ids": [
-    "FEAT-001"
-  ],
-  "backlog": [
-    {
-      "id": "FEAT-000",
-      "title": "Bootstrap harness starter",
-      "status": "archived",
-      "priority": 0,
-      "archive_path": "docs/archive/FEAT-000_timestamp/",
-      "completed_at": "2026-04-02",
-      "summary": "Established the starter topology, durable state files, and archive pattern used by later work.",
-      "next_dependency": "FEAT-001"
-    },
-    {
-      "id": "FEAT-001",
-      "title": "Dark mode context provider and polished toggle",
-      "status": "in_progress",
-      "priority": 1,
-      "dependencies": [
-        "FEAT-000"
-      ],
-      "local_state_path": ".harness/FEAT-001/",
-      "phase": "review_failed",
-      "owner_role": "orchestrator",
-      "resume_from": "review.md",
-      "review_status": "fail",
-      "attempt_count": 1,
-      "max_attempts": 3,
-      "clean_restore_ref": "disposable-worktree:feat-001-attempt-02-baseline",
-      "summary": "The sprint remains the single runnable active sprint after a failed adversarial review. State-update already reconciled the failure, and FEAT-001 is queued for explicit compounding before the clean retry resumes.",
-      "next_action": "Run compound-capture for FEAT-001, then restore FEAT-001 from clean_restore_ref, dispatch generator-execution attempt 02, rerun build/startup triage, and only then return to adversarial-live-review if the retry remains within budget.",
-      "evidence_path": ".harness/FEAT-001/",
-      "parked_state": null
-    }
-  ]
+  "compound_pending_feature_ids": [],
+  "backlog": []
 }
