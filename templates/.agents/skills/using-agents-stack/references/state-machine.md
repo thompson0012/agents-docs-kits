@@ -7,10 +7,11 @@ This reference defines the durable phase model for the starter-pack harness. The
 - Exactly one sprint may be runnable at a time.
 - Additional non-terminal sprint folders may remain in `.harness/` only when they are explicitly parked in `awaiting_human` or `escalated_to_human`.
 - Parked sprints stay visible in durable state, but they do not count as the runnable active sprint.
-- Global state in `docs/live/*` tracks project-level priority, dependencies, parked visibility, history, the live resume anchor, and the durable initiative roadmap.
+- Global state in `docs/live/*` tracks project-level priority, dependencies, parked visibility, history, the live resume anchor, and the durable initiative roadmap. `docs/live/features.json` remains the only tracked-work registry and stores per-feature links such as `idea_ref`, `evidence_path`, `record_paths`, and `reference_paths`.
 - Local state in `.harness/<feature-id>/*` tracks one sprint's current checkpoint, retry budget, and human handoff boundary.
-- Archived state in `docs/archive/<feature-id>_<timestamp>/` preserves completed sprint artifacts.
-- A sprint is not complete when code exists. It is complete only after review passes and state is updated.
+- Scoped durable records in `docs/records/*` may preserve discussion or sprint outputs that are not the active contract, immutable archive evidence, or current reference truth.
+- Archived state in `docs/archive/<feature-id>_<timestamp>/` preserves archived sprint artifacts after PASS archive cutover.
+- A sprint is not terminal when code exists. It becomes archived only after review passes, state is updated, and the archive cutover is recorded.
 - If state files disagree, later-phase artifact evidence wins over stale status declarations.
 - The orchestrator routes and dispatches; each phase runs in a fresh worker with phase-scoped tools.
 - Workers do not spawn other workers. If more delegation is needed, control returns to the lead orchestrator.
@@ -24,6 +25,10 @@ Evidence precedence for routing:
 5. `status.json`
 6. `docs/live/features.json`
 7. `docs/live/current-focus.md` and `docs/live/roadmap.md`
+8. `docs/live/progress.md` and `docs/live/memory.md`
+9. `docs/reference/*`
+10. `docs/records/*`
+11. `docs/archive/*` as historical evidence only
 
 ## Scheduling order when no runnable sprint exists
 
@@ -46,10 +51,18 @@ This lets explicit compounding run before new work and lets the backlog advance 
 
 ## Roadmap publication and revision
 
-- `docs/live/features.json` still decides runnable and backlog truth. `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for source goals, remaining slices, and re-authorization boundaries.
+- `docs/live/features.json` still decides runnable and backlog truth, remains the only tracked-work registry, and carries durable links to ideas, scoped records, current reference docs, and each feature's single canonical `evidence_path`. `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for source goals, remaining slices, and re-authorization boundaries.
 - Publish or revise `docs/live/roadmap.md` whenever initialization, planning, or state reconciliation turns a broad user goal into durable tracked work or changes which slices remain.
 - Refresh `docs/live/current-focus.md` whenever the next owner, active lane, or strongest artifact changes.
-- Neither live file becomes a second runnable contract. If a sprint is active, `.harness/<feature-id>/contract.md` remains the slice truth.
+- Neither live file becomes a second runnable contract. If a sprint is active, `.harness/<feature-id>/contract.md` remains the slice truth. Records and reference docs stay linked through `features.json`; they do not become a second registry or a second execution contract.
+
+## Durable records and reference links
+
+- `docs/records/*` is for durable, traceable, scoped records from discussion or sprint work. These pages are optional and may later be promoted, superseded, or expired.
+- Each record page must carry page-local provenance and validity metadata such as `scope`, `status`, `superseded_by`, and the sprint or archive contributions it summarizes.
+- `docs/reference/*` remains current stable truth only. Promote record content there only when it is broadly current, then keep `features.json` traceability pointers up to date instead of inventing a second registry.
+- `docs/live/progress.md` may log record creation, promotion, supersession, expiry, and archive cutover events, but it remains an append-only audit trail rather than a tracked-work index.
+- Not every sprint must create a record. The absence of a record is not a state defect when `features.json`, local evidence, and archive history already tell the truth.
 
 ## Phase model
 
@@ -64,12 +77,12 @@ This lets explicit compounding run before new work and lets the backlog advance 
 | `build_failed` | `status.json.phase = build_failed` plus execution notes in `runtime.md` or `handoff.md` | `state-update` worker, then `compound-capture`, then orchestrator | Build, startup, or smoke-triage failed during execution, so the sprint must reconcile, compound, and then retry or escalate. | Clean-restore and retry, park for human input, or escalate. |
 | `paused_by_timeout` | `status.json.phase = paused_by_timeout` | Route by `resume_from`, usually a fresh phase worker | Prior session stopped without a clean finish. | Resume from the last trustworthy checkpoint. |
 | `awaiting_review` | `handoff.md` exists and `review.md` does not | `adversarial-live-review` worker | Execution claims completion and is waiting for independent review. | Review observable behavior and state transitions. |
-| `review_recorded` | `review.md` exists | `state-update` worker | Review outcome exists and must be synchronized into durable state. | Archive on PASS, reopen on FAIL, or park/escalate on BLOCKED. |
+| `review_recorded` | `review.md` exists | `state-update` worker | Review outcome exists and must be synchronized into durable state. | Mark archived on PASS, reopen on FAIL, or park/escalate on BLOCKED. |
 | `review_failed` | `review.md` remains on disk; `status.json.phase = review_failed` after `state-update` reconciles a FAIL review | `state-update` worker, then `compound-capture`, then orchestrator | The failure is durable, the evidence stays attached, and the next execution loop owns the sprint only after compounding and retry gates are satisfied. | Clean-restore and retry, park for human input, or escalate. |
 | `awaiting_human` | `status.json.phase = awaiting_human` plus explicit human action fields | no automatic child until human input changes files | Automation is paused at a durable file boundary for human edits, approvals, or environment intervention. | Wait for human edits, then resume from `resume_from`. |
 | `escalated_to_human` | `status.json.phase = escalated_to_human` plus escalation reason | no automatic child until human decision changes files | Automatic retry must stop because attempt budget is exhausted or recovery is unsafe. | Human decides whether to reset, cancel, or re-scope. |
 | `compound_pending` | `docs/live/features.json` lists the feature id in `compound_pending_feature_ids` | `compound-capture` worker | Explicit durable-learning capture must run before new work selection or runnable resume. | Capture the durable lesson or clear the queue truthfully. |
-| `archived` | Artifacts moved or copied to `docs/archive/...` and live state updated | `generator-brainstorm` or `generator-proposal` worker for the next item | Sprint is complete and no longer active. | Select the next dependency-ready `needs_brainstorm` or `pending` feature. |
+| `archived` | Artifacts moved or copied to `docs/archive/...`, live state updated, and `evidence_path` cut over | `generator-brainstorm` or `generator-proposal` worker for the next item | Sprint is archived, no longer active, and traceable through `features.json` pointers instead of a second registry. | Select the next dependency-ready `needs_brainstorm` or `pending` feature. |
 
 ## Transition rules
 
@@ -123,7 +136,7 @@ This lets explicit compounding run before new work and lets the backlog advance 
 - `awaiting_review` -> `review_recorded`
   - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED.
 - `review_recorded` -> `archived`
-  - Trigger: `state-update` worker processes a PASS review, updates `docs/live/*`, and archives the sprint.
+  - Trigger: `state-update` worker processes a PASS review, updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<feature-id>_<timestamp>/`, and archives the sprint.
 - `review_recorded` -> `review_failed`
   - Trigger: `state-update` worker processes a FAIL review, increments retry metadata, preserves the evidence, and records the retry checkpoint.
 - `review_recorded` -> `awaiting_human`
@@ -165,8 +178,9 @@ This lets explicit compounding run before new work and lets the backlog advance 
 3. `state-update` worker:
    - updates `docs/live/features.json`
    - refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` for the next authorized slice or pause boundary
-   - appends outcome to `docs/live/progress.md`
+   - appends outcome to `docs/live/progress.md`, including archive cutover and any record lifecycle events
    - archives the sprint to `docs/archive/<feature-id>_<timestamp>/`
+   - switches the feature's canonical `evidence_path` from `.harness/<feature-id>/` to the archive path
    - clears runnable active-sprint status
    - queues the feature id in `compound_pending_feature_ids`
 4. The next router pass selects `compound-capture`. Only after the queue is drained may the harness select new proposal work or another runnable sprint.
@@ -239,8 +253,8 @@ Handling rules:
 A sprint is terminal only when all of the following are true:
 
 - review passed
-- global live state reflects the outcome
+- global live state reflects the outcome and points the feature's canonical `evidence_path` at `docs/archive/<feature-id>_<timestamp>/`
 - the sprint is archived under `docs/archive/<feature-id>_<timestamp>/`
 - no runnable active status remains for that sprint in `.harness/`
 
-Anything short of that is resumable or parked work, not completion.
+Anything short of that is resumable or parked work, not an archived terminal outcome.

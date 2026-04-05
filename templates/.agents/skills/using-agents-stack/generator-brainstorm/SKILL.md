@@ -9,14 +9,17 @@ inputs:
   - docs/live/progress.md
   - docs/live/memory.md
   - docs/reference/*
+  - linked docs/records/* for the selected tracked feature when present
 outputs:
   - updated docs/live/ideas.md
+  - optional scoped `docs/records/*` note for an already-tracked feature or initiative
   - optional precise update to docs/live/features.json
 boundaries:
-  - Operate only on durable idea and backlog artifacts.
+  - Operate only on durable idea, record, and backlog artifacts.
   - Do not edit product code, tests, app assets, or `.harness/<feature-id>/` sprint files.
   - Do not claim `runnable_active_sprint_id` or otherwise mark a runnable active sprint.
   - Do not turn brainstorming notes into an implementation plan disguised as a proposal.
+  - Do not create a record for untracked ideation or let `docs/records/*` become a second registry, contract, or archive.
 next_skills:
   - generator-proposal
 ---
@@ -38,9 +41,9 @@ Brainstorm never claims the single runnable active sprint slot. It prepares work
 
 - Run brainstorming in a fresh worker context. The orchestrator dispatches this worker; it does not brainstorm inline.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: durable backlog state only. Reads across `docs/live/*`, `docs/reference/*`, and `AGENTS.md`; writes only to `docs/live/ideas.md` and the narrow `docs/live/features.json` updates needed to promote or restate candidate backlog truth.
-- Not parallel-safe for writes. This worker owns `docs/live/ideas.md` and any related `features.json` update for the selected candidate during its run.
-- Durable return contract: an updated `docs/live/ideas.md` plus an optional truthful `docs/live/features.json` update. Include `worker_id` and `orchestrator_run_id` in any durable note only if the host already provides them.
+- Tool lane: durable backlog state only. Reads across `docs/live/*`, `docs/reference/*`, `docs/records/*` when linked, and `AGENTS.md`; writes to `docs/live/ideas.md`, optional scoped `docs/records/*`, and the narrow `docs/live/features.json` updates needed to promote or restate candidate backlog truth.
+- Not parallel-safe for writes. This worker owns `docs/live/ideas.md`, any scoped record page it creates or updates for the selected tracked feature, and any related `features.json` update during its run.
+- Durable return contract: an updated `docs/live/ideas.md` plus optional truthful `docs/records/*` and `docs/live/features.json` updates. Include `worker_id` and `orchestrator_run_id` in any durable note only if the host already provides them.
 
 ## Required Reads
 Read these before changing anything:
@@ -50,6 +53,7 @@ Read these before changing anything:
 3. `docs/live/ideas.md`
 4. `docs/live/progress.md` and `docs/live/memory.md`
 5. Relevant `docs/reference/*` that constrain the idea space
+6. Any existing `docs/records/*` already linked from the selected tracked feature or initiative
 
 If `docs/live/ideas.md` is missing or obviously boilerplate, repair it first instead of inventing ephemeral brainstorm context in chat.
 
@@ -66,18 +70,20 @@ A durable exploration record that keeps ideation legible across sessions. For th
 - open questions blocking proposal-quality scoping
 - the promotion signal that would justify moving the item into `features.json`
 
-### Optional `docs/live/features.json` update
-Use this only when the brainstorm produced a truthful backlog change.
+### Optional `docs/records/*` update
+Use this only when the brainstorm produced durable discussion residue that is too large, too nuanced, or too likely to be revisited for `docs/live/ideas.md` alone.
 
 Valid cases:
-- create or refine a backlog entry that should be tracked durably
-- keep or set `status: "needs_brainstorm"` when ideation is still required before proposal
-- promote one candidate to proposal-ready tracked work, usually by moving it to `pending`
+- the candidate already exists as a tracked feature or initiative in `docs/live/features.json`
+- the record captures scoped rationale, option analysis, research residue, or decision context that should survive across sessions but is not stable reference truth
+- `docs/live/features.json` is updated in the same pass so the feature's `record_paths` point back to the record
+- `docs/live/ideas.md` keeps a concise summary and promotion signal instead of duplicating the whole record
 
 Invalid cases:
-- claiming `runnable_active_sprint_id`
-- marking a feature `in_progress`, `contracted`, or otherwise runnable from brainstorming alone
-- opening `.harness/<feature-id>/`
+- using a record to bypass creating or updating the tracked feature entry in `docs/live/features.json`
+- storing untracked ideation that still belongs in `docs/live/ideas.md`
+- turning a record into a hidden proposal, sprint contract, or second archive
+- creating record pages for generic brainstorming with no tracked feature anchor
 
 ## Workflow
 
@@ -111,6 +117,15 @@ Update `docs/live/ideas.md` so the next worker can understand:
 
 Stay at the backlog and product-decision level. Brainstorm is not the place to write sprint file lists, implementation steps, or execution instructions.
 
+### 3a. Create a scoped record only when the tracked feature already exists
+If the selected item is already tracked in `docs/live/features.json` and the durable discussion is too large or nuanced for `docs/live/ideas.md`, create or update one scoped page under `docs/records/*` instead of bloating `ideas.md`. Keep the record page-local: note its scope, current status, any supersession relationship, and the sprint or archive evidence it draws from when known.
+
+When you do this:
+- keep `docs/live/ideas.md` as the concise idea ledger
+- update the feature entry's `record_paths` in `docs/live/features.json` in the same pass
+- do not create a second registry or a hidden contract; the record is supporting residue, not runnable authority
+- leave untracked ideation in `docs/live/ideas.md` rather than spawning a record page
+
 ### 4. Promote at most one candidate when it becomes proposal-ready
 Promotion means the idea is now specific enough to deserve tracked proposal work.
 
@@ -130,7 +145,8 @@ If the answer is still unclear, that is a failure to refine the idea enough. Fix
 
 ## File Write Expectations
 - `docs/live/ideas.md` is the primary artifact for this phase.
-- `docs/live/features.json` may change only to truthfully track brainstorm-needed or proposal-ready backlog state.
+- `docs/live/features.json` may change only to truthfully track brainstorm-needed or proposal-ready backlog state and to register any linked `record_paths` for the touched feature.
+- Scoped `docs/records/*` pages are optional supporting artifacts only for already-tracked features; they must never replace `ideas.md`, `features.json`, or later sprint-local contracts.
 - Do not create `.harness/<feature-id>/` from brainstorming.
 - Do not edit `docs/archive/*` during this phase.
 - Do not touch product code, tests, or runtime assets.
@@ -149,9 +165,10 @@ When blocked, write the uncertainty down. Do not pad `ideas.md` with fake confid
 A good brainstorm pass:
 - makes open questions explicit instead of hiding them
 - captures durable reasons, constraints, and rejected options
+- uses `docs/records/*` only for scoped, feature-linked residue that would otherwise overload `ideas.md`
 - promotes at most one candidate only when proposal work is justified
-- keeps `docs/live/features.json` authoritative for tracked work
+- keeps `docs/live/features.json` authoritative for tracked work and record linkage
 - preserves the single-runnable-sprint rule by staying pre-sprint and non-runnable
 
 ## Done Definition
-This skill is done when `docs/live/ideas.md` truthfully captures the explored candidate, any related backlog item in `docs/live/features.json` accurately says `needs_brainstorm` or `pending`, and no runnable sprint slot has been claimed.
+This skill is done when `docs/live/ideas.md` truthfully captures the explored candidate, any related backlog item in `docs/live/features.json` accurately says `needs_brainstorm` or `pending`, any optional record is feature-linked through `record_paths` instead of becoming a second registry, and no runnable sprint slot has been claimed.

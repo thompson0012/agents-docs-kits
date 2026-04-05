@@ -9,18 +9,21 @@ inputs:
   - docs/live/memory.md
   - docs/reference/architecture.md
   - docs/reference/design.md
+  - linked docs/records/* for the queued feature when present
   - .harness/<feature-id>/* when the sprint still lives locally
   - docs/archive/<feature-id>_<timestamp>/* when the sprint has already been archived
 outputs:
   - updated docs/live/memory.md when durable learning survives
   - unchanged docs/live/memory.md when extraction is deliberately skipped because no durable lesson survived
+  - optional precise update to linked `docs/records/*` when record residue is promoted, superseded, or expired
   - optional precise update to docs/reference/architecture.md or docs/reference/design.md when the lesson is now stable reference truth
-  - updated docs/live/features.json with the processed feature id removed from `compound_pending_feature_ids`
+  - updated docs/live/features.json with the processed feature id removed from `compound_pending_feature_ids` and any touched `record_paths` / `reference_paths` kept truthful
 boundaries:
   - Do not reopen proposal, execution, review, or state reconciliation.
   - Do not make backlog publication, archive, or runnable-sprint decisions; those belong to `state-update`.
   - Do not invent durable lessons from a single noisy artifact.
   - Do not claim or change `runnable_active_sprint_id`.
+  - Do not let `docs/records/*` become a second contract, second archive, or hidden registry outside `docs/live/features.json`.
 next_skills:
   - generator-execution
   - generator-brainstorm
@@ -42,9 +45,9 @@ Compounding is explicit, non-runnable phase work. It does not reopen execution o
 
 - Run compounding in a fresh worker context after `state-update`; do not fold it into reconciliation.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: read the decisive evidence, write `docs/live/memory.md` only when durable residue survives, optionally patch stable reference docs, and clear the processed queue entry in `docs/live/features.json`. No product-code edits, no `.harness/<feature-id>/status.json` rewrites, no archive moves.
-- Not parallel-safe against another worker touching `docs/live/memory.md`, the same reference doc, or `docs/live/features.json`. Process one queued feature id at a time.
-- Durable return contract: truthful `docs/live/memory.md` when extraction happens, or a deliberate no-edit skip when no durable learning survives, plus `docs/live/features.json` with the processed feature removed from `compound_pending_feature_ids`.
+- Tool lane: read the decisive evidence, write `docs/live/memory.md` only when durable residue survives, optionally patch linked `docs/records/*` and stable reference docs, and clear the processed queue entry in `docs/live/features.json`. No product-code edits, no `.harness/<feature-id>/status.json` rewrites, no archive moves.
+- Not parallel-safe against another worker touching `docs/live/memory.md`, linked record pages, the same reference doc, or `docs/live/features.json`. Process one queued feature id at a time.
+- Durable return contract: truthful `docs/live/memory.md` when extraction happens, or a deliberate no-edit skip when no durable learning survives, plus any linked `docs/records/*` / `docs/reference/*` updates and `docs/live/features.json` with the processed feature removed from `compound_pending_feature_ids`.
 
 ## Required Reads
 Read these before writing anything:
@@ -54,7 +57,8 @@ Read these before writing anything:
 3. `docs/live/progress.md`
 4. `docs/live/memory.md`
 5. Relevant `docs/reference/architecture.md` or `docs/reference/design.md` if the lesson may be reference-worthy
-6. The decisive sprint evidence for the queued feature id:
+6. Any linked `docs/records/*` already registered on the queued feature
+7. The decisive sprint evidence for the queued feature id:
    - prefer `.harness/<feature-id>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint is still active or parked
    - prefer `docs/archive/<feature-id>_<timestamp>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint has already been archived
 
@@ -102,7 +106,7 @@ For each candidate lesson, ask:
 - Will this matter outside the just-finished sprint?
 - Is it supported by evidence, not just chat or intuition?
 - Would a future worker make a worse decision without this note?
-- Does it belong in `memory.md`, or is it stable enough for a reference doc?
+- Does it belong in `memory.md`, a linked record page, or is it stable enough for a reference doc?
 
 If the answer is no, do not record it.
 
@@ -117,11 +121,14 @@ Write in project-truth terms when you do extract:
 
 `progress.md` already owns the outcome ledger. `memory.md` should either gain durable residue or remain unchanged on purpose. Do not blur those roles.
 
-### 5. Update reference docs only when the lesson is now stable
+### 5. Reconcile linked records before promoting reference truth
+If the queued feature already has `record_paths`, inspect those pages against the decisive evidence bundle.
 
-Examples:
-- a verified integration boundary that future proposals must respect
-- a design-system rule or interaction constraint that is now part of the product baseline
+Use records deliberately:
+- promote stable residue from a record into `docs/reference/*` only when the lesson is now current project truth
+- keep feature-specific or still-contingent material in `docs/records/*` with page-local provenance such as scope, status, superseded_by, and the sprint or archive contributions it relies on
+- when later evidence invalidates or replaces a record, update that record's status to something like superseded or expired instead of silently deleting traceability
+- keep `docs/live/features.json` authoritative by preserving or updating the feature's `record_paths` and `reference_paths` in the same pass
 
 Do not patch reference docs for tentative lessons, retries, or one-off failures.
 
@@ -129,6 +136,7 @@ Do not patch reference docs for tentative lessons, retries, or one-off failures.
 After extracting durable learning, or after deliberately skipping extraction because none survives:
 - remove the feature id from `compound_pending_feature_ids`
 - leave `runnable_active_sprint_id` unchanged
+- keep the feature's `record_paths`, `reference_paths`, and canonical `evidence_path` truthful in `docs/live/features.json`
 - do not change the sprint phase, retry budget, archive state, or parked-state metadata
 
 Clearing the queue is the durable record that the extract-or-skip decision for that feature is finished. It does not mean the sprint outcome changed.
@@ -145,10 +153,12 @@ If the evidence is thin but sufficient to conclude “no durable learning,” th
 ## Quality Bar
 A good compounding pass:
 - leaves `progress.md` as the outcome ledger and `memory.md` as the cross-sprint residue
-- keeps reference docs reserved for stable truths
+- promotes only stable truths into reference docs
+- updates linked records when they should stay as feature-scoped residue, or marks them superseded/expired when later evidence invalidates them
+- keeps `docs/live/features.json` authoritative for record and reference linkage
 - clears the queue entry so the orchestrator does not compound the same feature twice
 - never steals ownership of execution, review, or backlog publication
 - tells the truth even when the answer is to skip extraction because nothing durable survived
 
 ## Done Definition
-This skill is done when the queued feature has been evaluated for durable learning, any real cross-sprint lesson has been captured in `docs/live/memory.md` and optional reference docs, or extraction has been deliberately skipped because no durable residue survived, and the feature id has been removed from `compound_pending_feature_ids` without altering runnable-sprint ownership or reopening prior phases.
+This skill is done when the queued feature has been evaluated for durable learning, any real cross-sprint lesson has been captured in `docs/live/memory.md`, any linked record has either stayed as scoped residue, been promoted into `docs/reference/*`, or been marked superseded/expired truthfully, and the feature id has been removed from `compound_pending_feature_ids` without altering runnable-sprint ownership or reopening prior phases.

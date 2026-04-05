@@ -34,6 +34,7 @@ ensure_dir ".agents/skills/using-agents-stack"
 ensure_dir ".harness"
 ensure_dir "docs/archive"
 ensure_dir "docs/live"
+ensure_dir "docs/records"
 ensure_dir "docs/reference"
 ensure_dir "docs/scripts"
 
@@ -42,6 +43,7 @@ write_file_if_missing "docs/live/features.json" '{
   "idea_backlog_path": "docs/live/ideas.md",
   "current_focus_path": "docs/live/current-focus.md",
   "roadmap_path": "docs/live/roadmap.md",
+  "records_root_path": "docs/records/",
   "single_runnable_active_sprint": true,
   "runnable_active_sprint_id": null,
   "parked_sprint_ids": [],
@@ -119,6 +121,53 @@ This file is the non-runnable roadmap for broader goals. It does not select the 
 write_file_if_missing "docs/live/progress.md" '# Project Progress Ledger
 
 Record dated sprint outcomes here. Append new entries; do not rewrite history.
+
+Use this ledger for durable audit events, not as a second registry. `docs/live/features.json` remains the tracked-work source of truth.
+
+Record transitions such as:
+- sprint start, pause, escalation, build failure, review failure, PASS archive cutover, and next-action decisions
+- record creation in `docs/records/*`
+- record promotion into `docs/reference/*`
+- record supersession or expiry, with replacement path when one exists
+
+When a record event is tied to tracked work, name the feature id, record path, and evidence path that justifies it.
+
+## Entry template
+- YYYY-MM-DD - EVENT - Feature: FEAT-### | none - Paths: `docs/records/...`, `docs/reference/...`, `.harness/...`, or `docs/archive/...` - Notes: brief factual summary
+'
+
+write_file_if_missing "docs/records/README.md" '# Durable Records
+
+Use this folder for durable feature or decision pages created from a sprint, review, or scoped discussion when the material should survive chat loss but is not the active contract, not immutable archive evidence, and not stable project-wide reference truth.
+
+## What belongs here
+- feature-local decision notes, investigation summaries, tradeoff writeups, or handoff context that remain useful after the sprint
+- sprint or discussion output that needs durable traceability but is too situational for `docs/reference/*` and too interpreted for `docs/archive/*`
+- pages tied to a tracked feature id and registered from that feature entry through `record_paths`
+
+## What does not belong here
+- active sprint contracts, proposals, runtime logs, reviews, or status files
+- copied archive evidence from `.harness/<FEAT-ID>/` or `docs/archive/<FEAT-ID>_<timestamp>/`
+- current project-wide truth that belongs in `docs/reference/*`
+- untracked ideas; keep those in `docs/live/ideas.md` until a feature id exists
+
+## Page metadata and backlinks
+At the top of each record, include:
+- `feature_id`: owning tracked feature, when one exists
+- `scope`: what question, slice, or discussion window this page covers
+- `status`: current validity such as `informative`, `promoted`, `superseded`, or `expired`
+- `superseded_by`: replacement record or reference path, if any
+- `idea_ref`: originating idea section or durable discussion pointer, if any
+- `evidence_path`: one canonical evidence path for the current supporting sprint evidence
+- `reference_paths`: stable reference pages that absorbed durable truth from this record
+- `sprint_contributions`: sprint folders or feature ids that materially informed the page
+- `archive_contributions`: archive folders that preserve cited PASS evidence
+
+Backlink rules:
+- register the page path under the owning feature entry `record_paths`
+- link back to the current `evidence_path` for the supporting sprint
+- when content becomes stable current truth, promote that truth into `docs/reference/*`, update `reference_paths`, and leave this record as provenance
+- when content is replaced or no longer valid, update `status` and `superseded_by` instead of deleting history
 '
 
 write_file_if_missing "docs/live/memory.md" '# Durable Project Memory

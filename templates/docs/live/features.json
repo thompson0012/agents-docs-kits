@@ -3,6 +3,7 @@
   "idea_backlog_path": "docs/live/ideas.md",
   "current_focus_path": "docs/live/current-focus.md",
   "roadmap_path": "docs/live/roadmap.md",
+  "records_root_path": "docs/records/",
   "single_runnable_active_sprint": true,
   "runnable_active_sprint_id": null,
   "parked_sprint_ids": [],

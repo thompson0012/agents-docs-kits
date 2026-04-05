@@ -11,13 +11,15 @@ inputs:
   - docs/live/progress.md
   - docs/live/memory.md
   - docs/reference/*
+  - linked docs/records/* for the selected feature when present
   - existing implementation in the target area
   - .harness/<feature-id>/sprint_proposal.md if revising an existing proposal
 outputs:
   - .harness/<feature-id>/sprint_proposal.md
   - .harness/<feature-id>/status.json
+  - optional scoped `docs/records/*` note when durable feature-linked discussion residue should survive outside the sprint contract
   - optional precise updates to docs/live/roadmap.md and docs/live/current-focus.md when broad-goal truth must be made durable before sprint reservation
-  - optional precise update to docs/live/features.json to reserve the active sprint
+  - optional precise update to docs/live/features.json to reserve the active sprint and register any touched `record_paths`
 boundaries:
   - Scope exactly one bounded sprint.
   - Do not implement code during this phase.
@@ -25,6 +27,7 @@ boundaries:
   - Do not claim a file boundary you have not checked against the repo.
   - Do not translate unresolved brainstorm notes into fake proposal certainty.
   - Do not invent source-goal intent or roadmap structure that the files and prompt cannot support.
+  - Do not let `docs/records/*` become a second contract, second registry, or substitute for `.harness/<feature-id>/sprint_proposal.md`.
 next_skills:
   - evaluator-contract-review
 ---
@@ -42,9 +45,9 @@ When the feature came from `docs/live/ideas.md`, carry forward only the parts th
 
 - Run proposal drafting in a fresh worker context. The orchestrator dispatches this worker; it does not swap into proposal mode inline.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: repo discovery, sprint-local planning writes under `.harness/<feature-id>/`, and the narrow live-state updates needed to make source-goal truth durable in `docs/live/roadmap.md`, `docs/live/current-focus.md`, and `docs/live/features.json`. No product-code edits.
-- Parallel-safe only for read-only research across clearly disjoint code areas. One worker owns `.harness/<feature-id>/sprint_proposal.md` and `status.json`; parallel helpers must not write those same files or overlap target areas.
-- Durable return contract: `.harness/<feature-id>/sprint_proposal.md`, `.harness/<feature-id>/status.json`, and any required `docs/live/roadmap.md` / `docs/live/current-focus.md` refresh before reservation, plus optional `docs/live/features.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
+- Tool lane: repo discovery, sprint-local planning writes under `.harness/<feature-id>/`, optional scoped `docs/records/*`, and the narrow live-state updates needed to make source-goal truth durable in `docs/live/roadmap.md`, `docs/live/current-focus.md`, and `docs/live/features.json`. No product-code edits.
+- Parallel-safe only for read-only research across clearly disjoint code areas. One worker owns `.harness/<feature-id>/sprint_proposal.md`, `status.json`, and any scoped record update for that feature; parallel helpers must not write those same files or overlap target areas.
+- Durable return contract: `.harness/<feature-id>/sprint_proposal.md`, `.harness/<feature-id>/status.json`, any optional `docs/records/*`, and any required `docs/live/roadmap.md` / `docs/live/current-focus.md` refresh before reservation, plus optional `docs/live/features.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
 
 ## Required Reads
 Read these before drafting:
@@ -55,8 +58,9 @@ Read these before drafting:
 4. `docs/live/progress.md` and `docs/live/memory.md`
 5. `docs/live/ideas.md` when the selected backlog item came from brainstorming, references idea exploration, or still has open ideation context worth narrowing
 6. Relevant `docs/reference/*`
-7. The current code in every area you expect to touch
-8. Existing `.harness/<feature-id>/` files if this is a revision
+7. Any linked `docs/records/*` for the selected feature when they contain durable rationale or prior decision residue
+8. The current code in every area you expect to touch
+9. Existing `.harness/<feature-id>/` files if this is a revision
 
 Do not propose from backlog text alone. You must inspect the real code so the file boundaries and acceptance checks are believable.
 
@@ -88,11 +92,12 @@ It should make the proposal state obvious, for example:
 
 If the sprint already has retry metadata such as `attempt_count`, `max_attempts`, or `clean_restore_ref`, preserve it unless the proposal explicitly changes that policy. Proposal revision must not silently erase retry history.
 
-### Optional live-state updates
+### Optional live-state and record updates
 If the selected work came from a broad user goal, first make the source-goal lineage explicit in `docs/live/roadmap.md` and `docs/live/current-focus.md`.
 Reserve the feature in `docs/live/features.json` only after that lineage is durable and only if no other runnable item is already `in_progress`.
-Do not use proposal work to pull a feature forward when the backlog still says `needs_brainstorm`; resolve that truth first. `features.json` remains the runnable/backlog selector, not the place to hide multi-sprint initiative intent.
+Do not use proposal work to pull a feature forward when the backlog still says `needs_brainstorm`; resolve that truth first. `features.json` remains the runnable/backlog selector and single registry, not the place to hide multi-sprint initiative intent.
 
+If durable feature-linked discussion residue is too large or nuanced for `docs/live/ideas.md` but is not stable reference truth, you may create or refresh one scoped page under `docs/records/*` only when the feature already exists in `docs/live/features.json`. Register that path in the same feature entry's `record_paths`; do not let the record replace the proposal or become a shadow contract.
 ## Workflow
 
 ### 1. Select or confirm exactly one feature
@@ -101,10 +106,11 @@ Do not use proposal work to pull a feature forward when the backlog still says `
 - Refuse to proceed if another runnable sprint is already active.
 - If the selected item is still `needs_brainstorm`, route back to brainstorming instead of writing a mushy proposal.
 
-### 2. Pull forward only the brainstorm context that tightens the scope
+### 2. Pull forward only the brainstorm and record context that tightens the scope
 - When an idea was promoted from `docs/live/ideas.md`, read the relevant section and extract only durable signals: problem framing, constraints, rejected directions, dependencies, and unresolved questions.
+- When the selected feature already has linked `docs/records/*`, use them the same way: distill durable rationale into scope boundaries instead of copying exploratory bulk into the sprint.
 - Convert that context into proposal boundaries. Do not copy open-ended exploration into the sprint as if it were approved scope.
-- If the idea notes still contain competing directions that cannot fit one bounded sprint, split or return the item to brainstorming.
+- If the idea notes or linked records still contain competing directions that cannot fit one bounded sprint, split or return the item to brainstorming.
 
 ### 3. Distill the source goal into durable roadmap truth before reserving a sprint
 - When the user prompt or brainstorm describes a broad initiative, write the durable source-goal, current authorized initiative, and explicit deferred lanes into `docs/live/roadmap.md`.
@@ -165,8 +171,8 @@ The proposal must let an evaluator answer:
 - Do not touch `docs/archive/*`.
 - Do not edit product code, tests, or app assets.
 - Update `docs/live/roadmap.md` and `docs/live/current-focus.md` only when needed to make source-goal lineage and current authorization durable.
-- Only update `docs/live/features.json` after that lineage is durable and only if needed to represent the single runnable active sprint truthfully.
-- Read `docs/live/ideas.md` only when it materially narrows the selected feature; do not bloat the proposal with generic brainstorm notes.
+- Only update `docs/live/features.json` after that lineage is durable and only if needed to represent the single runnable active sprint truthfully or to register feature-linked `record_paths`.
+- Read `docs/live/ideas.md` and any linked `docs/records/*` only when they materially narrow the selected feature; do not bloat the proposal with generic brainstorm notes or turn records into a shadow contract.
 
 ## Refusal and Stop Conditions
 Reject the proposal phase and leave a truthful blocker when:
@@ -189,8 +195,8 @@ A good proposal:
 - names concrete files or tightly bounded directories
 - exposes architecture changes instead of smuggling them in
 - defines outcomes that a reviewer can verify from behavior and state transitions
-- uses brainstorm context only to sharpen scope, not to excuse vagueness
+- uses brainstorm or record context only to sharpen scope, not to excuse vagueness
 - leaves obvious future work out of scope instead of pretending to solve everything now
 
 ## Done Definition
-This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm context has been distilled into explicit source-goal and roadmap truth, and the repo state makes the next step unambiguous: adversarial contract review.
+This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm or record context has been distilled into explicit source-goal and roadmap truth, any optional `docs/records/*` update is linked back through the same feature entry in `docs/live/features.json`, and the repo state makes the next step unambiguous: adversarial contract review.

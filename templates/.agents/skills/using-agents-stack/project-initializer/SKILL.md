@@ -7,6 +7,7 @@ inputs:
   - existing repository structure and source files
   - docs/live/* if present
   - docs/reference/* if present
+  - docs/records/* if present
 outputs:
   - docs/live/features.json
   - docs/live/current-focus.md
@@ -17,7 +18,7 @@ outputs:
   - docs/reference/architecture.md
   - docs/reference/design.md
 boundaries:
-  - Do not invent completed work, fake backlog history, or archived sprints.
+  - Do not invent completed work, fake backlog history, archived sprints, or synthetic record pages.
   - Do not start implementation or open an active sprint folder.
   - Do not mark any feature `in_progress` unless the human explicitly selected it.
 next_skills:
@@ -31,24 +32,26 @@ Create the minimum durable state needed for the harness to operate truthfully.
 
 This phase establishes the repo's current facts, not a fictional project narrative. Its job is to make future planning resumable from files alone.
 
-That durable state now includes four complementary live-state artifacts:
+That durable state now sits inside a broader durable-doc topology:
 - `docs/live/features.json` for authoritative tracked work, runnable truth, and live file pointers
 - `docs/live/current-focus.md` for the current objective, goal lineage, next owner, and next file to open
 - `docs/live/roadmap.md` for the non-runnable source-goal roadmap across slices or phases
 - `docs/live/ideas.md` for open exploration, rough candidates, and pre-proposal refinement that must survive across sessions
 
+Alongside those live artifacts, the harness preserves distinct durable lanes: `docs/reference/*` for current stable truth, `docs/records/*` for feature-linked durable records with page-local provenance, and `docs/archive/*` for PASS-history evidence. Initialization should recognize that topology, preserve existing records when present, and avoid inventing record content just to fill the tree.
+
 ## Worker Dispatch Contract
 
 - Run this phase in a fresh worker context selected by the orchestrator, not by loading initialization into the orchestrator's own window.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: repository discovery plus writes to `docs/live/*` and `docs/reference/*` only. No product-code edits, no `.harness/<feature-id>/` execution work, no archive writes.
+- Tool lane: repository discovery plus writes to `docs/live/*` and `docs/reference/*` only. Read existing `docs/records/*` when they already exist so backlog traceability stays coherent, but do not author new record pages during bootstrap. No product-code edits, no `.harness/<feature-id>/` execution work, no archive writes.
 - Durable return contract: `docs/live/features.json`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, `docs/live/ideas.md`, `docs/live/progress.md`, `docs/live/memory.md`, `docs/reference/architecture.md`, and `docs/reference/design.md`. If the host provides worker metadata, record `worker_id` / `orchestrator_run_id` in the initialization ledger entry or equivalent durable note.
 
 ## Required Reads
 Read these before writing anything:
 
 1. `AGENTS.md`
-2. Existing `docs/live/*` and `docs/reference/*` files, if present
+2. Existing `docs/live/*`, `docs/reference/*`, and `docs/records/*` files, if present
 3. Repository manifests and entrypoints that reveal actual architecture
 4. Any existing tests, scripts, or app shells that define how the project runs
 
@@ -62,7 +65,8 @@ A truthful backlog snapshot and runnable selector.
 - If the human already named features, record them.
 - If no backlog is known yet, write an empty backlog or a clearly minimal seed set derived from explicit user goals only.
 - Preserve the runnable backlog fields and compound queue while adding live control-plane pointers such as `current_focus_path` and `roadmap_path`.
-- Never fabricate completed items or pretend a feature has already been selected.
+- When existing tracked items already have durable traceability, preserve truthful pointers such as `idea_ref`, `record_paths`, `reference_paths`, and the feature's single canonical `evidence_path` instead of dropping them during bootstrap.
+- Never fabricate archived items, record links, or pretend a feature has already been selected.
 - Use `status: "needs_brainstorm"` when a tracked item is real enough to keep visible but not yet ready for proposal.
 
 ### `docs/live/current-focus.md`
@@ -146,6 +150,7 @@ Confirm a future planner could answer all of the following from files alone:
 - `docs/live/current-focus.md` is a live resume aid. It must stay concise and must not become a second contract.
 - `docs/live/roadmap.md` is the non-runnable initiative roadmap. It does not choose the active sprint.
 - `docs/live/ideas.md` stores exploration detail and idea refinement, not runnable sprint selection.
+- Respect the broader durable-doc topology: preserve existing `docs/records/*` links in live state when they already exist, but do not seed new record pages or treat records as a second registry.
 - Do not create `.harness/<feature-id>/` yet unless the user explicitly instructed you to open a sprint immediately.
 - Do not create anything under `docs/archive/` during initialization.
 - When updating existing files, preserve observed facts and replace only stale boilerplate.

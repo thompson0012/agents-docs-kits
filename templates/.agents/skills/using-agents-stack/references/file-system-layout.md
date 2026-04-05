@@ -10,6 +10,7 @@ AGENTS.md
 .harness/<feature-id>/
 docs/live/
 docs/archive/<feature-id>_<timestamp>/
+docs/records/
 docs/reference/
 docs/scripts/
 ```
@@ -55,8 +56,8 @@ These files are durable project-wide state. They survive across many sprints.
 Purpose:
 
 - canonical backlog and feature registry
-- priority, dependencies, runnable-active vs parked state, and completed history
-- the first place the router checks for initialization, dependency-aware scheduling, and active sprint selection
+- priority, dependencies, runnable-active vs parked state, archived history, and per-feature traceability pointers
+- the first place the router checks for initialization, dependency-aware scheduling, active sprint selection, and durable links to ideas, records, references, and evidence
 
 Rules:
 
@@ -66,6 +67,8 @@ Rules:
 - more than one runnable active feature is invalid
 - parked `awaiting_human` and `escalated_to_human` features may remain listed, but they must not also be marked as the runnable active sprint
 - a feature marked runnable-active should have a matching `.harness/<feature-id>/` folder unless the proposal has not been created yet
+- `features.json` remains the only tracked-work registry; fields such as `idea_ref`, `evidence_path`, `record_paths`, and `reference_paths` belong here rather than in a second registry
+- each feature should have exactly one canonical `evidence_path` at a time: `.harness/<feature-id>/` while active or parked, then `docs/archive/<feature-id>_<timestamp>/` after PASS archive cutover
 - when no runnable active sprint exists, routing chooses the highest-priority dependency-ready `needs_brainstorm` item before ordinary `pending` proposal work
 - `docs/live/roadmap.md` may explain initiative continuation, but `features.json` still selects runnable truth and backlog order
 
@@ -116,9 +119,9 @@ Rules:
 Purpose:
 
 - append-only-ish project ledger of visible outcomes
-- links sprint IDs to archive artifacts, retries, human gates, compound publication, and next recommended action
+- links sprint IDs to archive artifacts, retries, human gates, compound publication, record lifecycle events, and next recommended action
 
-Use it to understand the latest completed, failed, parked, or freshly reconciled sprint without reading chat logs.
+Use it to understand the latest archived, failed, parked, or freshly reconciled sprint without reading chat logs. It records record creation, promotion, supersession, expiry, and archive cutover events without becoming a second registry.
 
 ### `docs/live/memory.md`
 
@@ -205,28 +208,44 @@ Purpose:
 - immutable-ish sprint archive after review PASS and state update
 - preserves proposal, contract, runtime, handoff, review, and status snapshot for audit and recovery, plus `qa.md` when that artifact was generated
 
-In the starter pack, `docs/archive/FEAT-000_timestamp/` is the completed example. It should read as a finished sprint, not an active one.
+In the starter pack, `docs/archive/FEAT-000_timestamp/` is the archived example. It should read as a finished sprint, not an active one.
 
 Archive rules:
 
 - archive only after review PASS and state update
+- PASS archive cutover should prefer move or verified rename; if copying is required, update the feature's canonical `evidence_path` to the archive and explicitly de-canonicalize the source `.harness/<feature-id>/` workspace after verification
 - never reuse the active `.harness/<feature-id>/` folder as the archive itself
 - archive naming should include the feature ID and a timestamp or equivalent unique suffix
 - preserve the final `status.json` snapshot so worker IDs, attempt counters, restore boundaries, and parked history remain visible in historical evidence when those fields were recorded
+- archive never overrides active live or local sprint truth
+
+## `docs/records/`
+
+Purpose:
+
+- durable, traceable, scoped records from discussion or sprint work
+- a home for artifacts that should outlive chat but are not the active contract, immutable archive evidence, or universally current reference truth
+
+Rules:
+
+- records are optional; do not imply that every sprint must create one
+- record pages must carry page-local provenance and validity metadata such as `scope`, `status`, `superseded_by`, and the sprint or archive contributions they summarize
+- records may be superseded, expired, or promoted later; keep those lifecycle facts on the page and log them in `docs/live/progress.md`
+- feature-linked records should be referenced from `docs/live/features.json` via `record_paths`, not through a second registry
 
 ## `docs/reference/`
 
 Purpose:
 
 - stable architecture, design, and domain references shared across sprints
-- context that proposals, contracts, execution, and review must respect
+- current truth that proposals, contracts, execution, and review must respect
 
 Starter-pack examples:
 
 - `architecture.md`
 - `design.md`
 
-These files are reference material, not sprint-local notes.
+These files are current reference material, not sprint-local notes. Promote content here only when it is the stable present truth; otherwise keep it in `docs/records/` with explicit provenance.
 
 ## `docs/scripts/`
 
@@ -252,6 +271,7 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 | `docs/live/roadmap.md` | global | initializer, proposal, and state-update workers | router, proposal, state-update, and human planners |
 | `docs/live/progress.md` | global | state-update worker | router, proposal workers, humans |
 | `docs/live/memory.md` | global | initializer and compound-capture workers | router, proposal, execution, and review workers |
+| `docs/records/*` | scoped durable | generator-brainstorm, generator-proposal, state-update, and compound-capture workers, plus human maintainer promotion/supersession edits | router, proposal, state-update, compound-capture, humans |
 | `.harness/<feature-id>/sprint_proposal.md` | sprint-local | generator-proposal worker | contract-review worker |
 | `.harness/<feature-id>/contract.md` | sprint-local | evaluator-contract-review worker | execution and review workers |
 | `.harness/<feature-id>/runtime.md` | sprint-local | generator-execution worker | execution, review, and resume logic |
@@ -262,8 +282,8 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 
 ## Routing implications
 
-- `docs/live/features.json` is the runnable/backlog selector, `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for what remains and where re-authorization is required.
-
+- `docs/live/features.json` is the runnable/backlog selector, live traceability index, and home of each feature's canonical `evidence_path`; `docs/live/current-focus.md` is the live resume anchor, and `docs/live/roadmap.md` is the initiative ledger for what remains and where re-authorization is required.
+- `docs/records/*` may inform planning and state reconciliation, but records stay linked through `features.json` and never replace it as the tracked-work registry.
 - Missing or empty live state means initialize.
 - Non-empty `compound_pending_feature_ids` means compound before any runnable sprint resume or new backlog selection.
 - No runnable active sprint but dependency-ready `needs_brainstorm` work means brainstorm.

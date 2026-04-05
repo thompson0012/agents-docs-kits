@@ -46,6 +46,7 @@ That means:
 - routing to the next phase is explicit
 - parked human-owned sprints are visible without pretending they are still runnable
 - durable learning capture is queued for the explicit Compound phase instead of being folded into reconciliation
+- each feature entry keeps one canonical `evidence_path`, plus truthful `record_paths` and `reference_paths`, inside `docs/live/features.json` rather than scattering registry state elsewhere
 
 ## Worker Dispatch Contract
 
@@ -122,7 +123,9 @@ At minimum, publish truthfully:
 - which sprint, if any, is the single runnable active sprint
 - which sprint ids are parked in `awaiting_human` or `escalated_to_human`
 - which feature ids are waiting in `compound_pending_feature_ids` for explicit Compound work
-- each feature's phase, owner, attempt count, max attempts, clean restore reference, and next action when those fields exist locally
+- each touched feature's terminal or non-terminal status, owner, attempt count, max attempts, clean restore reference, and next action when those fields exist locally
+- the feature's one canonical `evidence_path`: `.harness/<sprint-id>/...` while active or parked, `docs/archive/<sprint-id>_<timestamp>/...` after PASS archive cutover
+- any truthful `idea_ref`, `record_paths`, and `reference_paths` already attached to that feature so live state remains the single registry for durable traceability
 
 #### Queue compounding explicitly
 After reconciling any decisive outcome, add the feature id to `compound_pending_feature_ids` unless it is already present.
@@ -134,9 +137,10 @@ Queueing compounding means:
 - the queue does not reopen execution or review
 
 #### On PASS
-- mark the sprint feature as completed using the repository's chosen terminal status
+- mark the sprint feature with the repository's terminal status name `archived` after the PASS archive cutover completes
 - remove it from the runnable active slot and from any parked list
-- preserve identifiers, priority, dependencies, and any useful completion metadata already used by the template
+- switch the feature's canonical `evidence_path` from `.harness/<sprint-id>/...` to the resulting `docs/archive/<sprint-id>_<timestamp>/...` bundle
+- preserve identifiers, priority, dependencies, `idea_ref`, `record_paths`, `reference_paths`, and any useful completion metadata already used by the template
 - keep the feature id in `compound_pending_feature_ids` until `compound-capture` finishes
 
 #### On `review_failed` or `build_failed`
@@ -149,12 +153,14 @@ Queueing compounding means:
 #### On `awaiting_human`
 - keep the sprint in the backlog and `.harness/`, but do not count it as the runnable active sprint
 - publish the required human action, affected artifacts, and resume condition
+- keep the feature's canonical `evidence_path` pointed at `.harness/<sprint-id>/...`
 - add the sprint id to the parked list
 - keep the feature id queued in `compound_pending_feature_ids` until compounding clears it
 
 #### On `escalated_to_human`
 - keep the sprint in the backlog and `.harness/`, but do not count it as the runnable active sprint
 - publish the escalation reason, exhausted attempt budget or unsafe recovery condition, and the evidence path the human should inspect
+- keep the feature's canonical `evidence_path` pointed at `.harness/<sprint-id>/...`
 - add the sprint id to the parked list
 - keep the feature id queued in `compound_pending_feature_ids` until compounding clears it
 
@@ -203,7 +209,7 @@ Append a dated ledger entry that includes:
 - sprint id and title
 - PASS, FAIL, BLOCKED, BUILD_FAILED, AWAITING_HUMAN, or ESCALATED_TO_HUMAN status
 - concise summary of what changed, what failed, or what blocked progress
-- path to the evidence (`.harness/...` while active or parked, `docs/archive/...` after archive)
+- the same canonical evidence path published in `docs/live/features.json` (`.harness/...` while active or parked, `docs/archive/...` after archive)
 - attempt count and max attempts when retry budgeting matters
 - clean restore expectation when another execution pass is possible
 - whether the feature was queued for explicit Compound work
@@ -212,11 +218,11 @@ Append a dated ledger entry that includes:
 For `review_failed` or `build_failed`, the next action should point back to the same sprint, the corrective directives, and the required clean restore boundary.
 For `awaiting_human`, the next action should point to the exact file edits, approval, or manual recovery the human must complete.
 For `escalated_to_human`, the next action should halt automatic retry and name the evidence bundle the human should inspect before resuming.
-For PASS, the next action should point to `compound-capture` first when `compound_pending_feature_ids` is non-empty, then to backlog selection once compounding is clear.
+For PASS, the next action should point to `compound-capture` first when `compound_pending_feature_ids` is non-empty, then to backlog selection once compounding is clear. `progress.md` stays the append-only outcome ledger, not a second registry for record or reference links.
 
 ### 6. Preserve or archive sprint artifacts truthfully
 
-## FAIL path: preserve, do not archive as completed
+## FAIL path: preserve, do not archive on FAIL
 
 On `review_failed`:
 - keep `.harness/<sprint-id>/` intact
@@ -256,7 +262,7 @@ On review `BLOCKED`:
 - if the blocker is purely environmental but a safe automated retry is still possible, route back through `generator-execution` with a clean restore requirement
 - queue explicit compounding instead of writing `docs/live/memory.md` here
 
-A blocked sprint is not completed work.
+A blocked sprint is not archived work.
 
 ## Human-parked paths
 
@@ -282,10 +288,9 @@ When there is no runnable active sprint because the current non-terminal sprint 
 - if every pending or `needs_brainstorm` feature depends on the parked sprint or another unresolved prerequisite, publish that no runnable work exists and wait for human resolution
 
 ## PASS path: archive after global state is updated
-
 On PASS:
 1. Verify the review evidence is complete.
-2. Update `docs/live/*` first.
+2. Update `docs/live/*` first, including the feature's `archived` terminal status and the archive-bound `evidence_path`.
 3. Archive the full sprint artifact set to `docs/archive/<sprint-id>_<timestamp>/`.
 4. Ensure the archive contains, at minimum:
    - `sprint_proposal.md` if it exists
@@ -296,13 +301,14 @@ On PASS:
    - `runtime.md` when execution produced runtime notes
    - `qa.md` when the review produced a separate QA evidence log
 5. Update `status.json` to a terminal archived state, for example:
-   - `phase: "archived_pass"`
+   - `phase: "archived"`
    - `owner_role: "none"`
    - `resume_from: "docs/archive/<sprint-id>_<timestamp>/review.md"`
 6. Remove or clear the active sprint workspace only after the archive copy is confirmed and the harness's single-runnable-sprint rule is preserved.
 7. Leave the feature id queued in `compound_pending_feature_ids` until `compound-capture` processes the archived evidence.
+8. Keep any existing `record_paths` and `reference_paths` registered on the feature entry; state-update moves the evidence pointer, it does not create a second registry.
 
-Never archive a sprint as complete if review failed, build/startup triage failed, or evidence is missing.
+Never archive a sprint if review failed, build/startup triage failed, or evidence is missing.
 
 ## Routing rules
 
@@ -313,7 +319,7 @@ Route toward the explicit Compound stage first when work is queued:
 - once compounding is clear, if another dependency-ready `pending` feature exists, next skill is usually `generator-proposal`
 - if the harness requires re-initialization or backlog refresh, route accordingly from global state
 
-The completed sprint should no longer be the active work packet.
+The archived sprint should no longer be the active work packet.
 
 ### After `review_failed` or `build_failed`
 - queue the feature for `compound-capture` as part of the decisive outcome publication
@@ -364,11 +370,11 @@ Use this table when updating state:
 
 | Local outcome | Live feature status | Local sprint | Archive | Next route |
 | --- | --- | --- | --- | --- |
-| PASS with evidence | completed / done | cleared after archive verification | create `docs/archive/<id>_<timestamp>/` | `compound-capture`, then backlog routing |
-| `review_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` | none | `compound-capture`, then `generator-execution` after clean restore |
-| `build_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` | none | `compound-capture`, then `generator-execution` after clean restore |
-| `awaiting_human` | parked, non-runnable | preserve `.harness/<id>/` | none | `compound-capture`, then human action or dependency-ready work |
-| `escalated_to_human` | parked, non-runnable | preserve `.harness/<id>/` | none | `compound-capture`, then human intervention or dependency-ready work |
-| Missing evidence | active or parked, but unresolved | preserve `.harness/<id>/` | none | reconcile evidence first |
+| PASS with evidence | archived | cleared after archive verification | create `docs/archive/<id>_<timestamp>/` and switch `evidence_path` there | `compound-capture`, then backlog routing |
+| `review_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` and keep `evidence_path` there | none | `compound-capture`, then `generator-execution` after clean restore |
+| `build_failed` with evidence and retry budget | still runnable | preserve `.harness/<id>/` and keep `evidence_path` there | none | `compound-capture`, then `generator-execution` after clean restore |
+| `awaiting_human` | parked, non-runnable | preserve `.harness/<id>/` and keep `evidence_path` there | none | `compound-capture`, then human action or dependency-ready work |
+| `escalated_to_human` | parked, non-runnable | preserve `.harness/<id>/` and keep `evidence_path` there | none | `compound-capture`, then human intervention or dependency-ready work |
+| Missing evidence | active or parked, but unresolved | preserve `.harness/<id>/` and keep `evidence_path` there | none | reconcile evidence first |
 
 If you cannot make the repository tell a coherent story from the files on disk, stop and preserve the sprint rather than lying with state.
