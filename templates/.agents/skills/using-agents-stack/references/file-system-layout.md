@@ -208,14 +208,14 @@ Purpose:
 - immutable-ish sprint archive after review PASS and state update
 - preserves proposal, contract, runtime, handoff, review, and status snapshot for audit and recovery, plus `qa.md` when that artifact was generated
 
-In the starter pack, `docs/archive/FEAT-000_timestamp/` is the archived example. It should read as a finished sprint, not an active one.
+In the starter pack, `docs/archive/WORKSTREAM-000_timestamp/` is the archived example. It should read as a finished sprint, not an active one.
 
 Archive rules:
 
 - archive only after review PASS and state update
 - PASS archive cutover should prefer move or verified rename; if copying is required, update the feature's canonical `evidence_path` to the archive and explicitly de-canonicalize the source `.harness/<feature-id>/` workspace after verification
 - never reuse the active `.harness/<feature-id>/` folder as the archive itself
-- archive naming should include the feature ID and a timestamp or equivalent unique suffix
+- archive naming should include the workstream ID and a timestamp or equivalent unique suffix
 - preserve the final `status.json` snapshot so worker IDs, attempt counters, restore boundaries, and parked history remain visible in historical evidence when those fields were recorded
 - archive never overrides active live or local sprint truth
 

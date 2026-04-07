@@ -30,7 +30,7 @@ Checks:
 - missing or empty `docs/live/features.json` routes to `project-initializer`
 - non-empty `compound_pending_feature_ids` routes to `compound-capture` before runnable resume or backlog selection
 - no runnable sprint and a dependency-ready `needs_brainstorm` item routes to `generator-brainstorm`
-- no runnable sprint, no compound queue, and at least one dependency-ready `pending` feature routes to `generator-proposal`
+- no runnable sprint, no compound queue, and at least one dependency-ready `pending` workstream routes to `generator-proposal`
 - `sprint_proposal.md` without `contract.md` routes to `evaluator-contract-review`
 - `contract.md` without `handoff.md` routes to `generator-execution`
 - `handoff.md` without `review.md` routes to `adversarial-live-review`
@@ -44,7 +44,7 @@ Checks:
 
 - `AGENTS.md` is treated as the operating contract
 - `docs/live/*` is treated as global state
-- `.harness/<feature-id>/*` is treated as local sprint state
+- `.harness/<workstream-id>/*` is treated as local sprint state
 - later-phase artifacts outrank stale `status.json` fields
 - archive folders are treated as historical evidence, not active state
 - router output explains which files drove the decision
@@ -83,14 +83,14 @@ Checks:
 
 ### Case D: ready backlog, no runnable active sprint
 
-- `features.json` contains dependency-ready `pending` feature(s), none runnable
+- `features.json` contains dependency-ready `pending` workstream(s), none runnable
 - `compound_pending_feature_ids` is empty
-- no `.harness/<feature-id>/` folder yet
+- no `.harness/<workstream-id>/` folder yet
 - Expected route: `generator-proposal`
 
 ### Case E: proposal awaiting approval
 
-- active feature exists
+- active workstream exists
 - `sprint_proposal.md` exists
 - `contract.md` absent
 - Expected route: `evaluator-contract-review`

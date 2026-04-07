@@ -43,7 +43,7 @@
       "route_when": [
         "No runnable active sprint exists, `compound_pending_feature_ids` is empty, and the highest-priority dependency-ready backlog item is `needs_brainstorm`.",
         "An idea needs exploration or framing before a truthful sprint proposal can be written.",
-        "The brainstorm result should update `docs/live/ideas.md` and may promote the same feature into `pending` in `docs/live/features.json`."
+        "The brainstorm result should update `docs/live/ideas.md` and may promote the same workstream into `pending` in `docs/live/features.json`."
       ],
       "avoid_when": [
         "A runnable active sprint exists and should be resumed instead.",
@@ -67,7 +67,7 @@
       "route_when": [
         "No runnable active sprint exists, `compound_pending_feature_ids` is empty, and no dependency-ready `needs_brainstorm` item outranks the pending proposal lane.",
         "The highest-priority dependency-ready `pending` backlog item should become the next sprint proposal.",
-        "Live state is trustworthy, but the selected feature has no local sprint proposal or the proposal was explicitly reset."
+        "Live state is trustworthy, but the selected workstream has no local sprint proposal or the proposal was explicitly reset."
       ],
       "avoid_when": [
         "A runnable active sprint already exists.",
@@ -92,7 +92,7 @@
       "relationship": "routes_to",
       "summary": "Dispatches a fresh contract-review worker to independently approve or reject a sprint proposal before any implementation begins.",
       "route_when": [
-        "`.harness/<feature>/sprint_proposal.md` exists without an approved `contract.md`.",
+        "`.harness/<workstream>/sprint_proposal.md` exists without an approved `contract.md`.",
         "`status.json.resume_from` points to `sprint_proposal.md` after an interrupted proposal-review pass."
       ],
       "avoid_when": [
@@ -115,7 +115,7 @@
       "relationship": "routes_to",
       "summary": "Dispatches a fresh execution worker to implement the approved contract, retry a reconciled `build_failed` sprint, or retry a reconciled `review_failed` sprint when attempts remain.",
       "route_when": [
-        "`.harness/<feature>/contract.md` exists and no later handoff or review gate is waiting.",
+        "`.harness/<workstream>/contract.md` exists and no later handoff or review gate is waiting.",
         "`status.json.phase` is `contracted`, `executing`, `build_failed`, or `review_failed` and the stronger local files agree.",
         "A prior `review_failed` has already been reconciled into local and live state, or a prior `build_failed` has already recorded truthful retry metadata, `attempt_count` is still below `max_attempts`, and `clean_restore_ref` names a safe restore boundary for a fresh worker.",
         "Build or startup triage failed inside execution, so the same execution lane owns the next attempt without paying for live review."

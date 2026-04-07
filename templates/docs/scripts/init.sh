@@ -82,7 +82,7 @@ This file is durable state. Update it in place so future agents can see what was
 
 ## Idea entry template
 ### IDEA-TEMPLATE: Working title
-- Related feature id: none yet | FEAT-###
+- Related workstream id: none yet | WORKSTREAM-###
 - Current state: exploring | needs_brainstorm | ready_to_promote | parked | rejected
 - Problem statement:
 - Why now:
@@ -130,10 +130,10 @@ Record transitions such as:
 - record promotion into `docs/reference/*`
 - record supersession or expiry, with replacement path when one exists
 
-When a record event is tied to tracked work, name the feature id, record path, and evidence path that justifies it.
+When a record event is tied to tracked work, name the workstream id, record path, and evidence path that justifies it.
 
 ## Entry template
-- YYYY-MM-DD - EVENT - Feature: FEAT-### | none - Paths: `docs/records/...`, `docs/reference/...`, `.harness/...`, or `docs/archive/...` - Notes: brief factual summary
+- YYYY-MM-DD - EVENT - Workstream: WORKSTREAM-### | none - Paths: `docs/records/...`, `docs/reference/...`, `.harness/...`, or `docs/archive/...` - Notes: brief factual summary
 '
 
 write_file_if_missing "docs/records/README.md" '# Durable Records
@@ -143,11 +143,11 @@ Use this folder for durable feature or decision pages created from a sprint, rev
 ## What belongs here
 - feature-local decision notes, investigation summaries, tradeoff writeups, or handoff context that remain useful after the sprint
 - sprint or discussion output that needs durable traceability but is too situational for `docs/reference/*` and too interpreted for `docs/archive/*`
-- pages tied to a tracked feature id and registered from that feature entry through `record_paths`
+- pages tied to a tracked workstream id and registered from that feature entry through `record_paths`
 
 ## What does not belong here
 - active sprint contracts, proposals, runtime logs, reviews, or status files
-- copied archive evidence from `.harness/<FEAT-ID>/` or `docs/archive/<FEAT-ID>_<timestamp>/`
+- copied archive evidence from `.harness/<WORKSTREAM-ID>/` or `docs/archive/<WORKSTREAM-ID>_<timestamp>/`
 - current project-wide truth that belongs in `docs/reference/*`
 - untracked ideas; keep those in `docs/live/ideas.md` until a feature id exists
 

@@ -10,7 +10,7 @@ Record transitions such as:
 - record promotion into `docs/reference/*`
 - record supersession or expiry, with replacement path when one exists
 
-When a record event is tied to tracked work, name the feature id, record path, and evidence path that justifies it.
+When a record event is tied to tracked work, name the workstream id, record path, and evidence path that justifies it.
 
 ## Entry template
-- YYYY-MM-DD - EVENT - Feature: FEAT-### | none - Paths: `docs/records/...`, `docs/reference/...`, `.harness/...`, or `docs/archive/...` - Notes: brief factual summary
+- YYYY-MM-DD - EVENT - Workstream: WORKSTREAM-### | none - Paths: `docs/records/...`, `docs/reference/...`, `.harness/...`, or `docs/archive/...` - Notes: brief factual summary

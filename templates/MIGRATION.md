@@ -54,7 +54,7 @@ If a runnable sprint exists, read its local contract/evidence before moving file
 ### 4. Move or transform
 - move durable scoped docs into `docs/records/`
 - promote only verified current truth into `docs/reference/`
-- keep sprint execution evidence in `.harness/<FEAT-ID>/` or `docs/archive/<FEAT-ID>_<timestamp>/`
+- keep sprint execution evidence in `.harness/<WORKSTREAM-ID>/` or `docs/archive/<WORKSTREAM-ID>_<timestamp>/`
 - keep guides user-facing and separate from records
 
 ### 5. Verify
@@ -127,7 +127,7 @@ If a runnable sprint exists, read its local contract/evidence before moving file
 - `docs/records/` is durable scoped residue.
 - `docs/reference/` is stable current truth.
 - `docs/archive/` is immutable PASS history.
-- `.harness/<FEAT-ID>/` is active or parked sprint evidence.
+- `.harness/<WORKSTREAM-ID>/` is active or parked sprint evidence.
 - `docs/guides/` is user-facing walkthrough content.
 - If a runnable sprint exists, close, park, or escalate it before a bulk migration unless the migration itself is the sprint.
 - For template changes, update the source under `templates/` first so generated repos inherit the migration shape.

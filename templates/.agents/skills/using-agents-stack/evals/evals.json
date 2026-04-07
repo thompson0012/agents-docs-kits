@@ -9,7 +9,7 @@
     },
     {
       "id": "queued-compound-before-resume",
-      "prompt": "`docs/live/features.json` contains `compound_pending_feature_ids: [\"FEAT-001\"]`, FEAT-001 is still the runnable active sprint, and the queue has not been cleared yet. Which child should run next?",
+      "prompt": "`docs/live/features.json` contains `compound_pending_feature_ids: [\"WORKSTREAM-001\"]`, WORKSTREAM-001 is still the runnable active sprint, and the queue has not been cleared yet. Which child should run next?",
       "expected_output": "Routes to using-agents-stack/compound-capture because explicit compounding drains before runnable sprint resume or new backlog selection.",
       "files": []
     },
@@ -21,13 +21,13 @@
     },
     {
       "id": "direct-new-proposal",
-      "prompt": "`docs/live/features.json` has one dependency-ready pending high-priority feature, no runnable active sprint, no `needs_brainstorm` item outranks it, no compound work is queued, and there is no `.harness/<feature>/contract.md` yet. Which child should run next?",
+      "prompt": "`docs/live/features.json` has one dependency-ready pending high-priority workstream, no runnable active sprint, no `needs_brainstorm` item outranks it, no compound work is queued, and there is no `.harness/<workstream>/contract.md` yet. Which child should run next?",
       "expected_output": "Routes to using-agents-stack/generator-proposal because the repository has proposal-ready backlog truth and nothing in the compound or brainstorm lanes outranks it.",
       "files": []
     },
     {
       "id": "direct-contract-review",
-      "prompt": "The active feature has `.harness/FEAT-001/sprint_proposal.md`, but there is no `contract.md` yet. Which child should own the next step?",
+      "prompt": "The active workstream has `.harness/WORKSTREAM-001/sprint_proposal.md`, but there is no `contract.md` yet. Which child should own the next step?",
       "expected_output": "Routes to using-agents-stack/evaluator-contract-review because the proposal exists and must be independently approved or rejected before implementation starts.",
       "files": []
     },
@@ -39,7 +39,7 @@
     },
     {
       "id": "unreconciled-review-goes-to-state-update",
-      "prompt": "`review.md` exists, but `docs/live/features.json` still says the feature is pending and local state does not agree on the review outcome. Which child should own the next step?",
+      "prompt": "`review.md` exists, but `docs/live/features.json` still says the workstream is pending and local state does not agree on the review outcome. Which child should own the next step?",
       "expected_output": "Routes to using-agents-stack/state-update because the review outcome exists but has not yet been reconciled into truthful durable state.",
       "files": []
     }

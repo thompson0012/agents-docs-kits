@@ -29,7 +29,7 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 
 ## Decision Order
 
-1. Check whether the repository belongs to this family at all: `AGENTS.md`, `docs/live/*`, `.harness/<FEAT-ID>/`, and the agents-stack role/lifecycle model.
+1. Check whether the repository belongs to this family at all: `AGENTS.md`, `docs/live/*`, `.harness/<WORKSTREAM-ID>/`, and the agents-stack role/lifecycle model.
 2. Read `docs/live/features.json` to determine whether the repo is uninitialized, has queued compound work, has one runnable active sprint, has only parked sprints, or needs new backlog work.
 3. Read `docs/live/current-focus.md` and `docs/live/roadmap.md` together to confirm the resume anchor, source-goal lineage, remaining slices, and any re-authorization boundary.
 4. If the user's high-level goal is broader than the live files currently capture, route first to the phase that will publish or refresh that durable source-goal truth before continuing sprint chaining.

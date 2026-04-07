@@ -5,13 +5,13 @@ Use this folder for durable feature or decision pages created from a sprint, rev
 ## What belongs here
 - feature-local decision notes, investigation summaries, tradeoff writeups, or handoff context that remain useful after the sprint
 - sprint or discussion output that needs durable traceability but is too situational for `docs/reference/*` and too interpreted for `docs/archive/*`
-- pages tied to a tracked feature id and registered from that feature entry through `record_paths`
+- pages tied to a tracked workstream id and registered from that feature entry through `record_paths`
 
 ## What does not belong here
 - active sprint contracts, proposals, runtime logs, reviews, or status files
-- copied archive evidence from `.harness/<FEAT-ID>/` or `docs/archive/<FEAT-ID>_<timestamp>/`
+- copied archive evidence from `.harness/<WORKSTREAM-ID>/` or `docs/archive/<WORKSTREAM-ID>_<timestamp>/`
 - current project-wide truth that belongs in `docs/reference/*`
-- untracked ideas; keep those in `docs/live/ideas.md` until a feature id exists
+- untracked ideas; keep those in `docs/live/ideas.md` until a workstream id exists
 
 ## Page metadata and backlinks
 At the top of each record, include:

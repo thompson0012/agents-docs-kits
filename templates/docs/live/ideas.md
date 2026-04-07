@@ -29,7 +29,7 @@ This file is durable state. Update it in place so future agents can see what was
 
 ## Idea entry template
 ### IDEA-TEMPLATE: Working title
-- Related feature id: none yet | FEAT-###
+- Related workstream id: none yet | WORKSTREAM-###
 - Current state: exploring | needs_brainstorm | ready_to_promote | parked | rejected
 - Problem statement:
 - Why now:

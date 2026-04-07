@@ -238,8 +238,8 @@ Contradiction examples:
 - `review.md` exists but `status.json.phase = contracted`
 - `handoff.md` exists but the feature still shows `pending` in `docs/live/features.json`
 - two runnable features are marked active at once
-- `.harness/FEAT-001/` is parked in `awaiting_human`, but live state still treats it as the runnable active sprint
-- `.harness/FEAT-002/` is `review_failed` with `attempt_count >= max_attempts`, but routing still points to execution
+- `.harness/WORKSTREAM-001/` is parked in `awaiting_human`, but live state still treats it as the runnable active sprint
+- `.harness/WORKSTREAM-002/` is `review_failed` with `attempt_count >= max_attempts`, but routing still points to execution
 
 Handling rules:
 
