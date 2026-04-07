@@ -95,10 +95,12 @@ Feedback must be actionable, for example:
 ### 2. Attack the scope
 Reject if any of these are true:
 - more than one meaningful product increment is bundled together
+- the proposal quietly narrows the user's stated initiative into a different smaller project
 - the change spans unrelated subsystems without justification
+- the "out-of-scope" list hides core parts of the same initiative instead of naming later roadmap slices
 - the change finishes only by silently chaining additional sprints that were never made explicit in the roadmap
 - the proposal requires follow-on work before its own acceptance can be tested
-- “nice to have” items are mixed into required scope
+- "nice to have" items are mixed into required scope
 
 ### 3. Attack the observability
 Reject if acceptance cannot be verified from outside the author's head.

@@ -150,6 +150,8 @@ The `using-agents-stack` root skill is the orchestrator. It dispatches exactly o
 13. **Only the orchestrator may delegate.** Workers must not spawn nested workers.
 14. **Tool walls are hard boundaries.** Evaluators and reviewers must not get broad repo write tools; if the runtime exposes a narrow artifact-return primitive, scope it only to the evaluator-owned artifact. Every other worker gets only the minimum tool scope for its phase.
 
+15. **No durable truth may remain chat-only.** If a worker reaches a stable conclusion that should survive the session, it must materialize that residue in the correct file lane before yielding: `docs/live/features.json` for tracked-work truth, `docs/live/ideas.md` for pre-proposal exploration, `docs/records/*` for scoped residue, `docs/live/memory.md` only through explicit compounding, and `docs/reference/*` only when the truth is stable current reference. If the right lane is unclear, stop at the nearest human gate or hand off to the lane-owning phase; do not rely on chat as the durable copy.
+
 ## State Roles and Precedence
 
 Use this precedence when files disagree:

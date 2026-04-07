@@ -118,7 +118,7 @@ Update `docs/live/ideas.md` so the next worker can understand:
 Stay at the backlog and product-decision level. Brainstorm is not the place to write sprint file lists, implementation steps, or execution instructions.
 
 ### 3a. Create a scoped record only when the tracked feature already exists
-If the selected item is already tracked in `docs/live/features.json` and the durable discussion is too large or nuanced for `docs/live/ideas.md`, create or update one scoped page under `docs/records/*` instead of bloating `ideas.md`. Keep the record page-local: note its scope, current status, any supersession relationship, and the sprint or archive evidence it draws from when known.
+If the selected item is already tracked in `docs/live/features.json` and the durable discussion is too large or nuanced for `docs/live/ideas.md`, create or update one scoped page under `docs/records/*` in the same pass instead of deferring the residue to chat. Keep the record page-local: note its scope, current status, any supersession relationship, and the sprint or archive evidence it draws from when known.
 
 When you do this:
 - keep `docs/live/ideas.md` as the concise idea ledger

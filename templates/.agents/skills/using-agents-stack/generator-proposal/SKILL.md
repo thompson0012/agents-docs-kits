@@ -21,7 +21,7 @@ outputs:
   - optional precise updates to docs/live/roadmap.md and docs/live/current-focus.md when broad-goal truth must be made durable before sprint reservation
   - optional precise update to docs/live/features.json to reserve the active sprint and register any touched `record_paths`
 boundaries:
-  - Scope exactly one bounded sprint.
+  - Scope exactly one bounded sprint as a slice of the broader initiative, not a rewrite of it.
   - Do not implement code during this phase.
   - Do not hide architecture changes inside an implementation plan.
   - Do not claim a file boundary you have not checked against the repo.
@@ -72,7 +72,7 @@ A concrete proposal containing at minimum:
 - problem statement in current-repo terms
 - objective for this sprint only
 - explicit in-scope work
-- explicit out-of-scope work
+  - explicit out-of-scope work for this sprint, with same-initiative deferrals named as later roadmap slices or re-authorization boundaries
 - allowed files
 - forbidden files or subsystem boundaries
 - implementation approach at a high level
@@ -116,11 +116,10 @@ If durable feature-linked discussion residue is too large or nuanced for `docs/l
 - When the user prompt or brainstorm describes a broad initiative, write the durable source-goal, current authorized initiative, and explicit deferred lanes into `docs/live/roadmap.md`.
 - Refresh `docs/live/current-focus.md` so a cold-start agent can see which roadmap slice is being turned into this sprint proposal and what artifact to open next.
 - If the files do not support a clear single-sprint cut, stop and send the work back to brainstorming or human clarification rather than reserving a runnable sprint.
-
-### 4. Bound the sprint by reading the real implementation surface
-- Inspect the code paths likely to change.
-- Identify the smallest meaningful increment that can be implemented and reviewed in one sprint.
-- Split large or cross-cutting ideas before proposing anything.
+- When you do cut a sprint, keep the broader initiative visible: the sprint objective is the first bounded slice of that initiative, not a new smaller project.
+- Identify the smallest meaningful increment that can be implemented and reviewed in one sprint without discarding essential parts of the source goal.
+- If choosing that increment would hide core requested work, stop instead of shrinking the goal to fit.
+- Split large or cross-cutting ideas into explicit later roadmap slices or re-authorization boundaries before proposing anything.
 
 ### 5. Define observable success
 Every acceptance outcome must be externally checkable.
@@ -176,7 +175,7 @@ The proposal must let an evaluator answer:
 
 ## Refusal and Stop Conditions
 Reject the proposal phase and leave a truthful blocker when:
-- the requested work is too large for one bounded sprint
+- the requested work is too large for one bounded sprint, or it would only fit after redefining the source goal into a smaller different project
 - acceptance criteria cannot be made observable from the current repo and tooling
 - an interactive criterion can be satisfied by a static final screenshot or hardcoded final value instead of a state transition
 - file boundaries cannot be identified because the feature is still conceptually vague

@@ -111,7 +111,7 @@ For each candidate lesson, ask:
 If the answer is no, do not record it.
 
 ### 4. Extract durable residue or skip extraction
-When a learning survives, append or refine a concise note in `docs/live/memory.md`. When no durable cross-sprint lesson survives, explicitly skip extraction: leave `docs/live/memory.md` unchanged and do not add placeholder text.
+When a learning survives, append or refine a concise note in `docs/live/memory.md` in the same pass. If the evidence is not enough to choose memory, a scoped record, or stable reference with confidence, stop and preserve the current files until human confirmation or a clearer phase boundary resolves the lane. When no durable cross-sprint lesson survives, explicitly skip extraction and leave `docs/live/memory.md` unchanged. Do not defer capture to chat memory or a later manual copy step.
 
 Write in project-truth terms when you do extract:
 - what was learned
