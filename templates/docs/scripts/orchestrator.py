@@ -691,9 +691,9 @@ def report_compound_queue(
         print(f"Evidence path: {evidence_path}")
     active_pointer = runnable_active_pointer(features)
     if active_pointer not in (None, ""):
-        print(f"Runnable sprint remains: {active_pointer}")
+        print(f"Runnable sprint remains visible but held behind compounding: {active_pointer}")
     print(
-        "Route: compound-capture should record durable learning and clear the queue before runnable sprint resume or new backlog selection."
+        "Route: compound-capture must run before any runnable sprint resume or new backlog selection."
     )
     return 0
 

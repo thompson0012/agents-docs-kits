@@ -22,6 +22,7 @@ boundaries:
   - Do not reopen proposal, execution, review, or state reconciliation.
   - Do not make backlog publication, archive, or runnable-sprint decisions; those belong to `state-update`.
   - Do not invent durable lessons from a single noisy artifact.
+  - Do not persist raw chat transcripts, paraphrased conversation logs, or chat-only conclusions; only decisive repo evidence may become durable output.
   - Do not claim or change `runnable_active_sprint_id`.
   - Do not let `docs/records/*` become a second contract, second archive, or hidden registry outside `docs/live/features.json`.
 next_skills:
@@ -122,7 +123,7 @@ Write in project-truth terms when you do extract:
 `progress.md` already owns the outcome ledger. `memory.md` should either gain durable residue or remain unchanged on purpose. Do not blur those roles.
 
 ### 5. Reconcile linked records before promoting reference truth
-If the queued feature already has `record_paths`, inspect those pages against the decisive evidence bundle.
+If the queued feature already has `record_paths`, inspect those pages against the decisive evidence bundle. If no linked record exists yet and the durable residue should survive, create one new scoped page for the same tracked feature in the same pass and register it in `docs/live/features.json`.
 
 Use records deliberately:
 - promote stable residue from a record into `docs/reference/*` only when the lesson is now current project truth

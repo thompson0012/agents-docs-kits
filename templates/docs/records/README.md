@@ -1,6 +1,6 @@
 # Durable Records
 
-Use this folder for durable feature or decision pages created from a sprint, review, or scoped discussion when the material should survive chat loss but is not the active contract, not immutable archive evidence, and not stable project-wide reference truth.
+Use this folder for durable feature or decision pages created by an explicit agents-stack phase for a tracked feature when the material should survive chat loss but is not the active contract, not immutable archive evidence, and not stable project-wide reference truth. Do not use it as a raw chat dump or ad hoc inline persistence step.
 
 ## What belongs here
 - feature-local decision notes, investigation summaries, tradeoff writeups, or handoff context that remain useful after the sprint

@@ -74,7 +74,7 @@ Global durable state for the whole repo.
 - `memory.md`: durable cross-sprint learning written by the explicit Compound phase, not a dump of routine state reconciliation.
 
 ### `docs/records/*`
-Durable, traceable, scoped records created from discussion or sprint work when the output should survive beyond chat but is not the active sprint contract, immutable archive evidence, or universally current reference truth.
+Durable, traceable, scoped records created only by an explicit agents-stack phase (`generator-brainstorm` or `compound-capture`) for a tracked feature when the output should survive beyond chat but is not the active sprint contract, not immutable archive evidence, and not stable project-wide reference truth; never as raw chat dumps or ad hoc inline persistence.
 
 - Records may capture decision notes, findings, analyses, or other durable artifacts that still need page-local scope and validity boundaries.
 - Each record page must carry its own provenance and validity metadata, such as `scope`, `status`, `superseded_by`, and the sprint or archive contributions it draws from.
