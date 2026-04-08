@@ -15,7 +15,7 @@ Use this skill when:
 - the main problem is carrying forward active state, not choosing a new owner or control model
 
 Do not use this skill when:
-- the real question is whether the work should stay `single-session`, become `compacted-continuation`, or move into a multi-role loop — that belongs to `delivery-control/harness-design` or the template orchestrator
+- the real question is whether the work should stay `single-session`, become `compacted-continuation`, or move into a multi-role loop — that belongs to the template orchestrator
 - ownership is changing across planner / generator / evaluator / reviewer lanes
 - the next step is contract approval, scope repair, or orchestration repair
 - a vague narrative summary would hide the stronger truth already present in files

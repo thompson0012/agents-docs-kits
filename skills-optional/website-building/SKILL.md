@@ -84,14 +84,14 @@ Add one sentence explaining why the selected child is the narrowest correct fit.
 1. The router chooses the narrowest child.
 2. The selected child owns the implementation workflow and builder-side browser QA.
 3. The shared web references apply after the child is selected.
-4. For non-trivial or signoff-sensitive browser-facing work, recommend `delivery-control/frontend-evaluator` after builder QA for an independent acceptance pass. Do not treat that evaluator lane as mandatory for every small web edit.
+4. For non-trivial or signoff-sensitive browser-facing work, recommend an independent browser acceptance pass after builder QA. Do not treat that pass as mandatory for every small web edit.
 
 ## Use Every Tool Honestly
 
 - **Research first.** Search the web for reference sites, trends, and competitor examples before designing. Fetch any URLs the user provides.
 - **Generate real assets when the work calls for them.** Produce logos, illustrations, and imagery that match the chosen art direction. Do not ship placeholders.
 - **Verify in the browser as the builder.** Use the browser automation tool to inspect, interact with, and, when needed, capture screenshots at desktop and mobile sizes while implementing. Read `shared/12-playwright-interactive.md` before complex QA.
-- **Recommend independent evaluator signoff when warranted.** For non-trivial or signoff-sensitive browser-facing work, hand off to `delivery-control/frontend-evaluator` after builder QA has stabilized the experience and evidence. Do not treat that evaluator lane as mandatory for every small web edit.
+- **Recommend independent signoff when warranted.** For non-trivial or signoff-sensitive browser-facing work, hand off for an independent browser acceptance pass after builder QA has stabilized the experience and evidence. Do not treat that pass as mandatory for every small web edit.
 - **Use normal shell workflows for local work.** Install, run, and build projects with the stack's own commands such as `npm install`, `npm run dev`, and `npm run build`.
 
 ## SVG Logo Generation
@@ -114,7 +114,7 @@ Read `shared/12-playwright-interactive.md` for the full browser QA workflow.
 
 **Builder cycle:** `Build → Builder Browser QA → Fix → Repeat`
 
-For non-trivial or signoff-sensitive browser-facing work, finish the builder cycle first, then recommend `delivery-control/frontend-evaluator` for an independent final pass. Do not present that evaluator step as mandatory for every trivial edit.
+For non-trivial or signoff-sensitive browser-facing work, finish the builder cycle first, then recommend an independent browser acceptance pass. Do not present that step as mandatory for every trivial edit.
 
 ### Stage 1: Page-by-Page QA
 

@@ -116,7 +116,7 @@ QA is complete only when all of the following are true:
 
 ## Fresh Evaluator Handoff
 
-When browser-facing work is non-trivial, release-sensitive, or needs independent signoff, finish this builder QA workflow first and then hand off to `delivery-control/frontend-evaluator` for a fresh re-check.
+When browser-facing work is non-trivial, release-sensitive, or needs independent signoff, finish this builder QA workflow first and then hand off for a fresh independent re-check.
 
 Leave behind:
 - the exact start command, URL, and any required credentials, fixtures, or setup notes

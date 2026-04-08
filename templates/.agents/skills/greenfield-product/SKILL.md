@@ -21,7 +21,7 @@ If the request would skip a prerequisite stage, route to the prerequisite child 
 ## Boundary
 
 - This router does not answer the product question itself; it selects the narrowest child that can.
-- This family stops at durable product-definition outputs. Once `docs/reference/design.md`, `docs/reference/requirements.md`, and `docs/reference/implementation.md` exist, defined-feature delivery hands off to `harness-engineering` or `delivery-control`.
+- This family stops at durable product-definition outputs. Once `docs/reference/design.md`, `docs/reference/requirements.md`, and `docs/reference/implementation.md` exist, defined-feature delivery hands off to the implementation workflow under `using-agents-stack`.
 - If the best child is missing at runtime, say to install it. Do not silently substitute.
 - If no child fits, say so and answer directly.
 

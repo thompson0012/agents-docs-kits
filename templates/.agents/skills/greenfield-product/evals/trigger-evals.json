@@ -27,6 +27,6 @@
     "id": "execution-governance-does-not-belong",
     "query": "We need to set up a cross-session planner/generator/evaluator loop for implementation.",
     "should_trigger": false,
-    "rationale": "Execution governance belongs in delivery-control, not greenfield-product."
+    "rationale": "Execution governance belongs in `using-agents-stack`, not greenfield-product."
   }
 ]
