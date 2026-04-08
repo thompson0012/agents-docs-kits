@@ -74,7 +74,7 @@ A concrete proposal containing at minimum:
 - problem statement in current-repo terms
 - objective for this sprint only
 - explicit in-scope work
-  - explicit out-of-scope work for this sprint, with same-initiative deferrals named as later roadmap slices or re-authorization boundaries
+- explicit deferred work for this sprint, with same-initiative deferrals named as later roadmap slices or re-authorization boundaries
 - allowed files
 - forbidden files or subsystem boundaries
 - implementation approach at a high level
@@ -115,13 +115,13 @@ If durable feature-linked discussion residue is too large or nuanced for `docs/l
 - If the idea notes or linked records still contain competing directions that cannot fit one bounded sprint, split or return the item to brainstorming.
 
 ### 3. Distill the source goal into durable roadmap truth before reserving a sprint
-- When the user prompt or brainstorm describes a broad initiative, write the durable source-goal, current authorized initiative, and explicit deferred lanes into `docs/live/roadmap.md`.
+- When a broad user prompt or brainstorm describes a broad initiative, write the durable source-goal, current authorized initiative, and explicit deferred lanes into `docs/live/roadmap.md`.
 - Refresh `docs/live/current-focus.md` so a cold-start agent can see which roadmap slice is being turned into this sprint proposal and what artifact to open next.
-- If the files do not support a clear single-sprint cut, stop and send the work back to brainstorming or human clarification rather than reserving a runnable sprint.
+- If the files do not support a clear single-sprint cut, first publish the broader initiative as a sequence of named roadmap slices and then write only the first bounded sprint; if a truthful slice decomposition still cannot be made, stop and send the work back to brainstorming or human clarification rather than reserving a runnable sprint.
 - When you do cut a sprint, keep the broader initiative visible: the sprint objective is the first bounded slice of that initiative, not a new smaller project.
 - Identify the smallest meaningful increment that can be implemented and reviewed in one sprint without discarding essential parts of the source goal.
-- If choosing that increment would hide core requested work, stop instead of shrinking the goal to fit.
-- Split large or cross-cutting ideas into explicit later roadmap slices or re-authorization boundaries before proposing anything.
+- If choosing that increment would hide core requested work, surface the missing work as later roadmap slices and only proceed if the current slice still stands on its own; do not shrink the goal to fit.
+- Split large or cross-cutting ideas into explicit later roadmap slices or re-authorization boundaries before proposing anything, and preserve the source-goal wording so the initiative itself is not rewritten into a smaller project.
 
 ### 5. Define observable success
 Every acceptance outcome must be externally checkable.
@@ -177,7 +177,7 @@ The proposal must let an evaluator answer:
 
 ## Refusal and Stop Conditions
 Reject the proposal phase and leave a truthful blocker when:
-- the requested work is too large for one bounded sprint, or it would only fit after redefining the source goal into a smaller different project
+- the requested work cannot be truthfully partitioned into a first bounded sprint plus named later roadmap slices, or it would only fit after redefining the source goal into a smaller different project
 - acceptance criteria cannot be made observable from the current repo and tooling
 - an interactive criterion can be satisfied by a static final screenshot or hardcoded final value instead of a state transition
 - file boundaries cannot be identified because the feature is still conceptually vague
@@ -197,7 +197,7 @@ A good proposal:
 - exposes architecture changes instead of smuggling them in
 - defines outcomes that a reviewer can verify from behavior and state transitions
 - uses brainstorm or record context only to sharpen scope, not to excuse vagueness
-- leaves obvious future work out of scope instead of pretending to solve everything now
+- leaves obvious future work as named later roadmap slices instead of pretending to solve everything now
 
 ## Done Definition
 This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm or record context has been distilled into explicit source-goal and roadmap truth, any optional `docs/records/*` update is linked back through the same feature entry in `docs/live/tracked-work.json`, and the repo state makes the next step unambiguous: adversarial contract review.

@@ -99,8 +99,8 @@ Reject if any of these are true:
 - more than one meaningful product increment is bundled together
 - the proposal quietly narrows the user's stated initiative into a different smaller project
 - the change spans unrelated subsystems without justification
-- the "out-of-scope" list hides core parts of the same initiative instead of naming later roadmap slices
-- the change finishes only by silently chaining additional sprints that were never made explicit in the roadmap
+- the proposal's deferred-work section hides core parts of the same initiative instead of naming later roadmap slices
+- the proposal leaves follow-on sprints implicit instead of making them explicit in the roadmap
 - the proposal requires follow-on work before its own acceptance can be tested
 - "nice to have" items are mixed into required scope
 
@@ -144,7 +144,7 @@ You must reject the proposal when any of the following is true:
 - acceptance criteria can be reward-hacked by hardcoded static outcomes rather than real state transitions
 - file boundaries are missing, too broad, or dishonest
 - the sprint hides architecture changes, migrations, or dependency churn
-- scope exceeds one bounded sprint
+- scope exceeds one bounded sprint for the current contract
 - the proposal hides multi-sprint initiative scope or a required roadmap re-authorization boundary
 - required repo context is missing and the proposal papers over the gap
 - the proposal conflicts with `AGENTS.md`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, global state, or reference docs
