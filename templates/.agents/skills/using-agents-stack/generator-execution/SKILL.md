@@ -127,6 +127,12 @@ Keep it current with:
 - blockers that prevent full verification
 
 If you start long-running processes, record how they were started, whether they are still needed, and how the next agent should attach to or restart them.
+### Review-prep note: domain QA playbooks
+
+Before handoff, use the matching `frontend-qa` or `backend-qa` playbook as a checklist when it helps you record stronger reproduction evidence in `runtime.md` and `handoff.md`.
+
+This preparation only improves evidence quality. It does not author `qa.md`, does not self-approve the sprint, and does not change the contract or review boundary.
+
 
 ### 5. Run build/startup triage before handoff
 

@@ -72,6 +72,15 @@ Extract the following into your own notes before testing:
 - explicit non-goals
 
 Do not let the generator redefine success in `handoff.md`.
+### Methodology note: domain QA playbooks
+
+After reading the contract, use the narrowest matching playbook(s) to structure the review:
+
+- `frontend-qa` for browser-visible or UI-centric acceptance
+- `backend-qa` for APIs, jobs, queues, webhooks, auth boundaries, data integrity, and observability
+
+If a sprint spans both surfaces, use both playbooks. They shape inventory, checks, and evidence capture only. They do not change phase ownership, routing, or the PASS / FAIL / BLOCKED contract, and the worker still produces one harness-owned `qa.md` and one `review.md`.
+
 
 ### 2. Read the execution evidence critically
 
