@@ -17,7 +17,7 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 - Drain `compound_pending_feature_ids` before runnable sprint resume or new backlog selection. Compounding is explicit work, not background magic.
 - Distinguish runnable active work from non-runnable brainstorm and parked work. `needs_brainstorm`, `awaiting_human`, and `escalated_to_human` stay visible, but they must not be mistaken for the one runnable active sprint.
 - When no runnable active sprint exists and the compound queue is empty, choose the highest-priority dependency-ready `needs_brainstorm` item before ordinary `pending` proposal work.
-- Treat `docs/live/current-focus.md` as the live resume anchor and `docs/live/roadmap.md` as the initiative ledger for source goals, remaining slices, and re-authorization boundaries. Neither file replaces `.harness/<feature-id>/contract.md` for an active sprint.
+- Treat `docs/live/current-focus.md` as the live resume anchor and `docs/live/roadmap.md` as the initiative ledger for source goals, remaining slices, and re-authorization boundaries. Neither file replaces `.harness/<workstream-id>/contract.md` for an active sprint.
 - If a user's broad goal or direction change is not yet reflected durably, pause sprint chaining long enough to publish or refresh that source-goal truth in `current-focus.md` plus `roadmap.md` before selecting the next owner.
 
 
@@ -135,7 +135,7 @@ A worker that only proves a final static condition has not proved the contract.
 
 Fresh-worker orchestration does not change the file contracts.
 
-- Resume from the strongest durable artifact, using `docs/live/current-focus.md` as the resume pointer and `docs/live/roadmap.md` as the initiative ledger for what remains. Neither file replaces `.harness/<feature-id>/contract.md` for active-sprint truth.
+- Resume from the strongest durable artifact, using `docs/live/current-focus.md` as the resume pointer and `docs/live/roadmap.md` as the initiative ledger for what remains. Neither file replaces `.harness/<workstream-id>/contract.md` for active-sprint truth.
 - Retries keep the same sprint folder and preserve evidence already on disk.
 - PASS still archives the full sprint record, refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` as needed, then queues explicit compounding before the next work-selection pass.
 - FAIL or BLOCKED still preserves local evidence, reconciles state first, refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` when the remaining path changes, and may queue compounding before the next retry or parked-state decision.

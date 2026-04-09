@@ -67,7 +67,7 @@ This file is durable state. Update it in place so future agents can see what was
 - the runnable sprint selector
 - approved sprint contracts
 - implementation checklists or code-change plans
-- claims that `.harness/<feature-id>/` should exist already
+- claims that `.harness/<workstream-id>/` should exist already
 
 `docs/live/tracked-work.json` remains the authoritative tracked-work ledger. Use that file to track backlog truth, runnable state, and the single runnable active sprint.
 
@@ -78,7 +78,7 @@ This file is durable state. Update it in place so future agents can see what was
 - use `status: "pending"` only when the item is ready for proposal
 - add a pointer back to this file or section if the tracked-work schema supports it
 - do not set `runnable_active_sprint_id`
-- do not open `.harness/<feature-id>/`
+- do not open `.harness/<workstream-id>/`
 
 ## Idea entry template
 ### IDEA-TEMPLATE: Working title
@@ -101,7 +101,7 @@ This file is a live resume anchor. It is not a second contract.
 - Current roadmap phase: Unset. Record the real source goal in `docs/live/roadmap.md` before proposing sprint work.
 - Next owner: `project-initializer`, or the next human or agent establishing durable state.
 - Next file to open: `docs/live/roadmap.md`
-- Contract truth: If a sprint is later opened, `.harness/<feature-id>/contract.md` becomes the only runnable sprint contract.
+# Contract truth: If a sprint is later opened, `.harness/<workstream-id>/contract.md` becomes the only runnable sprint contract.
 '
 
 write_file_if_missing "docs/live/roadmap.md" '# Initiative Roadmap
@@ -153,14 +153,14 @@ Use this folder for durable feature or decision pages created from a sprint, rev
 
 ## Page metadata and backlinks
 At the top of each record, include:
-- `feature_id`: owning tracked feature, when one exists
+- `workstream_id`: owning tracked workstream, when one exists
 - `scope`: what question, slice, or discussion window this page covers
 - `status`: current validity such as `informative`, `promoted`, `superseded`, or `expired`
 - `superseded_by`: replacement record or reference path, if any
 - `idea_ref`: originating idea section or durable discussion pointer, if any
 - `evidence_path`: one canonical evidence path for the current supporting sprint evidence
 - `reference_paths`: stable reference pages that absorbed durable truth from this record
-- `sprint_contributions`: sprint folders or feature ids that materially informed the page
+- `sprint_contributions`: sprint folders or workstream ids that materially informed the page
 - `archive_contributions`: archive folders that preserve cited PASS evidence
 
 Backlink rules:

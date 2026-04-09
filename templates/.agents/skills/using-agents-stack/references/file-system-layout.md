@@ -7,9 +7,9 @@ This reference describes the canonical agents-stack starter topology. The router
 ```text
 AGENTS.md
 .agents/skills/using-agents-stack/
-.harness/<feature-id>/
+.harness/<workstream-id>/
 docs/live/
-docs/archive/<feature-id>_<timestamp>/
+docs/archive/<workstream-id>_<timestamp>/
 docs/records/
 docs/reference/
 docs/scripts/
@@ -66,9 +66,9 @@ Rules:
 - `compound_pending_feature_ids` is a non-runnable queue that drains before runnable sprint resume or new backlog selection
 - more than one runnable active feature is invalid
 - parked `awaiting_human` and `escalated_to_human` features may remain listed, but they must not also be marked as the runnable active sprint
-- a feature marked runnable-active should have a matching `.harness/<feature-id>/` folder unless the proposal has not been created yet
+- a feature marked runnable-active should have a matching `.harness/<workstream-id>/` folder unless the proposal has not been created yet
 - `tracked-work.json` remains the only tracked-work registry; fields such as `idea_ref`, `evidence_path`, `record_paths`, and `reference_paths` belong here rather than in a second registry
-- each feature should have exactly one canonical `evidence_path` at a time: `.harness/<feature-id>/` while active or parked, then `docs/archive/<feature-id>_<timestamp>/` after PASS archive cutover
+- each feature should have exactly one canonical `evidence_path` at a time: `.harness/<workstream-id>/` while active or parked, then `docs/archive/<workstream-id>_<timestamp>/` after PASS archive cutover
 - when no runnable active sprint exists, routing chooses the highest-priority dependency-ready `needs_brainstorm` item before ordinary `pending` proposal work
 - `docs/live/roadmap.md` may explain initiative continuation, but `tracked-work.json` still selects runnable truth and backlog order
 
@@ -96,7 +96,7 @@ Purpose:
 Rules:
 
 - it complements `docs/live/tracked-work.json`, `docs/live/roadmap.md`, `docs/live/progress.md`, and `docs/live/memory.md`; it does not replace any of them
-- when an active or parked sprint exists, it must point back to `.harness/<feature-id>/contract.md` for slice truth instead of becoming a second contract
+- when an active or parked sprint exists, it must point back to `.harness/<workstream-id>/contract.md` for slice truth instead of becoming a second contract
 - keep it concise and refresh it when decisive state changes so resume routing does not depend on chat memory
 
 
@@ -110,7 +110,7 @@ Purpose:
 Rules:
 
 - it complements `docs/live/tracked-work.json` and `docs/live/current-focus.md`; it does not replace runnable selection or sprint-local execution truth
-- it must not claim `runnable_active_sprint_id` or overrule `.harness/<feature-id>/contract.md` for an active sprint
+- it must not claim `runnable_active_sprint_id` or overrule `.harness/<workstream-id>/contract.md` for an active sprint
 - refresh it whenever planning or state reconciliation changes which slice comes next, what still remains, or where the next human authorization boundary lives
 
 
@@ -132,7 +132,7 @@ Purpose:
 
 This is not scratch space. It should store information the next agent actually needs, and it should usually be written by `compound-capture` rather than by routine state reconciliation. Memory entries must keep artifact-linked provenance to decisive sprint evidence; a direct inline artifact-path citation is sufficient, so a separate records page is not required for every note.
 
-## `.harness/<feature-id>/`
+## `.harness/<workstream-id>/`
 
 This folder contains sprint-local durable state. One folder may be the runnable active sprint. Additional non-terminal folders are allowed only when they are explicitly parked in `awaiting_human` or `escalated_to_human`.
 
@@ -201,7 +201,7 @@ Recommended fields:
 
 The trace and pause fields are optional only when they do not apply. When a sprint is retried or parked, these fields are part of the durable contract, not convenience notes.
 
-## `docs/archive/<feature-id>_<timestamp>/`
+## `docs/archive/<workstream-id>_<timestamp>/`
 
 Purpose:
 
@@ -213,8 +213,8 @@ In the starter pack, `docs/archive/WORKSTREAM-000_timestamp/` is the archived ex
 Archive rules:
 
 - archive only after review PASS and state update
-- PASS archive cutover should prefer move or verified rename; if copying is required, update the feature's canonical `evidence_path` to the archive and explicitly de-canonicalize the source `.harness/<feature-id>/` workspace after verification
-- never reuse the active `.harness/<feature-id>/` folder as the archive itself
+- PASS archive cutover should prefer move or verified rename; if copying is required, update the feature's canonical `evidence_path` to the archive and explicitly de-canonicalize the source `.harness/<workstream-id>/` workspace after verification
+- never reuse the active `.harness/<workstream-id>/` folder as the archive itself
 - archive naming should include the workstream ID and a timestamp or equivalent unique suffix
 - preserve the final `status.json` snapshot so worker IDs, attempt counters, restore boundaries, and parked history remain visible in historical evidence when those fields were recorded
 - archive never overrides active live or local sprint truth
@@ -272,13 +272,13 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 | `docs/live/progress.md` | global | state-update worker | router, proposal workers, humans |
 | `docs/live/memory.md` | global | initializer and compound-capture workers | router, proposal, execution, and review workers |
 | `docs/records/*` | scoped durable | generator-brainstorm, generator-proposal, state-update, and compound-capture workers, plus human maintainer promotion/supersession edits | router, proposal, state-update, compound-capture, humans |
-| `.harness/<feature-id>/sprint_proposal.md` | sprint-local | generator-proposal worker | contract-review worker |
-| `.harness/<feature-id>/contract.md` | sprint-local | evaluator-contract-review worker | execution and review workers |
-| `.harness/<feature-id>/runtime.md` | sprint-local | generator-execution worker | execution, review, and resume logic |
-| `.harness/<feature-id>/handoff.md` | sprint-local | generator-execution worker | review, humans, and resume logic |
-| `.harness/<feature-id>/review.md` | sprint-local | adversarial-live-review worker | state-update and resume logic |
-| `.harness/<feature-id>/status.json` | sprint-local | current phase worker | router, resume logic, audits |
-| `docs/archive/<feature-id>_<timestamp>/` | historical | state-update worker | humans, audits, future planning |
+| `.harness/<workstream-id>/sprint_proposal.md` | sprint-local | generator-proposal worker | contract-review worker |
+| `.harness/<workstream-id>/contract.md` | sprint-local | evaluator-contract-review worker | execution and review workers |
+| `.harness/<workstream-id>/runtime.md` | sprint-local | generator-execution worker | execution, review, and resume logic |
+| `.harness/<workstream-id>/handoff.md` | sprint-local | generator-execution worker | review, humans, and resume logic |
+| `.harness/<workstream-id>/review.md` | sprint-local | adversarial-live-review worker | state-update and resume logic |
+| `.harness/<workstream-id>/status.json` | sprint-local | current phase worker | router, resume logic, audits |
+| `docs/archive/<workstream-id>_<timestamp>/` | historical | state-update worker | humans, audits, future planning |
 
 ## Routing implications
 

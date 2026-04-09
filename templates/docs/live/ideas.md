@@ -14,7 +14,7 @@ This file is durable state. Update it in place so future agents can see what was
 - the runnable sprint selector
 - approved sprint contracts
 - implementation checklists or code-change plans
-- claims that `.harness/<feature-id>/` should exist already
+- claims that `.harness/<workstream-id>/` should exist already
 
 `docs/live/tracked-work.json` remains the authoritative tracked-work ledger. Use that file to track backlog truth, runnable state, and the single runnable active sprint.
 
@@ -25,7 +25,7 @@ This file is durable state. Update it in place so future agents can see what was
 - use `status: "pending"` only when the item is ready for proposal
 - add a pointer back to this file or section if the tracked-work schema supports it
 - do not set `runnable_active_sprint_id`
-- do not open `.harness/<feature-id>/`
+- do not open `.harness/<workstream-id>/`
 
 ## Idea entry template
 ### IDEA-TEMPLATE: Working title

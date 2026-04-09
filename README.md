@@ -38,7 +38,7 @@ The copied scaffold starts blank: no active sprint, no archive history, and no s
 - `docs/live/progress.md` — reviewed outcomes and durable next actions.
 - `docs/live/memory.md` — durable lessons captured after compounding.
 - `docs/reference/*` — stable architecture and design intent.
-- `.harness/<feature-id>/` — sprint-local execution state.
+- `.harness/<workstream-id>/` — sprint-local execution state.
 - `docs/archive/*` — finished sprint history.
 
 ## Normal harness flow

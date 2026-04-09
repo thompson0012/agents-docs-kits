@@ -15,14 +15,14 @@ Use this folder for durable feature or decision pages created by an explicit age
 
 ## Page metadata and backlinks
 At the top of each record, include:
-- `feature_id`: owning tracked feature, when one exists
+- `workstream_id`: owning tracked workstream, when one exists
 - `scope`: what question, slice, or discussion window this page covers
 - `status`: current validity such as `informative`, `promoted`, `superseded`, or `expired`
 - `superseded_by`: replacement record or reference path, if any
 - `idea_ref`: originating idea section or durable discussion pointer, if any
 - `evidence_path`: one canonical evidence path for the current supporting sprint evidence
 - `reference_paths`: stable reference pages that absorbed durable truth from this record
-- `sprint_contributions`: sprint folders or feature ids that materially informed the page
+- `sprint_contributions`: sprint folders or workstream ids that materially informed the page
 - `archive_contributions`: archive folders that preserve cited PASS evidence
 
 Backlink rules:

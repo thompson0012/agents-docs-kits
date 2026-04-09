@@ -1,7 +1,7 @@
 ---
 name: evaluator-contract-review
 purpose: Adversarially review a sprint proposal and either approve it as a contract or force a revision with specific, actionable feedback.
-trigger: Use when `.harness/<feature-id>/sprint_proposal.md` exists and no trustworthy approved contract is present.
+trigger: Use when `.harness/<workstream-id>/sprint_proposal.md` exists and no trustworthy approved contract is present.
 inputs:
   - AGENTS.md
   - docs/live/tracked-work.json
@@ -10,13 +10,13 @@ inputs:
   - docs/live/progress.md
   - docs/live/memory.md
   - docs/reference/*
-  - .harness/<feature-id>/sprint_proposal.md
-  - .harness/<feature-id>/status.json
+  - .harness/<workstream-id>/sprint_proposal.md
+  - .harness/<workstream-id>/status.json
   - affected code areas named by the proposal
 outputs:
-  - .harness/<feature-id>/contract.md on approval
-  - updated .harness/<feature-id>/status.json
-  - specific revision feedback recorded back into `.harness/<feature-id>/sprint_proposal.md` or adjacent sprint-local notes when rejected
+  - .harness/<workstream-id>/contract.md on approval
+  - updated .harness/<workstream-id>/status.json
+  - specific revision feedback recorded back into `.harness/<workstream-id>/sprint_proposal.md` or adjacent sprint-local notes when rejected
 boundaries:
   - Do not implement the feature.
   - Do not soften requirements to make approval easier.
@@ -51,8 +51,8 @@ Read all of the following before deciding:
 3. `docs/live/current-focus.md` and `docs/live/roadmap.md`
 4. `docs/live/progress.md` and `docs/live/memory.md`
 5. Relevant `docs/reference/*`
-6. `.harness/<feature-id>/sprint_proposal.md`
-7. `.harness/<feature-id>/status.json`
+6. `.harness/<workstream-id>/sprint_proposal.md
+7. `.harness/<workstream-id>/status.json
 8. The real code and tests in the areas the proposal claims it will touch
 
 Do not review only the prose. Verify that the claimed file boundaries and acceptance steps match the actual repo.
@@ -60,7 +60,7 @@ Do not review only the prose. Verify that the claimed file boundaries and accept
 ## Expected Outputs
 If the host keeps reviewer workers read-only, return exact file payloads for these artifacts and let the orchestrator persist them without altering their substance.
 
-### Approval path: `.harness/<feature-id>/contract.md`
+### Approval path: `.harness/<workstream-id>/contract.md`
 Write an approved contract only when the proposal is execution-ready.
 The contract must include:
 - sprint id and objective

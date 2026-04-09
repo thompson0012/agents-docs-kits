@@ -16,7 +16,7 @@ outputs:
   - optional precise update to docs/live/tracked-work.json
 boundaries:
   - Operate only on durable idea, record, and backlog artifacts.
-  - Do not edit product code, tests, app assets, or `.harness/<feature-id>/` sprint files.
+  - Do not edit product code, tests, app assets, or `.harness/<workstream-id>/` sprint files.
   - Do not claim `runnable_active_sprint_id` or otherwise mark a runnable active sprint.
   - Do not turn brainstorming notes into an implementation plan disguised as a proposal.
   - Do not create a record for untracked ideation or let `docs/records/*` become a second registry, contract, or archive.
@@ -35,7 +35,7 @@ A good brainstorm output makes one of two truths obvious:
 - this candidate still needs more thinking, so it stays in `docs/live/ideas.md` and may remain `needs_brainstorm`
 - this candidate is now concrete enough to promote into `docs/live/tracked-work.json` for bounded proposal work
 
-Brainstorm never claims the single runnable active sprint slot. It prepares work for later selection; it does not open `.harness/<feature-id>/` or start execution.
+Brainstorm never claims the single runnable active sprint slot. It prepares work for later selection; it does not open `.harness/<workstream-id>/` or start execution.
 
 ## Worker Dispatch Contract
 
@@ -149,7 +149,7 @@ If the answer is still unclear, that is a failure to refine the idea enough. Fix
 - `docs/live/ideas.md` is the primary artifact for this phase.
 - `docs/live/tracked-work.json` may change only to truthfully track brainstorm-needed or proposal-ready backlog state and to register any linked `record_paths` for the touched feature.
 - Scoped `docs/records/*` pages are optional supporting artifacts only for already-tracked features; they must never replace `ideas.md`, `tracked-work.json`, or later sprint-local contracts.
-- Do not create `.harness/<feature-id>/` from brainstorming.
+- Do not create `.harness/<workstream-id>/` from brainstorming.
 - Do not edit `docs/archive/*` during this phase.
 - Do not touch product code, tests, or runtime assets.
 

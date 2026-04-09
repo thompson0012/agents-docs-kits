@@ -13,10 +13,10 @@ inputs:
   - docs/reference/*
   - linked docs/records/* for the selected feature when present
   - existing implementation in the target area
-  - .harness/<feature-id>/sprint_proposal.md if revising an existing proposal
+  - .harness/<workstream-id>/sprint_proposal.md if revising an existing proposal
 outputs:
-  - .harness/<feature-id>/sprint_proposal.md
-  - .harness/<feature-id>/status.json
+  - .harness/<workstream-id>/sprint_proposal.md
+  - .harness/<workstream-id>/status.json
   - optional scoped `docs/records/*` note when durable feature-linked discussion residue should survive outside the sprint contract
   - optional precise updates to docs/live/roadmap.md and docs/live/current-focus.md when broad-goal truth must be made durable before sprint reservation
   - optional precise update to docs/live/tracked-work.json to reserve the active sprint and register any touched `record_paths`
@@ -27,7 +27,7 @@ boundaries:
   - Do not claim a file boundary you have not checked against the repo.
   - Do not translate unresolved brainstorm notes into fake proposal certainty.
   - Do not invent source-goal intent or roadmap structure that the files and prompt cannot support.
-  - Do not let `docs/records/*` become a second contract, second registry, or substitute for `.harness/<feature-id>/sprint_proposal.md`.
+  - Do not let `docs/records/*` become a second contract, second registry, or substitute for `.harness/<workstream-id>/sprint_proposal.md`.
 next_skills:
   - evaluator-contract-review
 ---
@@ -45,9 +45,9 @@ When the feature came from `docs/live/ideas.md`, carry forward only the parts th
 
 - Run proposal drafting in a fresh worker context. The orchestrator dispatches this worker; it does not swap into proposal mode inline.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: repo discovery, sprint-local planning writes under `.harness/<feature-id>/`, optional scoped `docs/records/*`, and the narrow live-state updates needed to make source-goal truth durable in `docs/live/roadmap.md`, `docs/live/current-focus.md`, and `docs/live/tracked-work.json`. No product-code edits.
-- Parallel-safe only for read-only research across clearly disjoint code areas. One worker owns `.harness/<feature-id>/sprint_proposal.md`, `status.json`, and any scoped record update for that feature; parallel helpers must not write those same files or overlap target areas.
-- Durable return contract: `.harness/<feature-id>/sprint_proposal.md`, `.harness/<feature-id>/status.json`, any optional `docs/records/*`, and any required `docs/live/roadmap.md` / `docs/live/current-focus.md` refresh before reservation, plus optional `docs/live/tracked-work.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
+- Tool lane: repo discovery, sprint-local planning writes under `.harness/<workstream-id>/`, optional scoped `docs/records/*`, and the narrow live-state updates needed to make source-goal truth durable in `docs/live/roadmap.md`, `docs/live/current-focus.md`, and `docs/live/tracked-work.json`. No product-code edits.
+- Parallel-safe only for read-only research across clearly disjoint code areas. One worker owns `.harness/<workstream-id>/sprint_proposal.md`, `status.json`, and any scoped record update for that feature; parallel helpers must not write those same files or overlap target areas.
+- Durable return contract: `.harness/<workstream-id>/sprint_proposal.md`, `.harness/<workstream-id>/status.json`, any optional `docs/records/*`, and any required `docs/live/roadmap.md` / `docs/live/current-focus.md` refresh before reservation, plus optional `docs/live/tracked-work.json`. Include `worker_id` and `orchestrator_run_id` in `status.json` when the host provides them.
 - Dispatch framing is non-authoritative. Before acting, verify that the dispatched feature still matches `docs/live/tracked-work.json`, that the claimed phase still matches the strongest local/live artifact on disk, and that stronger evidence in the `AGENTS.md` precedence chain beats any dispatch summary, stale resume hint, or copied orchestrator context.
 - If those checks disagree with the dispatch frame, stop before writing, preserve the existing truthful files, and hand control back to the orchestrator for correct-lane dispatch.
 
@@ -62,13 +62,13 @@ Read these before drafting:
 6. Relevant `docs/reference/*`
 7. Any linked `docs/records/*` for the selected feature when they contain durable rationale or prior decision residue
 8. The current code in every area you expect to touch
-9. Existing `.harness/<feature-id>/` files if this is a revision
+9. Existing `.harness/<workstream-id>/` files if this is a revision
 
 Do not propose from backlog text alone. You must inspect the real code so the file boundaries and acceptance checks are believable.
 
 ## Expected Outputs
 
-### `.harness/<feature-id>/sprint_proposal.md`
+### `.harness/<workstream-id>/sprint_proposal.md
 A concrete proposal containing at minimum:
 - feature id and title
 - problem statement in current-repo terms
@@ -83,7 +83,7 @@ A concrete proposal containing at minimum:
 - risks, assumptions, and blockers
 - questions that must be answered before contract approval
 
-### `.harness/<feature-id>/status.json`
+### `.harness/<workstream-id>/status.json
 A machine-readable checkpoint for resume and routing.
 It should make the proposal state obvious, for example:
 - `sprint_id`
@@ -179,7 +179,7 @@ The proposal must let an evaluator answer:
 - Do not reserve or chain the sprint forward until `docs/live/roadmap.md` and `docs/live/current-focus.md` tell the same source-goal story as the proposal.
 
 ## File Write Expectations
-- Write inside `.harness/<feature-id>/` only for sprint-local state.
+- Write inside `.harness/<workstream-id>/` only for sprint-local state.
 - Do not create `contract.md` in this phase.
 - Do not touch `docs/archive/*`.
 - Do not edit product code, tests, or app assets.

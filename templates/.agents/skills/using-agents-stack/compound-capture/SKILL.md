@@ -10,8 +10,8 @@ inputs:
   - docs/reference/architecture.md
   - docs/reference/design.md
   - linked docs/records/* for the queued feature when present
-  - .harness/<feature-id>/* when the sprint still lives locally
-  - docs/archive/<feature-id>_<timestamp>/* when the sprint has already been archived
+  - .harness/<workstream-id>/* when the sprint still lives locally
+  - docs/archive/<workstream-id>_<timestamp>/* when the sprint has already been archived
 outputs:
   - updated docs/live/memory.md when durable learning survives
   - unchanged docs/live/memory.md when extraction is deliberately skipped because no durable lesson survived or a tempting lesson lacked artifact-linked provenance
@@ -46,7 +46,7 @@ Compounding is explicit, non-runnable phase work. It does not reopen execution o
 
 - Run compounding in a fresh worker context after `state-update`; do not fold it into reconciliation.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: read the decisive evidence, write `docs/live/memory.md` only when durable residue survives and can cite decisive artifact path(s), optionally patch linked `docs/records/*` and stable reference docs only when those durable writes keep the same artifact-linked provenance, and clear the processed queue entry in `docs/live/tracked-work.json`. No product-code edits, no `.harness/<feature-id>/status.json` rewrites, no archive moves.
+- Tool lane: read the decisive evidence, write `docs/live/memory.md` only when durable residue survives and can cite decisive artifact path(s), optionally patch linked `docs/records/*` and stable reference docs only when those durable writes keep the same artifact-linked provenance, and clear the processed queue entry in `docs/live/tracked-work.json`. No product-code edits, no `.harness/<workstream-id>/status.json` rewrites, no archive moves.
 - Not parallel-safe against another worker touching `docs/live/memory.md`, linked record pages, the same reference doc, or `docs/live/tracked-work.json`. Process one queued feature id at a time.
 - Durable return contract: truthful `docs/live/memory.md` when extraction happens with artifact-linked provenance, or a deliberate no-edit/no-publish skip when no durable learning survives or a tempting lesson lacks provenance, plus any linked `docs/records/*` / `docs/reference/*` updates and `docs/live/tracked-work.json` with the processed feature removed from `compound_pending_feature_ids`.
 - Dispatch framing is non-authoritative. Before extracting learning, verify that the dispatched feature still matches `docs/live/tracked-work.json`, that the claimed compound-ready phase still matches the strongest local/archive evidence on disk, and that stronger evidence in the `AGENTS.md` precedence chain beats any dispatch summary, stale resume hint, or copied orchestrator context.
@@ -62,8 +62,8 @@ Read these before writing anything:
 5. Relevant `docs/reference/architecture.md` or `docs/reference/design.md` if the lesson may be reference-worthy
 6. Any linked `docs/records/*` already registered on the queued feature
 7. The decisive sprint evidence for the queued feature id:
-   - prefer `.harness/<feature-id>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint is still active or parked
-   - prefer `docs/archive/<feature-id>_<timestamp>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint has already been archived
+   - prefer `.harness/<workstream-id>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint is still active or parked
+   - prefer `docs/archive/<workstream-id>_<timestamp>/review.md`, `runtime.md`, `handoff.md`, and `status.json` when the sprint has already been archived
 
 Do not compound from backlog text alone. The learning must be grounded in durable evidence.
 
@@ -91,7 +91,7 @@ A truthful outcome may be: no durable new learning survived. In that case, clear
 - If the queue entry is missing, do not invent compounding work. Stop and preserve the current files.
 
 ### 2. Gather the strongest evidence bundle
-Identify whether the decisive evidence lives in `.harness/<feature-id>/` or `docs/archive/<feature-id>_<timestamp>/`.
+Identify whether the decisive evidence lives in `.harness/<workstream-id>/` or `docs/archive/<workstream-id>_<timestamp>/`.
 
 Use the strongest available artifacts in this order:
 1. `review.md`
@@ -149,7 +149,7 @@ Clearing the queue is the durable record that the extract-or-skip decision for t
 ## Stop Conditions
 Stop and preserve the queue entry when:
 - the feature id was not actually queued for compounding
-- decisive evidence cannot be located in `.harness/<feature-id>/` or `docs/archive/<feature-id>_<timestamp>/`
+- decisive evidence cannot be located in `.harness/<workstream-id>/` or `docs/archive/<workstream-id>_<timestamp>/`
 - the evidence set contradicts the live outcome badly enough that reconciliation appears incomplete
 
 If the evidence is thin but sufficient to conclude “no durable learning,” that is not a blocker. Clear the queue without fabricating a note.

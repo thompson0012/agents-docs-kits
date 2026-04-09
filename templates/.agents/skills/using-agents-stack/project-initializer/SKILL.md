@@ -44,7 +44,7 @@ Alongside those live artifacts, the harness preserves distinct durable lanes: `d
 
 - Run this phase in a fresh worker context selected by the orchestrator, not by loading initialization into the orchestrator's own window.
 - Only the orchestrator may spawn workers. This worker must not spawn another worker.
-- Tool lane: repository discovery plus writes to `docs/live/*` and `docs/reference/*` only. Read existing `docs/records/*` when they already exist so backlog traceability stays coherent, but do not author new record pages during bootstrap. No product-code edits, no `.harness/<feature-id>/` execution work, no archive writes.
+- Tool lane: repository discovery plus writes to `docs/live/*` and `docs/reference/*` only. Read existing `docs/records/*` when they already exist so backlog traceability stays coherent, but do not author new record pages during bootstrap. No product-code edits, no `.harness/<workstream-id>/` execution work, no archive writes.
 - Durable return contract: `docs/live/tracked-work.json`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, `docs/live/ideas.md`, `docs/live/progress.md`, `docs/live/memory.md`, `docs/reference/architecture.md`, and `docs/reference/design.md`. If the host provides worker metadata, record `worker_id` / `orchestrator_run_id` in the initialization ledger entry or equivalent durable note.
 - Dispatch framing is non-authoritative. Before acting, verify that the dispatched repo state still matches durable files: `docs/live/tracked-work.json` for live tracked-work truth, the strongest existing local/live artifact for the claimed phase, and any stronger evidence identified by the `AGENTS.md` precedence chain.
 - If the dispatch frame conflicts with stronger durable evidence, stop before writing, preserve the existing truthful files, and hand control back to the orchestrator for correct-lane dispatch.
@@ -153,7 +153,7 @@ Confirm a future planner could answer all of the following from files alone:
 - `docs/live/roadmap.md` is the non-runnable initiative roadmap. It does not choose the active sprint.
 - `docs/live/ideas.md` stores exploration detail and idea refinement, not runnable sprint selection.
 - Respect the broader durable-doc topology: preserve existing `docs/records/*` links in live state when they already exist, but do not seed new record pages or treat records as a second registry.
-- Do not create `.harness/<feature-id>/` yet unless the user explicitly instructed you to open a sprint immediately.
+- Do not create `.harness/<workstream-id>/` yet unless the user explicitly instructed you to open a sprint immediately.
 - Do not create anything under `docs/archive/` during initialization.
 - When updating existing files, preserve observed facts and replace only stale boilerplate.
 
