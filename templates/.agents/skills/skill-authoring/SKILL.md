@@ -14,6 +14,7 @@ Use this family when you are building or revising reusable skill packages for th
 - Use `create-router-skill` for family routers that need discoverable children and install-or-fallback behavior.
 - Keep the portable core first; add runtime-specific packaging only after the core works without vendor assumptions.
 - Keep leaf and router responsibilities separate.
+- When truth can be machine-checked, prefer code/schema/eval artifacts; see `create-skill` and `create-router-skill`.
 
 ## Output
 
