@@ -5,7 +5,7 @@ This package should be evaluated as a router and durable-state interpreter, not 
 ## Included evaluation scaffolding
 
 - `scripts/validate_router.py`: structural validator for the router package and `references/children.json`
-- `evals/evals.json`: file-grounded router regression cases for route selection, contradiction handling, parked-state behavior, timeout-resume precedence, retry truthfulness, and explicit `No family child fits` outcomes. Each case now carries both the existing human-readable `expected_output` contract and a structured `expected_dispatch` object for the deterministic dispatcher lane.
+- `evals/evals.json`: file-grounded router regression cases for route selection, contradiction handling, parked-state behavior, timeout-resume precedence, retry truthfulness, and explicit `No family child fits` outcomes. Each case carries the existing human-readable `expected_output` contract and a structured `expected_dispatch` object that mirrors the route-only dispatcher payload.
 - `evals/trigger-evals.json`: discovery-noise checks for when the router should load at all, including contradiction, parked, and no-family-child asks, plus negative cases that keep retry-only and PASS-publishability-only questions out of the root router.
 - `guard-eval-fixtures.md`: temporal retry-gate fixtures that check before/action/after correctness and fail-closed behavior; these are not router route-selection checks
 - `review-convergence-fixtures.md`: review/state-update publishability fixtures that check coverage closure, convergence closure, and PASS fail-closed behavior; these are not router route-selection or retry-eligibility checks
@@ -50,7 +50,7 @@ Checks:
 - `review.md` or any other reconciled-late artifact contradiction routes to `state-update`
 - even a PASS review still routes `state-update` until publish/archive truth is reconciled elsewhere
 - reconciled `review_failed` and `build_failed` only route back to `generator-execution` when retry metadata is truthful and compounding is already clear
-- every route case's `expected_dispatch` validates the dispatcher's JSON fields for verdict, target, reason code, evidence ordering, install flags, and retry-guard metadata
+- every case's `expected_dispatch` mirrors the dispatcher's JSON fields for `schema_version`, `decision`, `child`, `target`, `reason_codes`, `feature_id`, `workstream_id`, `resume_from`, and `evidence_path`
 
 ### 2. Contradictions, parked state, and impossible routes
 
