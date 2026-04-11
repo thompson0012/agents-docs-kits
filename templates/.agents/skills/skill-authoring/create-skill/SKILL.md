@@ -21,6 +21,8 @@ If the package's main job is routing across a skill family, preserving discovera
 - Pressure-test the skill with real prompts before calling it done.
 - When evaluation matters, compare the current candidate against an honest baseline instead of grading by vibes.
 - Do not overload a leaf skill with family-routing responsibilities. A router is a different job from execution guidance.
+- If part of the skill can be made deterministic and truth-preserving, move it into `scripts/`, schemas, validators, or eval fixtures instead of repeating it in prose.
+
 
 ## Entry Gate
 

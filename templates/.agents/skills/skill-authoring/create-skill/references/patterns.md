@@ -77,6 +77,10 @@ Write a script when at least one of these is true:
 
 Do not write a script for judgment-heavy work better expressed as instructions.
 
+
+**Machine-checkable truth**
+If part of the skill can be implemented as deterministic, machine-checkable behavior, prefer code or structured artifacts over prose. Use prose for judgment and boundaries; use code, schemas, validators, and eval fixtures for exact behavior the machine can verify.
+
 ## 7. Evaluation Pattern
 
 Use at least three prompt classes:

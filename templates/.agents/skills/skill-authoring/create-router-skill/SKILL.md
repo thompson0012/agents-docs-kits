@@ -18,6 +18,8 @@ Use `create-skill` for leaf skills and single-job packages. Use this skill only 
 - Keep child metadata explicit in `references/children.json`. Do not rely on folder names alone to explain routing, dependencies, or fallbacks.
 - Keep child leaf skills inside the router package, but keep their full bodies lazy. Initial discovery should need only the router plus the child inventory, not every nested leaf body loaded up front.
 - Keep missing-child behavior truthful. Install the right child when possible; otherwise disclose the fallback instead of silently degrading.
+- When routing behavior can be made machine-checkable, keep it in `references/children.json`, validators, scripts, or eval fixtures; keep the router prose focused on selection policy, handoff, and fallback behavior.
+
 
 ## Entry Gate
 
