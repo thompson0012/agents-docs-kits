@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agents-stack.local/using-agents-stack/dispatcher-output-schema.json",
+  "title": "Using Agents Stack Dispatcher Output",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision",
+        "child",
+        "target",
+        "reason_codes",
+        "feature_id",
+        "workstream_id",
+        "resume_from",
+        "evidence_path"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "decision": {
+          "const": "route"
+        },
+        "child": {
+          "enum": [
+            "project-initializer",
+            "generator-brainstorm",
+            "generator-proposal",
+            "evaluator-contract-review",
+            "generator-execution",
+            "adversarial-live-review",
+            "state-update",
+            "compound-capture"
+          ]
+        },
+        "target": {
+          "enum": [
+            "using-agents-stack/project-initializer",
+            "using-agents-stack/generator-brainstorm",
+            "using-agents-stack/generator-proposal",
+            "using-agents-stack/evaluator-contract-review",
+            "using-agents-stack/generator-execution",
+            "using-agents-stack/adversarial-live-review",
+            "using-agents-stack/state-update",
+            "using-agents-stack/compound-capture"
+          ]
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "feature_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "workstream_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "resume_from": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "evidence_path": {
+          "type": ["string", "null"],
+          "minLength": 1
+        }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "decision",
+        "child",
+        "target",
+        "reason_codes",
+        "feature_id",
+        "workstream_id",
+        "resume_from",
+        "evidence_path"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": 1
+        },
+        "decision": {
+          "const": "no_family_child"
+        },
+        "child": {
+          "type": "null"
+        },
+        "target": {
+          "type": "null"
+        },
+        "reason_codes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "feature_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "workstream_id": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "resume_from": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "evidence_path": {
+          "type": ["string", "null"],
+          "minLength": 1
+        }
+      }
+    }
+  ]
+}

@@ -48,6 +48,18 @@
     "why": "The request is still to apply the agents-stack router and potentially return the explicit no-family-child outcome."
   },
   {
+    "id": "should-not-trigger-retry-guard-only",
+    "query": "A sprint is already `review_failed`. Check whether the recorded clean restore boundary, attempt budget, and compound queue allow a retry, but do not choose the next harness child yet.",
+    "should_trigger": false,
+    "why": "This is a retry-eligibility question for `scripts/verify_retry_guard.py`, not a root-router route-selection request."
+  },
+  {
+    "id": "should-not-trigger-pass-publishability-only",
+    "query": "`review.md` says PASS. Decide whether the coverage and convergence metadata are sufficient to publish or archive the sprint, but do not choose the next harness child.",
+    "should_trigger": false,
+    "why": "This is PASS publishability validation for the state-update lane, not a root-router routing decision."
+  },
+  {
     "id": "should-not-trigger-ordinary-implementation",
     "query": "Fix the dark mode contrast bug in App.tsx and ThemeProvider.tsx and make the UI look better.",
     "should_trigger": false,

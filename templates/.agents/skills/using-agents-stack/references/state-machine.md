@@ -20,16 +20,30 @@ Evidence precedence for routing:
 
 1. `review.md`
 2. `handoff.md`
-3. `contract.md`
-4. `sprint_proposal.md`
-5. `status.json`
-6. `docs/live/tracked-work.json`
-7. `docs/live/current-focus.md` and `docs/live/roadmap.md`
-8. `docs/live/progress.md` and `docs/live/memory.md`
-9. `docs/reference/*`
-10. `docs/records/*`
-11. `docs/archive/*` as historical evidence only
+3. `runtime.md`
+4. `contract.md`
+5. `sprint_proposal.md`
+6. `status.json`
+7. `docs/live/tracked-work.json`
+8. `docs/live/current-focus.md` and `docs/live/roadmap.md`
+9. `docs/live/progress.md` and `docs/live/memory.md`
+10. `docs/reference/*`
+11. `docs/records/*`
+12. `docs/archive/*` as historical evidence only
 
+## Canonical dispatcher decision ladder
+
+The root router keeps family-trigger judgment, broad goal-lineage interpretation, and semantic ambiguity handling. Only after that may it use `scripts/dispatch_phase.py` as the deterministic fast path for closed-world file-state routing.
+
+1. If required live files are missing, unusable, or otherwise fail closed, route `project-initializer`.
+2. If durable contradictions prevent a truthful single-lane decision, route `state-update` rather than inventing a winner.
+3. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before any runnable sprint resume or new backlog selection.
+4. If `review.md` exists and the verdict has not yet been reconciled into local and live state, route `state-update`.
+5. If exactly one runnable sprint exists, route from the strongest local artifact in precedence order: reconciled `review.md` plus `review_failed` state -> retry path candidate; `handoff.md` -> `adversarial-live-review`; `runtime.md` plus `build_failed` evidence -> retry path candidate; `contract.md` or active execution evidence -> `generator-execution`; `sprint_proposal.md` -> `evaluator-contract-review`.
+6. If the strongest durable truth is a parked `awaiting_human` or `escalated_to_human` gate with no new human edits, do not blur it into runnable work. Return `no_family_child` and surface the human boundary.
+7. If no runnable sprint exists, choose the highest-priority dependency-ready `needs_brainstorm` item, then the highest-priority dependency-ready `pending` item, else surface parked or dependency blockers honestly.
+8. After a retry-route candidate is found, retry eligibility is still decided separately by `scripts/verify_retry_guard.py`; the dispatcher does not author that verdict.
+9. After a PASS-route candidate is found, publishability is still decided separately by `state-update` plus review-convergence evidence; the dispatcher does not publish PASS.
 ## Scheduling order when no runnable sprint exists
 
 When no runnable active sprint exists, the orchestrator chooses the next non-runnable or backlog phase in this order:

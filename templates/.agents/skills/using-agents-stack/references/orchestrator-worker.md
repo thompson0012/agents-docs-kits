@@ -21,6 +21,15 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 - If a user's broad goal or direction change is not yet reflected durably, pause sprint chaining long enough to publish or refresh that source-goal truth in `current-focus.md` plus `roadmap.md` before selecting the next owner.
 
 
+## Deterministic dispatcher fast path
+
+`scripts/dispatch_phase.py` is an optional read-only helper for closed-world file-state routing after the root router has already decided that the repository belongs to this family and that no semantic ambiguity requires model judgment.
+
+- Use it only after grounding against durable files. It is not the tool for deciding whether a request is really asking for agents-stack routing, whether broad goal drift needs roadmap publication first, or whether a parked human gate was materially cleared by new edits.
+- The dispatcher consumes durable state plus, when relevant, the fully merged sprint-local result ledger from any sibling evidence-gathering workers. Do not hand it partial sibling notes or bypass the await-all barrier.
+- The merged result ledger is the handoff boundary from evidence gathering into deterministic routing. Stable worker IDs, artifact paths, blockers, and next-owner hints must be merged first; the dispatcher reads that reconciled ledger or the orchestrator routes directly without it.
+- The dispatcher returns fixed JSON for route selection only. The orchestrator still translates that result into the root router's text output contract and performs the actual fresh-worker dispatch.
+- Keep route selection separate from other gates: retry eligibility still comes from `scripts/verify_retry_guard.py`, and PASS publishability still comes from `state-update` plus review-convergence evidence rather than the dispatcher.
 ## Lane walls and tool scope
 
 Workers get only the tools their phase needs.
@@ -47,8 +56,8 @@ The orchestrator may dispatch multiple sibling workers only when their work is t
 - Parallelize read-only investigation freely.
 - Parallelize execution only when file ownership and merge order are explicit and safe.
 - Keep one phase owner per worker. Do not mix review and execution in the same worker.
-- After any sibling dispatch, enter a hard await-all barrier. If any sibling worker is still pending, the orchestrator must not emit a completion message, final synthesis, or next-owner decision.
-- Merge sibling outputs only after every dispatched sibling has returned, then write one merged result ledger in sprint-local durable state before routing to the next phase.
+- After any sibling dispatch, enter a hard await-all barrier. If any sibling worker is still pending, the orchestrator must not emit a completion message, final synthesis, next-owner decision, or dispatcher call.
+- Merge sibling outputs only after every dispatched sibling has returned, then write one merged result ledger in sprint-local durable state before routing to the next phase or invoking the dispatcher fast path.
 - Emit one synthesis for that worker batch only after the merged ledger is complete, and name the stable worker IDs, artifact paths, blockers, and next owner explicitly.
 
 Parallelism is optional. Fresh-worker boundaries are not.

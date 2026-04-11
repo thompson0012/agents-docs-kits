@@ -5,18 +5,18 @@ This package should be evaluated as a router and durable-state interpreter, not 
 ## Included evaluation scaffolding
 
 - `scripts/validate_router.py`: structural validator for the router package and `references/children.json`
-- `evals/evals.json`: file-grounded router regression cases for route selection, contradiction handling, parked-state behavior, retry truthfulness, and explicit `No family child fits` outcomes
-- `evals/trigger-evals.json`: discovery-noise checks for when the router should load at all, including contradiction, parked, and no-family-child asks
+- `evals/evals.json`: file-grounded router regression cases for route selection, contradiction handling, parked-state behavior, timeout-resume precedence, retry truthfulness, and explicit `No family child fits` outcomes. Each case now carries both the existing human-readable `expected_output` contract and a structured `expected_dispatch` object for the deterministic dispatcher lane.
+- `evals/trigger-evals.json`: discovery-noise checks for when the router should load at all, including contradiction, parked, and no-family-child asks, plus negative cases that keep retry-only and PASS-publishability-only questions out of the root router.
 - `guard-eval-fixtures.md`: temporal retry-gate fixtures that check before/action/after correctness and fail-closed behavior; these are not router route-selection checks
 - `review-convergence-fixtures.md`: review/state-update publishability fixtures that check coverage closure, convergence closure, and PASS fail-closed behavior; these are not router route-selection or retry-eligibility checks
 
-Run the structural validator first, then use the router eval files to regression-test route selection and trigger quality. Evaluate retry guards separately with the temporal fixture lane documented in [guard-eval-fixtures.md](./guard-eval-fixtures.md). Evaluate PASS publishability separately with the convergence fixture lane documented in [review-convergence-fixtures.md](./review-convergence-fixtures.md). Both fixture lanes verify fail-closed gating, not child selection.
+Run the structural validator first, then use the router eval files to regression-test route selection and trigger quality. Evaluate retry guards separately with the temporal fixture lane documented in [guard-eval-fixtures.md](./guard-eval-fixtures.md). Evaluate PASS publishability separately with the convergence fixture lane documented in [review-convergence-fixtures.md](./review-convergence-fixtures.md). Both fixture lanes verify fail-closed gating, not child selection. The dispatcher lane is route-only: it returns the next child or `no_family_child`, but it does not decide retry eligibility or PASS publishability.
 
 Treat the eval corpus as regression input, not a second contract. `SKILL.md`, `references/children.json`, `references/state-machine.md`, and the other reference docs remain canonical.
 
 ## Advisory synthesis experiment
 
-> `scripts/compile_guard_experiment.py` is an offline, advisory-only experiment.
+ > `scripts/compile_guard_experiment.py` is an offline, advisory-only experiment.
 
 Use it only through explicit manual invocation. It reads the current hand-authored retry guard sources and prints a report-style comparison/suggestion summary to stdout for human inspection. It does not write files, does not choose children, and loses to `references/children.json`, the existing reference docs, and `scripts/verify_retry_guard.py`.
 
@@ -24,7 +24,7 @@ Use it only through explicit manual invocation. It reads the current hand-author
 
 ### 1. Router selection from durable files
 
-The root skill should select exactly one child skill from the eight allowed children, or explicitly say that no family child fits. Router evals in this directory verify route selection and durable-state fidelity only; they do not stand in for temporal retry gating.
+The root skill should select exactly one child skill from the eight allowed children, or explicitly say that no family child fits. Router evals in this directory verify route selection and durable-state fidelity only; they do not stand in for temporal retry gating. The deterministic dispatcher lane should agree with the router's text answer and emit a closed JSON decision for the same route-only outcome.
 
 Allowed children:
 
@@ -46,8 +46,11 @@ Checks:
 - `sprint_proposal.md` without `contract.md` routes to `evaluator-contract-review`
 - `contract.md` without `handoff.md` routes to `generator-execution`
 - `handoff.md` without `review.md` routes to `adversarial-live-review`
+- timeout resume still falls back to strongest durable artifact precedence instead of stale resume hints
 - `review.md` or any other reconciled-late artifact contradiction routes to `state-update`
+- even a PASS review still routes `state-update` until publish/archive truth is reconciled elsewhere
 - reconciled `review_failed` and `build_failed` only route back to `generator-execution` when retry metadata is truthful and compounding is already clear
+- every route case's `expected_dispatch` validates the dispatcher's JSON fields for verdict, target, reason code, evidence ordering, install flags, and retry-guard metadata
 
 ### 2. Contradictions, parked state, and impossible routes
 
@@ -67,7 +70,9 @@ Checks:
 
 Checks:
 
-- explicit harness-phase selection, contradiction reconciliation, retry ownership, parked-state routing, and no-family-child questions should trigger the router
+- explicit harness-phase selection, contradiction reconciliation, parked-state routing, and no-family-child questions should trigger the router
+- retry-only questions belong to `scripts/verify_retry_guard.py` and should not trigger the root router when the user is asking only about eligibility
+- PASS-publishability-only questions belong to the `state-update` validation lane and should not trigger the root router when the user is asking only whether publish/archive is allowed
 - ordinary implementation, generic planning, or routine PR-fix requests should not trigger the router just because the repository happens to use agents-stack
 
 ### 4. Temporal retry guards
@@ -99,10 +104,11 @@ Checks:
 - compound queue beats retry or backlog selection
 - brainstorm-ready and proposal-ready backlog selection when no runnable sprint exists
 - proposal, contract, execution, handoff, and review artifact-gate routing
+- timeout-resume cases that prove strongest-artifact precedence beats stale resume hints
 - contradictory review/live-state cases that must reconcile through `state-update`
 - parked-sprint cases that either route around the blocker honestly or return `No family child fits`
 - retry cases split cleanly between allowed `review_failed`, allowed `build_failed`, and denied unsafe retries
-- review convergence cases split cleanly between publishable PASS, open-blocker denial, and missing-metadata denial
+- review convergence cases stay in their separate publishability lane rather than duplicating route-selection coverage
 
 ## Pass criteria
 
@@ -112,6 +118,7 @@ The package passes evaluation when all of the following are true:
 - every state transition has a single owning child skill or an explicit `No family child fits` result
 - contradictory and parked state is surfaced instead of normalized away
 - the package reinforces the single-runnable-sprint rule
+- the deterministic dispatcher lane matches the router contract while staying route-only
 - PASS reviews still archive via `state-update`, and FAIL/build-failed retries resume execution only after reconciliation, compounding, and truthful retry gating
 - guard fixtures distinguish review-failed clean resume, build-failed clean resume, and deny paths instead of flattening them into one generic retry story
 - review-convergence fixtures distinguish publishable PASS from deny / re-review based on complete coverage, explicit convergence closure, and zero open non-duplicate P0-P3 findings
@@ -121,6 +128,7 @@ The package passes evaluation when all of the following are true:
 The package fails evaluation if any of the following happen:
 
 - the router performs implementation or review work instead of routing
+- the deterministic dispatcher starts making retry-eligibility or PASS-publishability decisions instead of deferring those lanes
 - the package treats missing or contradictory state as success
 - child skill selection depends on chat memory or unwritten assumptions
 - parked human-owned sprints are auto-dispatched back into execution without a durable change to the checkpoint

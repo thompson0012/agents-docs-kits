@@ -20,6 +20,7 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 - Retries after `build_failed` or reconciled `review_failed` require a recorded clean restore boundary such as a disposable worktree, VCS snapshot, or equivalent `clean_restore_ref`. Automatic destructive reset is valid only in disposable workspaces and is not the default expectation.
 - Respect attempt budgets. When `attempt_count` reaches `max_attempts`, or no safe clean restore boundary exists, automatic retry stops and the sprint must park for human action or escalation.
 - Use `scripts/verify_retry_guard.py` as the bounded retry-eligibility gate for these invariants. It reads durable retry state, returns allow/deny plus reason codes, and never chooses the next child.
+- For closed-world file-state routing, the root router may delegate to `scripts/dispatch_phase.py` as a read-only fast path. Treat its fixed JSON output as route input only; it does not decide family-trigger fit, PASS publishability, or retry eligibility.
 - Parked sprints in `.harness/` with `awaiting_human` or `escalated_to_human` remain visible durable state, but they do not count as the single runnable active sprint.
 - `docs/live/tracked-work.json` remains the authoritative tracked-work ledger and runnable/backlog selector.
 - `docs/live/current-focus.md` is the live resume anchor; `docs/live/roadmap.md` is the durable initiative ledger for source goals, remaining slices, and re-authorization boundaries.
@@ -28,6 +29,7 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 - When no runnable active sprint exists, drain `compound_pending_feature_ids` first, then choose the highest-priority dependency-ready `needs_brainstorm` backlog item, then the highest-priority dependency-ready `pending` item.
 - Protect the orchestrator context: it selects, merges worker evidence, dispatches, and waits for structured outputs; it does not implement, review, or rewrite state inline.
 - When the orchestrator fans out to sibling workers, it must wait for all of them to return, merge their structured outputs into sprint-local durable state keyed by stable worker ID, and only then decide the next dispatch or emit a completion message.
+- The root router still owns family-trigger judgment, semantic ambiguity handling, and the final fresh-worker dispatch after any dispatcher or evidence-gathering step.
 - If the best child is missing, say to install it rather than quietly doing weaker work under the wrong child.
 
 ## Decision Order
@@ -35,18 +37,20 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 1. Check whether the repository belongs to this family at all: `AGENTS.md`, `docs/live/*`, `.harness/<WORKSTREAM-ID>/`, and the agents-stack role/lifecycle model.
 2. Read `docs/live/tracked-work.json` to determine whether the repo is uninitialized, has queued compound work, has one runnable active sprint, has only parked sprints, or needs new backlog work.
 3. Read `docs/live/current-focus.md` and `docs/live/roadmap.md` together to confirm the resume anchor, source-goal lineage, remaining slices, and any re-authorization boundary.
-4. If the user's high-level goal is broader than the live files currently capture, route first to the phase that will publish or refresh that durable source-goal truth before continuing sprint chaining.
-5. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
-6. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
-7. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
-8. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when attempts remain and `clean_restore_ref` defines a safe restore boundary.
-9. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
-10. If no runnable active sprint exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
-11. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
-12. Pick the narrowest child that matches the strongest durable evidence.
-13. If the selected child is missing, install it when possible or disclose the fallback.
-14. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have all returned and been merged into the sprint-local result ledger.
-15. If any sibling worker is still pending, stop at the await-all barrier: do not emit a done message, final synthesis, or next-dispatch decision until the merged ledger is complete.
+4. If family trigger fit, user intent, or file-state meaning is semantically ambiguous, keep the decision in model judgment here; do not use the dispatcher to guess.
+5. If the user's high-level goal is broader than the live files currently capture, route first to the phase that will publish or refresh that durable source-goal truth before continuing sprint chaining.
+6. Once steps 1-5 are settled and the question is closed-world file-state routing, the router may call `scripts/dispatch_phase.py` as a deterministic fast path over durable state.
+7. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
+8. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
+9. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
+10. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when retry eligibility is separately confirmed by `scripts/verify_retry_guard.py` and `clean_restore_ref` defines a safe restore boundary.
+11. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
+12. If no runnable active sprint exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
+13. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
+14. Pick the narrowest child that matches the strongest durable evidence.
+15. If the selected child is missing, install it when possible or disclose the fallback.
+16. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have all returned and been merged into the sprint-local result ledger.
+17. If any sibling worker is still pending, stop at the await-all barrier: do not emit a done message, final synthesis, or next-dispatch decision until the merged ledger is complete.
 
 ## Family Workflow Boundary
 
@@ -66,6 +70,8 @@ This router does not replace ordinary feature implementation, generic project pl
 ## Router Output
 
 Return one of these forms, then dispatch the selected child as a fresh worker if needed:
+
+The text forms below remain the canonical root-router output even when `scripts/dispatch_phase.py` supplied the route. Translate dispatcher JSON into this text contract before replying or dispatching.
 
 - `Route to using-agents-stack/project-initializer.`
 - `Route to using-agents-stack/generator-brainstorm.`
