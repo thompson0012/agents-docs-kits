@@ -194,9 +194,13 @@ Prompts:
 - What do we know as fact?
 - Which assumption, if removed, changes the whole solution space?
 - What would this look like if we rebuilt from physics, math, or direct reality?
+- What mechanism are we extracting before we generalize it?
+- What must remain invariant for this principle to transfer?
+- How would this principle map into another domain?
+- What would break this transfer or make it non-portable?
 
 Failure mode:
-- Rejecting useful precedent just to feel original.
+- Over-generalizing a mechanism across domains with incompatible constraints.
 
 ## Philosophy
 

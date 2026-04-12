@@ -156,6 +156,20 @@ For each chosen lens, answer:
 
 Use the lens library for the relevant prompts and failure modes.
 
+### Phase 2.5 — Extract and Test Transfer
+
+> Run this phase only when the user is explicitly asking for reuse, analogy, transfer, or cross-domain innovation, or when First Principles reveals a mechanism that is likely to transfer beyond the original context.
+
+Keep it short and structural:
+
+1. Separate the **surface phenomenon** from the **causal mechanism** actually doing the work here.
+2. Restate that mechanism as a portable **meta-principle** in object-agnostic terms, consistent with First Principles thinking.
+3. Generate **3 candidate transfers** that are structurally similar but superficially different.
+4. Test each candidate for **physics, constraints, incentives, and resource mismatch**.
+5. Name the **disconfirming case** for each candidate and discard weak fits before moving on.
+
+If no transfer survives contact with reality, say so explicitly and continue with the normal collision step.
+
 ### Phase 3 — Force Collision
 
 After independent passes, compare the lenses directly.
@@ -234,6 +248,13 @@ Return these sections:
 ### Lens Findings
 - one subsection per lens
 - mechanism, evidence, implication, disconfirming signal
+
+### Transfer Candidates
+- optional; include only for reuse, analogy, or cross-domain requests
+- surface phenomenon vs causal mechanism
+- portable meta-principle
+- 3 candidate transfers, each with fit, boundary, and disconfirming case
+
 
 ### Collision
 - agreements
