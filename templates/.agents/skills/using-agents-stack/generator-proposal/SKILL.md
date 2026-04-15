@@ -1,5 +1,6 @@
 ---
 name: generator-proposal
+description: Use when exactly one feature is ready to be scoped for proposal, including a candidate previously promoted from brainstorming, and no approved contract exists yet.
 purpose: Convert one selected backlog item into a single bounded sprint proposal that can be reviewed adversarially.
 trigger: Use when exactly one feature is ready to be scoped for proposal, including a candidate previously promoted from brainstorming, and no approved contract exists yet.
 inputs:

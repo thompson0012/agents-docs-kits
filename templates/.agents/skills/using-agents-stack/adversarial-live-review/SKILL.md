@@ -1,5 +1,6 @@
 ---
 name: adversarial-live-review
+description: Use when after generator execution has produced a handoff and runtime details, and before `state-update` has reconciled the review outcome.
 purpose: Run a skeptical QA pass against the actual implementation and contract, then issue a decisive PASS, FAIL, or BLOCKED verdict with corrective or recovery directives.
 trigger: After generator execution has produced `.harness/<sprint-id>/handoff.md` and `.harness/<sprint-id>/runtime.md`, and before `state-update` has reconciled the review outcome.
 inputs:

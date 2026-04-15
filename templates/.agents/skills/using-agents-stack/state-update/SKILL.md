@@ -1,5 +1,6 @@
 ---
 name: state-update
+description: Use when after `adversarial-live-review` has written a decisive review outcome, or after execution has written a decisive non-review state such as `build_failed`, `awaiting_human`, or `escalated_to_human`.
 purpose: Synchronize decisive sprint outcomes back into durable project state, preserving evidence and making the next phase explicit.
 trigger: After `adversarial-live-review` has written a decisive review outcome, or after execution has written a decisive non-review state such as `build_failed`, `awaiting_human`, or `escalated_to_human`.
 inputs:

@@ -1,5 +1,6 @@
 ---
 name: evaluator-contract-review
+description: Use when `.harness/<workstream-id>/sprint_proposal.md` exists and no trustworthy approved contract is present.
 purpose: Adversarially review a sprint proposal and either approve it as a contract or force a revision with specific, actionable feedback.
 trigger: Use when `.harness/<workstream-id>/sprint_proposal.md` exists and no trustworthy approved contract is present.
 inputs:

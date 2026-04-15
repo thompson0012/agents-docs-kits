@@ -1,5 +1,6 @@
 ---
 name: generator-brainstorm
+description: Use when no runnable active sprint should start yet and a dependency-ready item still needs ideation before proposal, or when the human explicitly asks for backlog brainstorming.
 purpose: Explore pre-proposal work in durable idea artifacts, refine candidate directions, and promote at most one idea into tracked backlog state when it is ready for proposal.
 trigger: Use when no runnable active sprint should start yet and a dependency-ready item still needs ideation before proposal, or when the human explicitly asks for backlog brainstorming.
 inputs:

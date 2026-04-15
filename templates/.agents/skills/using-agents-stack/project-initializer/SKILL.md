@@ -1,5 +1,6 @@
 ---
 name: project-initializer
+description: Use when `docs/live/tracked-work.json` is missing, empty, or otherwise not yet trustworthy as project state.
 purpose: Bootstrap the durable global state for a repo that is entering the agents-stack harness for the first time.
 trigger: Use when `docs/live/tracked-work.json` is missing, empty, or otherwise not yet trustworthy as project state.
 inputs:

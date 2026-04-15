@@ -1,5 +1,6 @@
 ---
 name: generator-execution
+description: Use when after `evaluator-contract-review` has approved a contract, or after `state-update` has reconciled a failed review or build/startup triage failure for the same sprint.
 purpose: Implement one approved sprint strictly from the contract, capture reproducible runtime evidence, and hand off only verifiable work.
 trigger: After `evaluator-contract-review` has approved `.harness/<sprint-id>/contract.md`, or after `state-update` has reconciled a failed review or build/startup triage failure for the same sprint.
 inputs:
