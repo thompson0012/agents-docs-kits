@@ -79,11 +79,24 @@ A concrete proposal containing at minimum:
 - allowed files
 - forbidden files or subsystem boundaries
 - implementation approach at a high level
-- observable acceptance outcomes
+- observable acceptance criteria already shaped for contract review as stable `AC-###` entries
 - verification plan with concrete commands or review steps
 - risks, assumptions, and blockers, including hidden assumptions the sprint must not discover too late
 - alternative directions or smaller cuts rejected because they would change the contract shape or hide the real goal
 - questions that must be answered before contract approval
+- when the work is likely to reach approval, acceptance criteria should already be close to the final contract shape, for example:
+```md
+- `AC-001` | stateful=no | reversible=no
+  - Requirement: `POST /api/tasks` returns `201` for a valid payload.
+  - Evidence: `curl` response plus persisted task record.
+- `AC-002` | stateful=yes | reversible=yes
+  - Requirement: Toggling the task filter updates the visible list and can be reversed.
+  - Evidence: reviewer-visible selector or observable output.
+  - Before state: all tasks are visible.
+  - Action: enable the completed-only filter.
+  - After state: only completed tasks remain visible.
+  - Reverse check: disable the filter and confirm the full list returns.
+```
 
 ### `.harness/<workstream-id>/status.json`
 A machine-readable checkpoint for resume and routing.
@@ -140,7 +153,7 @@ If the proposal cannot survive that self-challenge, revise it or send the featur
 
 ### 5. Define observable success
 
-Every acceptance outcome must be externally checkable.
+Every acceptance outcome must be externally checkable and traceable by stable `AC-###` id.
 
 For interactive behavior, prefer state-transition checks over static end states. A good interactive criterion names:
 - the starting condition
@@ -148,27 +161,46 @@ For interactive behavior, prefer state-transition checks over static end states.
 - the expected after-state
 - the reverse or repeated action when the behavior should be reversible
 
+Shape each criterion so contract review can promote it directly into `contract.md` without inventing a second format:
+```md
+- `AC-001` | stateful=no | reversible=no
+  - Requirement: ...
+  - Evidence: ...
+- `AC-002` | stateful=yes | reversible=yes
+  - Requirement: ...
+  - Evidence: ...
+  - Before state: ...
+  - Action: ...
+  - After state: ...
+  - Reverse check: ...
+```
+
 For browser-visible UI work, each criterion must also name:
 - the route, page, or component
 - the viewport or device class when layout matters
 - the selector, label, or visible text the reviewer should observe
 - any fixture or input shape needed to reach the state
 
-For frontend UI work, consult `references/frontend-ui-contract-recipe.md` before finalizing the proposal. It keeps the prompt recipe and the proposal rubric aligned without turning the reference into a second contract.
-
+Consult the narrowest matching recipe before finalizing the proposal:
+- `references/frontend-ui-contract-recipe.md` for browser-visible UI work
+- `references/backend-api-contract-recipe.md` for backend endpoints, auth boundaries, and API-visible behavior
+- `references/integration-contract-recipe.md` for third-party APIs, webhooks, storage providers, and other cross-system boundaries
+- `references/async-worker-contract-recipe.md` for jobs, queues, schedulers, and other background execution
+- `references/migration-contract-recipe.md` for schema, data backfills, and state transitions that must be proved across time
 
 Good examples:
-- a page renders a new control with a stable selector
+- a page renders a new control with a stable selector and criterion id `AC-001`
 - before clicking the theme toggle the page is in light mode, after one click it is in dark mode, and a second click returns it to light mode
 - at 390px wide, the card stack collapses to one column without overlap
 - while the form is submitting, the button is disabled and a spinner is visible, and after success the form clears
+- `POST /api/tasks` returns `201` with the expected JSON shape and creates exactly one durable record
 
 Bad examples:
 - “clean architecture”
 - “better UX” without observable checks
 - “support future extensibility”
 - “screen shows dark mode” when the proposal never requires the reviewer to trigger the toggle
-- any criterion that could pass from a static screenshot, hardcoded DOM, or canned output without exercising the browser path
+- any criterion that could pass from a static screenshot, hardcoded DOM, canned output, or pre-seeded final state without exercising the real path
 
 
 ### 6. Draw hard file and subsystem boundaries

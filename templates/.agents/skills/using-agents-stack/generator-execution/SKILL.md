@@ -63,7 +63,7 @@ Treat these sections as binding:
 - objective
 - allowed files
 - forbidden changes
-- acceptance criteria / QA script
+- acceptance criteria / verification plan, including stable `AC-###` ids and any stateful or reversible proof requirements
 - explicit non-goals
 
 `docs/reference/*` and `docs/live/*` provide environment and project context, but they do not override the sprint contract. If they conflict with the contract, preserve the conflict in `runtime.md` and stop for correction.
@@ -124,9 +124,9 @@ Keep it current with:
 - required environment variables or fixtures
 - local URL or route to open
 - test commands and their outcome
+- acceptance-trace notes keyed by `AC-###`, so review can line runtime evidence back up to the contract without paraphrasing it
 - known warnings or limitations
 - blockers that prevent full verification
-
 If you start long-running processes, record how they were started, whether they are still needed, and how the next agent should attach to or restart them.
 ### Review-prep note: domain QA playbooks
 
@@ -187,9 +187,9 @@ Use a structure like:
 ## Commands Run
 - `<command>` -> success/failure
 
-## Evidence
-- Observable behavior implemented:
-- Relevant logs or outputs:
+## Acceptance Trace
+- `AC-001` -> command, observable result, or artifact path
+- `AC-002` -> command, observable result, or artifact path
 
 ## Blockers / Gaps
 - None
@@ -215,6 +215,10 @@ READY_FOR_REVIEW | BUILD_FAILED | AWAITING_HUMAN | ESCALATED_TO_HUMAN
 
 ## Files Changed
 - ...
+
+## Acceptance Trace For Review
+- `AC-001` -> where the reviewer should start and what evidence already exists
+- `AC-002` -> where the reviewer should start and what evidence already exists
 
 ## Reviewer Start Here
 1. ...

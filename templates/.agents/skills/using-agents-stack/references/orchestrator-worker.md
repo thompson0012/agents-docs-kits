@@ -10,9 +10,9 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 - Prefer delegation first when the decision is ambiguous, evidence-heavy, or otherwise benefits from independent investigation. Dispatch the narrowest fresh worker or parallel workers that can gather the missing evidence, then merge their outputs before choosing the next child.
 - Do not paste the full child phase prompt into the orchestrator and keep working there.
 - Read durable state before dispatch. Workers should inherit the minimum exact context they need, not the entire session transcript.
-- For reviewer dispatch, send only raw artifact paths and the exact neutral review question. Do not preload a verdict, preferred answer, expected winner, version ranking, provenance summary, or authorship labels that would steer judgment.
+- For reviewer dispatch, send only raw artifact paths and the exact neutral review question. Do not preload a verdict, preferred answer, expected winner, version ranking, provenance summary, or authorship labels that would steer judgment. See `references/dispatch-packet-examples.md` for copyable packets.
 - When the review is comparative or subjective, anonymize the artifacts as A/B/C in the dispatch packet, keep the identity map out of the worker context until the review is complete, and let the reviewer form its own conclusion from the artifacts.
-- Dispatch packets are routing aids, not authority. A worker must verify the claimed sprint, phase, and summary against durable files on entry, apply the `AGENTS.md` precedence chain when evidence disagrees, and stop before writing if the dispatch frame loses to stronger evidence.
+- Dispatch packets are routing aids, not authority. A worker must verify the claimed sprint, phase, and summary against durable files on entry, apply the `AGENTS.md` precedence chain when evidence disagrees, and stop before writing if the dispatch frame loses to stronger evidence. `references/dispatch-packet-examples.md` also includes the expected mismatch-handling pattern.
 - Preserve the file-based state model. The canonical outputs are still `sprint_proposal.md`, `contract.md`, `runtime.md`, `handoff.md`, `review.md`, `status.json`, and the live/archive files.
 - Drain `compound_pending_feature_ids` before runnable sprint resume or new backlog selection. Compounding is explicit work, not background magic.
 - Distinguish runnable active work from non-runnable brainstorm and parked work. `needs_brainstorm`, `pending`, `awaiting_human`, and `escalated_to_human` stay visible, but they must not be mistaken for the one runnable active sprint.
@@ -29,7 +29,7 @@ Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `p
 - The dispatcher consumes durable state plus, when relevant, the fully merged sprint-local result ledger from any sibling evidence-gathering workers. Do not hand it partial sibling notes or bypass the await-all barrier.
 - The merged result ledger is the handoff boundary from evidence gathering into deterministic routing. Stable worker IDs, artifact paths, blockers, and next-owner hints must be merged first; the dispatcher reads that reconciled ledger or the orchestrator routes directly without it.
 - The dispatcher returns fixed JSON for route selection only. The orchestrator still translates that result into the root router's text output contract and performs the actual fresh-worker dispatch.
-- Keep route selection separate from other gates: retry eligibility still comes from `scripts/verify_retry_guard.py`, and PASS publishability still comes from `state-update` plus review-convergence evidence rather than the dispatcher.
+- Keep route selection separate from other gates: retry eligibility still comes from `scripts/verify_retry_guard.py`, contract approval still comes from `scripts/validate_contract.py`, review-against-contract truth still comes from `scripts/validate_review_against_contract.py`, and PASS publishability still comes from `state-update` plus review-convergence evidence rather than the dispatcher.
 ## Lane walls and tool scope
 
 Workers get only the tools their phase needs.

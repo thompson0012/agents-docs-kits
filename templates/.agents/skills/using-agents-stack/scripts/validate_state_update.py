@@ -3,20 +3,24 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 from pathlib import Path
-from typing import Any
 
-BLOCKING_SEVERITIES = {"P0", "P1", "P2", "P3"}
-NONE_MARKERS = {"", "none", "null", "n/a", "na", "-"}
-REVIEW_PHASES = {"reviewed_pass", "reviewed_fail", "reviewed_blocked", "review_failed"}
-FINDING_PATTERN = re.compile(
-    r"^\s*-\s*`?(?P<id>[^`|]+?)`?\s*\|\s*severity=(?P<severity>[A-Za-z0-9_-]+)\s*\|\s*status=(?P<status>[A-Za-z0-9_-]+)\s*\|\s*duplicate_of=(?P<duplicate_of>[^|]*)\s*$"
+from validation_common import (
+    BLOCKING_SEVERITIES,
+    NONE_MARKERS,
+    append_unique,
+    parse_bool,
+    parse_contract_check_results,
+    parse_findings,
+    parse_list,
+    parse_scalar,
+    read_json,
+    read_text,
+    split_sections,
 )
 
+REVIEW_PHASES = {"reviewed_pass", "reviewed_fail", "reviewed_blocked", "review_failed"}
 
-class ValidationError(Exception):
-    pass
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,131 +37,6 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-
-def append_unique(reasons: list[str], additions: list[str]) -> None:
-    for reason in additions:
-        if reason not in reasons:
-            reasons.append(reason)
-
-
-def read_json(path: Path, missing_reason: str, invalid_reason: str) -> tuple[dict[str, Any] | None, list[str]]:
-    try:
-        raw = path.read_text(encoding="utf-8")
-    except FileNotFoundError:
-        return None, [missing_reason]
-
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        return None, [invalid_reason]
-
-    if not isinstance(data, dict):
-        return None, [invalid_reason]
-    return data, []
-
-
-def read_text(path: Path, missing_reason: str) -> tuple[str | None, list[str]]:
-    try:
-        text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
-    except FileNotFoundError:
-        return None, [missing_reason]
-
-    if not text.strip():
-        return None, [missing_reason]
-    return text, []
-
-
-def split_sections(text: str) -> dict[str, list[str]]:
-    sections: dict[str, list[str]] = {}
-    current: str | None = None
-    for raw_line in text.splitlines():
-        line = raw_line.rstrip("\n")
-        if line.startswith("## "):
-            current = line[3:].strip().lower()
-            sections[current] = []
-            continue
-        if current is not None:
-            sections[current].append(line)
-    return sections
-
-
-def parse_scalar(section_lines: list[str], key: str) -> str | None:
-    needle = f"- {key}:"
-    for line in section_lines:
-        stripped = line.strip()
-        if stripped.startswith(needle):
-            return stripped[len(needle) :].strip()
-    return None
-
-
-def parse_list(section_lines: list[str], key: str) -> list[str] | None:
-    needle = f"- {key}:"
-    for index, line in enumerate(section_lines):
-        stripped = line.strip()
-        if not stripped.startswith(needle):
-            continue
-
-        inline = stripped[len(needle) :].strip()
-        if inline == "[]":
-            return []
-        if inline:
-            return [inline]
-
-        values: list[str] = []
-        cursor = index + 1
-        while cursor < len(section_lines):
-            candidate = section_lines[cursor]
-            candidate_stripped = candidate.strip()
-            if not candidate_stripped:
-                cursor += 1
-                continue
-            if candidate.startswith("  - ") or candidate.startswith("\t- "):
-                values.append(candidate_stripped[2:].strip())
-                cursor += 1
-                continue
-            if candidate_stripped.startswith("- "):
-                break
-            cursor += 1
-        return values
-    return None
-
-
-def normalize_duplicate(value: str) -> str | None:
-    lowered = value.strip().lower()
-    if lowered in NONE_MARKERS:
-        return None
-    return value.strip()
-
-
-def parse_findings(section_lines: list[str]) -> tuple[list[dict[str, str | None]], list[str]]:
-    findings: list[dict[str, str | None]] = []
-    reasons: list[str] = []
-
-    for line in section_lines:
-        stripped = line.strip()
-        if not stripped.startswith("-"):
-            continue
-        match = FINDING_PATTERN.match(stripped)
-        if match is None:
-            if stripped.startswith("- `") or "severity=" in stripped or "duplicate_of=" in stripped:
-                append_unique(reasons, ["invalid_finding_format"])
-            continue
-        finding_id = match.group("id").strip()
-        severity = match.group("severity").strip().upper()
-        status = match.group("status").strip().upper()
-        duplicate_of = normalize_duplicate(match.group("duplicate_of"))
-        findings.append(
-            {
-                "id": finding_id,
-                "severity": severity,
-                "status": status,
-                "duplicate_of": duplicate_of,
-            }
-        )
-
-    if not findings:
-        append_unique(reasons, ["missing_findings_list"])
-    return findings, reasons
 
 
 def main() -> int:
@@ -197,7 +76,11 @@ def main() -> int:
     verdict_text: str | None = None
     coverage_status: str | None = None
     convergence_status: str | None = None
-    declared_open_blocking_count: int | None = None
+    all_acceptance_criteria_accounted_for: bool | None = None
+    declared_criteria_total: int | None = None
+    declared_criteria_checked: int | None = None
+    declared_open_blocking_findings_count: int | None = None
+    contract_checks: list[dict[str, str]] = []
     findings: list[dict[str, str | None]] = []
     computed_open_blockers: list[str] = []
 
@@ -223,6 +106,11 @@ def main() -> int:
             areas_reviewed = parse_list(coverage_section, "areas_reviewed")
             areas_not_reviewed = parse_list(coverage_section, "areas_not_reviewed")
             coverage_value = parse_scalar(coverage_section, "coverage_status")
+            criteria_total_value = parse_scalar(coverage_section, "criteria_total")
+            criteria_checked_value = parse_scalar(coverage_section, "criteria_checked")
+            all_accounted_value = parse_scalar(
+                coverage_section, "all_acceptance_criteria_accounted_for"
+            )
 
             if areas_reviewed is None:
                 append_unique(reasons, ["missing_areas_reviewed"])
@@ -244,6 +132,39 @@ def main() -> int:
                     if normalized_gaps and not normalized_gaps.issubset(NONE_MARKERS):
                         append_unique(reasons, ["coverage_complete_with_gaps"])
 
+            if criteria_total_value is None:
+                append_unique(reasons, ["missing_criteria_total"])
+            else:
+                try:
+                    declared_criteria_total = int(criteria_total_value)
+                except ValueError:
+                    append_unique(reasons, ["invalid_criteria_total"])
+                else:
+                    if declared_criteria_total < 0:
+                        append_unique(reasons, ["invalid_criteria_total"])
+
+            if criteria_checked_value is None:
+                append_unique(reasons, ["missing_criteria_checked"])
+            else:
+                try:
+                    declared_criteria_checked = int(criteria_checked_value)
+                except ValueError:
+                    append_unique(reasons, ["invalid_criteria_checked"])
+                else:
+                    if declared_criteria_checked < 0:
+                        append_unique(reasons, ["invalid_criteria_checked"])
+
+            all_acceptance_criteria_accounted_for = parse_bool(all_accounted_value)
+            if all_acceptance_criteria_accounted_for is None:
+                append_unique(reasons, ["missing_all_acceptance_criteria_accounted_for"])
+
+        contract_results_section = sections.get("contract check results")
+        if contract_results_section is None:
+            append_unique(reasons, ["missing_contract_check_results_section"])
+        else:
+            contract_checks, contract_check_errors = parse_contract_check_results(contract_results_section)
+            append_unique(reasons, contract_check_errors)
+
         findings_section = sections.get("findings") or sections.get("findings ledger")
         if findings_section is None:
             append_unique(reasons, ["missing_findings_section"])
@@ -256,7 +177,9 @@ def main() -> int:
             append_unique(reasons, ["missing_convergence_metadata"])
         else:
             convergence_value = parse_scalar(convergence_section, "convergence_status")
-            open_count_value = parse_scalar(convergence_section, "open_blocking_count")
+            open_count_value = parse_scalar(
+                convergence_section, "open_blocking_findings_count"
+            )
 
             if convergence_value is None:
                 append_unique(reasons, ["missing_convergence_status"])
@@ -266,15 +189,15 @@ def main() -> int:
                     append_unique(reasons, ["invalid_convergence_status"])
 
             if open_count_value is None:
-                append_unique(reasons, ["missing_open_blocking_count"])
+                append_unique(reasons, ["missing_open_blocking_findings_count"])
             else:
                 try:
-                    declared_open_blocking_count = int(open_count_value)
+                    declared_open_blocking_findings_count = int(open_count_value)
                 except ValueError:
-                    append_unique(reasons, ["invalid_open_blocking_count"])
+                    append_unique(reasons, ["invalid_open_blocking_findings_count"])
                 else:
-                    if declared_open_blocking_count < 0:
-                        append_unique(reasons, ["invalid_open_blocking_count"])
+                    if declared_open_blocking_findings_count < 0:
+                        append_unique(reasons, ["invalid_open_blocking_findings_count"])
 
     finding_index = {str(finding["id"]): finding for finding in findings}
     seen_ids: set[str] = set()
@@ -308,8 +231,23 @@ def main() -> int:
             continue
         computed_open_blockers.append(str(finding["id"]))
 
-    if declared_open_blocking_count is not None and declared_open_blocking_count != len(computed_open_blockers):
-        append_unique(reasons, ["open_blocking_count_mismatch"])
+    if declared_criteria_checked is not None and declared_criteria_checked != len(contract_checks):
+        append_unique(reasons, ["criteria_checked_mismatch"])
+    if declared_criteria_total is not None and declared_criteria_checked is not None:
+        if declared_criteria_checked > declared_criteria_total:
+            append_unique(reasons, ["criteria_checked_exceeds_total"])
+    if all_acceptance_criteria_accounted_for is True:
+        if declared_criteria_total is not None and declared_criteria_checked is not None:
+            if declared_criteria_total != declared_criteria_checked:
+                append_unique(reasons, ["acceptance_criteria_accounting_mismatch"])
+    if all_acceptance_criteria_accounted_for is False and coverage_status == "complete":
+        append_unique(reasons, ["complete_coverage_without_full_acceptance_accounting"])
+    if coverage_status == "complete" and contract_checks:
+        if any(check["status"] == "NOT_RUN" for check in contract_checks):
+            append_unique(reasons, ["complete_coverage_with_unchecked_contract_result"])
+
+    if declared_open_blocking_findings_count is not None and declared_open_blocking_findings_count != len(computed_open_blockers):
+        append_unique(reasons, ["open_blocking_findings_count_mismatch"])
 
     if convergence_status == "closed" and computed_open_blockers:
         append_unique(reasons, ["closed_convergence_with_open_blockers"])
@@ -319,10 +257,14 @@ def main() -> int:
     if verdict_text == "PASS":
         if coverage_status != "complete":
             append_unique(reasons, ["pass_requires_complete_coverage"])
+        if all_acceptance_criteria_accounted_for is not True:
+            append_unique(reasons, ["pass_requires_full_acceptance_accounting"])
         if convergence_status != "closed":
             append_unique(reasons, ["pass_requires_closed_convergence"])
         if computed_open_blockers:
             append_unique(reasons, ["pass_has_open_blockers"])
+        if any(check["status"] != "PASS" for check in contract_checks):
+            append_unique(reasons, ["pass_has_non_pass_contract_check"])
     elif verdict_text == "FAIL":
         pass
     elif verdict_text == "BLOCKED":
@@ -335,9 +277,12 @@ def main() -> int:
         "review_status": verdict_text,
         "status_phase": status_phase,
         "coverage_status": coverage_status,
+        "criteria_total": declared_criteria_total,
+        "criteria_checked": declared_criteria_checked,
+        "all_acceptance_criteria_accounted_for": all_acceptance_criteria_accounted_for,
         "convergence_status": convergence_status,
-        "declared_open_blocking_count": declared_open_blocking_count,
-        "computed_open_blocking_count": len(computed_open_blockers),
+        "declared_open_blocking_findings_count": declared_open_blocking_findings_count,
+        "computed_open_blocking_findings_count": len(computed_open_blockers),
         "open_blocking_ids": computed_open_blockers,
     }
     print(json.dumps({"verdict": verdict, "reasons": reasons, "summary": summary}))

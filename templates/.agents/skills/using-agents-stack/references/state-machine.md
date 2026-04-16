@@ -46,8 +46,6 @@ The root router keeps family-trigger judgment, broad goal-lineage interpretation
 8. If no runnable sprint exists and no selected planning workspace exists, choose the highest-priority dependency-ready `needs_brainstorm` item, then the highest-priority dependency-ready `pending` item, else surface parked or dependency blockers honestly.
 9. After a retry-route candidate is found, retry eligibility is still decided separately by `scripts/verify_retry_guard.py`; the dispatcher does not author that verdict.
 10. After a PASS-route candidate is found, publishability is still decided separately by `state-update` plus review-convergence evidence; the dispatcher does not publish PASS.
-8. After a retry-route candidate is found, retry eligibility is still decided separately by `scripts/verify_retry_guard.py`; the dispatcher does not author that verdict.
-9. After a PASS-route candidate is found, publishability is still decided separately by `state-update` plus review-convergence evidence; the dispatcher does not publish PASS.
 ## Scheduling order when no runnable sprint exists
 
 When no runnable active sprint exists, the orchestrator chooses the next non-runnable or backlog phase in this order:
@@ -152,11 +150,11 @@ This lets explicit compounding run before new work and lets the backlog advance 
 ### Review, state update, and compounding
 
 - `awaiting_review` -> `review_recorded`
-  - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED plus findings severity labels, explicit `duplicate_of` fields, `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `convergence_status`, and `open_blocking_count`.
+  - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED plus findings severity labels, explicit `duplicate_of` fields, `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, `all_acceptance_criteria_accounted_for`, `convergence_status`, and `open_blocking_findings_count`.
 - `review_recorded` -> `archived`
-  - Trigger: `state-update` worker processes a PASS review only after convergence is closed: `coverage_status = complete`, `convergence_status = closed`, and open non-duplicate P0 / P1 / P2 / P3 findings are zero. It then updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<workstream-id>_<timestamp>/`, and archives the sprint.
+  - Trigger: `state-update` worker processes a PASS review only after `scripts/validate_review_against_contract.py` and `scripts/validate_state_update.py` both allow publication, coverage is complete, all acceptance ids are accounted for, convergence is closed, and open non-duplicate P0 / P1 / P2 / P3 findings are zero. It then updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<workstream-id>_<timestamp>/`, and archives the sprint.
 - `review_recorded` -> `review_failed`
-  - Trigger: `state-update` worker processes a FAIL review, or any review whose open non-duplicate P0 / P1 / P2 / P3 findings are non-zero, missing, or contradictory, increments retry metadata, preserves the evidence, and records the retry checkpoint.
+  - Trigger: `state-update` worker processes a FAIL review, or any review whose acceptance coverage or convergence metadata is missing, contradictory, or still blocked by open non-duplicate P0 / P1 / P2 / P3 findings, increments retry metadata, preserves the evidence, and records the retry checkpoint.
 - `review_recorded` -> `awaiting_human`
   - Trigger: `state-update` worker processes a BLOCKED review that requires human edits, approvals, credentials, or other intervention at a file-described pause boundary.
 - `review_recorded` -> `escalated_to_human`
@@ -192,7 +190,7 @@ Automatic retry never resumes directly from raw `build_failed` or `review_failed
 
 ### PASS path
 
-1. `adversarial-live-review` worker writes `review.md` with PASS only after the review loop converges: `coverage_status = complete`, `convergence_status = closed`, and `open_blocking_count = 0`.
+1. `adversarial-live-review` worker writes `review.md` with PASS only after the review loop converges: `coverage_status = complete`, `all_acceptance_criteria_accounted_for = true`, `convergence_status = closed`, and `open_blocking_findings_count = 0`.
 2. The orchestrator selects `state-update` and dispatches a fresh worker.
 3. `state-update` worker:
    - validates the preserved convergence summary before publishing PASS

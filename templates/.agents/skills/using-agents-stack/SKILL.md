@@ -50,10 +50,10 @@ Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-a
 12. If no runnable active sprint exists but exactly one local planning workspace exists with phase `needs_brainstorm` or `pending`, route from that checkpoint before selecting a different backlog item.
 13. If no runnable active sprint exists and no selected local planning workspace exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
 14. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
-14. Pick the narrowest child that matches the strongest durable evidence.
-15. If the selected child is missing, install it when possible or disclose the fallback.
-16. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have all returned and been merged into the sprint-local result ledger.
-17. If any sibling worker is still pending, stop at the await-all barrier: do not emit a done message, final synthesis, or next-dispatch decision until the merged ledger is complete.
+15. Pick the narrowest child that matches the strongest durable evidence.
+16. If the selected child is missing, install it when possible or disclose the fallback.
+17. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have all returned and been merged into the sprint-local result ledger.
+18. If any sibling worker is still pending, stop at the await-all barrier: do not emit a done message, final synthesis, or next-dispatch decision until the merged ledger is complete.
 
 ## Family Workflow Boundary
 
@@ -112,8 +112,8 @@ When the durable truth is a fully reconciled `awaiting_human` or `escalated_to_h
 - [ ] Keep metadata fail-closed: if queue state, phase labels, `evidence_path`, or linked record/reference pointers disagree with stronger artifacts, stop and reconcile instead of guessing.
 
 ### P2
-- [ ] Keep one short example each for blind review packets, no-publish compound skips, and dispatch-frame mismatch handling so maintainers can copy the contract without reinterpreting it.
-- [ ] Cross-link hardening guidance back to `references/orchestrator-worker.md`, `compound-capture/SKILL.md`, and the state-machine references instead of creating another registry or shadow contract.
+- [ ] Keep one short example each for blind review packets, no-publish compound skips, and dispatch-frame mismatch handling in `references/dispatch-packet-examples.md` so maintainers can copy the contract without reinterpreting it.
+- [ ] Cross-link hardening guidance back to `references/orchestrator-worker.md`, `references/dispatch-packet-examples.md`, `compound-capture/SKILL.md`, and the state-machine references instead of creating another registry or shadow contract.
 - [ ] Keep this checklist short enough to maintain; add items only for recurring failure modes that materially protect the file-based truth model.
 
 ## Final Checklist

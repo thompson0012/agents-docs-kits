@@ -53,17 +53,18 @@ If `handoff.md` says the sprint is blocked, build-failed, awaiting human input, 
 ## Review standard
 
 A sprint passes only when all of the following are true:
-1. Every contract acceptance criterion is independently checked.
+1. Every contract acceptance criterion id from `contract.md` is independently checked.
 2. The running app or artifact behaves as claimed.
 3. The result stays within contract scope.
 4. Required commands or tests were executed, or the contract explicitly permits another form of evidence.
 5. Another agent could reproduce the result from the recorded runtime notes.
 6. Interactive or other stateful criteria prove a real before/action/after transition, not just a plausible final screenshot, static DOM, or one-time final value.
 7. `review.md` reports a findings list where every finding names a severity label and an explicit `duplicate_of` value (`none` for canonical findings).
-8. Coverage metadata is present and truthful: `areas_reviewed`, `areas_not_reviewed`, and `coverage_status`.
-9. Convergence metadata is present and truthful: `convergence_status` and `open_blocking_count`.
-10. After deduplicating findings whose `duplicate_of` points at another open finding, there are zero open P0 / P1 / P2 / P3 findings, `coverage_status` is `complete`, and `convergence_status` is `closed`.
-11. Advisory findings outside P0 / P1 / P2 / P3 may remain recorded, but they must be clearly labeled non-blocking and must not be smuggled into PASS as unnamed caveats.
+8. Coverage metadata is present and truthful: `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, and `all_acceptance_criteria_accounted_for`.
+9. `qa.md` and `review.md` both preserve criterion-level coverage keyed by stable `AC-###` ids.
+10. Convergence metadata is present and truthful: `convergence_status` and `open_blocking_findings_count`.
+11. After deduplicating findings whose `duplicate_of` points at another open finding, there are zero open P0 / P1 / P2 / P3 findings, `coverage_status` is `complete`, and `convergence_status` is `closed`.
+12. Advisory findings outside P0 / P1 / P2 / P3 may remain recorded, but they must be clearly labeled non-blocking and must not be smuggled into PASS as unnamed caveats.
 
 Any gap in reproducibility, scope control, acceptance evidence, or review metadata is a review failure. Missing coverage or convergence metadata fails closed.
 
@@ -80,12 +81,15 @@ Extract the following into your own notes before testing:
 Do not let the generator redefine success in `handoff.md`.
 ### Methodology note: domain QA playbooks
 
-After reading the contract, use the narrowest matching playbook(s) to structure the review:
+After reading the contract, use the narrowest matching playbook(s) or contract recipe(s) to structure the review:
 
-- `frontend-qa` for browser-visible or UI-centric acceptance
-- `backend-qa` for APIs, jobs, queues, webhooks, auth boundaries, data integrity, and observability
+- `frontend-qa` plus `references/frontend-ui-contract-recipe.md` for browser-visible or UI-centric acceptance
+- `backend-qa` plus `references/backend-api-contract-recipe.md` for APIs, jobs, queues, webhooks, auth boundaries, data integrity, and observability
+- `references/integration-contract-recipe.md` when the contract depends on third-party APIs, callbacks, or other external-system boundaries
+- `references/async-worker-contract-recipe.md` when the contract centers on background execution, retries, or queue semantics
+- `references/migration-contract-recipe.md` when the contract proves schema/data transitions across time
 
-If a sprint spans both surfaces, use both playbooks. They shape inventory, checks, and evidence capture only. They do not change phase ownership, routing, or the PASS / FAIL / BLOCKED contract, and the worker still produces one harness-owned `qa.md` and one `review.md`.
+If a sprint spans multiple surfaces, use the matching combination. These playbooks shape inventory, checks, and evidence capture only. They do not change phase ownership, routing, or the PASS / FAIL / BLOCKED contract, and the worker still produces one harness-owned `qa.md` and one `review.md`.
 
 
 ### 2. Read the execution evidence critically
@@ -110,17 +114,17 @@ When you must infer missing runtime details:
 
 ### 4. Execute the contract checks
 
-For each acceptance criterion, record:
+For each acceptance criterion, record it by stable `AC-###` id and capture:
 - exact before-state when the criterion is interactive or otherwise stateful
 - exact action taken
 - exact after-state observed
 - reverse or repeat action when the behavior should be reversible
-- pass/fail judgment
+- PASS / FAIL / BLOCKED / NOT_RUN judgment
 - proof location or supporting output
 
 For UI work, inspect the live app, not screenshots alone. For non-UI work, use the strongest available observable check: commands, HTTP responses, logs, database effects, queue state, job records, or generated artifacts. Stateful non-UI behavior still needs before/action/after evidence tied to the declared action.
 
-Across the full review, maintain a review-wide coverage inventory for `areas_reviewed` and `areas_not_reviewed`, plus a finding ledger with stable finding ids, severities, statuses, and `duplicate_of` links. If any required area cannot be checked, set `coverage_status: incomplete` and FAIL closed rather than inferring completion.
+Across the full review, maintain a review-wide coverage inventory for `areas_reviewed` and `areas_not_reviewed`, a contract-check ledger keyed by `AC-###`, and a findings ledger with stable finding ids, severities, statuses, and `duplicate_of` links. If any required area or acceptance criterion cannot be checked, set `coverage_status: incomplete`, mark the missing criterion explicitly, and FAIL closed rather than inferring completion.
 
 ### 5. Look for reward hacking and contract violations
 
@@ -158,15 +162,26 @@ This is the detailed evidence log. Use a structure like:
 - areas_not_reviewed:
   - none
 - coverage_status: complete | incomplete
+- criteria_total: 2
+- criteria_checked: 2
+- all_acceptance_criteria_accounted_for: true
 
 ## Acceptance Checks
-1. <criterion>
-   - Before state:
-   - Action:
-   - After state:
-   - Reverse / repeat check:
-   - Status: PASS | FAIL
-   - Evidence:
+### AC-001: <criterion summary>
+- Before state:
+- Action:
+- After state:
+- Reverse / repeat check:
+- Status: PASS | FAIL | BLOCKED | NOT_RUN
+- Evidence:
+
+### AC-002: <criterion summary>
+- Before state:
+- Action:
+- After state:
+- Reverse / repeat check:
+- Status: PASS | FAIL | BLOCKED | NOT_RUN
+- Evidence:
 
 ## Findings Ledger
 - `RV-001` | severity=P1 | status=OPEN | duplicate_of=none
@@ -176,11 +191,10 @@ This is the detailed evidence log. Use a structure like:
 
 ## Convergence Summary
 - convergence_status: open | closed
-- open_blocking_count: 1
+- open_blocking_findings_count: 1
 
 ## Reproducibility Gaps
 - ...
-```
 
 `qa.md` should be factual and granular. It is the raw evidence that supports `review.md`.
 
@@ -204,6 +218,9 @@ PASS | FAIL | BLOCKED
 - areas_not_reviewed:
   - none
 - coverage_status: complete | incomplete
+- criteria_total: 2
+- criteria_checked: 2
+- all_acceptance_criteria_accounted_for: true
 
 ## Findings
 - `RV-001` | severity=P1 | status=OPEN | duplicate_of=none
@@ -215,14 +232,15 @@ PASS | FAIL | BLOCKED
 
 ## Convergence Summary
 - convergence_status: open | closed
-- open_blocking_count: 1
+- open_blocking_findings_count: 1
 - blocking_severities_considered: P0, P1, P2, P3
 
 ## Decision Summary
 - ...
 
 ## Contract Check Results
-- ...
+- `AC-001` | status=PASS | evidence=qa.md#AC-001
+- `AC-002` | status=FAIL | evidence=qa.md#AC-002
 
 ## Reward-Hacking / Scope Findings
 - ...
@@ -230,9 +248,8 @@ PASS | FAIL | BLOCKED
 ## Corrective Directives
 1. ...
 2. ...
-```
 
-Every FAIL or BLOCKED outcome must include recovery directives that are specific enough for the next orchestrator decision or generator retry to act on without reopening the problem framing. Every finding line must carry severity and `duplicate_of`, and `open_blocking_count` counts only open non-duplicate P0 / P1 / P2 / P3 findings.
+Every FAIL or BLOCKED outcome must include recovery directives that are specific enough for the next orchestrator decision or generator retry to act on without reopening the problem framing. Every finding line must carry severity and `duplicate_of`, and `open_blocking_findings_count` counts only open non-duplicate P0 / P1 / P2 / P3 findings.
 
 ## `.harness/<sprint-id>/status.json`
 
@@ -275,10 +292,12 @@ PASS means the implementation is verifiably complete and the review loop is conv
 
 On PASS:
 - ensure `qa.md` and `review.md` both exist
-- ensure every contract criterion has evidence
+- ensure every contract criterion id has evidence and a matching `Contract Check Results` entry
+- ensure `criteria_total`, `criteria_checked`, and `all_acceptance_criteria_accounted_for` honestly reflect the checked `AC-###` set
 - ensure interactive or other stateful criteria include before/action/after proof and reversibility proof when applicable
-- ensure `coverage_status: complete`, `convergence_status: closed`, and `open_blocking_count: 0`
+- ensure `coverage_status: complete`, `convergence_status: closed`, and `open_blocking_findings_count: 0`
 - ensure no open non-duplicate P0 / P1 / P2 / P3 finding remains
+- ensure `templates/.agents/skills/using-agents-stack/scripts/validate_review_against_contract.py <sprint-id> --repo-root <repo-root>` would return `allow`
 - route immediately to `state-update`
 
 ### FAIL

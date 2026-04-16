@@ -67,12 +67,24 @@ The contract must include:
 - sprint id and objective
 - exact allowed files or narrowly bounded allowed directories
 - explicit forbidden files or forbidden subsystems
-- exact acceptance criteria stated as observable outcomes
+- a `## Acceptance Criteria` section whose entries use stable `AC-###` ids and the canonical shape below
+```md
+- `AC-001` | stateful=no | reversible=no
+  - Requirement: ...
+  - Evidence: ...
+- `AC-002` | stateful=yes | reversible=yes
+  - Requirement: ...
+  - Evidence: ...
+  - Before state: ...
+  - Action: ...
+  - After state: ...
+  - Reverse check: ...
+```
 - concrete verification script or commands
 - open assumptions, ambiguous states, and reward-hack surfaces execution may rely on
 - clear non-goals and deferred work
-
-For interactive or stateful behavior, the contract must also require before/action/after evidence. If the behavior is reversible or toggleable, the contract must require the reversal check too.
+- enough structural fidelity that `templates/.agents/skills/using-agents-stack/scripts/validate_contract.py <workstream-id> --repo-root <repo-root>` would return `allow` before approval
+- for stateful or reversible behavior, the contract must require before/action/after evidence and reversal proof instead of static end-state prose
 
 Also update `status.json` so the sprint resumes from `contract.md` and the next owner is the orchestrator, which can dispatch a fresh `generator-execution` worker.
 
@@ -81,11 +93,12 @@ If the proposal is not execution-ready, do not write `contract.md`.
 Instead record precise revision feedback in sprint-local state, preferably by replacing or appending a clearly labeled review section in `sprint_proposal.md`, and update `status.json` to show revision is required.
 
 Feedback must be actionable, for example:
-- acceptance criterion 3 is not observable because no selector or command is specified
+- acceptance criterion `AC-003` is not observable because no selector or command is specified
 - proposal claims `src/app/**` is allowed, which is too broad for a one-sprint change
 - architecture introduces a new persistence layer but the scope hides migration work
 - the toggle requirement can be reward-hacked by rendering a hardcoded final state because the proposal never requires a before/action/after check
 - the proposal assumes seeded data already exists but never names that dependency or how review will detect the wrong starting state
+- the proposed contract shape would fail `validate_contract.py` because it omits stable acceptance IDs or criterion evidence fields
 
 ## Review Workflow
 
@@ -121,10 +134,12 @@ Reject if acceptance cannot be verified from outside the author's head.
 Common failures:
 - vague UX language with no interaction or visual checks
 - internal implementation claims substituted for user-visible outcomes
+- no stable `AC-###` id per acceptance criterion
 - no concrete command, page, selector, endpoint, fixture, viewport, or data shape to inspect
 - missing negative cases where failure modes matter
 - interactive or other stateful behavior defined only as a final static state instead of a before/action/after transition
 - a criterion that could pass via hardcoded mocks, static DOM, canned output, pre-seeded data, or a screenshot without exercising the real path
+- a criterion whose `stateful` / `reversible` flags contradict the evidence the reviewer would need
 
 For browser-visible work, require acceptance criteria that name:
 - the starting state the reviewer must see before acting
@@ -134,9 +149,14 @@ For browser-visible work, require acceptance criteria that name:
 - the viewport or input mode when layout or accessibility matters
 - the selector or visible text that proves the state changed
 
-If those details are missing, reject or send the proposal back for revision; do not infer them yourself.
+Consult the narrowest matching contract recipe before approval:
+- `references/frontend-ui-contract-recipe.md` for browser-visible UI work
+- `references/backend-api-contract-recipe.md` for API routes, auth boundaries, and backend-visible behavior
+- `references/integration-contract-recipe.md` for third-party APIs, callbacks, and other cross-system boundaries
+- `references/async-worker-contract-recipe.md` for jobs, queues, schedulers, and other background execution
+- `references/migration-contract-recipe.md` for schema or data transitions that must be proved across time
 
-For frontend UI proposals, compare the criteria against `references/frontend-ui-contract-recipe.md`. If layout, viewport/device class, selector or visible-text proof, or failure-state proof is missing, send the work back for revision.
+If those details are missing, reject or send the proposal back for revision; do not infer them yourself.
 
 
 ### 5. Attack the boundary honesty

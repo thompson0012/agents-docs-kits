@@ -20,7 +20,7 @@ When a UI contract recipe is useful, prefer the lightest structure that still an
 ## What the proposal or review should make observable
 
 For browser-visible UI work, the contract or proposal should usually name:
-
+- the stable `AC-###` id for each meaningful interaction outcome
 - the route, page, or component
 - the starting state the reviewer must see before acting
 - the action the reviewer performs
