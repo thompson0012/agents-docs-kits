@@ -28,6 +28,9 @@ next_skills:
 
 # Generator Brainstorm
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/generator-brainstorm/`, and the router selects it before standalone use.
+
 ## Mission
 Turn vague, premature, or competing backlog thoughts into durable exploration that future workers can trust.
 

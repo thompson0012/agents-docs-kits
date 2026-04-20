@@ -7,6 +7,8 @@ description: Use when the user has already stated a specific decision, diagnosis
 
 Use this skill to analyze a **defined** problem with 2-4 deliberately chosen lenses, force those lenses to collide, and end in a specific action or decision.
 
+This is a nested child under `using-reasoning`; its path is `using-reasoning/dynamic-problem-solving/`, and the router selects it before standalone use.
+
 For lens details, read:
 
 - `references/lens-library.md`

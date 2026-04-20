@@ -35,6 +35,9 @@ next_skills:
 
 # Generator Proposal
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/generator-proposal/`, and the router selects it before standalone use.
+
 ## Mission
 Turn a selected feature into a reviewable sprint proposal with explicit scope, observable outcomes, and hard boundaries.
 

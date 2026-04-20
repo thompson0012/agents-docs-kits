@@ -7,6 +7,8 @@ description: Use when the user wants a blunt reality check on a career, educatio
 
 Use this skill to surface the real rule set around a decision before the user commits time, money, status, or optionality.
 
+This is a nested child under `using-reasoning`; its path is `using-reasoning/reality-check/`, and the router selects it before standalone use.
+
 ## Core Contract
 
 - Name hidden rules, gatekeepers, asymmetries, survivability constraints, and ceilings that the user may be underweighting.

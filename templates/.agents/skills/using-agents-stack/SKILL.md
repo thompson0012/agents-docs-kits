@@ -9,6 +9,8 @@ Use this router when the hard problem is choosing the next harness phase in a re
 
 Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-agent, Task agent, or useful parallel workers first when the route depends on ambiguous or evidence-heavy investigation, then merge the returned outputs here and decide the next dispatch. If delegation would not materially help, or durable state already makes the answer clear, keep the step direct. Do not load the child phase into the orchestrator's own context and continue inline.
 
+Each child lives under `using-agents-stack/<child-name>/`, and child SKILL.md files should explicitly say they are nested harness workers.
+
 ## Core Contract
 
 - Route to exactly one child or say no family child fits.

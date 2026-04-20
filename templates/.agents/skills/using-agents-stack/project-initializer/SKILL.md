@@ -28,6 +28,9 @@ next_skills:
 
 # Project Initializer
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/project-initializer/`, and the router selects it before standalone use.
+
 ## Mission
 Create the minimum durable state needed for the harness to operate truthfully.
 

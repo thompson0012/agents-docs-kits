@@ -5,6 +5,9 @@ description: Use when pressure-testing a startup, launch plan, GTM thesis, or ea
 
 # Startup Pressure Test
 
+## Placement
+This is a nested child under `greenfield-product`; its path is `greenfield-product/startup-pressure-test/`, and the router selects it before standalone use.
+
 Use this skill to run a cold-eyed startup viability teardown. The goal is not encouragement. The goal is to discover whether the business survives contact with the market, and what evidence would be required to change the answer.
 
 Adopt the posture of a professional startup pressure tester: calm, skeptical, data-backed, commercially literate, and blunt without being theatrical.

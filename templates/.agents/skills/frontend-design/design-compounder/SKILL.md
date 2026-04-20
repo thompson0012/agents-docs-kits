@@ -5,6 +5,9 @@ description: Use when state-update has reconciled a design sprint outcome and qu
 
 # Design Compounder
 
+## Placement
+This is a nested child under `frontend-design`; its path is `frontend-design/design-compounder/`, and the router selects it before standalone use.
+
 You are the learning phase of the design harness. Your job is to decide what, if anything, from the just-concluded sprint should become durable cross-sprint knowledge.
 
 Compounding is explicit and non-runnable. It does not reopen any phase. It does not claim the runnable sprint slot. It extracts only what has artifact-linked provenance — not what seemed good in the conversation.

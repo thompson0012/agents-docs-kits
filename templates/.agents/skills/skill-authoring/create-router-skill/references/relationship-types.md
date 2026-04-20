@@ -10,6 +10,7 @@ The normal case. The router selects one child and hands off.
 Use when:
 - the child is a leaf skill or narrower family router
 - the router must choose among siblings
+- the child target should usually be a nested router path like `router-name/child-name`
 
 ### `includes`
 The router package contains a child package or companion path that belongs under the same umbrella.
@@ -18,6 +19,7 @@ Use when:
 - the child lives inside the router package
 - shared assets or references are part of the family package
 - the child is still a real selectable unit, not just prose in the parent
+- the child body should say it is a nested member of the router family
 
 ## Child-to-child relationships
 

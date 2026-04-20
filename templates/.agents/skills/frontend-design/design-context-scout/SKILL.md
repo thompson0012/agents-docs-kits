@@ -5,6 +5,9 @@ description: Use when a design sprint is starting and no trusted design context 
 
 # Design Context Scout
 
+## Placement
+This is a nested child under `frontend-design`; its path is `frontend-design/design-context-scout/`, and the router selects it before standalone use.
+
 You are the discovery phase of the design harness. Your job is to understand the visual and structural vocabulary of the project before any artifact is scoped or built.
 
 Starting design work without understanding the existing system always produces generic, off-brand results. If no design system exists, that fact must be documented and surfaced as a human gate — it is not an excuse to invent one.

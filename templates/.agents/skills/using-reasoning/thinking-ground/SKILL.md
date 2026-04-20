@@ -9,6 +9,8 @@ Use this skill to improve the quality of reasoning before invoking `using-reason
 
 This skill does **not** tell you whether anyone is truly in some privileged inner state. It gives a practical calibration protocol based on observable signals so the next round of reasoning is less distorted.
 
+This is a nested child under `using-reasoning`; its path is `using-reasoning/thinking-ground/`, and the router selects it before standalone use.
+
 For a compact whole-system reminder, see `assets/system-pocket-card.md`.
 
 ## Core Contract

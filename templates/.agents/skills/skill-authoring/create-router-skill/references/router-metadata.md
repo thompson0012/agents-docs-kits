@@ -58,6 +58,7 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
 ### Child entries
 - `name` — stable child label used in router output and cross-references
 - `target` — exact child identifier or load target the runtime should hand off to
+- `target` should usually encode the nested router path, for example `router-name/child-name`
 - `relationship` — how the router relates to the child; usually `routes_to`, sometimes `includes`
 - `summary` — one-sentence distinction from sibling skills
 - `route_when` — positive signals that select this child
@@ -75,3 +76,4 @@ Keep the router `SKILL.md` focused on selection logic. Put the change-prone chil
 - Use `recommends` for honest next steps or companion checks the router should surface conditionally. If the route cannot proceed without it, use `requires` instead. If it is a degraded route, use `fallbacks_to`.
 - Do not force every relationship into the folder tree. Keep the graph in metadata.
 - If a child is shared across families, reference it here rather than pretending it has only one true parent.
+- Each child SKILL.md should still say that it is a nested child of the router family so the path is visible in the body as well as the metadata.

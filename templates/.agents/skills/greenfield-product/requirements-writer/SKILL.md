@@ -5,6 +5,9 @@ description: Use when a validated blueprint exists and you need actionable requi
 
 # Requirements Writer
 
+## Placement
+This is a nested child under `greenfield-product`; its path is `greenfield-product/requirements-writer/`, and the router selects it before standalone use.
+
 Use this skill to turn a validated blueprint into testable product requirements.
 
 ## Core contract

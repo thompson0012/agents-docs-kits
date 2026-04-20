@@ -7,6 +7,8 @@ description: Use when the user has symptoms, confusion, or competing frames but 
 
 Use this skill to turn an unclear situation into a single, solution-neutral problem statement that another skill can actually solve.
 
+This is a nested child under `using-reasoning`; its path is `using-reasoning/problem-definition/`, and the router selects it before standalone use.
+
 ## Core Contract
 
 - The output of this skill is **one clearly defined problem statement** plus a short handoff note.

@@ -5,6 +5,9 @@ description: Use when starting a greenfield product from a raw idea and you need
 
 # Product Blueprint
 
+## Placement
+This is a nested child under `greenfield-product`; its path is `greenfield-product/product-blueprint/`, and the router selects it before standalone use.
+
 Use this skill to turn a raw idea into a credible product strategy, MVP boundary, and durable product intent.
 
 ## Core contract

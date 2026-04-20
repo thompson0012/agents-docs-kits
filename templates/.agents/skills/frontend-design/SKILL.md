@@ -8,6 +8,7 @@ description: Use when a design deliverable must be produced as a durable HTML ar
 Use this router when the hard problem is producing a high-quality design artifact — an HTML prototype, slide deck, animation, or wireframe — with explicit scope, a design-context checkpoint, adversarial quality review, and durable learning capture.
 
 Do not perform child phase work here. Dispatch one fresh worker per phase. Merge returned artifacts, then decide the next dispatch. If delegation is warranted for evidence gathering, prefer fresh workers; if the sprint state already makes the route clear, keep the dispatch direct.
+Each child lives under `frontend-design/<child-name>/`, and child SKILL.md files should say they are nested design-family workers.
 
 ## Core Contract
 

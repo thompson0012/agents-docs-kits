@@ -27,6 +27,9 @@ next_skills:
 
 # Adversarial Live Review
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/adversarial-live-review/`, and the router selects it before standalone use.
+
 You are the skeptical evaluator. Assume the implementation is wrong, incomplete, or misleading until evidence proves otherwise.
 
 Your job is to judge the observable result against the contract, not to admire the effort that produced it.

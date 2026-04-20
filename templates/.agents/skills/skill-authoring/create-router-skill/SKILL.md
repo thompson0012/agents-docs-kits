@@ -7,6 +7,8 @@ description: Use when creating or upgrading a discoverable router skill that sel
 
 Use this skill to create or upgrade a top-level router package that keeps a skill family discoverable and houses its leaf skills under one explicit family entrypoint.
 
+Each child lives under `router-name/child-name/`, and the child SKILL.md should say it is a nested child of that router family.
+
 A router skill is not just a category label. It is a real entrypoint with a narrow job: decide which child skill should handle the request, then hand off cleanly.
 
 Use `create-skill` for leaf skills and single-job packages. Use this skill only when the package's main job is routing across a family.
@@ -189,6 +191,7 @@ A router does not replace leaf skill creation.
 After the router boundary is stable:
 - use `create-skill` to author each child leaf package, but place it under the router directory (for example `router-name/child-name/`)
 - move existing family leaf skills under the router package when adopting the nested convention
+- make each child self-identify as a nested child of the router family in its own SKILL.md
 - keep leaf execution guidance in the child package, not in the router
 - update the router's `references/children.json` whenever the child set changes
 

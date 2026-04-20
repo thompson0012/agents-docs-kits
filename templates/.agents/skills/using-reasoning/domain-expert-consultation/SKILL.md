@@ -11,6 +11,8 @@ A consultation framework for AI acting as a **domain practice expert**. Enforces
 
 **Do not use for:** fast factual Q&A, code review, debugging, or requests explicitly asking for concise one-line responses.
 
+This is a nested child under `using-reasoning`; its path is `using-reasoning/domain-expert-consultation/`, and the router selects it before standalone use.
+
 ## Required Variables (Collect Before Responding)
 
 Stop and ask if ANY of these are missing — do **not** assume:

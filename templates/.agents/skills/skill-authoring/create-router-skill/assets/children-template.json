@@ -23,7 +23,7 @@
       "fallbacks_to": [],
       "install_if_missing": {
         "package": "router-name/child-skill-name",
-        "notes": "Install this child path before routing when the runtime cannot discover nested skills automatically."
+        "notes": "Install this nested child path under the router folder before routing when the runtime cannot discover nested skills automatically."
       }
     }
   ]

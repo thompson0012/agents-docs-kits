@@ -33,6 +33,9 @@ next_skills:
 
 # Compound Capture
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/compound-capture/`, and the router selects it before standalone use.
+
 ## Mission
 Capture only the durable learning that should survive beyond the just-reconciled sprint outcome.
 

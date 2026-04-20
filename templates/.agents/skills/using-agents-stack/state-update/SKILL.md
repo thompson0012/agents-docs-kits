@@ -38,6 +38,9 @@ next_skills:
 
 # State Update
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/state-update/`, and the router selects it before standalone use.
+
 You are the state reconciler. Your job is to make the repository tell the truth after a decisive sprint-local outcome.
 
 That means:

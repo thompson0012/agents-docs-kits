@@ -8,6 +8,8 @@ description: Use when requests need to be routed across a related skill family a
 ## Overview
 Describe the family boundary this router owns and what kinds of requests should enter here before a leaf skill is chosen.
 
+Child skills live under `router-name/child-name/`; each child should say it is a nested child of the router family.
+
 ## Core Contract
 - Route to exactly one child or say no child fits.
 - Use `references/children.json` as the source of truth for child selection, install hints, and fallbacks.

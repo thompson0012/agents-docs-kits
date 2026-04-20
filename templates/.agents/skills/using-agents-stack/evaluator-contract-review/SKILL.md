@@ -30,6 +30,9 @@ next_skills:
 
 # Evaluator Contract Review
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/evaluator-contract-review/`, and the router selects it before standalone use.
+
 ## Mission
 Stress-test the sprint proposal as if the implementation will fail in every ambiguous corner.
 

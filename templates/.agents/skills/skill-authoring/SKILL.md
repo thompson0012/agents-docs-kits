@@ -16,6 +16,7 @@ Use this family when you are building or revising reusable skill packages or reu
 - Keep the portable core first; add runtime-specific packaging only after the core works without vendor assumptions.
 - Keep leaf and router responsibilities separate.
 - When truth can be machine-checked, prefer code/schema/eval artifacts; see `create-skill`, `create-router-skill`, and `create-agents`.
+- Router children should self-identify as nested children of the router family in their own SKILL.md.
 
 ## Output
 

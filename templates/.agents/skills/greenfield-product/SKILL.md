@@ -8,6 +8,7 @@ description: Use when starting a new product from a raw idea, pressure-testing s
 This router owns the optional greenfield product family. It chooses exactly one child skill, hands off cleanly, and does not perform the child workflow inline.
 
 Read [child inventory](references/children.json) for the authoritative stage order, per-child route conditions, prerequisites, and install hints.
+Each child lives under `greenfield-product/<child-name>/`, and child SKILL.md files should say they are nested product-family children.
 
 ## Stage Order
 

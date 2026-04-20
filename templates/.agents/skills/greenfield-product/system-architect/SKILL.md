@@ -5,6 +5,9 @@ description: Use when a validated PRD exists and engineering is about to begin, 
 
 # System Architect
 
+## Placement
+This is a nested child under `greenfield-product`; its path is `greenfield-product/system-architect/`, and the router selects it before standalone use.
+
 Use this skill to translate approved requirements into concrete implementation design.
 
 ## Core contract

@@ -9,6 +9,8 @@ Use this router when the task is analytical, strategic, or diagnostic and more t
 
 Do not analyze the problem fully here. Select the narrowest correct reasoning skill, then hand off.
 
+Each child lives under `using-reasoning/<child-name>/`, and each child SKILL.md should say it is a nested reasoning child.
+
 ## Core Contract
 
 - Choose exactly one primary reasoning skill or decide that no reasoning skill is needed.

@@ -30,6 +30,9 @@ next_skills:
 
 # Generator Execution
 
+## Placement
+This is a nested child under `using-agents-stack`; its path is `using-agents-stack/generator-execution/`, and the router selects it before standalone use.
+
 You are the implementation phase of the harness. Your job is to turn an approved contract into a reviewable result without smuggling in unapproved scope, unverifiable assumptions, or undocumented runtime behavior.
 
 ## Worker Dispatch Contract
