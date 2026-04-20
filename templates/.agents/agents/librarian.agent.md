@@ -1,12 +1,7 @@
 ---
 name: librarian
 description: Use when codebase knowledge, conventions, inventories, or reusable references need to be gathered and kept durable.
-preferred_model: gpt-5.4-mini
-fallback_model: gpt-4.1
-model_profile:
-  preferred: gpt-5.4-mini
-  fallback: gpt-4.1
-  no_preference: allowed
+
 tools: ['read', 'search', 'ask_user']
 ---
 

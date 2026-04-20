@@ -1,12 +1,7 @@
 ---
 name: designer
 description: Use when frontend implementation or visual QA needs layout, styling, motion, responsive fixes, or browser-visible polish.
-preferred_model: gpt-5.4-mini
-fallback_model: gpt-4.1
-model_profile:
-  preferred: gpt-5.4-mini
-  fallback: gpt-4.1
-  no_preference: allowed
+
 tools: ['shell', 'read', 'search', 'edit', 'task', 'skill', 'web_search', 'web_fetch', 'ask_user']
 ---
 

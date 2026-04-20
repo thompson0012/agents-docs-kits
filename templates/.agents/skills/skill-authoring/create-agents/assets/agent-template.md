@@ -1,10 +1,6 @@
 ---
 name: __AGENT_NAME__
 description: Use when __TRIGGER__.
-model_profile:
-  preferred: __PREFERRED_MODEL__
-  fallback: __FALLBACK_MODEL__
-  no_preference: allowed
 tools: [__TOOLS__]
 ---
 
@@ -31,5 +27,4 @@ __SCOPE__
 ## Final Checklist
 - [ ] Trigger conditions are clear
 - [ ] Scope is narrow
-- [ ] Model profile is explicit
 - [ ] Fallback behavior is honest

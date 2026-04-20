@@ -1,12 +1,6 @@
 ---
 name: task
 description: Use when a bounded coding task needs a focused implementation worker that can edit a small set of files and report the result.
-preferred_model: gpt-5.4-mini
-fallback_model: gpt-4.1
-model_profile:
-  preferred: gpt-5.4-mini
-  fallback: gpt-4.1
-  no_preference: allowed
 tools: ['shell', 'read', 'search', 'edit', 'task', 'skill', 'ask_user']
 ---
 

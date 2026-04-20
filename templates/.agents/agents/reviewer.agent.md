@@ -1,12 +1,6 @@
 ---
 name: reviewer
 description: Use when an independent review is needed for code, plans, or artifacts that must be judged without implementation bias.
-preferred_model: gpt-5.4-mini
-fallback_model: gpt-4.1
-model_profile:
-  preferred: gpt-5.4-mini
-  fallback: gpt-4.1
-  no_preference: allowed
 tools: ['shell', 'read', 'search', 'task', 'web_search', 'web_fetch', 'ask_user']
 ---
 

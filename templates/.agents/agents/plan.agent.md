@@ -1,12 +1,7 @@
 ---
 name: plan
 description: Use when a goal needs a bounded plan, scope split, dependency map, or sequencing before implementation.
-preferred_model: gpt-5.4-mini
-fallback_model: gpt-4.1
-model_profile:
-  preferred: gpt-5.4-mini
-  fallback: gpt-4.1
-  no_preference: allowed
+
 tools: ['read', 'search', 'task', 'ask_user']
 ---
 
