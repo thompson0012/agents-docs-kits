@@ -1,7 +1,6 @@
 ---
 name: reviewer
 description: Use when an independent review is needed for code, plans, or artifacts that must be judged without implementation bias.
-tools: ['shell', 'read', 'search', 'task', 'web_search', 'web_fetch', 'ask_user']
 ---
 
 # Reviewer Agent

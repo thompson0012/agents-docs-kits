@@ -1,8 +1,6 @@
 ---
 name: plan
 description: Use when a goal needs a bounded plan, scope split, dependency map, or sequencing before implementation.
-
-tools: ['read', 'search', 'task', 'ask_user']
 ---
 
 # Plan Agent

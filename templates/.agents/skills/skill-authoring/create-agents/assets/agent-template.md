@@ -1,7 +1,6 @@
 ---
 name: __AGENT_NAME__
 description: Use when __TRIGGER__.
-tools: [__TOOLS__]
 ---
 
 # __AGENT_TITLE__

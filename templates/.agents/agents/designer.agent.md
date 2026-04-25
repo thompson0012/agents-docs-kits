@@ -1,8 +1,6 @@
 ---
 name: designer
 description: Use when frontend implementation or visual QA needs layout, styling, motion, responsive fixes, or browser-visible polish.
-
-tools: ['shell', 'read', 'search', 'edit', 'task', 'skill', 'web_search', 'web_fetch', 'ask_user']
 ---
 
 # Designer Agent

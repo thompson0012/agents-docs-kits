@@ -1,7 +1,6 @@
 ---
 name: task
 description: Use when a bounded coding task needs a focused implementation worker that can edit a small set of files and report the result.
-tools: ['shell', 'read', 'search', 'edit', 'task', 'skill', 'ask_user']
 ---
 
 # Task Agent

@@ -1,8 +1,6 @@
 ---
 name: explore
 description: Use when you need codebase evidence, architecture mapping, or a decision baseline before writing code.
-
-tools: ['shell', 'read', 'search', 'task', 'web_search', 'web_fetch', 'ask_user']
 ---
 
 # Explore Agent

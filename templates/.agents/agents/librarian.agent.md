@@ -1,8 +1,6 @@
 ---
 name: librarian
 description: Use when codebase knowledge, conventions, inventories, or reusable references need to be gathered and kept durable.
-
-tools: ['read', 'search', 'ask_user']
 ---
 
 # Librarian Agent
