@@ -140,6 +140,17 @@ FAIL the sprint when you observe any of the following, even if the final screen 
 - an interactive or other stateful criterion passes only because of a hardcoded final state, static mock, canned response, pre-seeded data, or other shortcut that does not exercise the real transition
 - a toggle, undo, or reversible behavior reaches the final state once but cannot reverse cleanly when the contract implies reversibility
 
+### 6. Identify recurring defect patterns
+
+Cross-reference the current sprint's findings against `runtime.md`'s `Recurring Mistakes / Retry Patterns` section and against findings from prior failed attempts (when `status.json` shows `attempt_count > 1`).
+
+Record cases where:
+- the same root cause produced findings across multiple attempts — this signals a systematic gap that execution alone is unlikely to fix
+- a mistake pattern noted in `runtime.md` did **not** produce a finding — meaning the executor's self-correction worked but the pattern is still worth surfacing for compound-capture
+- the same defect class appears across different components or acceptance criteria — suggesting a wider blind spot
+
+Mark these in `review.md` under a dedicated `Recurring Pattern Analysis` section so `compound-capture` has direct evidence to work from. A pattern that survived multiple attempts is a strong candidate for durable cross-sprint learning.
+
 ## Auditability: your review may itself be reviewed
 
 Your review output is subject to independent audit by a subsequent reviewer worker. The orchestrator may dispatch a second specialist to verify your findings, severity labels, evidence paths, and verdict. This means:
@@ -260,6 +271,12 @@ PASS | FAIL | BLOCKED
 
 ## Reward-Hacking / Scope Findings
 - ...
+
+## Recurring Pattern Analysis
+*Patterns that repeated across attempts or components — compound-capture reads this section to extract cross-sprint learnings.*
+
+- `<pattern description> | appeared in attempt(s): <N, M> | current finding id(s): <RV-XXX> | root cause: <why it kept happening>`
+- `<self-corrected pattern from runtime.md> | executor fixed it but pattern is worth surfacing | attempt(s): <N>`
 
 ## Corrective Directives
 1. ...

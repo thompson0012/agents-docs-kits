@@ -120,7 +120,7 @@ If you realize the correct fix requires files outside the contract, stop and doc
 
 ### 4. Capture verification evidence as you go
 
-`runtime.md` is not a diary. It is the reviewer's reproduction kit.
+`runtime.md` is not a diary. It is the reviewer's reproduction kit — and also the primary evidence source for compound-capture to extract cross-sprint learnings.
 
 Keep it current with:
 - exact commands run
@@ -130,6 +130,7 @@ Keep it current with:
 - acceptance-trace notes keyed by `AC-###`, so review can line runtime evidence back up to the contract without paraphrasing it
 - known warnings or limitations
 - blockers that prevent full verification
+- **recurring mistakes and retry patterns**: any mistake you made more than once during execution — an edge case repeatedly forgotten, a wrong import path chosen multiple times, a build error that resurfaced after being fixed, the same test failing across attempts for the same reason. Record each instance and what finally fixed it. This is the signal compound-capture needs to turn execution friction into durable cross-sprint memory.
 If you start long-running processes, record how they were started, whether they are still needed, and how the next agent should attach to or restart them.
 ### Review-prep note: domain QA playbooks
 
@@ -196,6 +197,11 @@ Use a structure like:
 
 ## Blockers / Gaps
 - None
+
+## Recurring Mistakes / Retry Patterns
+*Record mistakes that occurred more than once across attempts — compound-capture reads this section to extract cross-sprint learnings.*
+
+- `<attempt N>: <what went wrong, same as attempt M? why?> -> fixed by <action>`
 ```
 
 ## `.harness/<sprint-id>/handoff.md`

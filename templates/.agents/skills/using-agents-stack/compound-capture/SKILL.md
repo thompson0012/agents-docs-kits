@@ -104,13 +104,15 @@ If any test fails, skip extraction instead of publishing a plausible-sounding no
 Identify whether the decisive evidence lives in `.harness/<workstream-id>/` or `docs/archive/<workstream-id>_<timestamp>/`.
 
 Use the strongest available artifacts in this order:
-1. `review.md`
-2. `runtime.md`
+1. `review.md` (especially the `Recurring Pattern Analysis` section when present)
+2. `runtime.md` (especially the `Recurring Mistakes / Retry Patterns` section when present)
 3. `handoff.md`
 4. `status.json`
 5. `contract.md`
 6. `sprint_proposal.md`
 7. the already-published outcome in `docs/live/progress.md`
+
+A pattern documented across multiple attempts in `runtime.md` and confirmed in `review.md` is the strongest signal for durable cross-sprint learning — it is supported by artifact evidence at both the execution and review layers.
 
 Never write a durable lesson that contradicts the strongest artifact.
 
