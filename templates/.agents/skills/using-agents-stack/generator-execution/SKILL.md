@@ -97,7 +97,26 @@ Before editing, extract:
 
 If the contract is too vague to produce a safe implementation, do not fill in product decisions yourself. Mark the sprint `awaiting_human` and route back for contract repair.
 
-### 2. Discover runtime details from the repo
+### 2. Construct the system view from the task decomposition
+
+Before implementing, derive a system-level view from the contract's `## Task Decomposition` JSON. This view makes upstream/downstream dependencies, data flow, and failure propagation explicit so the executor does not implement each task in isolation.
+
+Read the task decomposition from `contract.md`. For each task, extract:
+- **Upstream modules**: tasks listed in its `depends_on` and what symbols they produce
+- **Downstream modules**: tasks whose `depends_on` includes this task, and what symbols they consume from it
+- **Data flow**: what each task receives from upstream (symbol names and signatures) and what it passes downstream
+- **Failure propagation**: what this task must do if an upstream module returns nil, an error, or unexpected input — and which downstream modules are affected if this task fails
+
+Write the system view into `runtime.md` under a `## System View` section using this shape:
+
+- For each task id, list its upstream dependencies and the symbols it consumes
+- For each task id, list its downstream consumers and the symbols it provides
+- For each task id, state the failure-handling contract: what happens on upstream nil/error, and which downstream tasks break if this task fails
+- If the task decomposition is missing or unparseable, note that in `runtime.md` and proceed without a system view — do not stop execution, but flag the gap
+
+This view is derived mechanically from the contract's JSON. Do not invent dependencies or symbols that are not declared in the decomposition.
+
+### 3. Discover runtime details from the repo
 
 If the contract omits runtime details, derive only what you can prove from the repository, such as:
 - package scripts
@@ -108,7 +127,7 @@ If the contract omits runtime details, derive only what you can prove from the r
 
 Record every discovered runtime fact in `runtime.md` with its source. Do not invent commands, ports, or environment assumptions.
 
-### 3. Implement only within bounds
+### 4. Implement only within bounds
 
 During coding:
 - stay inside the allowed files unless the contract is amended
@@ -118,7 +137,7 @@ During coding:
 
 If you realize the correct fix requires files outside the contract, stop and document why. Do not quietly expand scope.
 
-### 4. Capture verification evidence as you go
+### 5. Capture verification evidence as you go
 
 `runtime.md` is not a diary. It is the reviewer's reproduction kit — and also the primary evidence source for compound-capture to extract cross-sprint learnings.
 
@@ -139,7 +158,7 @@ Before handoff, use the matching `frontend-qa` or `backend-qa` playbook as a che
 This preparation only improves evidence quality. It does not author `qa.md`, does not self-approve the sprint, and does not change the contract or review boundary.
 
 
-### 5. Run build/startup triage before handoff
+### 6. Run build/startup triage before handoff
 
 Before you claim review readiness, run the minimum build and startup checks needed to prove the reviewer can reach the feature.
 
@@ -156,7 +175,7 @@ If build or startup triage fails:
 - if another clean retry remains inside budget, route next to `state-update` so live state can publish the failed attempt and queue a clean retry
 - if the budget is exhausted or recovery is unsafe, set `phase: "escalated_to_human"` instead
 
-### 6. Produce a real handoff
+### 7. Produce a real handoff
 
 When implementation and build/startup triage are done, write `handoff.md` that answers:
 1. What contract objective was implemented?
@@ -187,6 +206,11 @@ Use a structure like:
 - Start command:
 - Test command:
 - Local URL:
+
+
+## System View
+- <task-id>: upstream [<depends-on-task-ids>], consumes [<symbol-names>], downstream [<consumer-task-ids>], provides [<symbol-names>]
+- <task-id>: failure contract — on upstream nil/error: <behavior>; downstream impact if this task fails: <affected-task-ids>
 
 ## Commands Run
 - `<command>` -> success/failure

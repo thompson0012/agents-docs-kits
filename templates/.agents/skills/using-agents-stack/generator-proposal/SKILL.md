@@ -267,6 +267,7 @@ Write the decomposition as a fenced JSON block under `## Task Decomposition` in 
 This decomposition enables `scripts/check_contract_symbols.py` to mechanically verify that every declared symbol exists in the code before adversarial review. It also enables parallel execution of independent tasks.
 
 If the sprint cannot be decomposed into bounded tasks with explicit symbol contracts, it is not ready for proposal. Stop and send it back to brainstorming or human clarification.
+
 ### 7. Draw hard file and subsystem boundaries
 
 - List the exact files expected to change when possible.

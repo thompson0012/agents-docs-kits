@@ -140,6 +140,19 @@ Reject if the proposal:
 - skips plausible alternative directions when that choice changes the contract shape or the honest file boundary
 
 
+### 2b. Force global thinking check
+
+Before approving, the reviewer must answer the following system-level questions for the contract's task decomposition and record the answers in the contract's `## Assumptions` section:
+
+- **Upstream failure**: For each task with upstream dependencies, what happens if upstream module X returns nil, an error, or unexpected input? The answer must name the specific fallback behavior (graceful degradation, explicit error propagation, default value with documented rationale), not "handle it" or "fail gracefully".
+- **Downstream consumption**: For each task, which downstream modules consume its outputs? Name the specific task ids and the symbol names they depend on.
+- **Failure blast radius**: If this module fails, which downstream modules are affected? Name the specific task ids that cannot proceed and describe the observable impact.
+- **Upstream assumptions**: What assumptions is each task making about upstream behavior — types, invariants, error modes, ordering? What breaks if those assumptions change?
+
+If the proposal or contract cannot answer these questions, it is not execution-ready. Reject and require the proposer to add a `## Assumptions` section with explicit answers before re-submission.
+
+These answers become part of the contract's `## Assumptions` section so that `generator-execution` can reference them during implementation.
+
 ### 3. Attack the scope
 Reject if any of these are true:
 - more than one meaningful product increment is bundled together
@@ -164,6 +177,7 @@ Reject if the task decomposition:
 - cannot be verified because `file_hint` paths do not exist in the repo
 
 A valid task decomposition is the prerequisite for mechanical symbol verification. If it fails these structural checks, the contract cannot be approved.
+
 ### 4. Attack the observability
 
 Reject if acceptance cannot be verified from outside the author's head.
