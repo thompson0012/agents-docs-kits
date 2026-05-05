@@ -87,6 +87,24 @@ The contract must include:
 - open assumptions, ambiguous states, and reward-hack surfaces execution may rely on
 - clear non-goals and deferred work
 - enough structural fidelity that `templates/.agents/skills/using-agents-stack/scripts/validate_contract.py <workstream-id> --repo-root <repo-root>` would return `allow` before approval
+- a `## Task Decomposition` section whose structured JSON matches the canonical schema below (carried forward from the proposal, refined if needed during contract review):
+```json
+{
+  "tasks": [
+    {
+      "id": "<kebab-case-id>",
+      "symbols": [
+        {"name": "<SymbolName>", "kind": "function|method|type|interface",
+         "signature": "<full signature>", "file_hint": "<subdirectory>/"}
+      ],
+      "depends_on": ["<other-task-id>"],
+      "acceptance": ["<verifiable condition>"]
+    }
+  ]
+}
+```
+- verification that the task decomposition is parseable JSON, contains at least one task, has no circular dependencies, and every `depends_on` reference resolves to a declared task id
+- the contract must include this decomposition so `scripts/check_contract_symbols.py` can mechanically verify symbol existence after execution
 - for stateful or reversible behavior, the contract must require before/action/after evidence and reversal proof instead of static end-state prose
 
 Also update `status.json` so the sprint resumes from `contract.md` and the next owner is the orchestrator, which can dispatch a fresh `generator-execution` worker.
@@ -99,6 +117,8 @@ Feedback must be actionable, for example:
 - acceptance criterion `AC-003` is not observable because no selector or command is specified
 - proposal claims `src/app/**` is allowed, which is too broad for a one-sprint change
 - architecture introduces a new persistence layer but the scope hides migration work
+- the task decomposition contains a circular dependency (task B depends on task C, which depends on task B) or references unknown task ids
+- the task decomposition has symbol signatures that do not match the target language
 - the toggle requirement can be reward-hacked by rendering a hardcoded final state because the proposal never requires a before/action/after check
 - the proposal assumes seeded data already exists but never names that dependency or how review will detect the wrong starting state
 - the proposed contract shape would fail `validate_contract.py` because it omits stable acceptance IDs or criterion evidence fields
@@ -130,6 +150,20 @@ Reject if any of these are true:
 - the proposal requires follow-on work before its own acceptance can be tested
 - "nice to have" items are mixed into required scope
 
+
+### 3b. Attack the task decomposition
+Reject if the task decomposition:
+- is missing entirely from the proposal
+- is not parseable JSON (malformed, truncated, or embedded in prose without a fenced block)
+- contains zero tasks
+- contains tasks without any declared symbols (every task must produce at least one observable symbol)
+- has circular dependencies (A depends on B, B depends on A)
+- references task ids in `depends_on` that do not exist in the decomposition
+- has symbols without signatures, or signatures that do not match the target language (e.g., Python `def` syntax in a Go project)
+- has tasks whose symbols span unrelated subsystems without justification
+- cannot be verified because `file_hint` paths do not exist in the repo
+
+A valid task decomposition is the prerequisite for mechanical symbol verification. If it fails these structural checks, the contract cannot be approved.
 ### 4. Attack the observability
 
 Reject if acceptance cannot be verified from outside the author's head.
@@ -194,6 +228,7 @@ You must reject the proposal when any of the following is true:
 - file boundaries are missing, too broad, or dishonest
 - the sprint hides architecture changes, migrations, or dependency churn
 - scope exceeds one bounded sprint for the current contract
+- the task decomposition is missing, unparseable, has circular dependencies, or contains symbols without signatures
 - the proposal hides multi-sprint initiative scope or a required roadmap re-authorization boundary
 - required repo context is missing and the proposal papers over the gap
 - the proposal conflicts with `AGENTS.md`, `docs/live/current-focus.md`, `docs/live/roadmap.md`, global state, or reference docs

@@ -123,16 +123,19 @@ This is a [TYPE] problem with [REVERSIBILITY] stakes, [TIME TIER] timing,
 Choose 2-4 lenses using the routing logic below.
 
 ```text
+Bottlenecks or operational design    -> Engineering
+Compliance, liability, regulation     -> Legal / Regulatory
+Competition or adaptation            -> Biology / Ecology
+Feedback loops or long-term effects  -> Systems Dynamics
 Human behavior involved              -> Psychology
 Incentives or allocation matter      -> Economics
 Multiple strategic actors            -> Game Theory
-Competition or adaptation            -> Biology / Ecology
-Bottlenecks or operational design    -> Engineering
-Feedback loops or long-term effects  -> Systems Dynamics
-Risk, probability, forecasting       -> Probability & Statistics
-UX, adoption, unmet needs            -> Design Thinking
-Relationship-heavy / high-context    -> Relationship Dynamics
 No precedent / assumptions suspect   -> First Principles
+Precedent, pattern recognition       -> History / Analogical Reasoning
+Relationship-heavy / high-context    -> Relationship Dynamics
+Risk, probability, forecasting       -> Probability & Statistics
+Signal degradation, communication breakdown -> Information Theory
+UX, adoption, unmet needs            -> Design Thinking
 Values or legitimacy conflict        -> Philosophy
 ```
 
@@ -143,6 +146,8 @@ Selection rules:
 3. If every selected lens points to the same answer too quickly, add one adversarial lens.
 4. T1 decisions use at most two lenses.
 5. First Principles can override the initial set when every other lens depends on questionable assumptions.
+6. Match depth tier to time tier: T1 uses Basic prompts, T2 uses Intermediate, T3 uses Advanced.
+7. Check contraindication before confirming each lens. If any contraindication matches the problem, either drop the lens or pair it with one that covers its blind area.
 
 ### Phase 2 — Apply Each Lens Independently
 
@@ -176,17 +181,64 @@ If no transfer survives contact with reality, say so explicitly and continue wit
 
 After independent passes, compare the lenses directly.
 
-Required checks:
+#### 3a. Agreements and Contradictions
 
 - Where do the lenses agree?
 - Where do they contradict each other?
-- Which contradiction matters most to the decision?
-- Under current conditions, which lens has the strongest explanatory power?
-- Which lens is probably underweighted because it is uncomfortable?
 
-Then run two safeguards.
+#### 3b. Conflict Resolution Ladder
 
-#### Boundary scan
+Apply these layers in order. Stop when any layer resolves the contradiction.
+
+##### Layer 1 — Evidence Weighting
+
+For each lens's conclusion, answer:
+- Is this based on observed behavior/data or inferred mechanism?
+  → If based on data, weight +1
+- Does this conclusion have base-rate support from similar cases?
+  → If supported, weight +1
+- Has this conclusion ruled out the most obvious alternative explanation?
+  → If yes, weight +1
+
+Output the scores. The lens with the highest evidence weight takes priority.
+Record each defeated lens's warning signals as risk items to preserve downstream.
+
+##### Layer 2 — Assumption Strip
+
+Run only if Layer 1 left unresolved contradictions (scores tied or all scores low).
+
+For each conflicting lens:
+- What must be true for this lens's conclusion to hold?
+- Which of those conditions are verified? Which are assumed?
+
+The lens depending on fewer unverified assumptions wins.
+
+If any lens's conclusion rests entirely on unverified assumptions, downgrade its status from "finding" to "inference."
+
+##### Layer 3 — Testability Check
+
+Run only if Layers 1-2 left contradictions unresolved.
+
+For each conflicting lens:
+- Does its conclusion produce an observable, testable prediction?
+- How quickly and cheaply can that prediction be verified?
+
+When unable to determine which lens is correct, adopt the lens whose conclusion is fastest to falsify. This is not because it is more likely true, but because being wrong costs least.
+
+##### Layer 4 — Decision Path
+
+Run only if all three previous layers failed to resolve the contradiction.
+
+Output three paths instead of one answer:
+- **Safe path (conservative):** adopt the lowest-common-denominator recommendation across all lenses
+- **Aggressive path (optimistic):** adopt the lens with strongest evidence weighting despite unresolved contradictions
+- **Hedge path (option-preserving):** keep two lenses' predictions alive and prepare for both
+
+For each path, state:
+- Under what conditions this path would be optimal
+- The trigger signal that would make you switch to another path
+
+#### 3c. Boundary Scan
 
 Look for what the current lenses may still ignore:
 
@@ -197,7 +249,7 @@ Look for what the current lenses may still ignore:
 - second-order effects
 - unknown unknowns revealed by an outsider or novice question
 
-#### Mirror-imaging check
+#### 3d. Mirror-Imaging Check
 
 If your explanation of another actor depends on motives they have not shown, label it as inference, not fact.
 
@@ -261,6 +313,7 @@ Return these sections:
 ### Collision
 - agreements
 - contradictions
+- conflict resolution: which layers triggered and what they resolved
 - dominant tension
 - boundary-scan findings
 

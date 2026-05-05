@@ -69,6 +69,8 @@ A sprint passes only when all of the following are true:
 11. After deduplicating findings whose `duplicate_of` points at another open finding, there are zero open P0 / P1 / P2 / P3 findings, `coverage_status` is `complete`, and `convergence_status` is `closed`.
 12. Advisory findings outside P0 / P1 / P2 / P3 may remain recorded, but they must be clearly labeled non-blocking and must not be smuggled into PASS as unnamed caveats.
 
+11a. `scan_model_patterns.py` was run against changed files and returned `allow` (no P0/P1/P2 blocking findings), OR the scanner could not run and the gap is explicitly recorded in `qa.md` under `## Scanner Gaps`.
+11b. `check_contract_symbols.py` was run against the contract and returned `allow` (all declared symbols exist), OR the scanner could not run and the gap is explicitly recorded in `qa.md` under `## Scanner Gaps`.
 Any gap in reproducibility, scope control, acceptance evidence, or review metadata is a review failure. Missing coverage or convergence metadata fails closed.
 
 ## Review procedure
@@ -151,6 +153,40 @@ Record cases where:
 
 Mark these in `review.md` under a dedicated `Recurring Pattern Analysis` section so `compound-capture` has direct evidence to work from. A pattern that survived multiple attempts is a strong candidate for durable cross-sprint learning.
 
+### 7. Run deterministic pattern scanner
+
+Run `scripts/scan_model_patterns.py` against the changed files (or the entire codebase if the contract scope is broad):
+```
+python .agents/skills/using-agents-stack/scripts/scan_model_patterns.py \
+  <changed-files-or-directory> --repo-root <repo-root>
+```
+
+This scanner detects structural defects that weaker LLMs systematically produce:
+- `PAT-001`: Silent error discards (`_ = someFunc()`)
+- `PAT-002`: Defects documented in comments instead of fixed (`// TODO`, `// For production`)
+- `PAT-003`: Hand-parsed formats when parser libraries exist
+- `PAT-004`: Resources acquired without defer close/rollback
+- `PAT-005`: Unstructured errors (`map[string]string{"error": ...}`)
+- `PAT-006`: Single-layer IP extraction (`r.RemoteAddr` only)
+- `PAT-007`: Handler functions with no audit/trace calls
+- `PAT-008`: HTTP 501 Not Implemented stubs
+- `PAT-009`: Python bare except that silently swallows
+- `PAT-010`: External input extracted without validation
+
+Every P0/P1/P2 finding from the scanner is a blocking review finding. Record all scanner findings in `qa.md` under a `## Deterministic Pattern Scan` section. Record blocking findings in `review.md` alongside other findings.
+
+### 8. Run symbol consistency checker
+
+If the contract includes a `## Task Decomposition` section, run:
+```
+python .agents/skills/using-agents-stack/scripts/check_contract_symbols.py \
+  .harness/<sprint-id>/contract.md --repo-root <repo-root>
+```
+
+This verifies that every function/type/interface declared in the contract's task decomposition actually exists in the code. Missing symbols are blocking findings — the sprint cannot pass if the implementation does not deliver what the contract promised.
+
+Record results in `qa.md` under a `## Symbol Consistency Check` section.
+
 ## Auditability: your review may itself be reviewed
 
 Your review output is subject to independent audit by a subsequent reviewer worker. The orchestrator may dispatch a second specialist to verify your findings, severity labels, evidence paths, and verdict. This means:
@@ -209,6 +245,28 @@ This is the detailed evidence log. Use a structure like:
 - Reverse / repeat check:
 - Status: PASS | FAIL | BLOCKED | NOT_RUN
 - Evidence:
+
+
+## Deterministic Pattern Scan
+- scanner: scripts/scan_model_patterns.py
+- target: <scanned files/directory>
+- verdict: allow | deny
+- total_findings: N
+- blocking_findings: N
+- rules_triggered:
+  - PAT-001: N hits
+- findings:
+  - `PAT-001` | file.go:42 | severity=P1 | silent error discard: `_ = someFunc()`
+
+## Symbol Consistency Check
+- scanner: scripts/check_contract_symbols.py
+- contract: .harness/<sprint-id>/contract.md
+- verdict: allow | deny
+- tasks_checked: N
+- symbols_declared: N
+- symbols_missing: N
+- missing:
+  - [auth-module] ValidateToken (function) — not found in code
 
 ## Findings Ledger
 - `RV-001` | severity=P1 | status=OPEN | duplicate_of=none
@@ -318,6 +376,13 @@ If the feature works but the generator touched out-of-contract files or behavior
 - FAIL the sprint unless the contract was formally amended before execution
 - direct the next generator either to revert the extra work or to obtain a revised contract
 
+
+### Scanner failure or unavailable
+If `scan_model_patterns.py` or `check_contract_symbols.py` cannot run (missing Python, missing dependencies, non-Go project with Go-only rules):
+- attempt to run them anyway and capture the error
+- if they cannot run at all, record the gap in `qa.md` under a `## Scanner Gaps` section
+- the absence of scanner results does NOT block PASS, but the gap must be explicitly recorded
+- if the scanners run but produce findings, treat those findings as review findings with the severity the scanner assigned
 ## PASS / FAIL / BLOCKED routing
 
 ### PASS
@@ -332,6 +397,8 @@ On PASS:
 - ensure no open non-duplicate P0 / P1 / P2 / P3 finding remains
 - ensure `templates/.agents/skills/using-agents-stack/scripts/validate_review_against_contract.py <sprint-id> --repo-root <repo-root>` would return `allow`
 - route immediately to `state-update`
+- ensure `scan_model_patterns.py` returned `allow` on the changed files, OR the scanner gap is recorded in `qa.md`
+- ensure `check_contract_symbols.py` returned `allow` (all contract-declared symbols exist), OR the scanner gap is recorded in `qa.md`
 
 ### FAIL
 FAIL means the sprint stays active and must be corrected. Preserve all evidence. FAIL is mandatory whenever any open non-duplicate P0 / P1 / P2 / P3 finding remains, or when required coverage / convergence metadata is missing or incomplete.

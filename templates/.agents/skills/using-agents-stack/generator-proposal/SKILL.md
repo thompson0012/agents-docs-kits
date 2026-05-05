@@ -101,6 +101,38 @@ A concrete proposal containing at minimum:
   - Reverse check: disable the filter and confirm the full list returns.
 ```
 
+- a structured **task decomposition** that breaks the sprint into bounded, independently-implementable units. Each task must declare:
+  - `id` — unique task identifier
+  - `symbols` — list of declared functions/types/interfaces, each with `name`, `kind` (function|method|type|interface), `signature`, and optional `file_hint`
+  - `depends_on` — list of task ids this task requires (enables topological ordering)
+  - `acceptance` — list of verifiable conditions specific to this task
+
+The task decomposition must be provided as a fenced JSON block under `## Task Decomposition`:
+
+```json
+{
+  "tasks": [
+    {
+      "id": "auth-module",
+      "symbols": [
+        {
+          "name": "ValidateToken",
+          "kind": "function",
+          "signature": "func ValidateToken(token string) (*Claims, error)",
+          "file_hint": "internal/auth/"
+        }
+      ],
+      "depends_on": [],
+      "acceptance": [
+        "ValidateToken returns error on expired token",
+        "ValidateToken returns Claims on valid token"
+      ]
+    }
+  ]
+}
+```
+
+This decomposition is machine-verifiable — `scripts/check_contract_symbols.py` will verify that every declared symbol exists in the code before review. Proposal approval is blocked if the task decomposition is missing, unparseable, or contains tasks that span multiple subsystems without explicit dependency declarations.
 ### `.harness/<workstream-id>/status.json`
 A machine-readable checkpoint for resume and routing.
 It should make the proposal state obvious, for example:
@@ -206,14 +238,44 @@ Bad examples:
 - any criterion that could pass from a static screenshot, hardcoded DOM, canned output, or pre-seeded final state without exercising the real path
 
 
-### 6. Draw hard file and subsystem boundaries
+### 6. Decompose into bounded, verifiable tasks
+
+Translate the sprint scope into a structured task DAG:
+- Identify the smallest independent units of work — each task should touch one subsystem, one concern.
+- For each task, declare the exact symbols it must produce (function names, type names, interface names) with their signatures.
+- Declare dependencies between tasks: if task B consumes task A's output, A must be listed in B's `depends_on`.
+- Tasks with empty `depends_on` are leaf tasks and can be implemented first or in parallel.
+- Tasks must not have circular dependencies.
+
+Write the decomposition as a fenced JSON block under `## Task Decomposition` in the proposal. The format must match:
+```json
+{
+  "tasks": [
+    {
+      "id": "<kebab-case-id>",
+      "symbols": [
+        {"name": "<SymbolName>", "kind": "function|method|type|interface",
+         "signature": "<full signature>", "file_hint": "<subdirectory>/"}
+      ],
+      "depends_on": ["<other-task-id>"],
+      "acceptance": ["<verifiable condition>"]
+    }
+  ]
+}
+```
+
+This decomposition enables `scripts/check_contract_symbols.py` to mechanically verify that every declared symbol exists in the code before adversarial review. It also enables parallel execution of independent tasks.
+
+If the sprint cannot be decomposed into bounded tasks with explicit symbol contracts, it is not ready for proposal. Stop and send it back to brainstorming or human clarification.
+### 7. Draw hard file and subsystem boundaries
+
 - List the exact files expected to change when possible.
 - If exact files are not yet knowable, name the narrowest allowed directory and justify why.
 - List forbidden files or subsystems so review can catch scope creep.
 - Call out any architecture or dependency change explicitly; never bury it in prose.
 - If finishing the stated source goal would require later sprints, name those as roadmap items or deferred work instead of smuggling them into this sprint.
 
-### 7. Write the proposal as a review target
+### 8. Write the proposal as a review target
 The proposal must let an evaluator answer:
 - What will change?
 - What will not change?
@@ -224,7 +286,7 @@ The proposal must let an evaluator answer:
 - What must be deferred to later sprints?
 - Does the proposal stay inside the currently authorized roadmap slice, or does it require re-authorization first?
 
-### 8. Set durable state for resume
+### 9. Set durable state for resume
 - Write or update `status.json` so the next agent can resume from `sprint_proposal.md`.
 - If this is a revision, replace stale proposal content rather than accumulating contradictory plans.
 - If this workstream entered proposal from a local planning checkpoint, replace stale `needs_brainstorm` / `pending` phase state with truthful proposal state instead of leaving two competing local stories.
@@ -251,6 +313,7 @@ Reject the proposal phase and leave a truthful blocker when:
 - the source goal or roadmap slice is still implicit, contradictory, or unsupported by the files
 - late scope discovery shows that additional roadmap authorization is required before another sprint can be reserved or chained forward
 - another runnable sprint is already active
+- the sprint cannot be decomposed into bounded tasks with explicit symbol contracts (missing or circular dependencies, symbols without signatures, tasks that span unrelated subsystems)
 - the repo state and backlog state disagree about what feature is active
 When blocked, write the blocking reason explicitly. Do not compensate with a mushy proposal.
 
@@ -264,6 +327,7 @@ A good proposal:
 - defines outcomes that a reviewer can verify from behavior and state transitions
 - uses brainstorm or record context only to sharpen scope, not to excuse vagueness
 - leaves obvious future work as named later roadmap slices instead of pretending to solve everything now
+- includes a structured task decomposition with explicit symbol contracts that can be mechanically verified
 
 ## Done Definition
-This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal, any relevant brainstorm or record context has been distilled into explicit source-goal and roadmap truth, any optional `docs/records/*` update is linked back through the same feature entry in `docs/live/tracked-work.json`, and the repo state makes the next step unambiguous: adversarial contract review.
+This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal with a structured, machine-verifiable task decomposition, any relevant brainstorm or record context has been distilled into explicit source-goal and roadmap truth, any optional `docs/records/*` update is linked back through the same feature entry in `docs/live/tracked-work.json`, and the repo state makes the next step unambiguous: adversarial contract review.
