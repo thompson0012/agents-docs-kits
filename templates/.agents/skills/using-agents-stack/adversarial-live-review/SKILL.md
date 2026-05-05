@@ -66,11 +66,15 @@ A sprint passes only when all of the following are true:
 8. Coverage metadata is present and truthful: `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, and `all_acceptance_criteria_accounted_for`.
 9. `qa.md` and `review.md` both preserve criterion-level coverage keyed by stable `AC-###` ids.
 10. Convergence metadata is present and truthful: `convergence_status` and `open_blocking_findings_count`.
-11. After deduplicating findings whose `duplicate_of` points at another open finding, there are zero open P0 / P1 / P2 / P3 findings, `coverage_status` is `complete`, and `convergence_status` is `closed`.
-12. Advisory findings outside P0 / P1 / P2 / P3 may remain recorded, but they must be clearly labeled non-blocking and must not be smuggled into PASS as unnamed caveats.
+11. After deduplicating findings whose `duplicate_of` points at another open finding, there are zero open P0 / P1 / P2 / P3 findings on EACH quality axis:
+    a. `design_completeness`: 0 blocking findings
+    b. `implementation_discipline`: 0 blocking findings
+    c. `delivery_completeness`: 0 blocking findings
 
-11a. `scan_model_patterns.py` was run against changed files and returned `allow` (no P0/P1/P2 blocking findings), OR the scanner could not run and the gap is explicitly recorded in `qa.md` under `## Scanner Gaps`.
+11a. `scan_model_patterns.py` was run and its `axis_breakdown` shows zero blocking findings per axis, OR the scanner could not run and the gap is explicitly recorded in `qa.md` under `## Scanner Gaps`.
 11b. `check_contract_symbols.py` was run against the contract and returned `allow` (all declared symbols exist), OR the scanner could not run and the gap is explicitly recorded in `qa.md` under `## Scanner Gaps`.
+12. `coverage_status` is `complete`, and `convergence_status` is `closed`.
+13. Advisory findings outside P0 / P1 / P2 / P3 may remain recorded, but they must be clearly labeled non-blocking and must not be smuggled into PASS as unnamed caveats.
 Any gap in reproducibility, scope control, acceptance evidence, or review metadata is a review failure. Missing coverage or convergence metadata fails closed.
 
 ## Review procedure
@@ -268,6 +272,12 @@ This is the detailed evidence log. Use a structure like:
 - missing:
   - [auth-module] ValidateToken (function) — not found in code
 
+
+## Axis Breakdown
+- design_completeness: N findings (N blocking) — CLEAN | BLOCKED
+- implementation_discipline: N findings (N blocking) — CLEAN | BLOCKED
+- delivery_completeness: N findings (N blocking) — CLEAN | BLOCKED
+- overall: PASS | FAIL (PASS requires CLEAN on all three axes)
 ## Findings Ledger
 - `RV-001` | severity=P1 | status=OPEN | duplicate_of=none
   - Summary: ...
@@ -394,11 +404,11 @@ On PASS:
 - ensure `criteria_total`, `criteria_checked`, and `all_acceptance_criteria_accounted_for` honestly reflect the checked `AC-###` set
 - ensure interactive or other stateful criteria include before/action/after proof and reversibility proof when applicable
 - ensure `coverage_status: complete`, `convergence_status: closed`, and `open_blocking_findings_count: 0`
-- ensure no open non-duplicate P0 / P1 / P2 / P3 finding remains
+- ensure no open non-duplicate P0 / P1 / P2 / P3 finding remains on ANY axis (design, implementation, delivery)
 - ensure `templates/.agents/skills/using-agents-stack/scripts/validate_review_against_contract.py <sprint-id> --repo-root <repo-root>` would return `allow`
 - route immediately to `state-update`
-- ensure `scan_model_patterns.py` returned `allow` on the changed files, OR the scanner gap is recorded in `qa.md`
-- ensure `check_contract_symbols.py` returned `allow` (all contract-declared symbols exist), OR the scanner gap is recorded in `qa.md`
+- ensure `scan_model_patterns.py` `axis_breakdown` shows zero blocking findings per axis, OR the scanner gap is recorded in `qa.md`
+- ensure `check_contract_symbols.py` returned `allow`, OR the scanner gap is recorded in `qa.md`
 
 ### FAIL
 FAIL means the sprint stays active and must be corrected. Preserve all evidence. FAIL is mandatory whenever any open non-duplicate P0 / P1 / P2 / P3 finding remains, or when required coverage / convergence metadata is missing or incomplete.
@@ -421,3 +431,17 @@ On BLOCKED:
 - route immediately to `state-update`
 
 Never erase evidence to make the next pass look cleaner.
+
+## Known Limitations
+
+This harness enforces **structural correctness**:
+- Pattern scanners detect known model failure modes (silent error discards, stubs, missing defer)
+- Symbol checkers verify declared contracts exist in code
+- Axis breakdown ensures quality is assessed across all three dimensions
+
+This harness DOES NOT guarantee:
+- **Architectural depth** — decomposition quality depends entirely on the model. The harness validates that declared symbols exist, not that the right symbols were declared.
+- **Defense-in-depth design** — the harness checks that declared checks exist, not that sufficient checks were declared for the threat model.
+- **Domain modeling correctness** — the harness validates structure and cross-module consistency, not business logic semantics.
+
+The harness is a **process framework**, not a replacement for model capability. It prevents structural defects; it does not produce deep design insight. For system-level architectural decisions, a stronger model (or human review) remains necessary.

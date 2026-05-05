@@ -306,6 +306,93 @@ def check_contract(
     }
 
 
+
+def check_cross_language(repo_root: str | Path = ".") -> dict[str, Any]:
+    """Check for incompatible primitives across languages in the project."""
+    root = Path(repo_root).expanduser().resolve()
+
+    # Scan all source files
+    go_crypto: set[str] = set()
+    py_crypto: set[str] = set()
+    ts_crypto: set[str] = set()
+
+    go_crypto_patterns = {
+        "aes": r"crypto/aes|aes\.NewCipher",
+        "sha256": r"crypto/sha256|sha256\.New",
+        "sha1": r"crypto/sha1|sha1\.New",
+        "md5": r"crypto/md5|md5\.New",
+        "des": r"crypto/des|des\.NewCipher",
+        "bcrypt": r"golang\.org/x/crypto/bcrypt",
+    }
+    py_crypto_patterns = {
+        "xor": r"\bxor\b|operator\.xor",
+        "md5": r"hashlib\.md5|md5\(",
+        "sha1": r"hashlib\.sha1|sha1\(",
+        "des": r"pyDes|des\.DES",
+        "aes": r"Crypto\.Cipher\.AES|AES\.new|from Cryptodome",
+    }
+
+    for p in root.rglob("*"):
+        if not p.is_file():
+            continue
+        parts = p.parts
+        if any(skip in parts for skip in (".git", "node_modules", "vendor", "__pycache__", ".agents", ".harness")):
+            continue
+        try:
+            text = p.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+
+        suffix = p.suffix
+        if suffix == ".go":
+            for name, pat in go_crypto_patterns.items():
+                if re.search(pat, text):
+                    go_crypto.add(name)
+        elif suffix == ".py":
+            for name, pat in py_crypto_patterns.items():
+                if re.search(pat, text):
+                    py_crypto.add(name)
+
+    findings: list[dict[str, Any]] = []
+
+    # Known incompatible pairs
+    incompatible_pairs = [
+        (("go", "aes"), ("py", "xor"), "P0",
+         "Go uses AES but Python uses XOR — encryption primitives are incompatible across languages"),
+        (("go", "sha256"), ("py", "md5"), "P1",
+         "Go uses SHA-256 but Python uses MD5 — hash strength mismatch across languages"),
+        (("go", "aes"), ("py", "des"), "P1",
+         "Go uses AES but Python uses DES — encryption strength mismatch across languages"),
+    ]
+
+    for (lang_a, algo_a), (lang_b, algo_b), severity, desc in incompatible_pairs:
+        crypto_a = go_crypto if lang_a == "go" else py_crypto
+        crypto_b = go_crypto if lang_b == "go" else py_crypto
+        if algo_a in crypto_a and algo_b in crypto_b:
+            findings.append({
+                "rule_id": "XLANG-001",
+                "severity": severity,
+                "axis": "delivery_completeness",
+                "name": "cross_language_crypto_mismatch",
+                "description": desc,
+                "file": "<project>",
+                "line": 0,
+                "match": f"{lang_a}/{algo_a} vs {lang_b}/{algo_b}",
+                "fix_hint": f"Standardize on one algorithm across all languages. Prefer AES-256-GCM.",
+            })
+
+    blocking = [f for f in findings if f["severity"] in ("P0", "P1", "P2")]
+    return {
+        "verdict": "deny" if blocking else "allow",
+        "reasons": ["cross_language_crypto_mismatch"] if blocking else [],
+        "summary": {
+            "go_algorithms": sorted(go_crypto),
+            "py_algorithms": sorted(py_crypto),
+            "mismatches": len(findings),
+        },
+        "findings": findings,
+    }
+
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
@@ -332,12 +419,26 @@ def parse_args() -> argparse.Namespace:
         default="json",
         help="Output format (default: json).",
     )
+    parser.add_argument(
+        "--cross-language",
+        action="store_true",
+        help="Also check for cross-language algorithm mismatches (AES vs XOR etc.).",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     result = check_contract(args.contract_path, args.repo_root)
+
+    if args.cross_language:
+        xlang = check_cross_language(args.repo_root)
+        result["findings"].extend(xlang["findings"])
+        if xlang["findings"]:
+            result["reasons"].extend(xlang["reasons"])
+        result["summary"]["cross_language"] = xlang["summary"]
+        if xlang["verdict"] == "deny":
+            result["verdict"] = "deny"
 
     if args.format == "json":
         print(json.dumps(result))
@@ -347,11 +448,21 @@ def main() -> int:
         print(f"Symbols declared: {s['symbols_declared']}")
         print(f"Symbols matched: {s['symbols_matched']}")
         print(f"Symbols missing: {s['symbols_missing']}")
+        if "cross_language" in s:
+            xl = s["cross_language"]
+            print(f"\nCross-language algorithms:")
+            print(f"  Go: {', '.join(xl['go_algorithms']) if xl['go_algorithms'] else 'none detected'}")
+            print(f"  Python: {', '.join(xl['py_algorithms']) if xl['py_algorithms'] else 'none detected'}")
+            print(f"  Mismatches: {xl['mismatches']}")
         print(f"Verdict: {result['verdict']}")
         if result["findings"]:
-            print("\nMissing symbols:")
+            print("\nIssues:")
             for f in result["findings"]:
-                print(f"  [{f['task_id']}] {f['symbol']} ({f['kind']}) — not found in code")
+                src = f.get('file', '<project>')
+                line = f.get('line', 0)
+                match = f.get('match', '')
+                desc = f.get('description', '')
+                print(f"  {src}:{line} [{f.get('rule_id', '?')}] {match or desc}")
 
     return 0 if result["verdict"] == "allow" else 1
 

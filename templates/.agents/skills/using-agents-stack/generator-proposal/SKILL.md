@@ -331,3 +331,14 @@ A good proposal:
 
 ## Done Definition
 This skill is done when the selected feature has one durable, bounded, reviewable sprint proposal with a structured, machine-verifiable task decomposition, any relevant brainstorm or record context has been distilled into explicit source-goal and roadmap truth, any optional `docs/records/*` update is linked back through the same feature entry in `docs/live/tracked-work.json`, and the repo state makes the next step unambiguous: adversarial contract review.
+
+## Known Limitations
+
+The task decomposition produced by this phase enforces **structural completeness** — every declared symbol must have a signature, dependencies must be acyclic, and tasks must be self-contained. This decomposition is machine-verifiable by downstream phases.
+
+This phase DOES NOT guarantee:
+- **Architectural quality** of the decomposition itself — the model decides how to partition the problem. A poor decomposition passes structural checks.
+- **Correct dependency ordering** — the model declares dependencies; the harness checks they're acyclic and resolved, not that they reflect the true data flow.
+- **Coverage of cross-cutting concerns** — if the model fails to include auth, audit, or error handling in the task decomposition, the harness cannot invent them.
+
+The structured task decomposition is a **process artifact**, not an architectural review. For system-level design decisions, pair this phase with a stronger model or a human architecture review.
