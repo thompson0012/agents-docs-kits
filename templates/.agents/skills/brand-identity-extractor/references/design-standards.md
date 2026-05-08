@@ -63,3 +63,35 @@ Measurable validation criteria for brand design tokens.
 | Count | 2-3 levels (sm, md, lg) |
 | Style | Consistent direction, color, blur |
 | Muddy shadows | NOT allowed (low opacity + large blur = dirty) |
+
+## Brand Identity YAML Schema (v2.0)
+
+The brand identity specification is stored as a YAML block under `## Visual System` in `docs/reference/design.md`. Validate extracted tokens against this schema:
+
+### Required Top-Level Keys
+| Key | Purpose |
+|---|---|
+| `color_policy` | Dominant/accent/text/glass colors with hex values, hard constraints, finish rules |
+| `design_tokens` | spacing, radius, shadow, blur, motion, typography — all with px/ms values and `--kebab-case` tokens |
+| `form_language` | Primary/secondary forms, geometry rules with severity |
+| `material_language` | Approved materials, surface behavior rules |
+| `scene_density_rules` | whitespace_ratio_min (≥0.55), max_primary_objects (≤3), max_secondary_objects (≤6) |
+| `object_library` | Approved, conditional, forbidden items — each with severity |
+| `ui_translation` | Interface principles mapped to tokens, preferred components with CSS var values |
+| `negative_prompt_policy` | Hard negative terms list, inject_format per generation tool |
+| `input_variables` | Required/optional params, value enums for scene_type, density, composition_mode, background_mode |
+| `application_presets` | Per-use-case defaults (brand_kv, landing_page, product_ui, app_illustration, motion_scene, campaign_visual) |
+| `prompt_seed` | Master prompt template with variable slots |
+| `rule_severity` | hard/soft/directional tiers — which sections belong to which tier |
+
+### Validation Rules
+- All hex values must use `#RRGGBB` format (6 digits, uppercase)
+- All token names must use `--kebab-case` CSS custom property format
+- Every constraint must carry a `severity` field: `hard`, `soft`, or `directional`
+- `hard` violations → generation MUST fail or reject
+- `soft` violations → deviation requires explicit flagging
+- `directional` → aspiration only, no enforcement
+- Spacing scale must be systematic (multiples of base_unit)
+- Glass colors must carry an `alpha` field (0–1) separate from hex
+- Blur values must carry a `unit` field (px)
+- Motion values must carry `duration` (number), `unit` (ms), and `easing` (CSS easing string)

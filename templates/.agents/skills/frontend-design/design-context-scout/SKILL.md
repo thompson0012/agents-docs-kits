@@ -43,14 +43,13 @@ Check in order:
 ```
 
 When `docs/reference/design.md` is found, parse its structured sections into the Token Inventory:
-- **Brand Definition → Visual Universe B.1 Color Philosophy** → Colors table
-- **Brand Definition → Visual Universe B.3 Material & Texture Library** → Surface treatments
-- **Brand Definition → Section C Typography & Voice** → Typography table
-- **Design Tokens** (referenced external file: `docs/records/design/design-tokens.json`) → Spacing, BorderRadius, Shadows, Opacity
-- **Component Specifications** → Component Inventory (component names, states, visual traits)
-- **Motion & Interaction Design** → Motion tokens
-- **Responsive Behaviour** → Layout constraints
-- **Accessibility Implementation Guide** → Accessibility baseline
+- **## Visual System YAML block** → Parse the `color_policy`, `design_tokens` (color/spacing/radius/shadow/blur/motion/typography), `form_language`, `material_language`, `scene_density_rules`, `object_library`, `ui_translation`, `negative_prompt_policy`, `input_variables`, `application_presets`, `prompt_seed`, `rule_severity` keys
+- **Colors** → `color_policy.dominant_colors`, `color_policy.accent_colors`, `color_policy.text_colors`, `color_policy.glass_colors`
+- **Typography** → `design_tokens.typography.family_display`, `design_tokens.typography.family_body`, `design_tokens.typography.scale`
+- **Spacing & Radius** → `design_tokens.spacing`, `design_tokens.radius`
+- **Shadow** → `design_tokens.shadow`
+- **Motion** → `design_tokens.motion`
+- **Component Inventory** → Prose sections: Component Specifications, Responsive Behaviour, Accessibility Implementation Guide
 ### 2. Design Token Sources
 ```
 Look for:

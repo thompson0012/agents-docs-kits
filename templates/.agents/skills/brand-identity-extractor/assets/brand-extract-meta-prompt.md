@@ -57,35 +57,24 @@ Produce exactly the following sections. Do not skip any.
 - Emotional promise (what must be felt)
 - Tone spectrum (e.g., serious <-> playful, loud <-> quiet)
 
-#### Section B: Visual Universe
+#### Section B: Visual Universe (YAML Block)
 
-**B.1 Color Philosophy**
-- Primary / ambient palette (roles + hex if observable)
-- Accent strategy (max % of screen area)
-- Lighting & finish rules
-- Forbidden color territories (e.g., pure black, neon, heavy darks)
+Output a single structured YAML block that will be embedded under `## Visual System` in `docs/reference/design.md`. Use the v2.0 brand identity schema. The YAML block must include these top-level keys with all sub-fields populated from the brand inputs:
 
-**B.2 Form Language**
-- Primary shapes & geometry
-- Curvature / corner rules
-- Density limits (max focal objects per view)
-- Prohibited geometry
+- `color_policy` — dominant_colors (ice_blue, air_blue, soft_white, mist_lilac or brand-equivalent), accent_colors, text_colors, glass_colors, constraints (hard prohibitions), finish
+- `design_tokens` — spacing (base_unit, scale, token_prefix), radius (sm/md/lg/full with px values), shadow (sm/md/lg with rgba values), blur (glass_panel/modal/ambient_blob), motion (default/slow/glacial/reduced with duration+ms+easing), typography (family_display, family_body, scale with hero/title/heading/body/caption)
+- `form_language` — primary_forms, secondary_forms, geometry_rules (with id, rule, severity per rule)
+- `material_language` — materials list, surface_behavior (rules + severity)
+- `scene_density_rules` — whitespace_ratio_min, max_primary_objects, max_secondary_objects, focal_priority
+- `object_library` — approved (items + severity), conditional (items + severity), forbidden (items + severity: hard)
+- `ui_translation` — interface_principles (principle + token mapping), preferred_components (floating_cards, glass_panels, soft_toggle, pill_buttons, blurred_modal, ambient_background_blob with CSS var tokens), avoid_components (severity: hard)
+- `negative_prompt_policy` — hard_negative_terms list, inject_format per tool (stable_diffusion, midjourney, dalle, generative_ui)
+- `input_variables` — required, optional, scene_type values, focal_object values, density tiers, composition_mode values, background_mode values
+- `application_presets` — brand_kv, landing_page, product_ui, app_illustration, motion_scene, campaign_visual (each with composition description, emphasis, defaults)
+- `prompt_seed` — master_prompt text (English), variable_slots list
+- `rule_severity` — hard/soft/directional tiers with description and sections list
 
-**B.3 Material & Texture Library**
-- Approved materials
-- Surface behaviour (reflection, roughness, translucency)
-- Forbidden material treatments (e.g., "no dirt, no heavy metal")
-
-**B.4 Composition DNA**
-- White-space ratio goal
-- Focal strategy (central, floating clusters, etc.)
-- Depth & layering rules (fore-/mid-/background roles)
-- Implied motion character (still, breath, flow, glitch)
-
-**B.5 Object & Motif Library**
-- Approved symbolic elements
-- Conditional elements (context-only)
-- Forbidden objects
+All hex values must use `#RRGGBB` format. All token names must use `--kebab-case` CSS custom property format. Every constraint must carry a `severity` field (hard/soft/directional). See the existing `docs/reference/design.md## Visual System` for the canonical schema reference.
 
 #### Section C: Typography & Voice
 - Typeface personality
@@ -390,16 +379,17 @@ The canonical design reference is `docs/reference/design.md`. All brand identity
 
 ### Write inline to `docs/reference/design.md`:
 
-1. **Brand Definition** (Stage 1, Sections A-D)
-2. **Component Specifications** (tables with all states)
-3. **Responsive Behaviour** (breakpoints + rules)
-4. **Motion Design** (tokens + patterns)
-5. **Accessibility Guide** (checklist + code snippets)
-6. **Asset Handoff** (specs)
-7. **Core Style Prompt** + **Negative Prompt Bank**
-8. **Prompt Design Technique Methodology** (all 10 techniques)
-9. **Image Consistency Validation Checklist**
-10. **Design QA Checklist**
+1. **Visual Universe** (Stage 1, Section B) — as a single YAML block under `## Visual System` following the v2.0 brand identity schema (color_policy, design_tokens, form_language, material_language, scene_density_rules, object_library, ui_translation, negative_prompt_policy, input_variables, application_presets, prompt_seed, rule_severity)
+2. **Brand Soul, Typography & Voice, Brand Rulebook** (Stage 1, Sections A, C, D) — as prose sections
+3. **Component Specifications** (tables with all states)
+4. **Responsive Behaviour** (breakpoints + rules)
+5. **Motion Design** (tokens + patterns)
+6. **Accessibility Guide** (checklist + code snippets)
+7. **Asset Handoff** (specs)
+8. **Core Style Prompt** + **Negative Prompt Bank**
+9. **Prompt Design Technique Methodology** (all 10 techniques)
+10. **Image Consistency Validation Checklist**
+11. **Design QA Checklist**
 
 ### Write to external files under `docs/records/design/`, reference from `design.md`:
 

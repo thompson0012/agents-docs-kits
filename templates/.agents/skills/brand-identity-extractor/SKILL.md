@@ -82,8 +82,11 @@ For extracted hex values and numeric tokens, verify against [design-standards](r
 
 `design.md` is the **single canonical design reference** for the project (per `AGENTS.md`). All brand identity content goes here. External artifacts are referenced from it — never duplicated.
 
-**Write inline to `design.md`:**
-- Stage 1: Brand Soul, Visual Universe, Typography & Voice, Brand Rulebook
+**Write the Visual Universe as a YAML block under `## Visual System`:**
+Stage 1 B.1–B.5 (Color Philosophy, Form Language, Material Library, Composition DNA, Object Library) must be written as a single structured YAML block inside `## Visual System`, following the v2.0 brand identity schema. The YAML block must include: `color_policy`, `design_tokens` (spacing, radius, shadow, blur, motion, typography), `form_language`, `material_language`, `scene_density_rules`, `object_library`, `ui_translation`, `negative_prompt_policy`, `input_variables`, `application_presets`, `prompt_seed`, and `rule_severity`. See `docs/reference/design.md` for the canonical schema structure.
+
+**Write inline to `design.md` (prose sections):**
+- Stage 1: Brand Soul, Typography & Voice, Brand Rulebook
 - Stage 2: Component Specifications, Responsive Behaviour, Motion & Interaction Design, Accessibility Implementation Guide, Design QA Checklist
 - Stage 3: Core Style Prompt, Negative Prompt Bank, Prompt Design Technique Methodology, Image Consistency Validation Checklist
 
@@ -94,7 +97,6 @@ For extracted hex values and numeric tokens, verify against [design-standards](r
 - Figma Variables → `docs/records/design/figma-variables.json` (from Stage 2.7)
 - Prompt Templates → `docs/records/design/ai-prompt-templates.md` (5 templates from Stage 3.4)
 - Tool-Specific Parameters → `docs/records/design/ai-prompt-params.md` (from Stage 3.3)
-
 Mark any inferential gaps. If a section's content is entirely covered by an external file, write a one-paragraph summary in `design.md` with the reference link.
 
 ## Cross-Skill Integration
@@ -105,7 +107,7 @@ These skills work well with BIE in a loose pipeline — no hard dependency, just
 |---|---|---|
 | [`design-token-spec`](../../design-token-spec/SKILL.md) | **Upstream discovery + downstream validation** | Run first if brand answers are unclear (produces structured brand context). Run again after BIE output to validate tokens against WCAG, rationales, and conflict rules. |
 | [`prompt-augmentation`](../../prompt-augmentation/SKILL.md) | **Stage 3 enrichment** | Feed BIE's AI prompt output (Core Style, Negative Bank, templates) into `prompt-augmentation` with `text-to-image` mode for domain-specific term substitution (optics, lighting, composition, materials). |
-| [`frontend-design/design-context-scout`](../../frontend-design/design-context-scout/SKILL.md) | **Downstream consumer** | BIE's output in `docs/reference/design.md` (tokens, component specs, motion, responsive rules) is consumed by `design-context-scout` as a design system source for UI sprint planning. |
+| [`frontend-design/design-context-scout`](../../frontend-design/design-context-scout/SKILL.md) | **Downstream consumer** | BIE's output in `docs/reference/design.md` (YAML block under `## Visual System` for machine-readable tokens, prose sections for human context) is consumed by `design-context-scout` as a design system source for UI sprint planning. |
 
 ## Bundled Resources
 
