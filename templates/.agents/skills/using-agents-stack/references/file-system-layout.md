@@ -310,8 +310,6 @@ Purpose:
 
 Starter-pack example:
 
-- `orchestrator.py`
-
 Scripts may inspect or update state, but the durable truth still lives in the state files they read and write. If a script dispatches workers, it should record the outcome back into sprint-local or live-state files instead of hiding evidence in process memory.
 
 ## State ownership summary

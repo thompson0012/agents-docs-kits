@@ -159,7 +159,7 @@ This lets explicit compounding run before new work and lets the backlog advance 
 ### Review, state update, and compounding
 
 - `awaiting_review` -> `review_recorded`
-  - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED plus findings severity labels, explicit `duplicate_of` fields, `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, `all_acceptance_criteria_accounted_for`, `convergence_status`, and `open_blocking_findings_count`.
+  - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED plus findings severity labels (P0–P3, used only by the live-review phase — the proposal evaluator uses binary gap/no-gap), explicit `duplicate_of` fields, `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, `all_acceptance_criteria_accounted_for`, `convergence_status`, and `open_blocking_findings_count`.
 - `review_recorded` -> `archived`
   - Trigger: `state-update` worker processes a PASS review only after `scripts/validate_review_against_contract.py` and `scripts/validate_state_update.py` both allow publication, coverage is complete, all acceptance ids are accounted for, convergence is closed, and open non-duplicate P0 / P1 / P2 / P3 findings are zero. It then updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<workstream-id>_<timestamp>/`, and archives the sprint.
 - `review_recorded` -> `review_failed`

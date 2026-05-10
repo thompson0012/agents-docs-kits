@@ -55,7 +55,6 @@ This repository uses the agents-stack harness. The harness is stateful, resumabl
     │   └── design.md
     └── scripts/
         ├── init.sh
-        ├── orchestrator.py
         ├── live_control.py                 # shared helper layer for live-control state
         ├── validate_live_control.py       # fail-closed control-plane validator
         ├── validate_bootstrap_alignment.py # fail-closed starter/bootstrap drift check
@@ -116,7 +115,6 @@ This folder is where planning checkpoints, proposal state, contract and executio
 Repository-local harness utilities.
 
 - `init.sh`: safe bootstrap that creates missing baseline directories and files without overwriting user work.
-- `orchestrator.py`: optional helper that inspects durable state and prepares or records worker dispatch and resume decisions. It is not the source of truth and it must not turn the orchestrator into an inline executor.
 - `live_control.py`: shared helper layer for schema-aware live-control reads, writes, and validation wiring. It supports the control-plane scripts but does not create a second registry.
 - `validate_live_control.py`: fail-closed validator for `docs/live/*` control-plane coherence after scripted mutations or bootstrap refreshes.
 - `validate_bootstrap_alignment.py`: fail-closed check that starter/bootstrap control files still align with the harness contract before agents trust them.
@@ -164,23 +162,9 @@ The `using-agents-stack` root skill is the orchestrator. It dispatches exactly o
 
 ## State Roles and Precedence
 
-Use this precedence when files disagree:
+Use this precedence when files disagree: sprint-local artifacts (review.md > handoff.md > runtime.md > contract.md > sprint_proposal.md) beat status.json, which beats live control state, which beats supporting docs.
 
-1. explicit human edits or instructions
-2. active sprint artifact with the strongest phase evidence:
-   - `review.md`
-   - `handoff.md`
-   - `runtime.md`
-   - `contract.md`
-   - `sprint_proposal.md`
-3. `.harness/<WORKSTREAM-ID>/status.json`
-4. `docs/live/tracked-work.json`
-5. `docs/live/roadmap.md`
-6. `docs/live/current-focus.md`
-7. `docs/live/progress.md` and `docs/live/memory.md`
-8. `docs/reference/*`
-9. `docs/records/*`
-10. `docs/archive/*` as historical evidence only
+Full evidence precedence for routing is in `.agents/skills/using-agents-stack/references/state-machine.md`.
 
 Interpretation rules:
 - For an active or parked sprint, the strongest local artifact defines the real phase even if `status.json` is stale.
@@ -227,18 +211,8 @@ Use the strongest sprint artifact plus `docs/live/roadmap.md` and `docs/live/cur
 
 
 ## Deterministic startup routing rules
-At session start, route using these rules in order:
-- live state missing or untrustworthy -> run `project-initializer`
-- `compound_pending_feature_ids` is non-empty -> run `compound-capture` before any runnable sprint resume or new backlog selection
-- multiple runnable backlog items or multiple runnable `.harness/<WORKSTREAM-ID>/` folders -> stop and escalate instead of inventing a winner
-- exactly one runnable active feature and a matching `.harness/<WORKSTREAM-ID>/` folder -> route from the strongest local artifact
-- `review.md` exists and the failure has already been reconciled into `review_failed` in local and live state -> resume `generator-execution` on that same sprint only after confirming the named `clean_restore_ref` and remaining attempt budget
-- `runtime.md` or `status.json` records `build_failed` -> resume `generator-execution` on that same sprint only after confirming the named `clean_restore_ref` and remaining attempt budget
-- retryable failure exists but `clean_restore_ref` is missing, recovery is unsafe, or `attempt_count >= max_attempts` -> route to `state-update` so the sprint becomes `awaiting_human` or `escalated_to_human`
-- no runnable active sprint and the highest-priority dependency-ready backlog item is `needs_brainstorm` -> route `generator-brainstorm`
-- no runnable active sprint and no dependency-ready `needs_brainstorm` item exists, but a dependency-ready `pending` item does -> route `generator-proposal`
-- no runnable active sprint and only parked `awaiting_human` / `escalated_to_human` sprint folders exist -> dependency-walk the remaining backlog; if nothing ready remains, surface the parked blockers clearly and wait
-- local non-terminal sprint exists but live state does not name it correctly -> treat the sprint as interrupted and reconcile it before opening new runnable work
+
+Detailed startup routing rules are in `.agents/skills/using-agents-stack/references/state-machine.md` and implemented in `scripts/dispatch_phase.py`.
 
 ## Single-Runnable-Sprint Rule
 
@@ -277,45 +251,35 @@ The lifecycle is explicit. Typical state flow:
 3. **Pending backlog item**  
    A tracked item is ready for bounded proposal work and may already have `.harness/<WORKSTREAM-ID>/status.json` as its canonical planning checkpoint even though no runnable sprint is active yet. Owner: `generator-proposal`.
 4. **Proposed**  
-   `.harness/<WORKSTREAM-ID>/sprint_proposal.md` exists. Owner: `evaluator-contract-review`.
-5. **Contracted**  
-   `.harness/<WORKSTREAM-ID>/contract.md` exists and defines the only approved execution scope. Owner: `generator-execution`.
-6. **In execution / build triage**  
-   `runtime.md` records what was attempted, plus any build/startup checkpoint needed before review. Owner: `generator-execution`.
-7. **Build failed**  
-   The sprint did not pass build/startup triage and must return through state reconciliation, explicit compounding, and then clean execution retry or human escalation. Owner: `state-update` then `compound-capture` then orchestrator.
-8. **In review**  
-   `handoff.md` is ready and a reviewer can reproduce the result from sprint-local evidence. Owner: `adversarial-live-review`.
-9. **Review failed**  
-   `review.md` records a FAIL. State-update preserves the sprint, queues compounding, and routes a clean retry or escalation. Owner: `state-update` then `compound-capture` then orchestrator.
-10. **Awaiting human**  
+    `.harness/<WORKSTREAM-ID>/sprint_proposal.md` exists. Owner: `evaluator-contract-review`.
+5. **Proposal revision required**  
+    The evaluator rejected the proposal with specific gaps. `review_feedback.md` records the gaps. Owner: `generator-proposal` (revise and re-submit). After `max_proposal_revisions` exhausted → `escalated_to_human`.
+6. **Contracted**  
+    `.harness/<WORKSTREAM-ID>/contract.md` exists and defines the only approved execution scope. Owner: `generator-execution`.
+7. **In execution / build triage**  
+    `runtime.md` records what was attempted, plus any build/startup checkpoint needed before review. Owner: `generator-execution`.
+8. **Build failed**  
+    The sprint did not pass build/startup triage and must return through state reconciliation, explicit compounding, and then clean execution retry or human escalation. Owner: `state-update` then `compound-capture` then orchestrator.
+9. **Awaiting review**  
+    `handoff.md` is ready and a reviewer can reproduce the result from sprint-local evidence. Owner: `adversarial-live-review`.
+10. **In review (review recorded)**  
+    `review.md` records PASS, FAIL, or BLOCKED. Owner: `state-update` for reconciliation.
+11. **Review failed**  
+    `review.md` records a FAIL. State-update preserves the sprint, queues compounding, and routes a clean retry or escalation. Owner: `state-update` then `compound-capture` then orchestrator.
+12. **Paused by timeout**  
+    Prior session stopped without a clean finish. Route by `resume_from` in `status.json`. Owner: orchestrator.
+13. **Awaiting human**  
    Automation is intentionally paused at a durable artifact boundary so a human can inspect, edit, approve, or supply missing information. Owner: human, then orchestrator.
-11. **Escalated to human**  
-   Automatic retry must stop because the attempt budget is exhausted or safe recovery cannot be established. Owner: human.
-12. **Compound pending**  
-   `docs/live/tracked-work.json` queues the feature id in `compound_pending_feature_ids` after `state-update`. `compound-capture` records durable learning or deliberately skips extraction when no durable residue survives, then clears the queue without claiming the runnable sprint slot.
-13. **Archived**
+14. **Escalated to human**  
+    Automatic retry must stop because the attempt budget is exhausted or safe recovery cannot be established. Owner: human.
+15. **Compound pending**  
+    `docs/live/tracked-work.json` queues the feature id in `compound_pending_feature_ids` after `state-update`. `compound-capture` records durable learning or deliberately skips extraction when no durable residue survives, then clears the queue without claiming the runnable sprint slot.
+16. **Archived**
    `state-update` synchronizes live state, preserves the sprint record under `docs/archive/<WORKSTREAM-ID>_<timestamp>/`, updates the feature's canonical `evidence_path`, queues compounding, and clears the runnable active sprint before the next work-selection pass.
 
 ### Phase transition table
-| Phase | Responsible role | Required artifact(s) | Exact condition to advance | Next phase |
-| --- | --- | --- | --- | --- |
-| `needs_brainstorm` | `generator-brainstorm` | backlog entry in `docs/live/tracked-work.json`, optional idea notes in `docs/live/ideas.md` | one dependency-ready candidate is clarified enough to become `pending` without claiming the runnable slot | `pending` |
-| `pending` | `generator-proposal` | backlog entry in `docs/live/tracked-work.json` | one dependency-ready pending feature is selected as the only proposal target and no runnable sprint exists | `proposed` |
-| `proposed` | `evaluator-contract-review` | `.harness/<WORKSTREAM-ID>/sprint_proposal.md`, `status.json` | proposal scope, file bounds, observable checks, and recovery assumptions survive adversarial review | `contracted` |
-| `proposed` | `evaluator-contract-review` | `.harness/<WORKSTREAM-ID>/sprint_proposal.md`, `review_feedback.md`, `status.json` | proposal scope, file bounds, observable checks, or recovery assumptions fail adversarial review | `proposal_revision_required` |
-| `proposal_revision_required` | `generator-proposal` | `.harness/<WORKSTREAM-ID>/sprint_proposal.md`, `review_feedback.md`, `status.json` | revisions are applied and the proposal is re-submitted, or revision budget is exhausted | `proposed` or `escalated_to_human` |
-| `contracted` | `generator-execution` | `.harness/<WORKSTREAM-ID>/contract.md` | execution starts inside the approved contract and `status.json` reflects active work with attempt budgeting | `executing` |
-| `executing` | `generator-execution` | code changes, `runtime.md`, `status.json` | the contracted work builds or starts at the declared checkpoint; if it does not, record `build_failed` instead of paying for live review | `review_recorded`, `build_failed`, or `awaiting_human` |
-| `awaiting_review` | `adversarial-live-review` | `.harness/<WORKSTREAM-ID>/handoff.md`, `contract.md`, `runtime.md` | handoff is ready and a reviewer can reproduce the result from sprint-local evidence | `review_recorded` |
-| `build_failed` | `state-update` then orchestrator | `runtime.md`, `handoff.md`, `status.json` with `attempt_count`, `max_attempts`, and `clean_restore_ref` | failure is reconciled, any required compounding is queued, and a clean restore boundary plus remaining budget make the next retry honest | `compound_pending`, `executing`, or `escalated_to_human` |
-| `review_recorded` | `adversarial-live-review` | `contract.md`, `runtime.md`, `handoff.md`, `review.md` | the reviewer records exactly one verdict with evidence: PASS, FAIL, or BLOCKED, and the evidence checks before/action/after state transitions rather than only a final static state | `archived`, `review_failed`, or `awaiting_human` |
-| `review_failed` | `state-update` then orchestrator | `review.md`, preserved `.harness/<WORKSTREAM-ID>/`, updated live state, retry metadata | FAIL is reconciled into durable state without deleting evidence, compounding is queued explicitly, and a clean restore boundary plus remaining budget make the next execution pass honest | `compound_pending`, `executing`, or `escalated_to_human` |
-| `paused_by_timeout` | route by `resume_from`, usually a fresh phase worker | `status.json` with `phase: paused_by_timeout` and `resume_from`, preserved local artifacts | prior session stopped without a clean finish | resume from the last trustworthy checkpoint |
-| `awaiting_human` | human then orchestrator | `status.json`, relevant local artifact, and explicit human instructions or edits | the human action is durably recorded, the resume checkpoint is updated, and any queued compounding is drained before automatic work resumes | `needs_brainstorm`, `pending`, `proposed`, `contracted`, `executing`, or `review_recorded` |
-| `escalated_to_human` | human | `status.json`, `progress.md`, and preserved local evidence | a human explicitly changes the plan, resets the budget, replaces the restore boundary, or closes the sprint | `needs_brainstorm`, `pending`, `contracted`, `executing`, or `cancelled` |
-| `compound_pending` | `compound-capture` | `compound_pending_feature_ids`, decisive evidence, and `docs/live/memory.md` | durable learning is captured or extraction is deliberately skipped because no durable residue survived, and the queue entry is cleared without changing runnable ownership | runnable sprint resume or backlog selection |
-| `archived` | `state-update` | `review.md`, updated `docs/live/*`, archive copy | PASS is synchronized into live state, the sprint artifact set is preserved under `docs/archive/<WORKSTREAM-ID>_<timestamp>/`, the feature remains discoverable through `tracked-work.json` traceability pointers rather than a second registry, and the feature is queued for explicit compounding | `compound_pending` |
+
+Detailed phase transitions are in `.agents/skills/using-agents-stack/references/state-machine.md`.
 
 `BLOCKED` is a review verdict, not a license to keep looping. State-update must translate a blocked review into either `awaiting_human` when a human can unblock and resume from files, or `escalated_to_human` when automation must stop.
 
