@@ -31,11 +31,11 @@ Find **gaps** — things that must be true for the change to work that the propo
 
 A gap is not a "maybe." A gap is: "the proposal says X but doesn't say what happens when Y, and Y will happen." Your output is a gap report. If the report is empty, the proposal is approved. If it contains any gap, the proposal goes back for revision.
 
-**You have one job: answer 10 questions. No severity labels. No classification tiers. No "caveats." Just gaps.**
+**You have one job: answer 11 questions. No severity labels. No classification tiers. No "caveats." Just gaps.**
 
 ---
 
-## The 10 Questions
+## The 11 Questions
 
 For each question, read the proposal. If you find a gap, describe it concretely. If you find none, write "no gap." Do not speculate. Do not invent gaps to prove you're thorough. A gap exists or it doesn't.
 
@@ -101,6 +101,24 @@ Does the proposal target the correct backlog item? Does it match the authorized 
 
 A proposal that solves a different problem than what the roadmap authorizes has a gap — regardless of how well-designed it is internally.
 
+### Q11: What does the proposal include that shouldn't exist at this scale?
+
+This is the prune question. Q1-Q10 find underspecification. Q11 finds **overspecification** — complexity whose cost exceeds its value, regardless of cause.
+
+Use `references/complexity-signals.md` as the primary detection framework — 11 universal patterns of unnecessary complexity (Abstraction Without Consumption, Layers Without Responsibility, Future-Proofing Without Trigger, Pattern Without Problem, etc.). Use `references/scale-appropriateness-guide.md` for scale-specific severity context.
+
+Scan the proposal for triggered signals:
+
+- **Scale misalignment**: Are there patterns solving problems at a larger scale than this project? (e.g., Clean Architecture for a 1-person internal tool)
+- **Single-implementation abstractions**: Interfaces/ABCs with only one concrete implementation AND no test-double requirement.
+- **Unnecessary layers**: Can a caller trace one operation through >2 layers without a concrete reason for each?
+- **Future-proofing without triggers**: "We might need to swap this" — probability <20% for internal tools, <40% for team services → YAGNI.
+- **Framework weight**: DI containers, event buses, configuration hierarchies that are heavier than the manual alternative.
+
+For each unnecessary element: what would the design look like without it? What's the concrete problem this element claims to solve, and what evidence supports that problem?
+
+A proposal that is over-scaled for its context has a gap — it introduces complexity debt without corresponding value. The floor protects necessary structure; everything above it needs evidence.
+
 ---
 
 ## Gap Report (review_trace.md)
@@ -134,7 +152,7 @@ If a question has no gaps, write "no gap." Do not leave it blank — blank is am
 
 | Condition | Verdict |
 |-----------|---------|
-| Gap report is empty (all 10 questions → "no gap") | **APPROVE** → write `contract.md` |
+| Gap report is empty (all 11 questions → "no gap") | **APPROVE** → write `contract.md` |
 | Gap report has any gap | **REQUEST REVISION** → write `review_feedback.md` with the gap report, update `status.json` to `phase: "proposal_revision_required"` |
 
 That's it. Two verdicts. No caveats, no partial approvals, no severity tiers. A proposal with gaps goes back. A proposal without gaps goes forward.
@@ -153,7 +171,7 @@ A gap is "the proposal doesn't say what happens when X fails." An opinion is "I 
 If the proposal is too vague to determine whether a gap exists — that IS a gap. "The proposal doesn't describe the error path clearly enough to assess" is a valid gap entry for Q2.
 
 ### One Pass, Not Two
-You have one pass. Answer all 10 questions. Your output is the gap report. Do not iterate on your own review. If the proposal is revised and re-submitted, a fresh evaluator worker will review it.
+You have one pass. Answer all 11 questions. Your output is the gap report. Do not iterate on your own review. If the proposal is revised and re-submitted, a fresh evaluator worker will review it.
 
 ### Existing Code Is Evidence
 When answering Q3, Q4, Q5, Q8 — read the actual code the proposal claims to touch. Do not trust the proposal's description of existing behavior. Verify against the repo.
@@ -174,3 +192,4 @@ When answering Q3, Q4, Q5, Q8 — read the actual code the proposal claims to to
 | 8 | Defense layer gaps? | Missing rate limiting, audit, sanitization |
 | 9 | Partial failure? | Multi-step actions without atomicity |
 | 10 | Scope alignment? | Wrong backlog item, wrong initiative slice |
+| 11 | What should NOT exist? | Over-scaled architecture, unnecessary abstractions, YAGNI violations |

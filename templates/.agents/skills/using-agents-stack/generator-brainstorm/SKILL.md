@@ -143,6 +143,8 @@ Record at minimum:
 - what a reward-hacked sprint would look like for this idea
 - at least one plausible alternative direction or smaller cut, and why it is weaker or not yet justified
 - the repo fact or durable evidence that keeps the promoted direction honest
+- **the scale of this project** — classify as `internal_tool`, `team_service`, or `distributed_product` using `references/scale-appropriateness-guide.md`. If the idea implies a scale-inappropriate architecture, flag it explicitly and record the simpler alternative.
+- **complexity signals** — scan the proposed approach against `references/complexity-signals.md`. If the approach triggers 3+ signals without strong evidence, the idea needs simplification before it's proposal-ready.
 
 If you cannot write that down clearly, the idea is not proposal-ready yet. Keep it in brainstorming instead of promoting a false sense of readiness.
 

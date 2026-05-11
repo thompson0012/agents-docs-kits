@@ -21,6 +21,7 @@ This repository uses the agents-stack harness. The harness is stateful, resumabl
 │           ├── evaluator-contract-review/
 │           ├── generator-execution/
 │           ├── adversarial-live-review/
+│           ├── prune-review/
 │           ├── state-update/
 │           └── compound-capture/
 ├── .harness/
@@ -138,6 +139,7 @@ The `using-agents-stack` root skill is the orchestrator. It dispatches exactly o
 - `evaluator-contract-review`
 - `generator-execution`
 - `adversarial-live-review`
+- `prune-review`
 - `state-update`
 - `compound-capture`
 
@@ -219,7 +221,7 @@ Detailed startup routing rules are in `.agents/skills/using-agents-stack/referen
 The harness executes one runnable sprint at a time.
 
 A valid live state looks like this:
-- exactly one backlog item is marked runnable (`executing`, `contracted`, `review_recorded`, `review_failed`, `build_failed`, `proposed`, `proposal_revision_required`, `awaiting_review`, `paused_by_timeout`, or equivalent active retry state), or none when the system is between sprints
+- exactly one backlog item is marked runnable (`executing`, `contracted`, `review_recorded`, `prune_recorded`, `review_failed`, `build_failed`, `proposed`, `proposal_revision_required`, `awaiting_review`, `paused_by_timeout`, or equivalent active retry state), or none when the system is between sprints
 - exactly one `.harness/<WORKSTREAM-ID>/` folder contains runnable local artifacts
 - any additional `.harness/<WORKSTREAM-ID>/` folders are explicitly parked in `awaiting_human` or `escalated_to_human`
 - every other feature is pending, blocked by dependency, parked for human input, archived, cancelled, or otherwise non-runnable, but not simultaneously runnable
@@ -263,18 +265,20 @@ The lifecycle is explicit. Typical state flow:
 9. **Awaiting review**  
     `handoff.md` is ready and a reviewer can reproduce the result from sprint-local evidence. Owner: `adversarial-live-review`.
 10. **In review (review recorded)**  
-    `review.md` records PASS, FAIL, or BLOCKED. Owner: `state-update` for reconciliation.
-11. **Review failed**  
-    `review.md` records a FAIL. State-update preserves the sprint, queues compounding, and routes a clean retry or escalation. Owner: `state-update` then `compound-capture` then orchestrator.
-12. **Paused by timeout**  
-    Prior session stopped without a clean finish. Route by `resume_from` in `status.json`. Owner: orchestrator.
-13. **Awaiting human**  
-   Automation is intentionally paused at a durable artifact boundary so a human can inspect, edit, approve, or supply missing information. Owner: human, then orchestrator.
-14. **Escalated to human**  
-    Automatic retry must stop because the attempt budget is exhausted or safe recovery cannot be established. Owner: human.
-15. **Compound pending**  
-    `docs/live/tracked-work.json` queues the feature id in `compound_pending_feature_ids` after `state-update`. `compound-capture` records durable learning or deliberately skips extraction when no durable residue survives, then clears the queue without claiming the runnable sprint slot.
-16. **Archived**
+     `review.md` records PASS, FAIL, or BLOCKED. Owner: `prune-review` for PASS/FAIL (complexity audit), or `state-update` for BLOCKED (direct reconciliation).
+11. **Prune recorded**  
+     `prune.md` records complexity audit with floor definition, above-floor findings, and ranked removal recommendations. Owner: `state-update` for reconciliation.
+12. **Review failed**  
+     `review.md` records a FAIL. State-update preserves the sprint, queues compounding, and routes a clean retry or escalation. Owner: `state-update` then `compound-capture` then orchestrator.
+13. **Paused by timeout**  
+     Prior session stopped without a clean finish. Route by `resume_from` in `status.json`. Owner: orchestrator.
+14. **Awaiting human**  
+    Automation is intentionally paused at a durable artifact boundary so a human can inspect, edit, approve, or supply missing information. Owner: human, then orchestrator.
+15. **Escalated to human**  
+     Automatic retry must stop because the attempt budget is exhausted or safe recovery cannot be established. Owner: human.
+16. **Compound pending**  
+     `docs/live/tracked-work.json` queues the feature id in `compound_pending_feature_ids` after `state-update`. `compound-capture` records durable learning or deliberately skips extraction when no durable residue survives, then clears the queue without claiming the runnable sprint slot.
+17. **Archived**
    `state-update` synchronizes live state, preserves the sprint record under `docs/archive/<WORKSTREAM-ID>_<timestamp>/`, updates the feature's canonical `evidence_path`, queues compounding, and clears the runnable active sprint before the next work-selection pass.
 
 ### Phase transition table
@@ -293,7 +297,7 @@ When a sprint is interrupted by timeout, crash, human pause, failed build triage
 4. If no runnable sprint exists, note any dependency-ready `needs_brainstorm` candidates before ordinary `pending` backlog items.
 5. Read `.harness/<WORKSTREAM-ID>/status.json` and capture the claimed `phase`, `owner_role`, `resume_from`, `last_verified_step`, `local_url`, `active_pids`, `blocked_on`, `worker_id`, `worker_subject`, `tool_scope_profile`, `spawn_depth`, `parent_worker_id`, `attempt_count`, `max_attempts`, and `clean_restore_ref` fields.
 6. When the phase is `awaiting_human` or `escalated_to_human`, also capture the pause or escalation metadata that explains what changed, what the human must do, and which phase resumes next.
-7. Read local artifacts in evidence order: `review.md`, `handoff.md`, `runtime.md`, `contract.md`, `sprint_proposal.md`.
+7. Read local artifacts in evidence order: `prune.md`, `review.md`, `handoff.md`, `runtime.md`, `contract.md`, `sprint_proposal.md`.
 8. Verify that the claimed checkpoint matches reality on disk and in any running process before trusting it.
 9. If processes were recorded in `status.json` or `runtime.md`, verify whether they still exist before reusing them.
 10. Before retrying from `review_failed` or `build_failed`, verify the clean restore boundary named by `clean_restore_ref`. Use a disposable worktree, VCS snapshot, or equivalent restore reference that tells the truth about what will be retried. Do not assume an unconditional destructive reset.
@@ -378,6 +382,9 @@ Worker prompt. Implements only the approved contract, records reproducible runti
 ### `adversarial-live-review`
 Worker prompt. Reproduces the result against the contract and issues exactly one of `PASS`, `FAIL`, or `BLOCKED` with evidence. It does not update global state, must not receive broad write access, and must reject hardcoded or static pass conditions that do not prove a real state transition.
 
+### `prune-review`
+Worker prompt. Audits the completed implementation for scale-appropriate complexity after live review. Uses `references/scale-appropriateness-guide.md` to establish the floor, identifies above-floor additions without evidence, recommends specific cuts, and writes `prune.md`. This is the only harness phase whose default posture is removal — the counter-weight to the gap-finding bias in all other reviews. It does not edit implementation files; it produces recommendations only. Runs on PASS and FAIL reviews; BLOCKED reviews skip pruning.
+
 ### `state-update`
 Worker prompt. Makes the repo tell the truth after review or blocked retry. It updates `docs/live/tracked-work.json`, refreshes `docs/live/current-focus.md`, updates `docs/live/progress.md`, preserves failed sprint evidence, archives PASS results, updates canonical `evidence_path` and linked `record_paths` / `reference_paths` when needed, and queues explicit compounding when the outcome has been durably published.
 
@@ -386,8 +393,8 @@ Worker prompt. Consumes `compound_pending_feature_ids`, distills durable cross-s
 
 ## Review Verdict Contract
 Every independent review must end with exactly one verdict: `PASS`, `FAIL`, or `BLOCKED`.
-- `PASS`: the approved contract was met, the evidence is reproducible, and state-update may close and archive the sprint
-- `FAIL`: the sprint stays active, defects are listed explicitly, a clean restore boundary is named for the next retry, and the next retry instructions point back to the same sprint
+- `PASS`: the approved contract was met, the evidence is reproducible, and `prune-review` audits complexity before `state-update` closes and archives the sprint
+- `FAIL`: the sprint stays active, defects are listed explicitly, `prune-review` audits complexity before `state-update` preserves evidence and routes a clean retry
 - `BLOCKED`: the reviewer could not reach a truthful PASS/FAIL because an environment, dependency, missing-evidence, or human-decision problem prevented judgment; the blocker and next recovery step must be explicit
 
 Every review artifact must include:

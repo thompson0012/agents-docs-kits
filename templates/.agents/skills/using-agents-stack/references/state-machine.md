@@ -19,18 +19,19 @@ This reference defines the durable phase model for the starter-pack harness. The
 
 Evidence precedence for routing:
 
-1. `review.md`
-2. `handoff.md`
-3. `runtime.md`
-4. `contract.md`
-5. `sprint_proposal.md`
-6. `status.json`
-7. `docs/live/tracked-work.json`
-8. `docs/live/current-focus.md` and `docs/live/roadmap.md`
-9. `docs/live/progress.md` and `docs/live/memory.md`
-10. `docs/reference/*`
-11. `docs/records/*`
-12. `docs/archive/*` as historical evidence only
+ 1. `review.md`
+ 2. `prune.md`
+ 3. `handoff.md`
+ 4. `runtime.md`
+ 5. `contract.md`
+ 6. `sprint_proposal.md`
+ 7. `status.json`
+ 8. `docs/live/tracked-work.json`
+ 9. `docs/live/current-focus.md` and `docs/live/roadmap.md`
+10. `docs/live/progress.md` and `docs/live/memory.md`
+11. `docs/reference/*`
+12. `docs/records/*`
+13. `docs/archive/*` as historical evidence only
 
 ## Canonical dispatcher decision ladder
 
@@ -40,7 +41,7 @@ The root router keeps family-trigger judgment, broad goal-lineage interpretation
 2. If durable contradictions prevent a truthful single-lane decision, route `state-update` rather than inventing a winner.
 3. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before any runnable sprint resume or new backlog selection.
 4. If `review.md` exists and the verdict has not yet been reconciled into local and live state, route `state-update`.
-5. If exactly one runnable sprint exists, route from the strongest local artifact in precedence order: reconciled `review.md` plus `review_failed` state -> retry path candidate; `handoff.md` -> `adversarial-live-review`; `runtime.md` plus `build_failed` evidence -> retry path candidate; `contract.md` or active execution evidence -> `generator-execution`; `sprint_proposal.md` -> `evaluator-contract-review`.
+ 5. If exactly one runnable sprint exists, route from the strongest local artifact in precedence order: reconciled `review.md` plus `prune.md` → `state-update`; unreconciled `review.md` (no prune.md) → `prune-review` when review verdict is PASS or FAIL, or `state-update` when BLOCKED; `handoff.md` → `adversarial-live-review`; `runtime.md` plus `build_failed` evidence → retry path candidate; `contract.md` or active execution evidence → `generator-execution`; `sprint_proposal.md` → `evaluator-contract-review`.
 6. If no runnable sprint exists but exactly one local planning workspace exists in `.harness/` with phase `needs_brainstorm` or `pending`, route from that local planning checkpoint instead of inventing a different backlog winner.
 7. If the strongest durable truth is a parked `awaiting_human` or `escalated_to_human` gate with no new human edits, do not blur it into runnable work. Return `no_family_child` and surface the human boundary.
 8. If no runnable sprint exists and no selected planning workspace exists, choose the highest-priority dependency-ready `needs_brainstorm` item, then the highest-priority dependency-ready `pending` item, else surface parked or dependency blockers honestly.
@@ -94,7 +95,8 @@ This lets explicit compounding run before new work and lets the backlog advance 
 | `build_failed` | `status.json.phase = build_failed` plus execution notes in `runtime.md` or `handoff.md` | `state-update` worker, then `compound-capture`, then orchestrator | Build, startup, or smoke-triage failed during execution, so the sprint must reconcile, compound, and then retry or escalate. | Clean-restore and retry, park for human input, or escalate. |
 | `paused_by_timeout` | `status.json.phase = paused_by_timeout` | Route by `resume_from`, usually a fresh phase worker | Prior session stopped without a clean finish. | Resume from the last trustworthy checkpoint. |
 | `awaiting_review` | `handoff.md` exists and `review.md` does not | `adversarial-live-review` worker | Execution claims completion and is waiting for independent review. | Review observable behavior, state transitions, and convergence metadata. |
-| `review_recorded` | `review.md` exists with findings, coverage metadata, and convergence metadata | `state-update` worker | Review outcome exists and must be synchronized into durable state. PASS publishes only when convergence is closed. | Mark archived on converged PASS, reopen on FAIL or open convergence, or park/escalate on BLOCKED. |
+| `review_recorded` | `review.md` exists with findings, coverage metadata, and convergence metadata | `prune-review` worker when verdict is PASS or FAIL, then `state-update` worker | Review outcome exists. Complexity audit runs before state reconciliation. | Prune review against scale-appropriateness, then reconcile. |
+| `prune_recorded` | `prune.md` and `review.md` exist; `status.json.phase = prune_recorded` | `state-update` worker | Complexity audit is complete. Prune recommendations are recorded for state-update to publish. | Reconcile outcome, queue compounding. |
 | `review_failed` | `review.md` remains on disk; `status.json.phase = review_failed` after `state-update` reconciles a FAIL review | `state-update` worker, then `compound-capture`, then orchestrator | The failure is durable, the evidence stays attached, and the next execution loop owns the sprint only after compounding and retry gates are satisfied. | Clean-restore and retry, park for human input, or escalate. |
 | `awaiting_human` | `status.json.phase = awaiting_human` plus explicit human action fields | no automatic child until human input changes files | Automation is paused at a durable file boundary for human edits, approvals, or environment intervention. | Wait for human edits, then resume from `resume_from`. |
 | `escalated_to_human` | `status.json.phase = escalated_to_human` plus escalation reason | no automatic child until human decision changes files | Automatic retry must stop because attempt budget is exhausted or recovery is unsafe. | Human decides whether to reset, cancel, or re-scope. |
@@ -156,18 +158,19 @@ This lets explicit compounding run before new work and lets the backlog advance 
 - Timeout does not discard work. The sprint remains active until state is reconciled.
 - Preserve prior evidence across retries. A resume creates a new worker assignment; it does not delete the earlier handoff or review trail.
 
-### Review, state update, and compounding
+### Review, prune, state update, and compounding
 
 - `awaiting_review` -> `review_recorded`
   - Trigger: `adversarial-live-review` worker writes `review.md` with explicit PASS, FAIL, or BLOCKED plus findings severity labels (P0–P3, used only by the live-review phase — the proposal evaluator uses binary gap/no-gap), explicit `duplicate_of` fields, `areas_reviewed`, `areas_not_reviewed`, `coverage_status`, `criteria_total`, `criteria_checked`, `all_acceptance_criteria_accounted_for`, `convergence_status`, and `open_blocking_findings_count`.
-- `review_recorded` -> `archived`
-  - Trigger: `state-update` worker processes a PASS review only after `scripts/validate_review_against_contract.py` and `scripts/validate_state_update.py` both allow publication, coverage is complete, all acceptance ids are accounted for, convergence is closed, and open non-duplicate P0 / P1 / P2 / P3 findings are zero. It then updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<workstream-id>_<timestamp>/`, and archives the sprint.
-- `review_recorded` -> `review_failed`
-  - Trigger: `state-update` worker processes a FAIL review, or any review whose acceptance coverage or convergence metadata is missing, contradictory, or still blocked by open non-duplicate P0 / P1 / P2 / P3 findings, increments retry metadata, preserves the evidence, and records the retry checkpoint.
+- `review_recorded` -> `prune_recorded`
+  - Trigger: `prune-review` worker audits the completed implementation against `references/scale-appropriateness-guide.md`, answers all 6 prune questions, writes `prune.md` with a minimal-design comparison and removal recommendations, and sets `status.json.phase: "prune_recorded"`. Prune runs only on PASS and FAIL reviews — BLOCKED reviews skip pruning because the sprint couldn't even be judged.
 - `review_recorded` -> `awaiting_human`
-  - Trigger: `state-update` worker processes a BLOCKED review that requires human edits, approvals, credentials, or other intervention at a file-described pause boundary.
-- `review_recorded` -> `escalated_to_human`
-  - Trigger: `state-update` worker processes a BLOCKED review that cannot be retried safely or honestly by automation.
+  - Trigger: `review.md` says BLOCKED. Pruning is deferred; `state-update` reconciles the blocker directly.
+- `prune_recorded` -> `archived`
+  - Trigger: `state-update` worker processes a PASS review only after `scripts/validate_review_against_contract.py` and `scripts/validate_state_update.py` both allow publication, coverage is complete, all acceptance ids are accounted for, convergence is closed, and open non-duplicate P0 / P1 / P2 / P3 findings are zero. It records the prune recommendations in `progress.md` and `memory.md`, updates `docs/live/*`, cuts the feature's canonical `evidence_path` over to `docs/archive/<workstream-id>_<timestamp>/`, and archives the sprint.
+- `prune_recorded` -> `review_failed`
+  - Trigger: `state-update` worker processes a FAIL review, or any review whose acceptance coverage or convergence metadata is missing, contradictory, or still blocked by open non-duplicate P0 / P1 / P2 / P3 findings, increments retry metadata, preserves the evidence (including prune recommendations), and records the retry checkpoint.
+- `review_failed` and `build_failed` transitions remain as below.
 - `build_failed` -> `compound_pending`
   - Trigger: `state-update` worker publishes the failed build/startup attempt into durable live state, records retry metadata or a human gate, and queues the feature id in `compound_pending_feature_ids` before any retry is reconsidered.
 - `archived`, `review_failed`, `awaiting_human`, or `escalated_to_human` -> `compound_pending`
@@ -200,9 +203,12 @@ Automatic retry never resumes directly from raw `build_failed` or `review_failed
 ### PASS path
 
 1. `adversarial-live-review` worker writes `review.md` with PASS only after the review loop converges: `coverage_status = complete`, `all_acceptance_criteria_accounted_for = true`, `convergence_status = closed`, and `open_blocking_findings_count = 0`.
-2. The orchestrator selects `state-update` and dispatches a fresh worker.
-3. `state-update` worker:
+2. The orchestrator selects `prune-review` and dispatches a fresh worker to audit complexity.
+3. `prune-review` worker writes `prune.md` with scale-based recommendations.
+4. The orchestrator then selects `state-update` and dispatches a fresh worker.
+5. `state-update` worker:
    - validates the preserved convergence summary before publishing PASS
+   - records prune recommendations in `progress.md` and `memory.md`
    - updates `docs/live/tracked-work.json`
    - refreshes `docs/live/current-focus.md` and `docs/live/roadmap.md` for the next authorized slice or pause boundary
    - appends outcome to `docs/live/progress.md`, including archive cutover and any record lifecycle events
@@ -210,7 +216,7 @@ Automatic retry never resumes directly from raw `build_failed` or `review_failed
    - switches the feature's canonical `evidence_path` from `.harness/<workstream-id>/` to the archive path
    - clears runnable active-sprint status
    - queues the feature id in `compound_pending_feature_ids`
-4. The next router pass selects `compound-capture`. Only after the queue is drained may the harness select new proposal work or another runnable sprint.
+6. The next router pass selects `compound-capture`. Only after the queue is drained may the harness select new proposal work or another runnable sprint.
 
 ### BUILD_FAILED path
 

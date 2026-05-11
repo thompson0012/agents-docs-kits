@@ -42,6 +42,7 @@ Expected router children:
 - `evaluator-contract-review`
 - `generator-execution`
 - `adversarial-live-review`
+- `prune-review`
 - `state-update`
 - `compound-capture`
 
@@ -149,6 +150,7 @@ Fresh workers come and go, but the workstream folder stays stable. Planning pass
 ├── handoff.md
 ├── qa.md
 ├── review.md
+├── prune.md
 └── status.json
 ```
 
@@ -198,6 +200,12 @@ Migration and audit: diff an existing `.harness/<workstream-id>/` artifact again
 
 - adversarial PASS/FAIL/BLOCKED decision with evidence and corrective or recovery directives
 - created by an `adversarial-live-review` worker
+- existence means routing should go to `prune-review` (PASS/FAIL) or `state-update` (BLOCKED)
+
+#### `prune.md`
+
+- complexity audit report with floor definition, above-floor audit, and ranked removal recommendations
+- created by a `prune-review` worker
 - existence means routing should go to `state-update`
 
 #### `status.json`
@@ -329,7 +337,8 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 | `.harness/<workstream-id>/runtime.md` | sprint-local | generator-execution worker | execution, review, and resume logic |
 | `.harness/<workstream-id>/handoff.md` | sprint-local | generator-execution worker | review, humans, and resume logic |
 | `.harness/<workstream-id>/qa.md` | sprint-local | adversarial-live-review worker | state-update, humans, and resume logic |
-| `.harness/<workstream-id>/review.md` | sprint-local | adversarial-live-review worker | state-update and resume logic |
+| `.harness/<workstream-id>/review.md` | sprint-local | adversarial-live-review worker | prune-review, state-update, and resume logic |
+| `.harness/<workstream-id>/prune.md` | sprint-local | prune-review worker | state-update and resume logic |
 | `.harness/<workstream-id>/status.json` | sprint-local | current phase worker | router, resume logic, audits |
 | `docs/archive/<workstream-id>_<timestamp>/` | historical | state-update worker | humans, audits, future planning |
 
@@ -345,6 +354,7 @@ Scripts may inspect or update state, but the durable truth still lives in the st
 - Contract without handoff means execution.
 - `build_failed` and reconciled `review_failed` still belong to execution when retry budget and restore metadata allow a safe retry.
 - Handoff without review means live review.
-- Review present or contradictory state means state update.
+- Review present (no prune.md) and verdict is PASS/FAIL means prune review.
+- Prune present or BLOCKED review means state update.
 - Parked `awaiting_human` and `escalated_to_human` sprints remain visible in `.harness/`, but they do not auto-dispatch execution.
 - Child work always returns through durable files in this layout; the orchestrator should not rely on inline persona state as the only record.
