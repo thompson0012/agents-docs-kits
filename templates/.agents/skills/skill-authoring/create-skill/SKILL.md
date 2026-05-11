@@ -14,7 +14,7 @@ If the package's main job is routing across a skill family, preserving discovera
 ## Core Contract
 
 - Solve one repeatable job. If the work is project-specific or one-off, put it in repo docs instead.
-- Keep the canonical core portable: default to `name` and `description` frontmatter only.
+- Keep the canonical core portable: default to `name`, `description`, and `version` frontmatter.
 - Put trigger conditions in `description`; put workflow, checklists, and edge cases in the body.
 - Keep `SKILL.md` lean. Move heavy or conditional detail into `references/`, deterministic code into `scripts/`, and copyable starter files into `assets/`.
 - Validate structure before claiming the package is usable.
@@ -42,7 +42,7 @@ If you cannot answer these from the request and repo context, ask the smallest f
 | Decision | Default |
 | --- | --- |
 | Directory shape | `skill-name/` by default, or `router-name/skill-name/` when the skill belongs inside an existing family router |
-| Frontmatter | `name`, `description` only |
+| Frontmatter | `name`, `description`, `version` |
 | Name style | lowercase letters, numbers, hyphens; match directory exactly |
 | Description style | start with `Use when ...`; describe trigger conditions, not the workflow |
 | Core body job | explain how to execute the skill, not when to load it |
@@ -109,6 +109,7 @@ Use the portable default:
 ---
 name: skill-name
 description: Use when [trigger conditions and symptoms].
+version: 0.1.0
 ---
 ```
 
@@ -255,6 +256,7 @@ At minimum verify:
 
 - [ ] The skill solves one repeatable job
 - [ ] `name` matches directory name exactly
+- [ ] `version` is present and follows semver (major.minor.patch)
 - [ ] `description` starts with `Use when`
 - [ ] `description` explains triggers, not the workflow
 - [ ] `SKILL.md` stays focused on execution

@@ -1,6 +1,7 @@
 ---
 name: __SKILL_NAME__
 description: Use when __TRIGGER__.
+version: __SKILL_VERSION__
 ---
 
 # __SKILL_TITLE__

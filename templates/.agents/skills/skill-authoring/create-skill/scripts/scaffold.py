@@ -47,6 +47,7 @@ def render_template(template: str, name: str) -> str:
     replacements = {
         "__SKILL_NAME__": name,
         "__SKILL_TITLE__": display_title(name),
+        "__SKILL_VERSION__": "0.1.0",
         "__TRIGGER__": "[trigger conditions and symptoms]",
         "__OVERVIEW__": "Describe the repeatable job this skill handles.",
     }

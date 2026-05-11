@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 REQUIRED_FIELDS = {"name", "description"}
-OPTIONAL_PORTABLE_FIELDS = {"license", "compatibility", "allowed-tools", "metadata"}
+OPTIONAL_PORTABLE_FIELDS = {"version", "license", "compatibility", "allowed-tools", "metadata"}
 NAME_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TAG_PATTERN = re.compile(r"<[A-Za-z/!][^>]*>")
 LINK_PATTERN = re.compile(r"\[[^\]]+\]\(([^)]+)\)")

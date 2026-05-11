@@ -1,6 +1,8 @@
 # orchestrator-worker model
 
-This family uses a lead orchestrator plus fresh workers. The orchestrator reads durable state, chooses the next child skill, dispatches a new worker through whatever delegation primitive the host runtime provides, and then waits for structured outputs. It does not swap personas inline and continue inside the same context window.
+This family uses a lead orchestrator plus fresh workers. The orchestrator reads durable state, chooses the next child skill, dispatches a new worker through whatever delegation primitive the host runtime provides, waits for structured outputs, and acts as the **coherence gate** — the final integration checkpoint before anything reaches the user. It does not swap personas inline and continue inside the same context window.
+
+The orchestrator has four responsibilities: collect and synthesize context, dispatch to specialists, verify integration coherence across all specialist outputs (the coherence gate), and serve as the human-facing boundary. No specialist output reaches the user without passing through the orchestrator's coherence check.
 
 Use the runtime's native primitive if it is called `sub-agent`, `Task agent`, `parallel agent`, or something else. The rule is behavioral, not API-specific: when delegation is useful, gather evidence in a fresh worker context and bring the results back to the orchestrator for the routing decision. If delegation would not materially help, or durable state already settles the answer, the orchestrator may keep the step direct.
 
