@@ -196,11 +196,11 @@ If #1 is vague and #2 is no → the type is safety theater.
 
 ## Using These Signals in Reviews
 
-### For evaluator-contract-review (Q11)
-Scan the proposal for these signals. A proposal that triggers multiple signals at once (e.g., Repository + Factory + async queue for a simple CRUD endpoint) is an over-engineered proposal.
+### For thesis phase
+When forming a claim, scan the proposed approach for these signals. If the approach triggers 3+ signals without strong evidence → the thesis needs simplification before it is ready for challenge.
+
+### For contract phase
+Scan the contract scope for these signals. A contract that triggers multiple signals at once (e.g., Repository + Factory + async queue for a simple CRUD endpoint) defines over-engineered scope.
 
 ### For prune-review
 These signals are the primary detection framework. Scale context modifies severity but doesn't replace signal detection. Answer: "Which signals are present? Where? What's the evidence the code they add is earning its keep?"
-
-### For generator-brainstorm (step 3b)
-When attacking an idea before promotion, scan for these signals in the proposed approach. If the approach triggers 3+ signals without strong evidence → the idea needs simplification before it's proposal-ready.

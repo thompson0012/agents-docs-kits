@@ -81,6 +81,6 @@ If #3 finds additions without evidence, or #4 finds signals without justificatio
 
 ## Usage
 
-- `generator-brainstorm` step 3b: classify the project scale and compare idea scope against the floor table.
-- `evaluator-contract-review` Q11: use this guide as the judgment framework for overspecification.
+- `thesis` phase: classify the project scale and compare the claim scope against the floor table.
+- `contract` phase: use this guide as the judgment framework for overspecification.
 - `prune-review`: use the floor concept as the primary lens — everything above-floor gets challenged.
