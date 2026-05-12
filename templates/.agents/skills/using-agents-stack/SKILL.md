@@ -1,218 +1,70 @@
 ---
 name: using-agents-stack
-description: Use when a repository follows the agents-stack harness and the orchestrator must route work to one workflow phase child via a fresh worker.
+description: Root orchestrator. Reads durable state, routes to one phase, dispatches fresh workers.
 ---
 
-# Role: Orchestrator
+# Orchestrator
 
-**You are the orchestrator.** This is not reference material — it is your active role. When this skill is loaded, your job is:
-
-1. Read durable state from `docs/live/*` and `.harness/<WORKSTREAM-ID>/*`
-2. Decide the next harness phase
-3. **Actively spawn a sub-agent** using the `task` tool (or host runtime equivalent) — analysis without dispatch is incomplete
-4. **Act as the coherence gate** — the final integration checkpoint before anything reaches the user
-
-You are the main agent, the coordinator, and the only agent allowed to delegate. Workers run child phases. You collect context, dispatch specialists, merge results, verify integration coherence across all specialist outputs, and serve as the human-facing boundary. No specialist output reaches the user without passing through your coherence check. Do not implement, review, or rewrite state inline.
-
----
-
-# Using Agents Stack
-
-Use this router when the hard problem is choosing the next harness phase in a repository that uses the agents-stack starter layout. If the repository does not use this harness family, or the request is ordinary implementation outside the harness workflow, no family child fits.
-
-Do not perform the child workflow here. Prefer dispatching a fresh worker, sub-agent, Task agent, or useful parallel workers first when the route depends on ambiguous or evidence-heavy investigation, then merge the returned outputs here and decide the next dispatch. If delegation would not materially help, or durable state already makes the answer clear, keep the step direct. Do not load the child phase into the orchestrator's own context and continue inline.
-## Dispatch Triggers
-
-When the user or another agent uses any of these trigger words, the orchestrator **MUST** spawn a sub-agent via the host runtime's delegation primitive rather than performing the work inline or spending cycles on file-state routing analysis:
-
-- `dispatch` / `delegate` / `assign` — direct command to hand work to a sub-agent
-- `ping` / `spawn` / `fire` — create a fresh worker for the described task
-- `send` / `hand off` / `route` — transfer work to another agent
-
-The presence of any trigger word overrides the file-state routing decision order. The orchestrator still reads durable state to ground the dispatch (confirm the child exists, the sprint is in a compatible phase, and the tool scope is appropriate), but it must not spend cycles on routing analysis when the user's intent to delegate is explicit.
-
-When a trigger word is present:
-1. Identify the target child from the user's message (e.g., "dispatch execution" → `generator-execution`, "spawn review" → `adversarial-live-review`)
-2. Ground the dispatch against durable files: confirm the child exists in `references/children.json`, the sprint is in a compatible phase, and the tool scope is appropriate
-3. Use the host runtime's delegation primitive to spawn the fresh worker with the child's SKILL.md as the prompt
-4. If the child name is ambiguous or missing, ask one clarifying question before spawning; do not guess
-
-Each child lives under `using-agents-stack/<child-name>/`, and child SKILL.md files should explicitly say they are nested harness workers.
+Read durable state, decide the next phase, dispatch a fresh worker. Workers run phases; you route, merge, and serve as the human-facing boundary.
 
 ## Core Contract
 
-- Route to exactly one child or say no family child fits.
-- Use `references/children.json` as the source of truth for child selection, prerequisites, install hints, and fallbacks.
-- Use `references/state-machine.md` for family-specific state and routing rules; see `AGENTS.md` for canonical file-system layout and state ownership.
-- Prefer the strongest durable evidence on disk over chat memory or optimistic status text.
-- Dispatch context handed to a worker — sprint id, phase, subject, summary, resume hint, or copied status text — is routing help, not authoritative truth. The worker must re-ground against durable files before acting and resolve conflicts with the `AGENTS.md` precedence chain instead of trusting the dispatch frame.
-- Treat `build_failed`, `review_failed`, `awaiting_human`, and `escalated_to_human` as distinct routing states. Do not collapse them into generic "blocked" or route them all back into execution.
-- Retries after `build_failed` or reconciled `review_failed` require a recorded clean restore boundary such as a disposable worktree, VCS snapshot, or equivalent `clean_restore_ref`. Automatic destructive reset is valid only in disposable workspaces and is not the default expectation.
-- Respect attempt budgets. When `attempt_count` reaches `max_attempts`, or no safe clean restore boundary exists, automatic retry stops and the sprint must park for human action or escalation.
-- Use `scripts/verify_retry_guard.py` as the bounded retry-eligibility gate for these invariants. It reads durable retry state, returns allow/deny plus reason codes, and never chooses the next child.
-- For closed-world file-state routing, the root router may delegate to `scripts/dispatch_phase.py` as a read-only fast path. Treat its fixed JSON output as route input only; it does not decide family-trigger fit, PASS publishability, or retry eligibility.
-- Parked sprints in `.harness/` with `awaiting_human` or `escalated_to_human` remain visible durable state, but they do not count as the single runnable active sprint.
-- A selected planning workstream may also keep `.harness/<WORKSTREAM-ID>/status.json` with phase `needs_brainstorm` or `pending`; that local checkpoint is canonical planning evidence, but it still does not claim `runnable_active_sprint_id`.
-- `docs/live/tracked-work.json` remains the authoritative tracked-work ledger and runnable/backlog selector.
-- `docs/live/current-focus.md` is the live resume anchor; `docs/live/roadmap.md` is the durable initiative ledger for source goals, remaining slices, and re-authorization boundaries.
-- Treat `scripts/roadmap_ops.py` as the narrow mutation path for `docs/live/roadmap.md` and `scripts/render_current_focus.py` as the narrow render path for `docs/live/current-focus.md`; `scripts/validate_live_control.py` and `scripts/validate_bootstrap_alignment.py` are fail-closed guardrails before trusting changed control-plane files.
-- When a user introduces or changes a broad goal, normalize it into `docs/live/current-focus.md` plus `docs/live/roadmap.md` before continuing sprint chaining. Do not let cross-sprint intent live only in chat memory.
-- Brainstorm and Compound are explicit non-runnable phases. They may be the next router action, but they must not claim `runnable_active_sprint_id`.
-- When no runnable active sprint exists, drain `compound_pending_feature_ids` first; once the queue is clear, resume any selected local planning workspace before choosing the highest-priority dependency-ready `needs_brainstorm` backlog item and then the highest-priority dependency-ready `pending` item.
-- Protect the orchestrator context: it selects, merges worker evidence, dispatches, and waits for structured outputs; it does not implement, review, write, self-verify, or rewrite state inline. When verification is needed, dispatch a fresh specialist worker; do not perform the check in the orchestrator context.
-- Verification follows a bounded independent chain, not orchestrator self-check. Specialist A does the work. Specialist B verifies A independently. Specialist C may verify B if the sprint contract allows deeper depth. Orchestrator self-verification is only for purely mechanical questions. The chain converges on human judgment, not infinite machine recursion.
-- When the orchestrator fans out to sibling workers, it must wait for all of them to return, merge their structured outputs into sprint-local durable state keyed by stable worker ID, and only then decide the next dispatch or emit a completion message.
-- The root router still owns family-trigger judgment, semantic ambiguity handling, and the final fresh-worker dispatch after any dispatcher or evidence-gathering step.
-- If the best child is missing, say to install it rather than quietly doing weaker work under the wrong child.
+- Files beat chat memory. Always.
+- One active workstream at a time.
+- Only this orchestrator may delegate workers. Workers must not spawn nested workers.
+- Tool walls are hard: audit is read-only except `audit.md`; build writes only contract-defined files.
 
 ## Decision Order
 
-0. If the user's message contains an explicit dispatch trigger word (`dispatch`, `delegate`, `ping`, `spawn`, `assign`, `send`, `hand off`, `route`, `fire`), skip file-state routing. Ground the dispatch against durable files (confirm child exists, phase is compatible), then follow Dispatch Mechanics immediately.
-1. Check whether the repository belongs to this family at all: `AGENTS.md`, `docs/live/*`, `.harness/<WORKSTREAM-ID>/`, and the agents-stack role/lifecycle model.
-2. Read `docs/live/tracked-work.json` to determine whether the repo is uninitialized, has queued compound work, has one runnable active sprint, has only parked sprints, or needs new backlog work.
-3. Read `docs/live/current-focus.md` and `docs/live/roadmap.md` together to confirm the resume anchor, source-goal lineage, remaining slices, and any re-authorization boundary.
-4. If family trigger fit, user intent, or file-state meaning is semantically ambiguous, keep the decision in model judgment here; do not use the dispatcher to guess.
-5. If the user's high-level goal is broader than the live files currently capture, route first to the phase that will publish or refresh that durable source-goal truth before continuing sprint chaining.
-6. Once steps 1-5 are settled and the question is closed-world file-state routing, the router may call `scripts/dispatch_phase.py` as a deterministic fast path over durable state.
-7. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
-8. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
-9. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
-10. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when retry eligibility is separately confirmed by `scripts/verify_retry_guard.py` and `clean_restore_ref` defines a safe restore boundary.
-11. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
-12. If no runnable active sprint exists but exactly one local planning workspace exists with phase `needs_brainstorm` or `pending`, route from that checkpoint before selecting a different backlog item.
-13. If no runnable active sprint exists and no selected local planning workspace exists, choose the highest-priority dependency-ready `needs_brainstorm` backlog item for `generator-brainstorm`.
-14. If no dependency-ready `needs_brainstorm` item exists, choose the highest-priority dependency-ready `pending` backlog item for `generator-proposal`.
-15. Pick the narrowest child that matches the strongest durable evidence.
-16. If the selected child is missing, install it when possible or disclose the fallback.
-17. Dispatch a fresh worker for the selected child with a stable worker ID, phase-appropriate tools, and explicit artifact return targets after any useful evidence-gathering workers have all returned and been merged into the sprint-local result ledger.
-18. If any sibling worker is still pending, stop at the await-all barrier: do not emit a done message, final synthesis, or next-dispatch decision until the merged ledger is complete.
+1. Read `docs/live/plan.md` and `docs/live/tracked-work.json`
+2. If no active workstream exists: prompt human to create one (thesis is the entry point for new work)
+3. If active workstream exists, read `.harness/<ID>/status.json` and strongest artifact
 
-## Family Workflow Boundary
+### Layer-internal routing
 
-This router owns only the agents-stack workflow family:
+**Direction Layer:**
+- No `thesis.md` → route `thesis`
+- `thesis.md` exists, no `challenge.md` → route `challenge`
+- `challenge.md` exists, translation needed → route translation (append to challenge.md)
+- `challenge.md` exists, no translation needed → enter Method Layer
 
-- project initialization of durable state
-- pre-sprint brainstorm capture
-- sprint proposal
-- adversarial contract review
-- contract-bound execution
-- independent live review
-- state synchronization and archive closeout
-- post-publication compound capture
+**Method Layer:**
+- No `response.md` → route `response`
+- `response.md` exists, no `synthesis.md` → route `synthesis`
+- `synthesis.md` exists → enter Action Layer
 
-This router does not replace ordinary feature implementation, generic project planning, or non-harness repository work. If the repository is not using the agents-stack state model, no family child fits.
+**Action Layer:**
+- No `contract.md` → route `contract`
+- `contract.md` exists, no `handoff.md` → route `build`
+- `handoff.md` exists, no `audit.md` → route `audit`
+- `audit.md` exists → evaluate outcome
+
+### Post-audit routing
+
+- PASS + no deeper insight → archive (update tracked-work.json + plan.md directly)
+- PASS + deeper insight → spiral turn: `depth++`, reset layer/phase to thesis
+- FAIL + `attempt < max_attempts` + clean restore → route `build` (retry)
+- FAIL + `attempt >= max_attempts` → `escalated_to_human`
+- BLOCKED → `awaiting_human`
+
+### Budget exhaustion
+
+- `depth >= max_depth` → `escalated_to_human`
+- `attempt >= max_attempts` → `escalated_to_human`
 
 ## Dispatch Mechanics
 
-After selecting a child, the orchestrator **MUST** spawn a fresh worker using whatever delegation primitive the host runtime provides. The dispatch is a contract, not a specific API call.
+Provide worker with: child SKILL.md path, workstream ID, artifact paths to read/write. Fresh worker, clean context.
 
-### Dispatch contract
+## Router Output
 
-Every worker spawn must provide these five things. How each framework delivers them varies; the contract is what matters:
-
-| Contract element | What it is |
-|---|---|
-| **Worker identity** | Stable ID (e.g., `exec-002`, `review-001`), recorded in sprint-local `status.json` |
-| **Worker prompt** | The child's SKILL.md, loaded as the worker's instruction set — never pasted inline into the orchestrator |
-| **Dispatch packet: assignment** | Self-contained instructions: sprint id, phase, artifact paths, acceptance criteria. Objective facts only — no orchestrator analysis, opinions, or preferred conclusions |
-| **Dispatch packet: context** | Shared background: tool scope profile, file paths, non-goals. Separated from assignment so per-task deltas stay clean |
-| **Return contract** | What artifacts the worker must produce, where they go, and that the worker must re-ground against durable files before writing |
-
-### Rules (framework-independent)
-
-- Dispatch a single worker per child. Parallelize only for genuinely independent sibling workers (disjoint file paths, no shared write targets).
-- For reviewer dispatch, the assignment must be blind: raw artifact paths plus the neutral review question only.
-- After spawning, wait for all sibling workers to return. Merge outputs into sprint-local durable state before the next routing decision.
-- Do not emit a completion message while any sibling worker is still pending.
-
-### Framework mapping
-
-The orchestrator adapts the contract to the available primitive:
-
-- **`task` tool** (this runtime): `task(agent, tasks[{id, description, assignment}], context)`. Each `assignment` is the per-task delta; `context` is shared.
-- **`sub-agent` / `spawn`**: Supply the child SKILL.md path as the prompt, the dispatch packet as the initial message, and the artifact return targets.
-- **No built-in delegation**: Write the dispatch packet to a file (e.g., `.harness/<id>/dispatch-packet.md`), emit the child route text, and instruct the human to paste the child's SKILL.md into a fresh session with that packet.
-
-### Neutral verification chain
-
-The orchestrator dispatches; it does not self-verify when a specialist can. All substantive evaluation follows a bounded chain of independent specialists:
-
-```
-User ↔ Orchestrator (communicate + dispatch)
-  → Specialist A (analysis / implementation / review)
-  → Specialist B (verify A's output independently)
-  → Specialist C (verify B's output independently, if needed)
-  → Orchestrator (report results to user)
-```
-
-**Core rules:**
-
-1. **Dispatch packets carry only objective facts.** What the user reported, what files exist, what artifacts were produced. No orchestrator analysis, opinions, or preferred conclusions. The specialist must form its own independent judgment.
-
-2. **Chain depth is bounded.** Max depth per sprint is typically 2–3 (A → B → C). Do not add D unless the sprint contract explicitly allows deeper verification. Infinite chains are a defect.
-
-3. **Each specialist receives only the output of the preceding specialist plus the original raw context.** B does not receive A's internal reasoning — only A's published output. This prevents cascading bias.
-
-4. **Chain stops when a specialist finds no material issues.** If B audits A and finds no substantive problems, C is not needed. If B finds issues, the orchestrator may dispatch C to verify B's findings, or route back to A for correction.
-
-5. **Verification is not infinite regression.** If B and C disagree, the orchestrator records both verdicts and routes to `awaiting_human` or `escalated_to_human`. The chain converges on human judgment, not unbounded machine recursion.
-
-6. **Chain output must be self-contained.** Every specialist produces structured output (stable IDs, severity labels, evidence paths) that the next specialist can independently audit without access to the original specialist's chat context.
-
-7. **Orchestrator self-verification is the fallback.** Only for purely mechanical questions ("does this JSON parse?"). All substantive evaluation goes through an independent specialist.
-
-### Router output contract
-
-After spawning, emit one of these text forms for traceability (also valid when `scripts/dispatch_phase.py` supplied the route):
-
-- `Route to using-agents-stack/project-initializer.`
-- `Route to using-agents-stack/generator-brainstorm.`
-- `Route to using-agents-stack/generator-proposal.`
-- `Route to using-agents-stack/evaluator-contract-review.`
-- `Route to using-agents-stack/generator-execution.`
-- `Route to using-agents-stack/adversarial-live-review.`
-- `Route to using-agents-stack/state-update.`
-- `Route to using-agents-stack/compound-capture.`
-- `Install using-agents-stack/<child>, then route to using-agents-stack/<child>.`
+- `Route to thesis.`
+- `Route to challenge.`
+- `Route to response.`
+- `Route to synthesis.`
+- `Route to contract.`
+- `Route to build.`
+- `Route to audit.`
 - `No family child fits; answer directly.`
-
-Add one sentence explaining why the selected child is the narrowest correct fit.
-
-When the durable truth is a fully reconciled `awaiting_human` or `escalated_to_human` sprint with no new human edits, the correct result is usually `No family child fits; answer directly.` plus an explanation that automation must wait on the file-based human handoff boundary.
-
-## References
-
-- `references/children.json`
-- `references/state-machine.md`
-
-## P0 / P1 / P2 Hardening Checklist
-
-### P0
-- [ ] Orchestrator dispatch packets carry only objective facts: what the user reported, what files exist, what artifacts were produced. No orchestrator analysis, opinions, suspicions, or preferred conclusions. The recipient worker must form its own independent judgment.
-- [ ] Orchestrator does not self-verify when a specialist can do it. All substantive evaluation (code review, design audit, test validation) goes through a bounded chain of independent specialists. Self-verification is the fallback for purely mechanical questions only.
-- [ ] Verification chain depth is explicitly bounded per sprint (typically 2–3). Do not recurse infinitely. If the chain would exceed max depth without converging, route to `awaiting_human` rather than dispatching another worker.
-- [ ] Reviewer dispatch packets stay blind: send raw artifact paths plus the exact neutral review question only, with no preloaded verdict, preferred answer, ranking, provenance summary, or authorship hint.
-- [ ] Compound capture publishes only evidence-linked durable residue. If no decisive artifact path supports a reusable lesson, skip extraction and clear the queue without inventing chat-memory truth.
-- [ ] Treat sprint id, phase, subject, summary, and resume hints in dispatch packets as routing aids only. Re-ground against durable files and the `AGENTS.md` precedence chain before routing or writing.
-
-### P1
-- [ ] Separate evidence gathering from verdicts: merge raw artifacts and worker returns first, then ask for judgment or route selection from that grounded evidence.
-- [ ] Apply a reusable-pattern rubric before compounding: the lesson must survive beyond the sprint, stay linked to decisive evidence, and change how a future worker would scope, review, route, or validate similar work.
-- [ ] Keep metadata fail-closed: if queue state, phase labels, `evidence_path`, or linked record/reference pointers disagree with stronger artifacts, stop and reconcile instead of guessing.
-
-### P2
-- [ ] Keep one short example each for blind review packets, no-publish compound skips, and dispatch-frame mismatch handling in `references/dispatch-packet-examples.md` so maintainers can copy the contract without reinterpreting it.
-- [ ] Cross-link hardening guidance back to `references/dispatch-packet-examples.md`, `compound-capture/SKILL.md`, and the state-machine references instead of creating another registry or shadow contract.
-- [ ] Keep this checklist short enough to maintain; add items only for recurring failure modes that materially protect the file-based truth model.
-
-## Final Checklist
-
-- [ ] Router stays focused on selection and fresh-worker dispatch
-- [ ] Child inventory is current in `references/children.json`
-- [ ] Missing/install/fallback behavior is explicit
-- [ ] Compound queue drains before runnable sprint resume or backlog selection
-- [ ] Brainstorm stays pre-sprint and non-runnable
-- [ ] Retry routing respects clean restore boundaries and attempt budgets
-- [ ] Parked `awaiting_human` and `escalated_to_human` sprints do not auto-dispatch into execution
-- [ ] No child work is performed inline in the orchestrator
-- [ ] Validation completed
+- `Awaiting human input.`
+- `Escalated to human.`

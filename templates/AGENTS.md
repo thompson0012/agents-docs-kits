@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This repository uses the agents-stack harness. The harness is stateful, resumable, and adversarial by design: files are the source of truth, one runnable sprint is active at a time, and the top-level router acts as an orchestrator that dispatches fresh worker agents for each phase instead of swapping personas inline.
+This repository uses the agents-stack harness — a stateful, resumable, adversarial framework that manages understanding depth as rigorously as task execution.
 
 ## Canonical Topology
 
@@ -9,450 +9,113 @@ This repository uses the agents-stack harness. The harness is stateful, resumabl
 ├── AGENTS.md
 ├── .agents/
 │   └── skills/
-│       ├── skill-authoring/
-│       │   ├── SKILL.md                     # maintainer router
-│       │   ├── create-skill/
-│       │   └── create-router-skill/
 │       └── using-agents-stack/
-│           ├── SKILL.md                     # root router
-│           ├── project-initializer/
-│           ├── generator-brainstorm/
-│           ├── generator-proposal/
-│           ├── evaluator-contract-review/
-│           ├── generator-execution/
-│           ├── adversarial-live-review/
-│           ├── state-update/
-│           └── compound-capture/
-├── .harness/
-│   ├── <WORKSTREAM-ID>/                     # canonical selected-workstream workspace; planning, runnable, or parked per `status.json`
-│   │   ├── sprint_proposal.md
-│   │   ├── contract.md
-│   │   ├── runtime.md                       # optional but expected once execution starts
-│   │   ├── handoff.md
-│   │   ├── qa.md                            # optional until review writes it
-│   │   ├── review.md
-│   │   └── status.json
-│   └── ... additional parked or retained planning-history folders when needed
+│           ├── SKILL.md                     # root router (orchestrator)
+│           ├── thesis/                      # form falsifiable claim
+│           ├── challenge/                   # adversarial test via oracle/council
+│           ├── response/                    # tactical design per gap
+│           ├── synthesis/                   # unify into coherent framework
+│           ├── contract/                    # define buildable scope
+│           ├── build/                       # implement contract
+│           ├── audit/                       # independent verification
+│           └── references/
+│               ├── state-machine.md
+│               ├── children.json
+│               └── templates/.harness/
+├── .harness/<WORKSTREAM-ID>/
+│   ├── thesis.md
+│   ├── challenge.md
+│   ├── response.md
+│   ├── synthesis.md
+│   ├── contract.md
+│   ├── handoff.md
+│   ├── audit.md
+│   └── status.json
 └── docs/
     ├── live/
     │   ├── tracked-work.json
-    │   ├── ideas.md
-    │   ├── roadmap.md
-    │   ├── current-focus.md
-    │   ├── progress.md
-    │   └── memory.md
-    ├── archive/
-    │   └── WORKSTREAM-000_timestamp/
-    │       ├── sprint_proposal.md
-    │       ├── contract.md
-    │       ├── handoff.md
-    │       ├── review.md
-    │       └── status.json
-    ├── records/
-    │   └── README.md
+    │   └── plan.md
     ├── reference/
     │   ├── architecture.md
     │   └── design.md
-    └── scripts/
-        ├── init.sh
-        ├── live_control.py                 # shared helper layer for live-control state
-        ├── validate_live_control.py       # fail-closed control-plane validator
-        ├── validate_bootstrap_alignment.py # fail-closed starter/bootstrap drift check
-        ├── roadmap_ops.py                 # narrow roadmap mutation path
-        └── render_current_focus.py        # narrow current-focus render path
+    └── archive/<ID>_<timestamp>/
 ```
 
-## What Each Area Means
+## Three Layers
 
-### `AGENTS.md`
-The repository constitution. Read this first. It defines topology, lifecycle, state precedence, role ownership, and recovery rules.
+| Layer | Question | Phases | Output |
+|-------|----------|--------|--------|
+| **Direction** | What are we understanding? | thesis → challenge | thesis.md, challenge.md |
+| **Method** | How do we respond to gaps? | response → synthesis | response.md, synthesis.md |
+| **Action** | What do we build to verify? | contract → build → audit | contract.md, handoff.md, audit.md |
 
-### `docs/live/*`
-Global durable state for the whole repo.
-
-- `tracked-work.json`: the authoritative tracked-work ledger, dependency graph, idea backlog pointer, compound queue, runnable active sprint pointer, and only registry for per-feature traceability. Use it to record pointers such as `roadmap_ref`, `idea_ref`, `evidence_path`, `record_paths`, and `reference_paths`; durable docs link from here rather than self-registering in a second index.
-- `ideas.md`: durable pre-proposal exploration. It stores brainstorm detail and rejected directions, but it does not choose the runnable sprint.
-- `roadmap.md`: the initiative-level source-goal and remaining-work control artifact. It captures source-goal lineage, roadmap status, non-runnable initiative sequencing, and optional per-item `roadmap_ref` backlinks, but it must not become a second runnable selector or sprint contract. Prefer `docs/scripts/roadmap_ops.py` for bounded mutations, then fail closed with `docs/scripts/validate_live_control.py`.
-- `current-focus.md`: the live current-objective and next-owner resume anchor. It points a cold-start agent at the active or parked lane and the strongest artifact to read next, but it is only a resume aid and does not replace the roadmap, backlog ledger, outcome ledger, or cross-sprint memory. Refresh it through `docs/scripts/render_current_focus.py`; treat `docs/scripts/validate_live_control.py` and `docs/scripts/validate_bootstrap_alignment.py` as fail-closed guardrails before trusting drift-prone bootstrap changes.
-- `progress.md`: append-only ledger of reviewed outcomes, failures, pauses, escalations, compound publication, and next actions. It may log record creation, promotion, supersession, expiry, and archive cutover events, but it must not become a second registry.
-- `memory.md`: durable cross-sprint learning written by the explicit Compound phase, not a dump of routine state reconciliation. Memory entries must keep artifact-linked provenance to decisive sprint evidence; a direct inline artifact-path citation is sufficient.
-
-### `docs/records/*`
-Durable, traceable, scoped records created only by an explicit agents-stack phase (`generator-brainstorm` or `compound-capture`) for a tracked feature when the output should survive beyond chat but is not the active sprint contract, not immutable archive evidence, and not stable project-wide reference truth; never as raw chat dumps or ad hoc inline persistence.
-
-- Records may capture decision notes, findings, analyses, or other durable artifacts that still need page-local scope and validity boundaries.
-- Each record page must carry its own provenance and validity metadata, such as `scope`, `status`, `superseded_by`, and the sprint or archive contributions it draws from.
-- Records may later be promoted to `docs/reference/*`, marked superseded, or marked expired; not every sprint needs to create one.
-- Feature-specific records should be linked from `docs/live/tracked-work.json` via `record_paths` instead of inventing a separate registry.
-
-#### Subdirectory convention
-Records are organized by domain. Flat dumping is prohibited — every record must go into the correct subdirectory.
-
-| Path | Domain | Example contents |
-|---|---|---|
-| `docs/records/design/` | Design artifacts | `design-tokens.json`, `design-tokens.css`, `figma-variables.json`, `ai-prompt-templates.md`, `ai-prompt-params.md` |
-| `docs/records/product/` | Product definition | `requirements.md`, `Brand_System_Architecture.md` |
-| `docs/records/architecture/` | Implementation design | `implementation.md` |
-| `docs/records/qa/` | QA templates and inventories | `qa-inventory.md` |
-
-Additional subdirectories may be added when a new domain emerges.
-
-#### Required metadata
-Every record file must carry page-local provenance and validity metadata. At minimum:
-
-- `workstream_id`: owning tracked workstream, when one exists
-- `scope`: what question, slice, or discussion window this page covers
-- `status`: one of `informative`, `promoted`, `superseded`, `expired`
-- `superseded_by`: replacement record or reference path, if any
-
-Records without metadata are invalid and must be rejected by the validator.
-
-### `docs/reference/*`
-Stable current project reference context for the system and product being built in this repository.
-
-- `architecture.md`: project-specific runtime, entrypoints, major subsystems, integration boundaries, and orchestration rules.
-- `design.md`: project-specific product intent, interaction model, visual system, and notable constraints.
-
-Only current stable truth belongs here. If a scoped record becomes broadly current, promote it into `docs/reference/*`, update any `reference_paths` pointers in `docs/live/tracked-work.json`, and avoid leaving two competing canonical versions.
-
-### Canonical active contract
-For an active or parked sprint, the only canonical execution contract is `.harness/<WORKSTREAM-ID>/contract.md`. `docs/live/tracked-work.json` may point to the active feature, local sprint folder, phase, and resume checkpoint, but it must not become a second contract.
-
-Generators and reviewers build from the approved local contract on disk, not from remembered proposal text or paraphrased scope in chat. If the live state points at a sprint whose local contract is missing, execution must stop until the checkpoint is re-established.
-`docs/live/roadmap.md` may explain the source goal, initiative status, and remaining work, but it is a non-runnable control artifact and must never override `tracked-work.json` as the runnable selector or `.harness/<WORKSTREAM-ID>/contract.md` as slice truth.
-`docs/live/current-focus.md` may summarize why the sprint matters and who should act next, but it must point back to `docs/live/roadmap.md` and `.harness/<WORKSTREAM-ID>/contract.md` for durable truth and must never become a second execution contract.
-For any feature, `docs/live/tracked-work.json` should name exactly one canonical `evidence_path` at a time. While a selected planning lane, active sprint, or parked sprint still lives locally, that path points to `.harness/<WORKSTREAM-ID>/`. After PASS archive cutover, `state-update` must switch `evidence_path` to `docs/archive/<WORKSTREAM-ID>_<timestamp>/` and clear the runnable slot; there is never a period where both locations are canonical evidence for the same feature. Planning-only work that never reaches PASS may remain canonically traced in `.harness/`.
-
-### `docs/archive/*`
-Historical evidence for archived sprints.
-
-Each archived folder is read-only history for one sprint after `state-update` processes a PASS result and cuts the canonical `evidence_path` over from `.harness/<WORKSTREAM-ID>/` to `docs/archive/<WORKSTREAM-ID>_<timestamp>/`. Archive artifacts exist for audit and learning; they are never the active source of truth for an in-flight sprint and they never override active live or local state.
-
-### `.harness/<WORKSTREAM-ID>/*`
-Local workspace for the currently selected workstream, whether that lane is non-runnable planning, runnable execution, or a parked human gate.
-
-This folder is where planning checkpoints, proposal state, contract and execution evidence, review evidence, and resume state live while the workstream is selected or parked. It survives interruption and failure, and it is the canonical `evidence_path` during that time. On PASS it is archived and stops being canonical once live state points at the archive; on FAIL, `build_failed`, `awaiting_human`, or `escalated_to_human` it stays in `.harness/` until corrected, resumed, canceled, or explicitly closed. Planning-only work that completes without PASS archive cutover may remain terminal in `.harness/` for traceability.
-
-### State ownership summary
-
-| Path | Scope | Typical writer | Typical reader |
-| --- | --- | --- | --- |
-| `AGENTS.md` | repo-wide | human maintainers | every worker |
-| `docs/live/tracked-work.json` | global | initializer, brainstorm, state-update, compound-capture | router, brainstorm, proposal, state-update, compound-capture |
-| `docs/live/ideas.md` | global | generator-brainstorm | router, brainstorm, proposal |
-| `docs/live/current-focus.md` | global | initializer, proposal, state-update | router, humans, any worker resuming |
-| `docs/live/roadmap.md` | global | initializer, proposal, state-update | router, proposal, state-update, human planners |
-| `docs/live/progress.md` | global | state-update | router, proposal, humans |
-| `docs/live/memory.md` | global | initializer, compound-capture | router, proposal, execution, review |
-| `docs/records/*` | scoped | brainstorm, proposal, state-update, compound-capture + human maintainers | router, proposal, state-update, compound-capture, humans |
-| `.harness/<id>/sprint_proposal.md` | sprint | generator-proposal | contract-review |
-| `.harness/<id>/contract.md` | sprint | evaluator-contract-review | execution, review |
-| `.harness/<id>/runtime.md` | sprint | generator-execution | execution, review, resume |
-| `.harness/<id>/handoff.md` | sprint | generator-execution | review, humans, resume |
-| `.harness/<id>/qa.md` | sprint | adversarial-live-review | state-update, humans, resume |
-| `.harness/<id>/review.md` | sprint | adversarial-live-review | state-update, resume |
-| `.harness/<id>/status.json` | sprint | current phase worker | router, resume, audits |
-| `docs/archive/<id>_<ts>/` | historical | state-update | humans, audits, future planning |
-
-### `docs/scripts/*`
-Repository-local harness utilities.
-
-- `init.sh`: safe bootstrap that creates missing baseline directories and files without overwriting user work.
-- `live_control.py`: shared helper layer for schema-aware live-control reads, writes, and validation wiring. It supports the control-plane scripts but does not create a second registry.
-- `validate_live_control.py`: fail-closed validator for `docs/live/*` control-plane coherence after scripted mutations or bootstrap refreshes.
-- `validate_bootstrap_alignment.py`: fail-closed check that starter/bootstrap control files still align with the harness contract before agents trust them.
-- `roadmap_ops.py`: narrow mutation path for `docs/live/roadmap.md`; prefer it over ad hoc hand edits when changing roadmap entries.
-- `render_current_focus.py`: narrow render path for `docs/live/current-focus.md`; refresh the resume anchor from stronger live state instead of treating it as a freeform parallel contract.
-
-### `.agents/skills/skill-authoring/*`
-
-Maintainer-only router family for creating or upgrading reusable skill packages. It ships with the template so maintainers can author skills and router families without inventing a separate packaging convention.
-
-- `skill-authoring/create-skill`
-- `skill-authoring/create-router-skill`
-
-### `.agents/skills/using-agents-stack/*`
-Router-style skill package for the harness.
-
-The `using-agents-stack` root skill is the orchestrator. It dispatches exactly one fresh child worker/sub-agent/Task agent based on durable state and the host runtime's delegation primitive. The canonical children are worker prompts with phase-scoped tool access:
-- `project-initializer`
-- `generator-brainstorm`
-- `generator-proposal`
-- `evaluator-contract-review`
-- `generator-execution`
-- `adversarial-live-review`
-- `state-update`
-- `compound-capture`
+Layers proceed sequentially. Action layer produces insight that may trigger a spiral turn back to Direction layer at greater depth.
 
 ## Core Invariants
 
-1. **Files beat chat memory.** If the repo and the conversation disagree, the repo wins.
-2. **One runnable active sprint only.** At most one feature may be runnable in `docs/live/tracked-work.json`, and at most one `.harness/<WORKSTREAM-ID>/` folder may represent runnable non-terminal work.
-3. **Non-runnable local lanes must say so explicitly.** A selected planning workspace uses `.harness/<WORKSTREAM-ID>/status.json` with a durable phase such as `needs_brainstorm` or `pending`; parked human gates use `awaiting_human` or `escalated_to_human`. None of those phases count as the runnable active sprint.
-4. **Brainstorm and Compound are explicit non-runnable phases.** They may be the next router action, but they must not claim `runnable_active_sprint_id` or open a second runnable sprint.
-5. **Compounding drains before new work.** If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
-6. **Execution does not self-approve.** Code or artifact generation cannot mark itself complete.
-7. **Build/startup triage happens before live review.** If the implementation cannot build, boot, or reach its declared runtime checkpoint, record `build_failed` and return to execution. Do not spend an adversarial review worker on a sprint that never became reviewable.
-8. **Retry requires a clean restore boundary.** Any retry after `review_failed` or `build_failed` must name a durable `clean_restore_ref` first. That reference may be a disposable worktree, VCS snapshot, or equivalent restore boundary. Unsafe unconditional destructive reset is not the default harness behavior.
-9. **Attempt budgets are finite.** Automatic retries require durable `attempt_count` and `max_attempts`. Once the budget is exhausted or recovery is unsafe, the sprint must move to `escalated_to_human` instead of looping.
-10. **Archive only after PASS.** Failed, parked, escalated, or interrupted work stays in `.harness/` with its evidence intact.
-11. **State must stay resumable.** A cold-start agent must be able to continue from files alone.
-12. **The orchestrator dispatches fresh workers.** Prefer a fresh worker/sub-agent/Task agent first when independent investigation would materially improve the decision; if durable state already makes the answer clear, keep the step direct. Child phase work still runs in a fresh worker with a clean context window, not as an inline persona swap inside the orchestrator.
-13. **Only the orchestrator may delegate.** Workers must not spawn nested workers.
-14. **Tool walls are hard boundaries.** Evaluators and reviewers must not get broad repo write tools; if the runtime exposes a narrow artifact-return primitive, scope it only to the evaluator-owned artifact. Every other worker gets only the minimum tool scope for its phase.
+1. **Files beat chat memory.** If files and conversation disagree, files win.
+2. **One active workstream.** At most one workstream is non-parked at any time.
+3. **Generator ≠ Auditor.** Build and audit must be independent workers.
+4. **Artifact precedence.** `audit.md > handoff.md > contract.md > (thesis/challenge/response/synthesis) > status.json > tracked-work.json > plan.md`
+5. **Depth and attempt are independent.** `depth` tracks understanding layers. `attempt` tracks execution retries. They never interfere.
+6. **Response before Synthesis.** `response.md` must complete before `synthesis.md`. Order is enforced by the orchestrator.
+7. **Spiral turn is not retry.** Spiral turn increments `depth` and returns to thesis. Retry increments `attempt` and keeps the same contract.
+8. **Cold start must work.** A new agent entering cold must recover full state from files alone, without chat history.
 
-15. **No durable truth may remain chat-only.** If a worker reaches a stable conclusion that should survive the session, it must materialize that residue in the correct file lane before yielding: `docs/live/tracked-work.json` for tracked-work truth, `docs/live/ideas.md` for pre-proposal exploration, `docs/records/*` for scoped residue, `docs/live/memory.md` only through explicit compounding, and `docs/reference/*` only when the truth is stable current reference. If the right lane is unclear, stop at the nearest human gate or hand off to the lane-owning phase; do not rely on chat as the durable copy.
+## State
 
-## State Roles and Precedence
+### `docs/live/plan.md`
+Single resume anchor. Three sections: **Why** (source goal), **What** (current workstream/layer/phase/depth), **Next** (immediate action + blockers). Also holds cross-workstream **Lessons**.
 
-Use this precedence when files disagree: sprint-local artifacts (review.md > handoff.md > runtime.md > contract.md > sprint_proposal.md) beat status.json, which beats live control state, which beats supporting docs.
+### `docs/live/tracked-work.json`
+Single registry of all workstreams. Tracks: `active_workstream_id`, `parked_workstream_ids`, and per-workstream metadata (title, depth, layer, phase, evidence_path).
 
-Full evidence precedence for routing is in `.agents/skills/using-agents-stack/references/state-machine.md`.
+### `.harness/<ID>/status.json`
+Per-workstream checkpoint (7 fields):
+```json
+{"workstream_id":"", "depth":0, "layer":"", "phase":"", "attempt":0, "max_attempts":3, "max_depth":6, "blocked_reason":null}
+```
 
-Interpretation rules:
-- For an active or parked sprint, the strongest local artifact defines the real phase even if `status.json` is stale.
-- `docs/live/tracked-work.json` is the project-wide selector for whether any sprint should be runnable, which pending work is dependency-ready next, and where that feature's linked ideas, records, references, and single canonical `evidence_path` live. Do not invent a second tracked-work registry.
-- `docs/live/roadmap.md` is the initiative-level non-runnable control plane. It should explain source-goal lineage, roadmap status, and remaining work, but it must not overrule sprint-local evidence or claim the runnable slot. Prefer `docs/scripts/roadmap_ops.py` for mutations and `docs/scripts/validate_live_control.py` as the fail-closed check.
-- `docs/live/current-focus.md` is a live resume aid. If it drifts from stronger local artifacts, `tracked-work.json`, or `roadmap.md`, refresh it through `docs/scripts/render_current_focus.py`; do not treat it as an alternate contract. `docs/scripts/validate_live_control.py` and `docs/scripts/validate_bootstrap_alignment.py` are the fail-closed guards for that control-plane refresh path.
-- `docs/records/*` provides scoped durable context with its own provenance and validity window, but it does not override the active contract, the runnable selector, or `docs/reference/*` current truth.
-- Archive files never override active live or local state.
+## Orchestrator-Worker Model
 
-## What To Do When State Disagrees
+- The root router (`using-agents-stack`) is the only orchestrator. It reads state, routes, dispatches workers, merges results, and is the human-facing boundary.
+- Workers run one phase each in a fresh context. Workers must not spawn nested workers.
+- Tool walls are hard: audit workers get read-only access except for `audit.md`. Build workers get write access limited to contract-defined files.
+- Dispatch: provide worker prompt (SKILL.md path) + workstream ID + artifact paths. No elaborate formalism.
 
-### Local sprint is ahead of global state
-Example: `handoff.md` exists but `tracked-work.json` still says `pending`.
+## Routing
 
-Treat the sprint as interrupted, not complete. Resume from the strongest local artifact, then use `state-update` to reconcile global state. Do not start a new runnable sprint.
+Routes are layer-internal, layer-to-layer, or spiral-turn:
 
-### Global state says active, but local sprint state is missing or incomplete
-Example: `tracked-work.json` marks `WORKSTREAM-001` active but `.harness/WORKSTREAM-001/` is missing `contract.md`.
+**Within a layer:** check artifact existence in order (thesis → challenge, response → synthesis, contract → build → audit).
 
-Stop and re-establish the missing local checkpoint before doing code work. Usually that means routing back to proposal or contract review rather than guessing what the contract should have said.
+**Between layers:** challenge complete + no translation needed → response. Synthesis complete → contract.
 
-### Local and global state name different runnable features
-This is illegal. Do not pick one casually. Preserve both evidence trails, then reconcile before any implementation continues.
+**Comprehension gate:** If challenge verdict is abstract and needs translation for downstream, the orchestrator routes a translation pass (appends to challenge.md) before proceeding.
 
-### Parked sprint is missing its human gate metadata
-Example: local phase is `awaiting_human` but `status.json` does not say what the human must do or how to resume.
-
-Stop and repair the parked checkpoint. A parked sprint without a durable gate is not safely resumable and must not be treated as a silent blocker.
-
-### Review exists but status is stale
-Trust `review.md` over `status.json`. The next owner is `state-update`.
-
-## Failure ownership taxonomy
-
-Use the strongest sprint artifact plus `docs/live/roadmap.md` and `docs/live/current-focus.md` to classify failures before routing the next owner.
-
-| Failure class | What it means | Next owner / lane |
-| --- | --- | --- |
-| Implementation defect | The approved slice still stands, but the code, integration, or verification inside that slice failed. | `state-update` publishes the truth, `compound-capture` drains, then `generator-execution` retries from a named clean restore boundary. |
-| Slice-contract defect | Proposal, contract, or review evidence shows the slice, file bounds, or acceptance criteria are wrong or incomplete. | `state-update` freezes the evidence, then route to `evaluator-contract-review` for contract repair or `generator-proposal` when the slice itself must be re-cut. |
-| Orchestration/state defect | Local artifacts, `status.json`, `tracked-work.json`, `roadmap.md`, or archive/live state disagree, or the resume checkpoint is missing. | `state-update` reconciles it; if live state itself is untrustworthy, route `project-initializer`. |
-| Environment blocker | External dependency, credential, runtime, or operator condition prevented an honest PASS/FAIL. | `state-update` parks or escalates; resume only through human action or a named clean execution retry when recovery is explicitly owned. |
-| Goal-lineage drift | `roadmap.md`, `current-focus.md`, or stronger evidence shows the sprint no longer matches the active objective or dependency order. | `state-update` refreshes the roadmap/focus split and freezes the evidence, then route to `generator-brainstorm` or `generator-proposal`; execution must not patch around drift. |
-
-
-## Deterministic startup routing rules
-
-Detailed startup routing rules are in `.agents/skills/using-agents-stack/references/state-machine.md` and implemented in `scripts/dispatch_phase.py`.
-
-## Single-Runnable-Sprint Rule
-
-The harness executes one runnable sprint at a time.
-
-A valid live state looks like this:
-- exactly one backlog item is marked runnable (`executing`, `contracted`, `review_recorded`, `review_failed`, `build_failed`, `proposed`, `proposal_revision_required`, `awaiting_review`, `paused_by_timeout`, or equivalent active retry state), or none when the system is between sprints
-- exactly one `.harness/<WORKSTREAM-ID>/` folder contains runnable local artifacts
-- any additional `.harness/<WORKSTREAM-ID>/` folders are explicitly parked in `awaiting_human` or `escalated_to_human`
-- every other feature is pending, blocked by dependency, parked for human input, archived, cancelled, or otherwise non-runnable, but not simultaneously runnable
-
-Do not open a second runnable sprint while another runnable sprint is still live. Finish, fail, pause, escalate, cancel, or archive the current runnable sprint first.
-
-## Orchestrator-worker execution model
-
-The `using-agents-stack` root skill is the only orchestrator in this repository. It reads durable state, merges returned worker evidence, makes the routing decision, and dispatches the next fresh worker for that phase.
-
-Execution rules:
-- Use the host runtime's delegation primitive when available (`sub-agent`, `Task agent`, parallel worker, or equivalent). Do not require a literal `spawn_subagent` API.
-- Prefer delegation first when ambiguous, evidence-heavy, or otherwise likely to benefit from independent investigation. The orchestrator may dispatch a fresh sub-agent or parallel workers to gather that evidence, then it merges those outputs and decides the next dispatch.
-- If delegation would not materially help, or the durable state already makes the answer clear, keep the step direct.
-- The orchestrator never performs child phase work inline. It hands a fresh worker the workstream id, subject, allowed files, tool-scope profile, and required artifact outputs, then waits for durable artifacts.
-- Workers return through files first: `contract.md`, `runtime.md`, `handoff.md`, `review.md`, `status.json`, and other sprint artifacts remain the canonical trace.
-- Workers do not reinterpret their tool wall. Evaluation and review workers stay read-only except for any narrowly scoped artifact-return path; execution and state-update workers get only the write access their phase requires.
-- Workers must not spawn nested workers. Delegation depth stops at the orchestrator.
-- Parallel workers are allowed only for independent, non-overlapping work that the orchestrator can reconcile without hidden chat state or conflicting writes.
-
-## Phase Model
-
-The lifecycle is explicit. Typical state flow:
-
-1. **Uninitialized**  
-   Missing or untrustworthy `docs/live/*`. Owner: `project-initializer`.
-2. **Brainstorm candidate**  
-   A tracked item still needs ideation before proposal and is usually marked `needs_brainstorm` in `docs/live/tracked-work.json` with supporting detail in `docs/live/ideas.md`. When the item is actively being worked, `.harness/<WORKSTREAM-ID>/status.json` is the canonical planning checkpoint. Owner: `generator-brainstorm`. Non-runnable.
-3. **Pending backlog item**  
-   A tracked item is ready for bounded proposal work and may already have `.harness/<WORKSTREAM-ID>/status.json` as its canonical planning checkpoint even though no runnable sprint is active yet. Owner: `generator-proposal`.
-4. **Proposed**  
-    `.harness/<WORKSTREAM-ID>/sprint_proposal.md` exists. Owner: `evaluator-contract-review`.
-5. **Proposal revision required**  
-    The evaluator rejected the proposal with specific gaps. `review_feedback.md` records the gaps. Owner: `generator-proposal` (revise and re-submit). After `max_proposal_revisions` exhausted → `escalated_to_human`.
-6. **Contracted**  
-    `.harness/<WORKSTREAM-ID>/contract.md` exists and defines the only approved execution scope. Owner: `generator-execution`.
-7. **In execution / build triage**  
-    `runtime.md` records what was attempted, plus any build/startup checkpoint needed before review. Owner: `generator-execution`.
-8. **Build failed**  
-    The sprint did not pass build/startup triage and must return through state reconciliation, explicit compounding, and then clean execution retry or human escalation. Owner: `state-update` then `compound-capture` then orchestrator.
-9. **Awaiting review**  
-    `handoff.md` is ready and a reviewer can reproduce the result from sprint-local evidence. Owner: `adversarial-live-review`.
-10. **In review (review recorded)**  
-     `review.md` records PASS, FAIL, or BLOCKED. Owner: `state-update` for reconciliation.
-11. **Review failed**  
-     `review.md` records a FAIL. State-update preserves the sprint, queues compounding, and routes a clean retry or escalation. Owner: `state-update` then `compound-capture` then orchestrator.
-12. **Paused by timeout**  
-     Prior session stopped without a clean finish. Route by `resume_from` in `status.json`. Owner: orchestrator.
-13. **Awaiting human**  
-    Automation is intentionally paused at a durable artifact boundary so a human can inspect, edit, approve, or supply missing information. Owner: human, then orchestrator.
-14. **Escalated to human**  
-     Automatic retry must stop because the attempt budget is exhausted or safe recovery cannot be established. Owner: human.
-15. **Compound pending**  
-     `docs/live/tracked-work.json` queues the feature id in `compound_pending_feature_ids` after `state-update`. `compound-capture` records durable learning or deliberately skips extraction when no durable residue survives, then clears the queue without claiming the runnable sprint slot.
-16. **Archived**
-   `state-update` synchronizes live state, preserves the sprint record under `docs/archive/<WORKSTREAM-ID>_<timestamp>/`, updates the feature's canonical `evidence_path`, queues compounding, and clears the runnable active sprint before the next work-selection pass.
-
-### Phase transition table
-
-Detailed phase transitions are in `.agents/skills/using-agents-stack/references/state-machine.md`.
-
-`BLOCKED` is a review verdict, not a license to keep looping. State-update must translate a blocked review into either `awaiting_human` when a human can unblock and resume from files, or `escalated_to_human` when automation must stop.
+**After audit:**
+- PASS + no deeper insight → archive (update tracked-work.json + plan.md)
+- PASS + deeper insight → spiral turn: `depth++`, reset to thesis
+- FAIL → retry if `attempt < max_attempts` and `clean_restore_ref` exists
+- BLOCKED → `awaiting_human`
+- `attempt >= max_attempts` or `depth >= max_depth` → `escalated_to_human`
 
 ## Resume Procedure
 
-When a sprint is interrupted by timeout, crash, human pause, failed build triage, or failed review retry:
-
-1. Read `AGENTS.md`.
-2. Read `docs/live/tracked-work.json`, `docs/live/roadmap.md`, `docs/live/current-focus.md`, `docs/live/ideas.md`, `docs/live/progress.md`, and `docs/live/memory.md`.
-3. Capture any queued `compound_pending_feature_ids`, identify the one runnable active feature if any, list any parked `awaiting_human` or `escalated_to_human` sprint folders separately, and note the source goal, roadmap status, current objective, and next-owner hint from `docs/live/roadmap.md` plus `docs/live/current-focus.md`.
-4. If no runnable sprint exists, note any dependency-ready `needs_brainstorm` candidates before ordinary `pending` backlog items.
-5. Read `.harness/<WORKSTREAM-ID>/status.json` and capture the claimed `phase`, `owner_role`, `resume_from`, `last_verified_step`, `local_url`, `active_pids`, `blocked_on`, `worker_id`, `worker_subject`, `tool_scope_profile`, `spawn_depth`, `parent_worker_id`, `attempt_count`, `max_attempts`, and `clean_restore_ref` fields.
-6. When the phase is `awaiting_human` or `escalated_to_human`, also capture the pause or escalation metadata that explains what changed, what the human must do, and which phase resumes next.
-7. Read local artifacts in evidence order: `review.md`, `handoff.md`, `runtime.md`, `contract.md`, `sprint_proposal.md`.
-8. Verify that the claimed checkpoint matches reality on disk and in any running process before trusting it.
-9. If processes were recorded in `status.json` or `runtime.md`, verify whether they still exist before reusing them.
-10. Before retrying from `review_failed` or `build_failed`, verify the clean restore boundary named by `clean_restore_ref`. Use a disposable worktree, VCS snapshot, or equivalent restore reference that tells the truth about what will be retried. Do not assume an unconditional destructive reset.
-11. Resume from the strongest valid checkpoint, using `docs/live/current-focus.md` as a pointer rather than as a second contract. If compounding is queued, drain it before runnable sprint resume or new backlog selection.
-
-Every active sprint `status.json` must include at minimum:
-- `sprint_id`
-- `phase`
-- `owner_role`
-- `resume_from`
-- `last_verified_step`
-- `last_updated_at`
-
-Every sprint that can re-enter execution must also include:
-- `attempt_count`
-- `max_attempts`
-
-Add these fields when they apply:
-- `clean_restore_ref` when a retry requires returning to a known-good workspace boundary
-- `local_url` when a running artifact exists
-- `active_pids` when processes are live
-- `blocked_on` when a sprint cannot safely continue
-- `worker_id` when the next worker has an explicit dispatch identity
-- `worker_subject` when the next worker needs a terse, durable task label
-- `tool_scope_profile` when the orchestrator intentionally narrows tool access for that worker
-- `spawn_depth` for dispatch traceability; the orchestrator is depth `0` and workers must remain at depth `1`
-- `parent_worker_id` when the handoff needs to name the orchestrator dispatch that created the worker
-- `pause_reason` and `human_action_required` when the sprint is `awaiting_human`
-- `escalation_reason` when the sprint is `escalated_to_human`
+1. Read `AGENTS.md`
+2. Read `docs/live/plan.md` and `docs/live/tracked-work.json`
+3. Identify active workstream, read `.harness/<ID>/status.json`
+4. Read strongest artifact in precedence order
+5. Verify checkpoint matches reality on disk
+6. Resume from strongest valid checkpoint
 
 ## Archive Policy
 
-Archive only after all of the following are true:
-- `review.md` exists and says PASS
-- the reviewed work matches the approved contract
-- `docs/live/tracked-work.json` and `docs/live/progress.md` have been updated to reflect the reviewed outcome
-- the runnable active sprint has a clear next action for the backlog
-
-On archive:
-- prefer move or verified rename of the complete sprint evidence into `docs/archive/<WORKSTREAM-ID>_<timestamp>/`
-- if the environment requires copying instead of moving, verify the archive, switch the feature's canonical `evidence_path` to the archive, and explicitly clear or de-canonicalize the source `.harness/<WORKSTREAM-ID>/` workspace so the archive is the only canonical PASS evidence
-- when the archive files do not already exist, create them with write/copy or a verified move; do not use edit to create the archive bundle
-- preserve at minimum `sprint_proposal.md`, `contract.md`, `handoff.md`, `review.md`, and `status.json`
-- keep the archive immutable except for corrections required to preserve historical truth
-
-Do not archive:
-- failed reviews
-- build/startup triage failures
-- parked work awaiting human input
-- escalated work that still needs a resume trail
-- partial work with no decisive review outcome
-
-## Scripts and Automation Boundary
-`docs/scripts/*` exists for bootstrap and orchestration helpers only. Scripts may inspect state, help reconcile it, and record narrowly scoped timeout metadata, but they must never become the hidden source of truth for the harness.
-
-Any script-driven mutation must be reflected back into the documented file contracts in `docs/live/*`, `.harness/<WORKSTREAM-ID>/*`, or `docs/archive/*`. If a script and the state files disagree, the state files win until the discrepancy is reconciled explicitly.
-
-Scripts must surface missing or inconsistent backlog data instead of inventing a next feature choice. File contracts stay canonical even when helper output is convenient.
-
-## Role Responsibilities
-
-### Router: `using-agents-stack`
-Reads durable state, chooses the next phase, and dispatches exactly one fresh worker/sub-agent/Task agent with explicit worker metadata and phase-appropriate tool scope. It routes; it does not implement, review, or rewrite history inline.
-
-All leaf roles below are worker prompts run in fresh workers. None of them may spawn additional workers.
-
-### `project-initializer`
-Worker prompt. Creates or repairs `docs/live/*`, preserves existing `docs/records/*` traceability, and seeds `docs/reference/*` so the repo has truthful durable state, including `docs/live/ideas.md` for pre-proposal ideation. It does not invent record pages or open an execution sprint unless a human explicitly chose one.
-
-### `generator-brainstorm`
-Worker prompt. Refines `needs_brainstorm` backlog items in `docs/live/ideas.md`, promotes at most one candidate into truthful tracked backlog state, and stays strictly pre-sprint and non-runnable. It may create or refresh one scoped `docs/records/*` page only for an already-tracked feature when durable discussion residue would otherwise overload `ideas.md`.
-
-### `generator-proposal`
-Worker prompt. Turns one dependency-ready pending backlog item into a bounded sprint proposal with explicit scope, allowed files, forbidden areas, acceptance checks, and risks. It may inherit narrowed context from `docs/live/ideas.md` and linked `docs/records/*`, but it does not write implementation code or turn records into a shadow contract.
-
-### `evaluator-contract-review`
-Worker prompt. Attacks the proposal. It either returns or materializes `contract.md` as the approved execution boundary, or rejects the proposal with specific revision demands. It must not receive broad repo write access outside that artifact path.
-
-### `generator-execution`
-Worker prompt. Implements only the approved contract, records reproducible runtime details, performs build/startup triage before review, and writes `handoff.md` only when the sprint is actually reviewable. It does not self-approve, does not widen scope silently, and does not spawn helpers.
-
-### `adversarial-live-review`
-Worker prompt. Reproduces the result against the contract and issues exactly one of `PASS`, `FAIL`, or `BLOCKED` with evidence. It does not update global state, must not receive broad write access, and must reject hardcoded or static pass conditions that do not prove a real state transition.
-
-### `state-update`
-Worker prompt. Makes the repo tell the truth after review or blocked retry. It updates `docs/live/tracked-work.json`, refreshes `docs/live/current-focus.md`, updates `docs/live/progress.md`, preserves failed sprint evidence, archives PASS results, updates canonical `evidence_path` and linked `record_paths` / `reference_paths` when needed, and queues explicit compounding when the outcome has been durably published.
-
-### `compound-capture`
-Worker prompt. Consumes `compound_pending_feature_ids`, distills durable cross-sprint learning into `docs/live/memory.md` when real residue survives, may create or revise scoped `docs/records/*` pages when durable but non-reference truth should persist, updates reference docs only when the lesson became stable current truth, and clears the queue without reopening earlier phases or inventing a second registry.
-
-## Review Verdict Contract
-Every independent review must end with exactly one verdict: `PASS`, `FAIL`, or `BLOCKED`.
-- `PASS`: the approved contract was met, the evidence is reproducible, and state-update may close and archive the sprint
-- `FAIL`: the sprint stays active, defects are listed explicitly, a clean restore boundary is named for the next retry, and the next retry instructions point back to the same sprint
-- `BLOCKED`: the reviewer could not reach a truthful PASS/FAIL because an environment, dependency, missing-evidence, or human-decision problem prevented judgment; the blocker and next recovery step must be explicit
-
-Every review artifact must include:
-- evidence checked
-- contract criteria passed or failed
-- before/action/after state-transition evidence, not just a final static state
-- defect list or blocker list
-- next owner
-- retry, pause, or recovery instructions
-
-Hardcoded end states, static snapshots without the triggering action, and acceptance criteria that can pass without exercising the feature are invalid review evidence.
-
-Generator-authored review artifacts are invalid. `review.md` and `qa.md` only count when they were produced by the independent review phase.
-
-## Before Editing Anything
-
-1. Read this file.
-2. Read the relevant `docs/live/*` files.
-3. If a sprint is active or parked, read the local `.harness/<WORKSTREAM-ID>/` artifacts before touching code.
-4. Stay within the current phase boundary. If the correct fix requires a different phase, hand off instead of smuggling it in.
-5. If the task is a migration, cutover, or topology change, read `MIGRATION.md` after this file and before moving files, schemas, or registry fields.
+Archive only after audit PASS + no deeper insight:
+- Move sprint evidence to `docs/archive/<ID>_<timestamp>/`
+- Update `tracked-work.json` (clear active, point evidence_path to archive)
+- Update `plan.md` (clear active workstream, append lessons)
 
 ## Success Condition
 
-The harness is healthy when a new agent can enter cold, inspect the files above, see any queued compound work, distinguish brainstorm-needed backlog items from proposal-ready pending work, identify the single correct runnable owner and phase, and continue safely without relying on prior chat context.
+The harness is healthy when a cold-start agent can read the files above and continue safely without any chat history.
