@@ -43,7 +43,7 @@ Each child lives under `using-agents-stack/<child-name>/`, and child SKILL.md fi
 
 - Route to exactly one child or say no family child fits.
 - Use `references/children.json` as the source of truth for child selection, prerequisites, install hints, and fallbacks.
-- Use `references/state-machine.md`, `references/file-system-layout.md`, and `references/orchestrator-worker.md` for family-specific state, path, and delegation rules.
+- Use `references/state-machine.md` for family-specific state and routing rules; see `AGENTS.md` for canonical file-system layout and state ownership.
 - Prefer the strongest durable evidence on disk over chat memory or optimistic status text.
 - Dispatch context handed to a worker — sprint id, phase, subject, summary, resume hint, or copied status text — is routing help, not authoritative truth. The worker must re-ground against durable files before acting and resolve conflicts with the `AGENTS.md` precedence chain instead of trusting the dispatch frame.
 - Treat `build_failed`, `review_failed`, `awaiting_human`, and `escalated_to_human` as distinct routing states. Do not collapse them into generic "blocked" or route them all back into execution.
@@ -134,6 +134,34 @@ The orchestrator adapts the contract to the available primitive:
 - **`sub-agent` / `spawn`**: Supply the child SKILL.md path as the prompt, the dispatch packet as the initial message, and the artifact return targets.
 - **No built-in delegation**: Write the dispatch packet to a file (e.g., `.harness/<id>/dispatch-packet.md`), emit the child route text, and instruct the human to paste the child's SKILL.md into a fresh session with that packet.
 
+### Neutral verification chain
+
+The orchestrator dispatches; it does not self-verify when a specialist can. All substantive evaluation follows a bounded chain of independent specialists:
+
+```
+User ↔ Orchestrator (communicate + dispatch)
+  → Specialist A (analysis / implementation / review)
+  → Specialist B (verify A's output independently)
+  → Specialist C (verify B's output independently, if needed)
+  → Orchestrator (report results to user)
+```
+
+**Core rules:**
+
+1. **Dispatch packets carry only objective facts.** What the user reported, what files exist, what artifacts were produced. No orchestrator analysis, opinions, or preferred conclusions. The specialist must form its own independent judgment.
+
+2. **Chain depth is bounded.** Max depth per sprint is typically 2–3 (A → B → C). Do not add D unless the sprint contract explicitly allows deeper verification. Infinite chains are a defect.
+
+3. **Each specialist receives only the output of the preceding specialist plus the original raw context.** B does not receive A's internal reasoning — only A's published output. This prevents cascading bias.
+
+4. **Chain stops when a specialist finds no material issues.** If B audits A and finds no substantive problems, C is not needed. If B finds issues, the orchestrator may dispatch C to verify B's findings, or route back to A for correction.
+
+5. **Verification is not infinite regression.** If B and C disagree, the orchestrator records both verdicts and routes to `awaiting_human` or `escalated_to_human`. The chain converges on human judgment, not unbounded machine recursion.
+
+6. **Chain output must be self-contained.** Every specialist produces structured output (stable IDs, severity labels, evidence paths) that the next specialist can independently audit without access to the original specialist's chat context.
+
+7. **Orchestrator self-verification is the fallback.** Only for purely mechanical questions ("does this JSON parse?"). All substantive evaluation goes through an independent specialist.
+
 ### Router output contract
 
 After spawning, emit one of these text forms for traceability (also valid when `scripts/dispatch_phase.py` supplied the route):
@@ -158,9 +186,6 @@ When the durable truth is a fully reconciled `awaiting_human` or `escalated_to_h
 
 - `references/children.json`
 - `references/state-machine.md`
-- `references/file-system-layout.md`
-- `references/orchestrator-worker.md`
-- `references/discovery-to-delivery.md`
 
 ## P0 / P1 / P2 Hardening Checklist
 
@@ -179,7 +204,7 @@ When the durable truth is a fully reconciled `awaiting_human` or `escalated_to_h
 
 ### P2
 - [ ] Keep one short example each for blind review packets, no-publish compound skips, and dispatch-frame mismatch handling in `references/dispatch-packet-examples.md` so maintainers can copy the contract without reinterpreting it.
-- [ ] Cross-link hardening guidance back to `references/orchestrator-worker.md`, `references/dispatch-packet-examples.md`, `compound-capture/SKILL.md`, and the state-machine references instead of creating another registry or shadow contract.
+- [ ] Cross-link hardening guidance back to `references/dispatch-packet-examples.md`, `compound-capture/SKILL.md`, and the state-machine references instead of creating another registry or shadow contract.
 - [ ] Keep this checklist short enough to maintain; add items only for recurring failure modes that materially protect the file-based truth model.
 
 ## Final Checklist

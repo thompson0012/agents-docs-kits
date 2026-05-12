@@ -86,6 +86,28 @@ Durable, traceable, scoped records created only by an explicit agents-stack phas
 - Records may later be promoted to `docs/reference/*`, marked superseded, or marked expired; not every sprint needs to create one.
 - Feature-specific records should be linked from `docs/live/tracked-work.json` via `record_paths` instead of inventing a separate registry.
 
+#### Subdirectory convention
+Records are organized by domain. Flat dumping is prohibited — every record must go into the correct subdirectory.
+
+| Path | Domain | Example contents |
+|---|---|---|
+| `docs/records/design/` | Design artifacts | `design-tokens.json`, `design-tokens.css`, `figma-variables.json`, `ai-prompt-templates.md`, `ai-prompt-params.md` |
+| `docs/records/product/` | Product definition | `requirements.md`, `Brand_System_Architecture.md` |
+| `docs/records/architecture/` | Implementation design | `implementation.md` |
+| `docs/records/qa/` | QA templates and inventories | `qa-inventory.md` |
+
+Additional subdirectories may be added when a new domain emerges.
+
+#### Required metadata
+Every record file must carry page-local provenance and validity metadata. At minimum:
+
+- `workstream_id`: owning tracked workstream, when one exists
+- `scope`: what question, slice, or discussion window this page covers
+- `status`: one of `informative`, `promoted`, `superseded`, `expired`
+- `superseded_by`: replacement record or reference path, if any
+
+Records without metadata are invalid and must be rejected by the validator.
+
 ### `docs/reference/*`
 Stable current project reference context for the system and product being built in this repository.
 
@@ -111,6 +133,28 @@ Each archived folder is read-only history for one sprint after `state-update` pr
 Local workspace for the currently selected workstream, whether that lane is non-runnable planning, runnable execution, or a parked human gate.
 
 This folder is where planning checkpoints, proposal state, contract and execution evidence, review evidence, and resume state live while the workstream is selected or parked. It survives interruption and failure, and it is the canonical `evidence_path` during that time. On PASS it is archived and stops being canonical once live state points at the archive; on FAIL, `build_failed`, `awaiting_human`, or `escalated_to_human` it stays in `.harness/` until corrected, resumed, canceled, or explicitly closed. Planning-only work that completes without PASS archive cutover may remain terminal in `.harness/` for traceability.
+
+### State ownership summary
+
+| Path | Scope | Typical writer | Typical reader |
+| --- | --- | --- | --- |
+| `AGENTS.md` | repo-wide | human maintainers | every worker |
+| `docs/live/tracked-work.json` | global | initializer, brainstorm, state-update, compound-capture | router, brainstorm, proposal, state-update, compound-capture |
+| `docs/live/ideas.md` | global | generator-brainstorm | router, brainstorm, proposal |
+| `docs/live/current-focus.md` | global | initializer, proposal, state-update | router, humans, any worker resuming |
+| `docs/live/roadmap.md` | global | initializer, proposal, state-update | router, proposal, state-update, human planners |
+| `docs/live/progress.md` | global | state-update | router, proposal, humans |
+| `docs/live/memory.md` | global | initializer, compound-capture | router, proposal, execution, review |
+| `docs/records/*` | scoped | brainstorm, proposal, state-update, compound-capture + human maintainers | router, proposal, state-update, compound-capture, humans |
+| `.harness/<id>/sprint_proposal.md` | sprint | generator-proposal | contract-review |
+| `.harness/<id>/contract.md` | sprint | evaluator-contract-review | execution, review |
+| `.harness/<id>/runtime.md` | sprint | generator-execution | execution, review, resume |
+| `.harness/<id>/handoff.md` | sprint | generator-execution | review, humans, resume |
+| `.harness/<id>/qa.md` | sprint | adversarial-live-review | state-update, humans, resume |
+| `.harness/<id>/review.md` | sprint | adversarial-live-review | prune-review, state-update, resume |
+| `.harness/<id>/prune.md` | sprint | prune-review | state-update, resume |
+| `.harness/<id>/status.json` | sprint | current phase worker | router, resume, audits |
+| `docs/archive/<id>_<ts>/` | historical | state-update | humans, audits, future planning |
 
 ### `docs/scripts/*`
 Repository-local harness utilities.

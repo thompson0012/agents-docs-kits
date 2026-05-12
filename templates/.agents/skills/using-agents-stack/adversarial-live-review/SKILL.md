@@ -91,13 +91,13 @@ Extract the following into your own notes before testing:
 Do not let the generator redefine success in `handoff.md`.
 ### Methodology note: domain QA playbooks
 
-After reading the contract, use the narrowest matching playbook(s) or contract recipe(s) to structure the review:
+After reading the contract, use the narrowest matching playbook(s) from `references/contract-recipes.md` to structure the review:
 
-- `frontend-qa` plus `references/frontend-ui-contract-recipe.md` for browser-visible or UI-centric acceptance
-- `backend-qa` plus `references/backend-api-contract-recipe.md` for APIs, jobs, queues, webhooks, auth boundaries, data integrity, and observability
-- `references/integration-contract-recipe.md` when the contract depends on third-party APIs, callbacks, or other external-system boundaries
-- `references/async-worker-contract-recipe.md` when the contract centers on background execution, retries, or queue semantics
-- `references/migration-contract-recipe.md` when the contract proves schema/data transitions across time
+- **Frontend UI** recipe plus `frontend-qa` for browser-visible or UI-centric acceptance
+- **Backend API** recipe plus `backend-qa` for APIs, jobs, queues, webhooks, auth boundaries, data integrity, and observability
+- **Integration** recipe when the contract depends on third-party APIs, callbacks, or other external-system boundaries
+- **Async Worker** recipe when the contract centers on background execution, retries, or queue semantics
+- **Migration** recipe when the contract proves schema/data transitions across time
 
 If a sprint spans multiple surfaces, use the matching combination. These playbooks shape inventory, checks, and evidence capture only. They do not change phase ownership, routing, or the PASS / FAIL / BLOCKED contract, and the worker still produces one harness-owned `qa.md` and one `review.md`.
 

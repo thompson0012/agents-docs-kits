@@ -218,11 +218,7 @@ For browser-visible UI work, each criterion must also name:
 - any fixture or input shape needed to reach the state
 
 Consult the narrowest matching recipe before finalizing the proposal:
-- `references/frontend-ui-contract-recipe.md` for browser-visible UI work
-- `references/backend-api-contract-recipe.md` for backend endpoints, auth boundaries, and API-visible behavior
-- `references/integration-contract-recipe.md` for third-party APIs, webhooks, storage providers, and other cross-system boundaries
-- `references/async-worker-contract-recipe.md` for jobs, queues, schedulers, and other background execution
-- `references/migration-contract-recipe.md` for schema, data backfills, and state transitions that must be proved across time
+- `references/contract-recipes.md` for domain-specific contract structures (Frontend UI, Backend API, Integration, Async Worker, Migration)
 
 Good examples:
 - a page renders a new control with a stable selector and criterion id `AC-001`
