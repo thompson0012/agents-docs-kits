@@ -20,7 +20,7 @@ The user will provide one or more of the following:
 - A brand manifesto, vision, or personality description
 - Keywords about desired mood / industry
 - Competitor or avoidance references
-- A structured brand context document from `design-token-spec` (e.g., `docs/reference/design.md`) containing answers to design-token-spec's 6 Brand Questions and any available token spec — use these as pre-validated inputs and skip redundant discovery
+- A structured brand context document (e.g., `docs/reference/design.md`) from a prior Phase 0 pass, containing answers to the 6 Brand Questions — use these as pre-validated inputs and skip redundant discovery
 
 If no images are given, rely on textual input to infer visual direction.
 If the input is too vague to form a consistent identity, ask **no more than 3** targeted clarifying questions before proceeding.
@@ -39,6 +39,10 @@ For each image (or text fragment), analyze and document:
 - Composition density & white space behaviour
 - Emotional tone (calm, energetic, raw, luxurious, playful)
 - Style era / cultural references (if any)
+
+### 1.1a Skip Discovery If Pre-resolved
+
+If the input already contains a complete Phase 0 brand context (6 Brand Questions answered + conflict resolution applied), do not re-ask discovery questions. Go directly to deep observation.
 
 ### 1.2 Cross-Synthesis
 

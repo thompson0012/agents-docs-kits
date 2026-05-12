@@ -29,6 +29,7 @@ Do not use this skill for:
 - Simple task completion summaries where the work is done (no successor needed)
 - Conversation logs or chat exports that are meant for human review
 - Project documentation or architecture decisions records (use project docs instead)
+- Same-role resumption after a reset or context-window pressure event — use `context-compaction` instead
 
 ## Workflow
 

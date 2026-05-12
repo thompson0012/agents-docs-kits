@@ -18,6 +18,81 @@ Three stages: **Define → Handoff → Generate**
 - Translate brand into concrete AI image generation prompts, not just adjectives
 - Produce a prompt design methodology that teaches how to design brand-consistent AI image prompts — the "how to think" layer above the templates
 
+---
+
+## Phase 0: Brand Discovery & Conflict Resolution
+
+Before extraction begins, establish the brand's foundational context. Skip this phase only if all 6 Brand Questions are already answered in provided inputs, or if the user is extending an existing brand with a pre-validated `docs/reference/design.md`.
+
+### 0.1 Source Discovery (Do This Before Asking Any Question)
+
+Scan existing project documents for brand inputs before asking the user anything:
+
+Check in order:
+1. `docs/reference/design.md`     → product intent, behavior, brand direction
+2. `docs/live/memory.md`          → durable decisions, brand notes
+3. `docs/` or product/ folders    → roadmap docs, vision docs, brand briefs
+4. `README.md`                    → project purpose, audience
+
+| Discovery Question | Look For In Docs |
+|---|---|
+| Q1 Purpose & Worldview | Problem statement, mission, "why we exist" |
+| Q2 Persona | User personas, target audience, Jobs to be Done |
+| Q3 Only We | Differentiators, unique features, competitive advantage |
+| Q4 Personality & Voice | Tone of voice, brand values, writing guidelines |
+| Q5 Desired Perception | Brand success metrics, positioning goals |
+| Q6 Visual References | Mood boards, design inspiration, "what we are/aren't" |
+
+**Rule:** If a question is answered in docs, use it — label the source as `【From: filename.md】`. Only ask for what genuinely cannot be found. Ask up to 3 clarifying questions per round; if the user still cannot answer, proceed with labeled `【Assumption: ...】`.
+
+### 0.2 The 6 Brand Questions
+
+**Q1 — Purpose & Worldview** *(Brand DNA foundation)*
+> "Why does this brand exist beyond making money, and what change in the world are you obsessed with creating?"
+
+Collect: 1–2 paragraphs. Must contain a clear enemy/problem and the better future it fights for. Drives overall visual tone — activist/bold vs. gentle/nurturing.
+
+**Q2 — Audience Empathy** *(Persona)*
+> "Describe your ideal customer as a real person — name, age, daily frustrations, dreams."
+
+Collect: 150–300 word character sketch. Drives component roundness, color saturation, icon style, density.
+
+**Q3 — Positioning & Proof** *("Only We" differentiation)*
+> "Finish: 'Only we ______.' Give me the single most credible piece of proof."
+
+Collect: One ownable sentence + one concrete proof (feature, policy, or technology competitors can't easily copy). Drives Hero Component selection.
+
+**Q4 — Personality & Voice** *(Direct style driver)*
+> "If your brand were a person at a bar, how would they speak? What would they never say?"
+
+Collect: 3–5 personality adjectives + 3–5 phrases they'd say + 2–3 they'd never say. Drives color mood, typography weight, motion style, microcopy tone.
+
+**Q5 — Desired Perception** *(Emotional north-star)*
+> "In 12–24 months, what 3–5 words do you want users to describe this brand with? What 3 words would make you die inside?"
+
+Collect: Positive list (3–5). Forbidden list (3–4). Every token must land in this territory.
+
+**Q6 — Visual References & Taste** *(Translation accelerator)*
+> "Show me 4–6 brands (any industry) that feel like us, and 3–4 that are the opposite. One sentence love/hate per brand."
+
+Collect: Brand names + one-sentence love/hate note each. Drives concrete color, type, and component decisions.
+
+### 0.3 Conflict Resolution (Run Before Any Output)
+
+Resolve all conflicts silently. Never output tokens before completing all 5 checks.
+
+**Check 1 — Vibe Check (Q4 vs Q6):** Do Personality adjectives match Visual References' aesthetic? Conflict rule: Visual References govern **physics** (layout, radius, shadow, density); Personality governs **voice** (microcopy, motion energy, empty states).
+
+**Check 2 — Emotional Territory Check (Q5 vs Q4/Q6):** Do Q5 "forbidden words" describe any current direction? If yes → adjust palette or radius before output.
+
+**Check 3 — Component Rationalization (Q3):** Does at least one planned component directly prove the "Only We" claim? If none → add a Hero Component and flag it.
+
+**Check 4 — Persona Compatibility Check (Q2):** Does token density and radius suit the persona's world? Design-literate → moderate density, editorial radius. Consumer → more air, softer radius.
+
+**Check 5 — WCAG AA Pre-check:** Text on surface: minimum **4.5:1** body, **3:1** large text. Fail → adjust token before output. Never output a failing contrast.
+
+---
+
 ## Workflow
 
 ### Step 1: Gather Inputs
@@ -36,7 +111,7 @@ Image curation sources to suggest:
 
 If no images are given, rely on textual input. Ask clarifying questions only when too vague.
 
-**Upstream discovery (optional):** If brand positioning is unclear or conflicted, consider running [`design-token-spec`](../../design-token-spec/SKILL.md) first. Its 6 Brand Questions discovery and Phase 1 conflict resolution produce `docs/reference/design.md` that BIE can consume as an additional input — skip the meta-prompt's discovery questions and go straight to extraction.
+Phase 0 handles all brand discovery and conflict resolution. If inputs are already complete with answers to all 6 Brand Questions, Phase 0 auto-detects this and skips to extraction.
 
 ### Step 2: Run the Brand Extract Meta-Prompt
 
@@ -105,7 +180,6 @@ These skills work well with BIE in a loose pipeline — no hard dependency, just
 
 | Skill | Role | When to route |
 |---|---|---|
-| [`design-token-spec`](../../design-token-spec/SKILL.md) | **Upstream discovery + downstream validation** | Run first if brand answers are unclear (produces structured brand context). Run again after BIE output to validate tokens against WCAG, rationales, and conflict rules. |
 | [`prompt-augmentation`](../../prompt-augmentation/SKILL.md) | **Stage 3 enrichment** | Feed BIE's AI prompt output (Core Style, Negative Bank, templates) into `prompt-augmentation` with `text-to-image` mode for domain-specific term substitution (optics, lighting, composition, materials). |
 | [`frontend-design/design-context-scout`](../../frontend-design/design-context-scout/SKILL.md) | **Downstream consumer** | BIE's output in `docs/reference/design.md` (YAML block under `## Visual System` for machine-readable tokens, prose sections for human context) is consumed by `design-context-scout` as a design system source for UI sprint planning. |
 

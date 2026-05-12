@@ -16,7 +16,7 @@ Use this skill when:
 
 Do not use this skill when:
 - the real question is whether the work should stay `single-session`, become `compacted-continuation`, or move into a multi-role loop — that belongs to the template orchestrator
-- ownership is changing across planner / generator / evaluator / reviewer lanes
+- ownership is changing across planner / generator / evaluator / reviewer lanes — use `agent-handoff` instead
 - the next step is contract approval, scope repair, or orchestration repair
 - a vague narrative summary would hide the stronger truth already present in files
 
