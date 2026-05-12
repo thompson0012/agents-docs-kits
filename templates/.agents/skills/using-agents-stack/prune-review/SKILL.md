@@ -1,145 +1,80 @@
 ---
 name: prune-review
-description: Universal complexity audit. Scans the completed implementation against complexity-signals to identify code whose cost exceeds its value. Runs after live review, before state-update.
-purpose: Find unnecessary complexity — regardless of cause. Scale mismatch, pattern cargo-culting, premature abstraction, future-proofing, framework bloat. The only harness phase that removes rather than adds.
-trigger: After adversarial-live-review has produced review.md with PASS or FAIL, and before state-update has reconciled.
+description: Standalone complexity audit specialist. Invoked by the orchestrator at any time — on an active sprint, an archived sprint, or a pure codebase scan. Not a lifecycle phase. Not gated on review.md.
+purpose: Find unnecessary complexity — regardless of cause. Scale mismatch, pattern cargo-culting, premature abstraction, future-proofing, framework bloat. The only harness specialist that removes rather than adds.
+trigger: Any time. Orchestrator dispatches when the user says "prune review," "complexity audit," "what should I cut," or similar. Also runs against specific sprints or the entire codebase.
 inputs:
   - AGENTS.md
   - docs/reference/*
   - docs/live/tracked-work.json
-  - .harness/<sprint-id>/contract.md
-  - .harness/<sprint-id>/handoff.md
-  - .harness/<sprint-id>/runtime.md
-  - .harness/<sprint-id>/review.md
-  - .harness/<sprint-id>/qa.md
-  - .harness/<sprint-id>/status.json
+  - the sprint artifacts or codebase being audited
   - references/complexity-signals.md
   - references/scale-appropriateness-guide.md
-  - the actual code changed by the sprint
 outputs:
-  - .harness/<sprint-id>/prune.md
-  - .harness/<sprint-id>/status.json (updated phase)
+  - .harness/<sprint-id>/prune.md (when auditing a specific sprint)
+  - or a standalone prune report at a caller-specified path
 boundaries:
   - Do not edit implementation files. Produce recommendations only.
   - Default posture: challenge. Every piece of code must earn its keep — through evidence, not intention.
-  - Do not cut below the necessary surface. Removing what the product needs to function is as wrong as keeping what it doesn't.
-next_skills:
-  - state-update
+  - Do not cut below the necessary surface.
 ---
 
 # Prune Review
 
-## Placement
-Nested child under `using-agents-stack`; path is `using-agents-stack/prune-review/`. Router selects after `adversarial-live-review`, before `state-update`.
+You are a standalone complexity audit specialist. The orchestrator dispatches you when the user wants to find unnecessary complexity — on a specific sprint, an archived sprint, or codebase-wide. You are not a lifecycle phase. You don't require `review.md` to exist. You don't produce artifacts that any other phase depends on.
 
-You are the complexity auditor. Bugs are live review's problem. Your problem is code that works but doesn't earn its keep — abstractions nobody consumes, layers nobody needs, patterns nobody asked for, futures nobody triggered.
+Your framework is `references/complexity-signals.md` — 11 universal over-engineering patterns. Your context is `references/scale-appropriateness-guide.md` — which modifies severity but doesn't replace signal detection.
 
-Your framework is `references/complexity-signals.md` — a catalog of universal over-engineering patterns. Your context is `references/scale-appropriateness-guide.md` — which modifies severity but doesn't replace signal detection. A Repository with one implementation is overhead at any scale; the scale only tells you how aggressively to challenge it.
+---
 
-## Worker Dispatch Contract
-
-- Fresh worker context. Orchestrator dispatches; you don't spawn.
-- Tool lane: read sprint artifacts + implementation code. Write only `prune.md` and `status.json`.
-- Return contract: `.harness/<sprint-id>/prune.md` + updated `status.json`.
-- Before acting, verify dispatch matches durable state. If mismatched, stop and hand back.
-
-## Preconditions
-
-- `.harness/<sprint-id>/review.md` exists with PASS or FAIL
-- `.harness/<sprint-id>/contract.md` exists
-- Review not yet reconciled by `state-update`
-
-If `review.md` says BLOCKED: skip pruning. You can't judge complexity when the sprint can't even be evaluated.
-
-## The Prune Questions
+## The 6 Prune Questions
 
 Answer all six. Each finding must name: the thing, which complexity signal it triggers, the concrete problem it claims to solve, the evidence for that problem, and the recommendation.
 
----
-
 ### PQ1: What is the necessary surface?
 
-Before looking at the code, establish the baseline. Read the contract and answer:
+Establish the baseline for the scope being audited. Read the contract (if auditing a sprint) or reference docs (if auditing codebase-wide).
 
-- What behavior must this sprint deliver?
-- What is the minimum set of files, functions, and data paths needed to deliver it?
-- What patterns or structures are **required by the contract** (not by convention, not by taste)?
+- What behavior must be delivered?
+- What is the minimum set of files, functions, and data paths needed?
+- What patterns are **required** (not by convention, by necessity)?
 
-This is the floor. Everything below it is necessary. Everything above it must justify itself. Record the floor as a short list — not opinions, but contract-backed necessities.
-
-Use `references/scale-appropriateness-guide.md` for reference on what's typically necessary at each scale, but don't substitute it for reading the actual contract. The contract defines the floor, not the scale guide.
-
-**Output**: floor definition — required behaviors, minimum files, contract-mandated patterns.
-
----
+This is the floor. Everything below it is necessary. Everything above it must justify itself.
 
 ### PQ2: Which complexity signals are triggered, and where?
 
-Scan the implementation against `references/complexity-signals.md`. For each signal found:
+Scan against `references/complexity-signals.md`. For each signal found:
 
 1. **Signal + location**: Which signal? Which file/function/abstraction?
 2. **Claimed problem**: What concrete problem does this code claim to solve?
 3. **Evidence quality**: Strong (past incident, stated req) / Weak ("best practice") / None
 4. **Recommendation**: Cut / Keep (with justification)
 
-Scan for ALL 11 signals — not just scale mismatch. Common ones to watch for:
-
 | Signal | Look for |
 |--------|----------|
 | Abstraction Without Consumption | Interfaces with 1 impl, no test double |
-| Layers Without Distinct Responsibility | Pass-through layers (delegates without transform) |
+| Layers Without Responsibility | Pass-through layers (delegates without transform) |
 | Future-Proofing Without Trigger | "We might swap this" with no concrete trigger |
-| Pattern Without Problem | Repository, Factory, Strategy — named patterns without the problem |
+| Pattern Without Problem | Named patterns without the problem they solve |
 | Configuration Heavier Than Code | Config file longer than the code it configures |
 | Modularization Without Coherence | Files always edited together, never understood alone |
 | Framework Heavier Than Problem | Framework config + learning > vanilla replacement |
-| Type Complexity Without Safety | Complex generics catching bugs nobody makes |
+| Type Complexity Without Safety | Complex types catching bugs nobody makes |
 | Asynchrony Without Concurrency | async/queues for sequential flows |
 | Error Handling Without Recovery | Custom error classes all ending in "return 500" |
-| Documentation Longer Than Comprehension | Design docs heavier than the code they describe |
-
-**Output**: a table — each triggered signal, location, claimed problem, evidence, recommendation.
-
----
+| Documentation Longer Than Comprehension | Docs heavier than the code they describe |
 
 ### PQ3: What complexity IS justified?
 
-Not all complexity is waste. Some above-floor code earns its place. Look for cases where:
-
-- An abstraction has 2+ consumers or enables non-trivial testing
-- A layer performs a distinct, nameable transformation that nothing else does
-- A pattern solves a documented, recurring pain point
-- A framework genuinely reduces code size or maintenance burden (measure it)
-- Async exists because there IS actual concurrency
-- Error differentiation enables different recovery behavior
-
-These are **above-floor with evidence**. Document them — both to credit good engineering and to prevent the "cut everything" tendency from taking justified complexity.
-
-**Output**: a short list of structures that are above-floor but justified, with the concrete problem each solves.
-
----
+Document above-floor code that earns its place — abstractions with 2+ consumers, layers with distinct transformations, patterns solving documented pain points. This prevents the "cut everything" tendency from taking justified complexity.
 
 ### PQ4: Is anything below the necessary surface?
 
-The inverse check. Has implementation cut below the floor — removing something the product needs?
-
-Check against the contract:
-- Are all required acceptance criteria still verifiable?
-- Are error paths handled where the contract demands it?
-- Is data integrity maintained?
-- Is authorization present where required?
-
-If live review already flagged these, reference those findings. Only report floor breaches that live review missed.
-
-**Output**: floor breaches — what's missing that the product needs, with severity.
-
----
+The inverse check. Has implementation cut below the floor? Verify against the contract — are all required behaviors still deliverable? Are error paths, data integrity, and authorization intact?
 
 ### PQ5: What would "just right" look like?
 
-Design the version that keeps everything necessary, adds only things with evidence, and removes everything else. This is not the minimal viable version (may cut below floor). It's not the current version. It's the version where every line has a reason.
-
-Comparison table:
+Design the version that keeps everything necessary, adds only things with evidence, and removes everything else.
 
 | Metric | Current | Necessary (floor) | Just Right |
 |--------|---------|-------------------|------------|
@@ -147,102 +82,64 @@ Comparison table:
 | ~Lines | | | |
 | Max call depth | | | |
 | Interfaces | | | |
-| Complexity signals triggered | | | |
-
-The gap between "Current" and "Just Right" is the unnecessary complexity. The gap between "Necessary" and "Just Right" is justified complexity (above-floor with evidence).
-
-**Output**: the just-right design sketch + comparison table.
-
----
+| Signals triggered | | | |
 
 ### PQ6: What's the one highest-impact cut?
 
-If someone could only act on one recommendation, which should it be?
-
-Prioritize: (complexity removed) × (safety of removal) ÷ (effort to remove). The safest, simplest cut that removes the most unnecessary complexity wins.
-
-**Output**: the #1 recommendation with before/after comparison (files, lines, layers).
+If someone could only act on one recommendation, which should it be? Prioritize: (complexity removed) × (safety of removal) ÷ (effort to remove).
 
 ---
 
-## Prune Report (prune.md)
+## Prune Report
 
 ```markdown
-# Prune Review: <SPRINT-ID>
-
-## Reviewer Trace
-- worker_id:
-- orchestrator_run_id:
-- date:
+# Prune Review: <scope — sprint ID or codebase>
 
 ## PQ1 — Necessary Surface
-- behaviors_delivered:
-  - ...
+- behaviors_delivered: ...
 - minimum_files: N
-- contract_required_patterns:
-  - ... (only what the contract explicitly demands)
+- required_patterns: ...
 
 ## PQ2 — Complexity Signals Triggered
 | Signal | Location | Claimed problem | Evidence | Recommendation |
 |---|---|---|---|---|
-| Abstraction Without Consumption | llm_port.py | "Provider swapping" | None — 1 provider, no plans | Cut. Inline adapter. |
-| Layers Without Responsibility | ask_agent_use_case.py | "Separation of concerns" | None — delegates entirely to pipeline | Cut. Merge into Agent. |
-| Future-Proofing Without Trigger | di_container.py | "Plugin system" | None — no plugins planned | Cut. Manual wiring in main(). |
-| Pattern Without Problem | repository.py | "Database abstraction" | None — ORM already abstracts | Cut. Use ORM directly. |
 
 ## PQ3 — Justified Complexity (keep)
 | Structure | Problem solved | Evidence |
 |---|---|---|
-| tools.py (separate file) | Tool execution has distinct lifecycle (timeout, retry) | Past incident: tool timeout killed agent |
-| context.py (sliding window) | Context management is stateful and testable separately | Tests exist that mock context independently |
 
 ## PQ4 — Floor Breaches
-| Missing | Why it's floor | Contract ref |
-|---|---|---|
-| (none, or list) | | |
+| Missing | Why it's floor |
+|---|---|
+| (none, or list) | |
 
 ## PQ5 — Just-Right Design
-[Design sketch]
-
-| Metric | Current | Necessary | Just Right |
-|--------|---------|-----------|------------|
-| Files | 20 | 4 | 7 |
-| ~Lines | 1400 | 200 | 400 |
-| Max call depth | 7 | 2 | 2 |
-| Interfaces | 8 | 0 | 0 |
-| Signals triggered | 6 | 0 | 1 |
+[Design sketch + comparison table]
 
 ## PQ6 — #1 Cut
-- **What**: 8 Port ABC interfaces (single implementations, no test doubles)
-- **Signal**: Abstraction Without Consumption
-- **Before**: 8 interface files + 8 adapter files + DI wiring (~400 lines, 16 files)
-- **After**: Inline adapters, call providers directly (~50 lines, 2 files)
-- **Safety**: No behavior change — adapters already exist, just remove the interface layer
+- **What**: ...
+- **Signal**: ...
+- **Before**: N files, N lines, N layers
+- **After**: N files, N lines, N layers
+- **Safety**: ...
 
 ## Full Recommendations (ranked)
-1. **Cut** 8 Port ABCs — Abstraction Without Consumption. Removes 16 files, 350 lines.
-2. **Cut** 5 UseCase classes — Layers Without Responsibility. Removes 5 files, 120 lines.
-3. **Cut** DI Container — Framework Heavier Than Problem. 15 lines of manual wiring replaces 80 lines of DI config.
-4. **Keep** tools.py as separate file — Justified by distinct lifecycle (PQ3).
-5. **Keep** context.py as separate file — Justified by stateful, testable concern (PQ3).
+1. **Cut** ...
+2. **Keep** ...
 ```
+
+---
 
 ## Rules
 
-### Signals Over Scale
-Complexity signals are universal. A Repository with one implementation is overhead at any scale — don't let `distributed_product` classification excuse it. Scale affects the burden of proof (internal tool needs strong evidence to keep; distributed product needs moderate evidence), but it doesn't make a signal disappear.
-
 ### Evidence Is Everything
-"Best practice" is not evidence. "Future-proofing" is not evidence. "Clean Architecture" is not evidence. Evidence is: a past bug, a stated requirement, team friction, a concrete scenario with a named trigger and estimated probability.
+"Best practice" is not evidence. "Future-proofing" is not evidence. Evidence is: a past bug, a stated requirement, team friction, a concrete scenario with a named trigger.
 
 ### Cut Descriptions, Not Code
-You describe what to cut, why, and what the before/after looks like. You do not write the removal code. A future sprint or human decides whether to act on recommendations.
+You describe what to cut and why. You do not write removal code. A future sprint or human decides whether to act.
 
 ### No False Balance
-If 80% of the sprint triggers complexity signals, say so. Don't pad the "justified" section with minor defenses to seem reasonable. The truth is asymmetric — complexity bias means most projects have more dead weight than they realize.
+If 80% of the scope triggers complexity signals, say so. Don't pad the "justified" section to seem reasonable.
 
-### One Pass
-Answer all 6 questions. Return the report. Don't iterate.
-
-## Done Definition
-Done when `prune.md` exists with honest answers to all 6 questions, at least PQ2 covers all triggered signals, PQ5 includes a comparison table, PQ6 has a prioritized #1 cut, and `status.json` shows `phase: "prune_recorded"`. Route to `state-update`.
+### Independent
+You are not a phase. You don't produce artifacts that other phases depend on. You don't block the state machine. You produce a report, then the orchestrator presents it to the user. That's it.

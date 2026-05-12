@@ -76,7 +76,7 @@ Each child lives under `using-agents-stack/<child-name>/`, and child SKILL.md fi
 6. Once steps 1-5 are settled and the question is closed-world file-state routing, the router may call `scripts/dispatch_phase.py` as a deterministic fast path over durable state.
 7. If `compound_pending_feature_ids` is non-empty, route `compound-capture` before resuming or opening any sprint work.
 8. If a runnable active sprint exists, route from the strongest local durable artifact for that sprint.
-9. If `review.md` exists but local and live state have not yet reconciled the verdict, route `prune-review` when the verdict is PASS or FAIL and no `prune.md` exists; route directly to `state-update` when the verdict is BLOCKED or `prune.md` already exists.
+9. If `review.md` exists but live and local state have not yet reconciled the verdict, route to `state-update` before any new execution or proposal work.
 10. If the sprint is in `build_failed` or reconciled `review_failed`, route to `generator-execution` only when retry eligibility is separately confirmed by `scripts/verify_retry_guard.py` and `clean_restore_ref` defines a safe restore boundary.
 11. If the sprint is in `awaiting_human` or `escalated_to_human` and that parked state is already reflected durably, do not auto-dispatch execution. Surface the parked state unless new human edits have changed the checkpoint.
 12. If no runnable active sprint exists but exactly one local planning workspace exists with phase `needs_brainstorm` or `pending`, route from that checkpoint before selecting a different backlog item.
@@ -97,7 +97,6 @@ This router owns only the agents-stack workflow family:
 - adversarial contract review
 - contract-bound execution
 - independent live review
-- complexity prune review
 - state synchronization and archive closeout
 - post-publication compound capture
 
@@ -172,7 +171,6 @@ After spawning, emit one of these text forms for traceability (also valid when `
 - `Route to using-agents-stack/evaluator-contract-review.`
 - `Route to using-agents-stack/generator-execution.`
 - `Route to using-agents-stack/adversarial-live-review.`
-- `Route to using-agents-stack/prune-review.`
 - `Route to using-agents-stack/state-update.`
 - `Route to using-agents-stack/compound-capture.`
 - `Install using-agents-stack/<child>, then route to using-agents-stack/<child>.`

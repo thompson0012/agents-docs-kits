@@ -165,32 +165,6 @@
       }
     },
     {
-      "name": "prune-review",
-      "target": "using-agents-stack/prune-review",
-      "relationship": "routes_to",
-      "summary": "Dispatches a fresh prune worker to audit the completed implementation for unnecessary complexity, over-engineering, and YAGNI violations after live review and before state-update.",
-      "route_when": [
-        "`.harness/<workstream>/review.md` exists with PASS or FAIL verdict.",
-        "`review.md` has not yet been reconciled by `state-update`.",
-        "The sprint reached a reviewable state and the orchestrator wants a complexity audit before closing."
-      ],
-      "avoid_when": [
-        "No review.md exists yet.",
-        "Review.md says BLOCKED — pruning is deferred when the sprint couldn't even be judged.",
-        "`state-update` has already reconciled the outcome.",
-        "The sprint is in `build_failed` state without reaching review."
-      ],
-      "requires": [
-        "adversarial-live-review"
-      ],
-      "recommends": [],
-      "fallbacks_to": [],
-      "install_if_missing": {
-        "package": "using-agents-stack/prune-review",
-        "notes": "Install the nested child path before routing if the runtime cannot discover bundled children automatically, then dispatch it as a fresh worker."
-      }
-    },
-    {
       "name": "state-update",
       "target": "using-agents-stack/state-update",
       "relationship": "routes_to",
