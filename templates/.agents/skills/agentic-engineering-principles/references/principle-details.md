@@ -52,6 +52,8 @@ Evidence is not "Book X says we need Y." Evidence is "This code doesn't work bec
 
 The core does exactly one thing. All advanced capabilities hang off the core. Core growing = direction is wrong.
 
+**Litmus test:** Can a developer replace any non-core component without modifying the kernel? If the answer is "no" for any component, the boundary between core and protocol is wrong.
+
 ### 7. Plugins mount at timing points, not as subsystems
 
 - Define fixed execution timing points (hooks)
@@ -79,6 +81,8 @@ Internal tools don't need a configuration system. Declarative API beats YAML / J
 
 Every removed feature has explicit "bring it back" conditions: how many use cases, how many users, what pain point. Not "never add it." Means "add it when there's evidence."
 
+**Testing corollary:** Tests that exercise deprecated paths are safety nets, not evidence. When validating a new architecture, every test must exercise the new API surface. Backward-compat tests prove nothing was broken; kernel-native tests prove the new design actually works.
+
 ### 11. Review must include a "cut" step
 
 Reviews default to addition. Finding "what's missing" is easier than finding "what's extra."
@@ -103,6 +107,8 @@ Good design makes documentation shorter. If docs grow after every iteration, sto
 ### 14. Deprecation must allow gradual migration
 
 Breaking changes must let old and new coexist for at least one version cycle. User code shouldn't break all at once.
+
+Every deprecated symbol must carry a scheduled removal version: `@deprecated(since="0.2", remove_in="0.4")`. Without a removal target, deprecated code becomes permanent dead weight. Backward compatibility is a safety net, not a storage room.
 
 ---
 
