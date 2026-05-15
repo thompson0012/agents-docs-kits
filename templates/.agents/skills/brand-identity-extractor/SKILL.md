@@ -180,8 +180,8 @@ These skills work well with BIE in a loose pipeline — no hard dependency, just
 
 | Skill | Role | When to route |
 |---|---|---|
-| [`prompt-augmentation`](../../prompt-augmentation/SKILL.md) | **Stage 3 enrichment** | Feed BIE's AI prompt output (Core Style, Negative Bank, templates) into `prompt-augmentation` with `text-to-image` mode for domain-specific term substitution (optics, lighting, composition, materials). |
-| [`frontend-design/design-context-scout`](../../frontend-design/design-context-scout/SKILL.md) | **Downstream consumer** | BIE's output in `docs/reference/design.md` (YAML block under `## Visual System` for machine-readable tokens, prose sections for human context) is consumed by `design-context-scout` as a design system source for UI sprint planning. |
+| [`prompt-augmentation`](../prompt-augmentation/SKILL.md) | **Stage 3 enrichment** | Feed BIE's AI prompt output (Core Style, Negative Bank, templates) into `prompt-augmentation` with `text-to-image` mode for domain-specific term substitution (optics, lighting, composition, materials). |
+| [`frontend-design/design-context-scout`](../frontend-design/design-context-scout/SKILL.md) | **Downstream consumer** | BIE's output in `docs/reference/design.md` (YAML block under `## Visual System` for machine-readable tokens, prose sections for human context) is consumed by `design-context-scout` as a design system source for UI sprint planning. |
 
 ## Bundled Resources
 
