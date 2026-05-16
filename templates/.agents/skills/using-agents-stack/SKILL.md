@@ -61,6 +61,16 @@ After extract completes:
 
 Provide worker with: child SKILL.md path, workstream ID, artifact paths to read/write. Fresh worker, clean context.
 
+### Generator ≠ Auditor — pre-dispatch check
+
+Before dispatching any worker, verify adversarial separation:
+
+- If dispatching to `build`: confirm the worker instance has NOT previously executed `audit` for this workstream
+- If dispatching to `audit`: confirm the worker instance has NOT previously executed `build` for this workstream
+- If the same agent instance would perform both roles → STOP. Dispatch separate workers.
+
+This check applies regardless of how trivial the workstream scope appears. No exceptions.
+
 ## Router Output
 
 - `Route to thesis.`

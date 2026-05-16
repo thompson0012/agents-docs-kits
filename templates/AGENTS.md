@@ -55,7 +55,7 @@ Layers proceed sequentially. Action layer produces insight that may trigger a sp
 
 1. **Files beat chat memory.** If files and conversation disagree, files win.
 2. **One active workstream.** At most one workstream is non-parked at any time.
-3. **Generator ≠ Auditor.** Build and audit must be independent workers.
+3. **Generator ≠ Auditor.** Build and audit must be independent workers. The orchestrator MUST dispatch separate worker instances for build and audit within the same workstream. A single agent instance must never perform both roles, regardless of scope triviality.
 4. **Artifact precedence.** `audit.md > handoff.md > contract.md > (thesis/challenge/response/synthesis) > status.json > tracked-work.json > plan.md`
 5. **Depth and attempt are independent.** `depth` tracks understanding layers. `attempt` tracks execution retries. They never interfere.
 6. **Response before Synthesis.** `response.md` must complete before `synthesis.md`. Order is enforced by the orchestrator.
@@ -82,6 +82,7 @@ Per-workstream checkpoint (7 fields):
 - Workers run one phase each in a fresh context. Workers must not spawn nested workers.
 - Tool walls are hard: audit workers get read-only access except for `audit.md`. Build workers get write access limited to contract-defined files.
 - Dispatch: provide worker prompt (SKILL.md path) + workstream ID + artifact paths. No elaborate formalism.
+- Pre-dispatch check (Generator ≠ Auditor): before dispatching build or audit, orchestrator verifies the worker has not performed the opposite role for this workstream. Same worker for both roles is always a violation.
 
 ## Routing
 

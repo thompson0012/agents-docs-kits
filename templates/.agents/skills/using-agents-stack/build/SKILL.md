@@ -17,7 +17,8 @@ Before touching code:
 1. `contract.md` exists and defines allowed files
 2. This workstream is the active one in `tracked-work.json`
 3. If retrying: `attempt < max_attempts` and `clean_restore_ref` exists
-4. If any check fails: stop, record in `status.json`, hand back to orchestrator
+4. Generator ≠ Auditor: if you previously executed `audit` for this workstream, STOP. The orchestrator must dispatch build and audit as separate workers.
+5. If any check fails: stop, record in `status.json`, hand back to orchestrator
 
 ## Required Reads
 

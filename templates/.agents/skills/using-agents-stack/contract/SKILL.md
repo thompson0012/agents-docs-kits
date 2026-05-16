@@ -45,12 +45,19 @@ Turn the synthesis framework into a buildable contract. Define: what files chang
 ### AC-001 | stateful=no | reversible=no
 - Requirement: [what must be true]
 - Evidence: [how to verify — command, selector, observable output]
+- I/O examples:
+  - Input: [concrete input value] → Expected: [concrete expected output]
+  - Input: [edge case input] → Expected: [expected output]
 
 ### AC-002 | stateful=yes | reversible=yes
 - Requirement: [interactive behavior]
-- Before state: [starting condition]
-- Action: [exact step]
-- After state: [expected result]
+- I/O examples:
+  - Before state: [starting condition]
+    Action: [exact step]
+    After state: [expected result]
+  - Before state: [alternate starting condition]
+    Action: [alternate step]
+    After state: [expected result]
 - Reverse check: [how to undo and verify]
 
 ## Risks and Assumptions
@@ -58,7 +65,10 @@ Turn the synthesis framework into a buildable contract. Define: what files chang
 - [Hidden assumptions to surface]
 
 ## Non-Goals
-- [Explicitly deferred work]
+| # | Deferred Item | Reason (external constraint) |
+|---|---|---|
+| 1 | [what is deferred] | [why not now — tech limitation, deadline, dependency not ready] |
+| 2 | [what is deferred] | [why not now] |
 ```
 
 ## Quality Bar
@@ -66,6 +76,8 @@ Turn the synthesis framework into a buildable contract. Define: what files chang
 - Narrow enough to finish in one sprint
 - Every AC is externally verifiable — someone reading this file can check it
 - File boundaries are precise — actual paths, not "the auth module"
+- Every AC includes concrete I/O examples — not just behavioral prose
+- Each Non-Goal states an external constraint (tech limitation, deadline, dependency not ready) — not subjective preference
 - Stateful ACs include before/action/after — no "looks correct now"
 
 ## Workflow
