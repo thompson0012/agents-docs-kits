@@ -35,7 +35,7 @@
     "prerequisite_artifacts": [
       ".harness/<sprint-id>/contract.md",
       ".harness/<sprint-id>/context.md",
-      "status.json phase: contracted"
+      "status.json phase: contracted or validated"
     ],
     "produces_artifacts": [
       ".harness/<sprint-id>/artifact/<filename>.html",
@@ -43,7 +43,7 @@
       ".harness/<sprint-id>/handoff.md",
       ".harness/<sprint-id>/status.json"
     ],
-    "phase_in": "contracted",
+    "phase_in": "contracted | validated",
     "phase_out": "awaiting_review",
     "fallback": "If entry checks fail, parks at awaiting_human. If attempt budget exhausted, escalates to human. Requires clean_restore_ref in status.json before any artifact file is written."
   },
@@ -81,5 +81,23 @@
     "phase_in": "post-state-update (compound queued)",
     "phase_out": "compound cleared",
     "fallback": "If no durable learning survives the 3-criteria filter, records a dated deliberate-skip note. Never invents lessons without artifact-linked provenance."
+  },
+  {
+    "name": "design-prototype-lab",
+    "description": "Progressive validation pipeline: Token Lab → Component Theater → Page Slice. Verifies that the design vocabulary works in real browsers before full artifact build.",
+    "skill_path": "frontend-design/design-prototype-lab",
+    "prerequisite_artifacts": [
+      ".harness/<sprint-id>/contract.md (phase: contracted, prototyping_required: true)",
+      ".harness/<sprint-id>/context.md"
+    ],
+    "produces_artifacts": [
+      ".harness/<sprint-id>/token-validation.md",
+      ".harness/<sprint-id>/component-tests.md",
+      ".harness/<sprint-id>/page-slice.md",
+      ".harness/<sprint-id>/status.json"
+    ],
+    "phase_in": "contracted",
+    "phase_out": "validated | validating_failed",
+    "fallback": "If token validation reveals critical gaps, routes to state-update for escalation to human."
   }
 ]

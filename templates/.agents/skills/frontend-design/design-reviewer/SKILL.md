@@ -38,6 +38,12 @@ Interactive artifact review requires a browser environment. Declare your capabil
 | Keyboard navigation (slides/animation) | ❌ | Requires live JS event handling |
 | Tweak panel toggle and persistence | ❌ | Requires live JS event handling |
 | `postMessage` slide-index events | ❌ | Requires live JS execution |
+| Token adherence (hardcoded values) | ✅ | Full-text search for `#`, `rgb(`, `hsl(` in artifact source |
+| Animation property check (width/height) | ✅ | Search for `width` and `height` inside `@keyframes` blocks |
+| Five-state completeness | ✅ | Inspect CSS for `:hover`, `:active`, `:focus`, `:disabled` pseudo-classes |
+| prefers-reduced-motion | ✅ | Search for `prefers-reduced-motion` media query in artifact CSS |
+| Content stress resistance | ❌ | Requires live browser rendering with varied content |
+| Pixel precision (eyedropper) | ❌ | Requires live browser DevTools color sampling |
 
 ## Worker Dispatch Contract
 
@@ -67,10 +73,15 @@ A sprint passes design review only when all of the following are true:
 5. Accessibility minimums are met.
 6. At least 3 variation axes are accessible from the artifact as described in the contract.
 7. `localStorage` persistence works for all stateful behavior (slide index, animation time, Tweak values).
-8. Content contains no filler, no invented data, no AI slop copy.
-9. `qa.md` records before/action/after evidence for all interactive criteria.
-10. Coverage metadata is present and truthful.
-11. Convergence metadata shows zero open blocking findings.
+8. All interactive elements have all five visual states defined.
+9. No hardcoded color values exist in the artifact — all colors use tokens or oklch() derivations.
+10. All animations use a single easing family and respect the contract's timing hierarchy.
+11. `prefers-reduced-motion` is present and functional.
+12. Content stress testing passes — extreme content does not break layout.
+13. Content contains no filler, no invented data, no AI slop copy.
+14. `qa.md` records before/action/after evidence for all interactive criteria.
+15. Coverage metadata is present and truthful.
+16. Convergence metadata shows zero open blocking findings.
 
 Any gap in reproducibility, contract compliance, quality rules, or metadata fails closed.
 
@@ -144,6 +155,19 @@ Use `references/design-quality-contract-recipe.md` as the audit checklist. Recor
 - [ ] No SVG-drawn imagery (placeholder boxes are acceptable)
 - [ ] No forbidden font families (Inter, Roboto, Arial, Fraunces) unless design system requires them
 
+**Token adherence** (any hardcoded value = P1)
+- [ ] No hardcoded hex values (`#XXXXXX`) outside oklch() derivations
+- [ ] No hardcoded rgb() or hsl() values
+- [ ] All colors reference CSS custom properties or oklch() derivations from the token inventory
+- [ ] Token naming convention is consistent across the artifact
+
+**Pixel precision** (visual defects = P2)
+- [ ] Color values match `context.md` token inventory when sampled with DevTools eyedropper
+- [ ] Spacing values match the token inventory scale (±1px tolerance)
+- [ ] Border radius values are from the token inventory (not ad-hoc)
+- [ ] Shadow values use the token inventory's shadow scale
+- [ ] Type scale values match `context.md` ±0px (size) and ±0.05 (line-height)
+
 **Content discipline** (any filler = P2)
 - [ ] No placeholder text shipped as real content
 - [ ] No invented statistics or "data slop"
@@ -170,6 +194,24 @@ Use `references/design-quality-contract-recipe.md` as the audit checklist. Recor
 - [ ] `scrollIntoView()` not used
 - [ ] localStorage persistence confirmed for all stateful elements
 - [ ] Reversible interactions are actually reversible
+
+**Content stress resistance** (any layout break = P1)
+- [ ] Extra-long text (50+ chars without spaces) does not break layout
+- [ ] Emoji content renders without line-height disruption
+- [ ] Missing images show a graceful fallback (labeled placeholder, not browser broken-image icon)
+- [ ] Extreme numbers (¥9,999,999.99) do not overflow their containers
+- [ ] RTL text (Arabic/Hebrew) does not break layout if internationalization is in scope
+
+**Animation quality** (failures = P2)
+- [ ] All animations use a single easing family (not mixed linear + spring)
+- [ ] Animation durations fall within the contract's timing hierarchy
+- [ ] `prefers-reduced-motion: reduce` disables all motion
+- [ ] No `width`/`height`/`top`/`left` properties animated — only `transform` and `opacity`
+- [ ] All five component states (default/hover/active/focus/disabled) exist for interactive elements
+
+**Brand temperament** (ADVISORY — record as qualitative observation, does not block PASS)
+- [ ] Overall visual impression matches the brand personality keywords from `context.md`
+- [ ] The artifact speaks the documented industry dialect (or documents why it deviated)
 
 **Responsive / viewport** (if contract specifies)
 - [ ] Content does not clip or overflow at the contract-specified viewport(s)
@@ -341,3 +383,10 @@ Never erase evidence to make the next pass look cleaner.
 - [ ] Exactly one verdict issued: PASS, FAIL, or BLOCKED
 - [ ] `qa.md` and `review.md` written before `status.json` is updated
 - [ ] `status.json` set to `reviewed_pass`, `reviewed_fail`, or `reviewed_blocked`
+- [ ] Token adherence scan completed (no hardcoded hex/rgb/hsl values)
+- [ ] Five-state completeness verified for all interactive elements
+- [ ] Animation easing family is singular and consistent
+- [ ] `prefers-reduced-motion` verified present and functional
+- [ ] Content stress testing completed (long text, emoji, broken images, extreme numbers)
+- [ ] Pixel precision check completed (eyedropper color sampling, spacing measurement)
+- [ ] Brand temperament observation recorded in review.md (advisory — does not block PASS)

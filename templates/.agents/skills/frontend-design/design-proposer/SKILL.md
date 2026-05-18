@@ -41,6 +41,7 @@ If the human brief does not answer these, record them as `[human must clarify]` 
 | Fidelity level | Wireframe, hi-fi, production-ready |
 | Existing design system fit | Whether to stay on-brand or explore new directions |
 | Known forbidden or required patterns | Explicit user constraints |
+| Prototyping required | Whether progressive validation (Token Lab → Component Theater → Page Slice) should run before full build. Recommended when: uncertain token choices, new brand, untested interaction patterns. | true / false |
 
 ## Output Types
 
@@ -102,8 +103,39 @@ Required base acceptance criteria for every sprint (add domain-specific on top):
 | AC-006 | No font families from the forbidden list (Inter, Roboto, Arial, Fraunces, system fonts) unless the project's own design system requires them |
 | AC-007 | No AI slop patterns present (aggressive gradient backgrounds, left-border accent containers, SVG-drawn imagery) |
 | AC-008 | At least 3 design variations exposed as Tweaks or labeled sections |
+| AC-009 | Every interactive element has all five states (default, hover, active, focus, disabled) visually defined. Applies to: html-prototype, ui-mockup, animation. | stateful=yes, reversible=yes |
+| AC-010 | All animations use a single easing family and fall within the defined timing hierarchy. Applies to: animation, html-prototype. | stateful=no, reversible=no |
+| AC-011 | All animations respect `prefers-reduced-motion: reduce` with a static fallback. Applies to: all. | stateful=no, reversible=no |
 
 Add output-type-specific criteria from `references/design-quality-contract-recipe.md`.
+
+### Interaction Design Specification (MANDATORY for output types: html-prototype, ui-mockup, animation)
+
+Every interactive component must have all five states defined. The contract must include this state matrix:
+
+| Component | Default | Hover | Active/Pressed | Focus (keyboard) | Disabled |
+|---|---|---|---|---|---|
+| Button (primary) | ... | ... | ... | ... | ... |
+| Button (secondary) | ... | ... | ... | ... | ... |
+| Input field | ... | ... | ... | ... | ... |
+| Card (interactive) | ... | ... | ... | ... | ... |
+| [others as needed] | ... | ... | ... | ... | ... |
+
+For each state, document: color change, scale/transform, shadow change, cursor, and transition duration/easing.
+
+### Animation Timing Specification (MANDATORY for output types: animation, html-prototype)
+
+Define the timing hierarchy for all animations:
+
+| Category | Duration | Easing | Examples |
+|---|---|---|---|
+| Micro-interactions | 100-150ms | cubic-bezier(0.4, 0, 0.2, 1) | Button press, hover state, toggle |
+| State transitions | 200-300ms | cubic-bezier(0.4, 0, 0.2, 1) | Modal open/close, page transition, expand/collapse |
+| Narrative animations | 400-600ms | spring or custom | Scroll-triggered reveals, hero animations |
+| Ambient effects | 3s+ (continuous) | linear | Background particles, subtle parallax |
+
+All animations must use a single easing family. Specify which one.
+All animations must support `prefers-reduced-motion: reduce` with a static fallback.
 
 ## Required Output
 
@@ -144,6 +176,11 @@ Add output-type-specific criteria from `references/design-quality-contract-recip
 2. ...
 3. ...
 
+## Prototyping Strategy
+- prototyping_required: [true | false]
+- If true, describe which design decisions are uncertain and need validation:
+  - ...
+
 ## Allowed Files
 - .harness/<sprint-id>/artifact/<filename>.html
 - .harness/<sprint-id>/artifact/<supporting files>
@@ -176,6 +213,7 @@ Only write this file when all proposal inputs are answered and the proposal surv
 `contract.md` is identical in structure to `sprint_proposal.md` but:
 - All `[human must clarify]` fields are filled in
 - Acceptance criteria are finalized with stable `AC-###` ids
+- `prototyping_required` field is finalized (true or false)
 - No open questions remain
 - The human's edits to `sprint_proposal.md` (if any) are incorporated
 
@@ -203,6 +241,8 @@ Before setting `awaiting_human`, attack the proposal:
 - Does the variation strategy explore meaningfully different directions, or just palette swaps?
 - Are file bounds tight enough that the builder cannot silently add product-code scope?
 - Does the output type match what the human actually described?
+- For interactive output types: is the five-state matrix fully defined and verifiable?
+- Is the animation timing hierarchy specified with concrete ms ranges and easing values?
 
 If the proposal does not survive this challenge, revise it before parking for human review.
 

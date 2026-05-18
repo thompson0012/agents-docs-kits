@@ -32,7 +32,9 @@ Each child lives under `frontend-design/<child-name>/`, and child SKILL.md files
 5. Phase routing from strongest local artifact — in order:
    - `review.md` exists and is unreconciled → route to `state-update` (harness) before next step
    - `handoff.md` with `READY_FOR_REVIEW` and no `review.md` → `design-reviewer`
-   - `contract.md` approved and `phase: "contracted"` or `"building"` → `design-builder`
+   - `contract.md` approved and `phase: "validated"` → `design-builder`
+   - `contract.md` approved, `phase: "contracted"` AND `prototyping_required: true` in contract.md → `design-prototype-lab`
+   - `contract.md` approved, `phase: "contracted"` AND `prototyping_required: false` or absent → `design-builder`
    - `sprint_proposal.md` exists and `phase: "approved"` (human-approved, no `contract.md` yet) → `design-proposer` to formalize the contract
    - `sprint_proposal.md` exists and `phase: "awaiting_human"` → surface to human; do not auto-dispatch
    - `context.md` exists with `no_design_system_found: true` and `phase: "awaiting_human"` → surface to human; do not advance to proposer until human provides design reference
@@ -43,10 +45,11 @@ Each child lives under `frontend-design/<child-name>/`, and child SKILL.md files
    - If no tracked feature exists yet, a `project-initializer` pass may be needed first.
 7. `review_failed` with valid `clean_restore_ref` and remaining budget → `design-builder` retry.
 8. `reviewed_blocked` → route to `state-update` (harness) to record the blocker, then surface to human. Do not auto-retry a BLOCKED verdict.
-9. `build_failed` or `review_failed` without `clean_restore_ref`, or budget exhausted → `state-update` → `escalated_to_human`.
-10. `review.md` PASS → route to `state-update` (harness) to reconcile verdict and queue compound.
-11. After `state-update` confirms `compound_pending_feature_ids` is non-empty → route to `design-compounder`.
-12. After `design-compounder` clears the queue → sprint is complete; open next sprint if pending.
+ 9. `build_failed` or `review_failed` without `clean_restore_ref`, or budget exhausted → `state-update` → `escalated_to_human`.
+10. `validating_failed` → route to `state-update` → `escalated_to_human`.
+11. `review.md` PASS → route to `state-update` (harness) to reconcile verdict and queue compound.
+12. After `state-update` confirms `compound_pending_feature_ids` is non-empty → route to `design-compounder`.
+13. After `design-compounder` clears the queue → sprint is complete; open next sprint if pending.
 
 ## Phase Model
 
@@ -56,12 +59,14 @@ Each child lives under `frontend-design/<child-name>/`, and child SKILL.md files
 | `context_ready` | `context.md` | `design-proposer` |
 | `awaiting_human` | `sprint_proposal.md` | human |
 | `contracted` | `contract.md` | `design-builder` |
+| `validating` | `token-validation.md`, `component-tests.md`, `page-slice.md` | `design-prototype-lab` |
 | `building` | in-progress HTML, `runtime.md` | `design-builder` |
 | `awaiting_review` | `handoff.md` | `design-reviewer` |
 | `reviewed_pass` | `review.md` PASS | `state-update` → `design-compounder` |
 | `reviewed_fail` | `review.md` FAIL | `design-builder` retry |
 | `reviewed_blocked` | `review.md` BLOCKED | `state-update` → human |
 | `build_failed` | `runtime.md` with failure | `state-update` |
+| `validating_failed` | `token-validation.md` with failures | `state-update` |
 | `escalated_to_human` | `status.json` | human |
 
 ## Family Workflow Boundary
@@ -72,6 +77,7 @@ This router owns:
 - HTML artifact implementation
 - adversarial design quality review
 - design learning compound capture
+- progressive design validation (token labs, component theater, page slices)
 
 This router does not own general harness lifecycle management. After `review.md` is written, route through `state-update` (from `using-agents-stack`) for archive, live-state reconciliation, and progress ledger updates. This family's state machine is a domain layer on top of the harness, not a replacement for it.
 
@@ -83,6 +89,7 @@ Return one of these forms, then dispatch the selected child as a fresh worker:
 - `Route to frontend-design/design-proposer.`
 - `Parked at awaiting_human. Surface sprint_proposal.md to human for approval.`
 - `Route to frontend-design/design-builder.`
+- `Route to frontend-design/design-prototype-lab.`
 - `Route to frontend-design/design-reviewer.`
 - `Route to frontend-design/design-compounder.`
 - `Route to using-agents-stack/state-update.` (after review verdict or build failure)

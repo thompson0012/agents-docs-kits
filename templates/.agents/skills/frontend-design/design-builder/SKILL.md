@@ -64,6 +64,29 @@ A sprint that reaches `build_failed` or `review_failed` without a `clean_restore
 
 ## Build Procedure
 
+### 0. Layered Implementation Order (MANDATORY)
+
+Build in three layers, verifying each before moving to the next:
+
+**Layer 1: Static Restoration**
+- Nail typography, colors, spacing, and layout first — no animations, no interactivity
+- Verify against `context.md` token inventory with DevTools
+- Every color must be a CSS custom property sourced from the token inventory
+- No hardcoded hex values; use `var(--token-name)` or oklch() derivations
+
+**Layer 2: Responsive Skeleton**
+- Add responsive behavior (Container Queries or breakpoints)
+- Verify at 320px, 768px, 1440px, and 2560px — no content clips or overflows
+- All interactive elements must have ≥44×44px touch targets at every breakpoint
+
+**Layer 3: Animation Loading**
+- Add animations in priority order:
+  1. Essential feedback (button presses, form validation) — 100-150ms
+  2. Scroll-triggered reveals — 200-300ms
+  3. Decorative animations (background particles, cursor tracking) — only if contracted
+- All animations must use the single easing family specified in the contract
+- All animations must respect `prefers-reduced-motion: reduce`
+
 ### 1. Determine the scaffold
 
 Select the scaffold pattern that matches the contract's output type:
@@ -145,6 +168,28 @@ Every artifact must follow these rules before handoff. Violation of any rule is 
 - No imagery drawn with inline SVG paths; use labeled placeholder boxes (`<div class="img-placeholder">` styled with a neutral fill) or reference actual project assets
 - No AI-generated color palettes invented from scratch when token inventory exists
 
+#### Token discipline
+- No hardcoded hex, rgb(), or hsl() values anywhere in the artifact. Use CSS custom properties from the token inventory or oklch() derivations from the existing palette.
+- Token naming must follow the project's convention. Never mix naming styles.
+- If a needed color has no token, derive it via oklch(from var(--existing-token) ...) and document the derivation.
+
+#### Component state completeness (MANDATORY for html-prototype, ui-mockup)
+Every interactive element must define all five visual states:
+- Default → Hover → Active/Pressed → Focus (keyboard) → Disabled
+- Focus state must use a visible focus ring (never `outline: none` without replacement)
+- Disabled state must be visually distinct (reduced opacity, muted colors) but still readable
+
+#### Animation and motion (MANDATORY for animation, html-prototype)
+- Use the timing hierarchy from the contract: micro (100-150ms), transition (200-300ms), narrative (400-600ms)
+- Prefer spring physics (`spring()` in CSS or equivalent) over linear animations for UI feedback
+- Never mix easing families — use one family across the entire artifact
+- Add `@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }` to the artifact CSS
+- Never animate `width`, `height`, `top`, `left` properties — use `transform` and `opacity` only (prevents layout thrashing)
+
+#### Visual proportion discipline (ADVISORY — record in runtime.md if violated)
+- 60-30-10 rule: ~60% neutral surface, ~30% brand color, ~10% accent
+- 80/20 rule: ~80% of elements should be visually "quiet" (neutral, standard), ~20% "speak" (brand color, large type, animation)
+
 #### Typography
 - Never use: Inter, Roboto, Arial, Fraunces, or generic `system-ui` unless the project's own design system requires them and `context.md` confirms this
 - Minimum font sizes: 24px for 1920×1080 fixed canvas; 12px for print; 16px for web body
@@ -154,11 +199,13 @@ Every artifact must follow these rules before handoff. Violation of any rule is 
 - Never use `scrollIntoView()` — use other DOM scroll methods when scrolling is needed
 - `localStorage` persistence required for: current slide index, current animation time, and any Tweak values
 - All interactive state changes must be reversible if the contract marks them reversible
+- Never use `width` or `height` in animation keyframes — use `transform: scale()` instead
 
 #### Accessibility
 - All text on colored backgrounds: ≥4.5:1 contrast (body), ≥3:1 (large text ≥18px bold or ≥24px regular)
 - All interactive touch targets: minimum 44×44px
 - Focusable interactive elements must have visible focus styles
+- `prefers-reduced-motion: reduce` must disable all animations and transitions
 
 #### React/Babel rules
 - Each `<script type="text/babel">` gets its own scope. To share components between files, export them to `window`:
@@ -311,3 +358,11 @@ Otherwise, stop cleanly and leave the sprint in `build_failed`, `awaiting_human`
 - [ ] `runtime.md` contains artifact path and per-AC evidence
 - [ ] `handoff.md` says `READY_FOR_REVIEW` with reviewer start instructions
 - [ ] `status.json` set to `awaiting_review`
+- [ ] Layered implementation order followed: static → responsive → animation
+- [ ] No hardcoded color values (hex, rgb, hsl) — all colors from tokens or oklch() derivations
+- [ ] All interactive elements have 5 visual states (default/hover/active/focus/disabled)
+- [ ] Single easing family used across all animations
+- [ ] Animation timing matches contract hierarchy (100-150ms / 200-300ms / 400-600ms)
+- [ ] `prefers-reduced-motion` rule present in CSS
+- [ ] No `width`/`height`/`top`/`left` animated — only `transform` and `opacity`
+- [ ] 60-30-10 and 80/20 proportions checked (advisory — note any violations in runtime.md)

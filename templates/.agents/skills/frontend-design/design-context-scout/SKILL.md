@@ -32,6 +32,32 @@ Before beginning discovery, check whether `context.md` already exists from a pri
 
 Scout in this order. Stop and record what was found at each level before continuing.
 
+### 0. Brand Personality Discovery
+
+Before extracting tokens, define the brand's emotional DNA. This shapes which tokens matter and how the builder should use them.
+
+Check for brand personality signals in:
+```
+├── docs/reference/design.md → brand section (if BIE output exists)
+├── README.md → project purpose and audience
+├── Any moodboard, brand brief, or visual reference files attached by the human
+└── Ask: if this brand were a person, what 3-5 emotional keywords describe them? (e.g. "calm, precise, warm" vs "rebellious, fast, neon")
+```
+
+Record in context.md:
+- **Brand Personality Keywords**: 3-5 emotional descriptors
+- **Visual Identity Anchors**: What image or element would a user instantly associate with this brand?
+- **Competitive Differentiation**: How does this brand visually differ from competitors in its space?
+- **Industry Dialect**: Identify the visual dialect the brand speaks —
+  - `tech/saas` → geometric sans-serif, strict grid, single accent, blue/indigo
+  - `web3/crypto` → dark background, neon accents, bold wide type, asymmetry, glassmorphism
+  - `finance/banking` → humanist sans-serif, symmetry, deep blue, gold/green accents
+  - `luxury/fashion` → high-contrast serif, generous white space (60%+), earth tones or monochrome
+  - `gaming/esports` → italic/bold display, slanted layouts, high-saturation, glitch/particle effects
+  - `content/editorial` → F-pattern layout, reader-friendly type scale, minimal color, high information density
+
+If the project fits none of these, record "custom" and describe the observed dialect in the Visual Vocabulary section.
+
 ### 1. Project-Level Design Reference
 ```
 Check in order:
@@ -45,6 +71,10 @@ Check in order:
 When `docs/reference/design.md` is found, parse its structured sections into the Token Inventory:
 - **## Visual System YAML block** → Parse the `color_policy`, `design_tokens` (color/spacing/radius/shadow/blur/motion/typography), `form_language`, `material_language`, `scene_density_rules`, `object_library`, `ui_translation`, `negative_prompt_policy`, `input_variables`, `application_presets`, `prompt_seed`, `rule_severity` keys
 - **Colors** → `color_policy.dominant_colors`, `color_policy.accent_colors`, `color_policy.text_colors`, `color_policy.glass_colors`
+  - If `design.md` contains a BIE Visual System YAML block, also record:
+    - `color_policy.dominant_colors` and `color_policy.accent_colors`
+    - Count of color scale steps (e.g., "5-step scale (100-500)" or "11-step scale (50-950)")
+    - Whether a dark mode mapping exists
 - **Typography** → `design_tokens.typography.family_display`, `design_tokens.typography.family_body`, `design_tokens.typography.scale`
 - **Spacing & Radius** → `design_tokens.spacing`, `design_tokens.radius`
 - **Shadow** → `design_tokens.shadow`
@@ -110,6 +140,12 @@ If steps 1–4 produce no usable design context:
 - Target audience:
 - Primary rendering target: (web / mobile / presentation / print)
 
+## Brand Personality
+- Keywords: [3-5 emotional descriptors]
+- Visual anchors: [what users associate with this brand]
+- Differentiation: [how it differs from industry norms]
+- Industry dialect: [tech/saas | web3/crypto | finance/banking | luxury/fashion | gaming/esports | content/editorial | custom]
+
 ## Design System Found
 - yes | partial | no
 - Source files:
@@ -118,16 +154,23 @@ If steps 1–4 produce no usable design context:
 ## Token Inventory
 
 ### Colors
-| Role | Token name | Value |
-|---|---|---|
-| Primary | ... | #RRGGBB |
-| ... | | |
+| Role | Token name | Value | Context |
+|---|---|---|---|
+| Primary | ... | #RRGGBB | light |
+| ... | | | |
+
+- Color scale depth: [number of steps in primary color scale]
+- Perceptual uniformity: [OKLCH | LCH | HSL | unknown] — how the color scale was generated
+- Dark mode strategy: [token mapping | separate palette | none]
 
 ### Typography
 | Role | Family | Weight | Size hint |
 |---|---|---|---|
 | Body | ... | ... | ... |
 | Heading | ... | ... | ... |
+
+- Type scale ratio: [modular scale used: 1.25 / 1.414 / custom / unknown]
+- Font stack strategy: [system font priority | web font primary | mixed]
 
 ### Spacing & Radius
 - Base spacing unit:
@@ -153,6 +196,9 @@ Describe the overall mood, density, corner style, icon style, copy tone in 3–5
 - Emoji policy: (brand uses / brand does not use / unknown)
 - Known forbidden patterns: (gradient-heavy backgrounds, left-border accent cards, etc. as found)
 - Accessibility baseline: (WCAG AA / unknown)
+- Industry dialect constraints: [e.g., "web3: dark background required, neon accents expected"]
+- Animation preference: [spring physics | standard easing | none specified]
+- Preferred easing family: [cubic-bezier values if found in token files]
 
 ## Open Questions for Human
 - List any blocking ambiguities (e.g. no color tokens found, no brand brief available)
@@ -193,6 +239,9 @@ A good context document:
 - distinguishes confirmed tokens from inferences
 - names open gaps explicitly rather than silently skipping them
 - leaves the proposer and builder with enough vocabulary to stay on-brand without re-reading the entire codebase
+- records whether dark mode tokens exist and how they map (remapping vs inversion)
+- identifies the industry visual dialect when possible
+- notes the color scale generation method (OKLCH vs HSL) if discoverable
 
 A context document that invents tokens, fabricates vocabulary, or papers over a missing design system is worse than a document that honestly records "no system found."
 
